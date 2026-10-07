@@ -24,15 +24,19 @@ function makeGrain(w, h) {
   return c;
 }
 
-/** Small viewport or a machine with few cores / little memory. */
-function lowQuality() {
+/**
+ * Phones and other small viewports, plus genuinely low-power devices.
+ * A modest desktop CPU with a large window keeps the full present pass.
+ */
+export function cheapPresentation() {
   const w = window.innerWidth || 0;
   const h = window.innerHeight || 0;
-  const small = (w > 0 && w < 900) || (h > 0 && h < 520);
+  if ((w > 0 && w < 900) || (h > 0 && h < 520)) return true;
   const cores = navigator.hardwareConcurrency || 8;
   const mem = navigator.deviceMemory;
-  const lowPower = cores <= 4 || (typeof mem === 'number' && mem <= 4);
-  return small || lowPower;
+  const saveData = !!(navigator.connection && navigator.connection.saveData);
+  const coarse = !!(window.matchMedia && window.matchMedia('(pointer: coarse)').matches);
+  return cores <= 2 || (typeof mem === 'number' && mem <= 2) || saveData || (coarse && cores <= 4);
 }
 
 export function createPresenter(display, scene) {
@@ -122,7 +126,7 @@ export function createPresenter(display, scene) {
    *   cameraY, viewW, viewH — world-mode source rect in the scene buffer.
    */
   function present(opts) {
-    const low = applyTier(lowQuality());
+    const low = applyTier(cheapPresentation());
     const dctx = display.getContext('2d');
     const { bw, bh } = backingSize(low);
     const full = !opts || opts.mode !== 'world';

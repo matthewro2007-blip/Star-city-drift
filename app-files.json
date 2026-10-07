@@ -1,7 +1,7 @@
 {
-  "version": "66e5f78bad2b",
-  "generated": "2026-10-07T19:23:42.214Z",
-  "bytes": 19180206,
+  "version": "15b1f1cbfe4a",
+  "generated": "2026-10-07T19:26:07.050Z",
+  "bytes": 19180297,
   "files": [
     "assets/bg/community.png",
     "assets/bg/community_v1.png",
@@ -331,13 +331,13 @@
     "js/main.js": "799ccd75b1326087",
     "js/missions.js": "8738fd2c7eecb08b",
     "js/npcs.js": "2f352e0b6f46013c",
-    "js/present.js": "71287f45103b7bdf",
+    "js/present.js": "b1937f02065e5819",
     "js/props.js": "e92a34a0d8ef1f1b",
     "js/save.js": "3096ebf73a82cf83",
     "js/sprites.js": "c8ae7506249f29e0",
     "js/title.js": "28700df8cc6f3c6f",
-    "js/world.js": "dbcbd8ddcfbf9b6a",
+    "js/world.js": "8f3aabaff30da45f",
     "manifest.webmanifest": "8329dfbc4e169e94",
-    "sw.js": "2a44888f02954bbc"
+    "sw.js": "190841de358ffea2"
   }
 }

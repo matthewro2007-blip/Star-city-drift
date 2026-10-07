@@ -2,6 +2,7 @@
 /** Connected Roanoke street areas — free-roam left/right between locations. */
 
 import { loadProps, drawSceneLayer } from './props.js';
+import { cheapPresentation } from './present.js';
 
 const bgImages = {};
 let bgsReady = false;
@@ -631,8 +632,7 @@ function drawGoldenGrade(ctx, area, W, H, star, band = DEPTH) {
 function drawSunShafts(ctx, W, H, star, band) {
   const sx = star ? Math.max(W * 0.12, Math.min(W * 0.88, star.x)) : W * 0.68;
   const sy = star ? star.y : Math.min(band.min - 150, H * 0.22);
-  const cheap = (window.innerWidth || 960) < 900 || (window.innerHeight || 540) < 520 || (navigator.hardwareConcurrency || 8) <= 4;
-  const angles = cheap ? [0.7, 1.25, 1.8] : [0.55, 0.92, 1.25, 1.58, 1.95];
+  const angles = cheapPresentation() ? [0.7, 1.25, 1.8] : [0.55, 0.92, 1.25, 1.58, 1.95];
   ctx.save();
   ctx.globalCompositeOperation = 'screen';
   ctx.translate(sx, sy);
@@ -685,8 +685,7 @@ function drawStreetMaterial(ctx, W, H, band) {
 
 const DUST = [];
 function drawDust(ctx, W, H, dt, band) {
-  const cheap = (window.innerWidth || 960) < 900 || (window.innerHeight || 540) < 520 || (navigator.hardwareConcurrency || 8) <= 4;
-  const count = cheap ? 8 : 22;
+  const count = cheapPresentation() ? 8 : 22;
   if (!DUST.length) {
     for (let i = 0; i < 22; i++) {
       DUST.push({
