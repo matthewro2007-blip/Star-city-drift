@@ -22,4 +22,12 @@ Download [Star-City-Drift.apk](downloads/Star-City-Drift.apk) (v1.1.0) and sidel
 
 ## Windows
 
-The v1.1.0 desktop build for 64-bit Windows is in [downloads/windows/](downloads/windows/) as a four-part 7-Zip archive. Download every part into the same folder, then follow [README.txt](downloads/windows/README.txt).
+The v1.1.0 desktop build for 64-bit Windows is split into five parts. Download all five into the same folder:
+
+- [Star-City-Drift-1.1.0-win-x64.7z.001](downloads/windows/Star-City-Drift-1.1.0-win-x64.7z.001)
+- [Star-City-Drift-1.1.0-win-x64.7z.002](downloads/windows/Star-City-Drift-1.1.0-win-x64.7z.002)
+- [Star-City-Drift-1.1.0-win-x64.7z.003](downloads/windows/Star-City-Drift-1.1.0-win-x64.7z.003)
+- [Star-City-Drift-1.1.0-win-x64.7z.004](downloads/windows/Star-City-Drift-1.1.0-win-x64.7z.004)
+- [Star-City-Drift-1.1.0-win-x64.7z.005](downloads/windows/Star-City-Drift-1.1.0-win-x64.7z.005)
+
+Install [7-Zip](https://www.7-zip.org/), then right-click `Star-City-Drift-1.1.0-win-x64.7z.001` and choose **7-Zip → Extract Here**. 7-Zip reads `.002` through `.005` automatically. Run the extracted `Star-City-Drift-Setup-1.1.0.exe`.
