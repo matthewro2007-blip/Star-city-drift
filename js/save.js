@@ -61,7 +61,9 @@ function validate(d) {
  * Read + validate without side effects beyond migration/quarantine.
  * @returns {{status:'none'|'ok'|'migrated'|'corrupt', data:object|null, error?:string}}
  */
-export function inspectSave() {
+export function inspectSave({ write = true } = {}) {
+  // write:false = pure read (hasSave on the title screen). Only the boot inspectSave() may migrate or
+  // quarantine; a peek must never silently move a save aside (it hid the corrupt-save toast).
   const store = ls();
   if (!store) return { status: 'none', data: null };
   let raw = null;
@@ -71,13 +73,15 @@ export function inspectSave() {
       const parsed = JSON.parse(raw);
       if (isObj(parsed) && parsed.v === 2) {
         const data = validate(migrateV2(parsed));
-        try { store.setItem(SAVE_KEY, JSON.stringify(data)); } catch (_) {}
+        if (write) try { store.setItem(SAVE_KEY, JSON.stringify(data)); } catch (_) {}
         return { status: 'migrated', data };
       }
       return { status: 'ok', data: validate(parsed) };
     } catch (e) {
-      try { store.setItem(BAD_KEY, raw); store.removeItem(SAVE_KEY); } catch (_) {}
-      console.warn('[save] ignoring corrupt save:', e.message);
+      if (write) {
+        try { store.setItem(BAD_KEY, raw); store.removeItem(SAVE_KEY); } catch (_) {}
+        console.warn('[save] ignoring corrupt save:', e.message);
+      }
       return { status: 'corrupt', data: null, error: e.message };
     }
   }
@@ -89,11 +93,13 @@ export function inspectSave() {
       const d = JSON.parse(old);
       if (!isObj(d) || d.v !== 1) throw new Error('unknown legacy format');
       const data = validate(migrateV1(d));
-      try { store.setItem(SAVE_KEY, JSON.stringify(data)); store.removeItem(key); } catch (_) {}
+      if (write) try { store.setItem(SAVE_KEY, JSON.stringify(data)); store.removeItem(key); } catch (_) {}
       return { status: 'migrated', data };
     } catch (e) {
-      try { store.setItem(BAD_KEY, old); store.removeItem(key); } catch (_) {}
-      console.warn('[save] ignoring corrupt legacy save:', e.message);
+      if (write) {
+        try { store.setItem(BAD_KEY, old); store.removeItem(key); } catch (_) {}
+        console.warn('[save] ignoring corrupt legacy save:', e.message);
+      }
       return { status: 'corrupt', data: null, error: e.message };
     }
   }
@@ -101,7 +107,7 @@ export function inspectSave() {
 }
 
 export function hasSave() {
-  const s = inspectSave().status;
+  const s = inspectSave({ write: false }).status;
   return s === 'ok' || s === 'migrated';
 }
 

@@ -156,7 +156,9 @@ export function createMissionSystem(state) {
     // mission rewards: hidden (area 'hidden:<area>') until the linked mission completes
     { id: 'apron', name: "Dee's Spare Apron", area: 'diner', x: 1180, outfit: 'diner', reveal: 'side_diner' },
     { id: 'varsity', name: 'Valley Gym Varsity Jacket', area: 'gym', x: 800, outfit: 'varsity', reveal: 'side_spar' },
-    { id: 'lantern', name: 'Night Shift Lantern', area: 'river', x: 300, outfit: null, score: 500, reveal: 'side_night' }
+    { id: 'lantern', name: 'Night Shift Lantern', area: 'river', x: 300, outfit: null, score: 500, reveal: 'side_night' },
+    // v3: glows at the foot of the Mill Mountain Star once main mission 2 (Missing Shipment) is done
+    { id: 'beaconring', name: 'Beacon Ring (under the Mill Mountain Star)', area: 'star', x: 720, outfit: 'beacon', reveal: 'main2' }
   ];
 
   state.missions = missions;
@@ -232,6 +234,13 @@ export function createMissionSystem(state) {
         this.refreshReveals();
         const c = state.collectibles.find((k) => k.id === m.reward.reveal);
         if (c) toast(`Reward: ${c.name} is waiting nearby`);
+      }
+      // collectibles unlocked by this mission without a reward entry (main2 → Beacon Ring)
+      for (const c of state.collectibles) {
+        if (c.reveal === id && !c.taken && c.id !== m.reward?.reveal) {
+          this.refreshReveals();
+          toast('Something is glowing up at the Mill Mountain Star…');
+        }
       }
       if (id === 'main1') state.activeMissionId = 'main2';
       else if (id === 'main2') state.activeMissionId = 'main3';

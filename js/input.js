@@ -12,19 +12,23 @@ const promptState = { device: 'keyboard', padType: 'xbox', padId: '' };
 const PROMPTS = {
   keyboard: {
     punch: 'Z', kick: 'X', heavy: 'C', interact: 'E', pause: 'Esc',
-    confirm: 'Enter', back: 'Esc', move: 'WASD / Arrows', outfit: '1–9, 0'
+    confirm: 'Enter', back: 'Esc', move: 'WASD / Arrows', outfit: '1–9, 0, −',
+    sprint: 'Shift', special: 'V', jumpkick: 'Shift + X'
   },
   touch: {
     punch: 'Z', kick: 'X', heavy: '', interact: 'E', pause: 'II',
-    confirm: 'Tap', back: 'Tap', move: 'Stick', outfit: ''
+    confirm: 'Tap', back: 'Tap', move: 'Stick', outfit: '',
+    sprint: 'RUN', special: '★', jumpkick: 'RUN + X'
   },
   ps: {
     punch: '✕ Cross', kick: '○ Circle', heavy: '△ Triangle', interact: '□ Square',
-    pause: 'Options', confirm: '✕ Cross', back: '○ Circle', move: 'Left stick / D-pad', outfit: 'L1 / R1'
+    pause: 'Options', confirm: '✕ Cross', back: '○ Circle', move: 'Left stick / D-pad', outfit: 'L1 / R1',
+    sprint: 'L3 / L2', special: 'R2', jumpkick: 'L2 + ○'
   },
   xbox: {
     punch: 'A', kick: 'B', heavy: 'Y', interact: 'X', pause: 'Menu',
-    confirm: 'A', back: 'B', move: 'Left stick / D-pad', outfit: 'LB / RB'
+    confirm: 'A', back: 'B', move: 'Left stick / D-pad', outfit: 'LB / RB',
+    sprint: 'LS / LT', special: 'RT', jumpkick: 'LT + B'
   }
 };
 
@@ -39,7 +43,7 @@ export function padTypeFromId(id) {
   return /dualsense|wireless controller|054c/i.test(s) ? 'ps' : 'xbox';
 }
 
-/** Device-aware button label for an action: punch|kick|heavy|interact|pause|confirm|back|move. */
+/** Device-aware button label for an action: punch|kick|heavy|interact|pause|confirm|back|move|sprint|special|jumpkick. */
 export function getPromptLabel(action) {
   const set = promptState.device === 'pad' ? PROMPTS[promptState.padType]
     : promptState.device === 'touch' ? PROMPTS.touch : PROMPTS.keyboard;
@@ -77,6 +81,7 @@ export function createInput(canvas, opts = {}) {
     ax: 0, ay: 0,
     punch: false, kick: false, interact: false,
     punchPressed: false, kickPressed: false, heavyPressed: false, interactPressed: false,
+    specialPressed: false, sprint: false, // v3: special (Star Drive) + held sprint
     pausePressed: false, confirmPressed: false, backPressed: false,
     navUp: false, navDown: false, navLeft: false, navRight: false,
     outfitKey: null,
@@ -117,14 +122,17 @@ export function createInput(canvas, opts = {}) {
     x: 'kick', X: 'kick', k: 'kick', K: 'kick',
     c: 'heavy', C: 'heavy', l: 'heavy', L: 'heavy',
     e: 'interact', E: 'interact',
+    v: 'special', V: 'special',
+    Shift: 'sprint',
     Enter: 'confirm',
     Escape: 'pause'
   };
 
   window.addEventListener('keydown', (e) => {
     if (e.ctrlKey || e.metaKey || e.altKey) return;
-    const a = keyMap[e.key];
-    if (!a && !(e.key >= '0' && e.key <= '9')) return;
+    const a = keyMap[e.key] || (e.code === 'ShiftLeft' || e.code === 'ShiftRight' ? 'sprint' : undefined);
+    const beaconKey = e.key === '-' || (e.shiftKey && e.code === 'Digit1'); // 11th outfit: - or Shift+1
+    if (!a && !(e.key >= '0' && e.key <= '9') && !beaconKey) return;
     setDevice(state.mobile ? 'touch' : 'keyboard');
     if (a) {
       keys[a] = true;
@@ -132,9 +140,11 @@ export function createInput(canvas, opts = {}) {
     }
     if (e.repeat) return; // edge-triggered actions never auto-repeat
     if (e.key >= '0' && e.key <= '9') state.outfitKey = e.key;
+    if (beaconKey) state.outfitKey = '-';
     if (a === 'punch') state.punchPressed = true;
     if (a === 'kick') state.kickPressed = true;
     if (a === 'heavy') state.heavyPressed = true;
+    if (a === 'special') state.specialPressed = true;
     if (a === 'interact') state.interactPressed = true;
     if (a === 'confirm') state.confirmPressed = true;
     if (a === 'pause') { state.pausePressed = true; state.backPressed = true; }
@@ -144,8 +154,10 @@ export function createInput(canvas, opts = {}) {
     if (a === 'right') state.navRight = true;
   });
   window.addEventListener('keyup', (e) => {
-    const a = keyMap[e.key];
+    const a = keyMap[e.key] || (e.code === 'ShiftLeft' || e.code === 'ShiftRight' ? 'sprint' : undefined);
     if (a) keys[a] = false;
+    // Shift+letter keyup arrives as the upper-case key: release both cases
+    if (e.key === 'Shift') keys.sprint = false;
   });
   // Drop held keys when the tab loses focus (prevents "stuck walking").
   window.addEventListener('blur', () => { for (const k in keys) keys[k] = false; });
@@ -217,6 +229,8 @@ export function createInput(canvas, opts = {}) {
   bindBtn('btn-punch', () => { state.punch = true; state.punchPressed = true; }, () => { state.punch = false; });
   bindBtn('btn-kick', () => { state.kick = true; state.kickPressed = true; }, () => { state.kick = false; });
   bindBtn('btn-interact', () => { state.interact = true; state.interactPressed = true; }, () => { state.interact = false; });
+  bindBtn('btn-sprint', () => { state.sprint = true; }, () => { state.sprint = false; });       // v3: hold to sprint
+  bindBtn('btn-special', () => { state.specialPressed = true; });                                // v3: Star Drive
 
   // ---------- Gamepad ----------
   const prevBtn = [];
@@ -272,7 +286,7 @@ export function createInput(canvas, opts = {}) {
 
   function padState() {
     const gp = readPads();
-    const out = { ax: 0, ay: 0, punch: false, kick: false, any: false };
+    const out = { ax: 0, ay: 0, punch: false, kick: false, sprint: false, any: false };
     if (!gp) return out;
     const btn = (i) => {
       const b = gp.buttons && gp.buttons[i];
@@ -300,7 +314,11 @@ export function createInput(canvas, opts = {}) {
     // Rising edges (a held button never repeats)
     const e0 = edge(0), e1 = edge(1), e2 = edge(2), e3 = edge(3), e9 = edge(9);
     const e4 = edge(4), e5 = edge(5); // L1/R1 (LB/RB): cycle unlocked outfits
-    for (let i = 6; i < 18; i++) if (i !== 9) edge(i);
+    const e7 = edge(7);                       // R2 / RT: special (Star Drive)
+    const e6 = edge(6), e10 = edge(10);       // L2 / LT, L3 / LS: sprint (held)
+    for (let i = 8; i < 18; i++) if (i !== 9 && i !== 10) edge(i);
+    if (e7) state.specialPressed = true;
+    out.sprint = btn(6) || btn(10);
     if (e4) state.outfitCycle = -1;
     if (e5) state.outfitCycle = 1;
     if (e0) { state.punchPressed = true; state.confirmPressed = true; }
@@ -321,7 +339,7 @@ export function createInput(canvas, opts = {}) {
     if (nav.right && !prevNav.right) state.navRight = true;
     prevNav = nav;
 
-    out.any = e0 || e1 || e2 || e3 || e4 || e5 || e9 || Math.abs(ax) > 0 || Math.abs(ay) > 0;
+    out.any = e0 || e1 || e2 || e3 || e4 || e5 || e6 || e7 || e9 || e10 || Math.abs(ax) > 0 || Math.abs(ay) > 0;
     if (out.any) setDevice('pad');
     return out;
   }
@@ -342,7 +360,7 @@ export function createInput(canvas, opts = {}) {
     },
     /** Clear one-shot presses (e.g. after a menu button click) so they don't leak into play. */
     flush() {
-      state.punchPressed = state.kickPressed = state.heavyPressed = false;
+      state.punchPressed = state.kickPressed = state.heavyPressed = state.specialPressed = false;
       state.interactPressed = state.confirmPressed = state.backPressed = state.pausePressed = false;
       state.navUp = state.navDown = state.navLeft = state.navRight = false;
       state.outfitKey = null;
@@ -362,6 +380,8 @@ export function createInput(canvas, opts = {}) {
         punchPressed: state.punchPressed,
         kickPressed: state.kickPressed,
         heavyPressed: state.heavyPressed,
+        specialPressed: state.specialPressed,
+        sprintHeld: !!keys.sprint || state.sprint || pad.sprint,
         interactPressed: state.interactPressed,
         confirmPressed: state.confirmPressed,
         backPressed: state.backPressed,

@@ -28,7 +28,8 @@ const OUTFIT_SHEETS = {
   mechanic: 'assets/sprites/matthew_mechanic.png',
   diner: 'assets/sprites/matthew_diner.png',
   gold: 'assets/sprites/matthew_gold.png',
-  webslinger: 'assets/sprites/matthew_webslinger.png'
+  webslinger: 'assets/sprites/matthew_webslinger.png',
+  beacon: 'assets/sprites/matthew_beacon.png'
 };
 const outfitSheets = {};      // outfitId -> Image (loaded)
 const outfitPending = {};     // outfitId -> true while lazily loading / after failure
@@ -88,7 +89,9 @@ export function loadSprites() {
           const img = await opt(src); if (img) outfitSheets[id] = img; else outfitPending[id] = true;
         }),
         ...Object.entries(NPC_SRC).map(async ([k, src]) => { const img = await opt(src); if (img) images[k] = img; }),
-        ...Object.entries(ENEMY_SHEET_SRC).map(async ([k, src]) => { const img = await opt(src); if (img) enemySheets[k] = img; })
+        ...Object.entries(ENEMY_SHEET_SRC).map(async ([k, src]) => { const img = await opt(src); if (img) enemySheets[k] = img; }),
+        loadAnimManifests(),
+        loadCollectibles()
       ]);
       loaded = true;
     } catch (e) {
@@ -98,6 +101,134 @@ export function loadSprites() {
     return loaded;
   })();
   return loadPromise;
+}
+
+// ---------------------------------------------------------------- extended animations
+// anims.json (Matthew outfits + cast) and optional anims_enemies.json (enemies) share one schema
+// (see ASSETS.md "Animation manifest"); both merge into ANIM_MANIFEST[charKey].states[state].
+const ANIM_MANIFEST = {};
+const animImages = {};
+let ANIM_REV = '';
+const CHAR_ALIASES = { coachray: 'coach', ray: 'coach', raydelgado: 'coach', deemorales: 'dee', priyashah: 'priya',
+  hankrail: 'hank', hankpettigrew: 'hank', rail: 'hank', junewhitaker: 'june', tessaquinn: 'tessa', camortiz: 'cam',
+  wrencalloway: 'wren', silasboone: 'silas', silasnpc: 'silas', stranger: 'silas', boss: 'silas_boss', silasboss: 'silas_boss',
+  matthewrose: 'matthew', player: 'matthew', hero: 'matthew', runner: 'snatcher', pursesnatcher: 'snatcher' };
+export const ANIM_STATES = {
+  matthew: ['idle_signature', 'run', 'sprint', 'combo1', 'combo2', 'combo3', 'jump_kick', 'special',
+    'hurt', 'ko', 'victory', 'knockdown_fall', 'knockdown_ground', 'getup'],
+  cast: ['idle_personality', 'talk'],
+  boss: ['boss_attack1', 'boss_attack2', 'boss_attack3', 'taunt', 'defeat', 'knockdown_fall', 'knockdown_ground', 'getup'],
+  thug: ['attackA', 'attackB', 'ko', 'knockdown_fall', 'knockdown_ground', 'getup'],
+  snatcher: ['idle', 'run', 'caught', 'ko', 'knockdown_fall', 'knockdown_ground', 'getup']
+};
+
+async function fetchManifest(src, quiet) {
+  try {
+    const r = await fetch(src, { cache: 'no-cache' });   // revalidate: a stale manifest hid new characters
+    if (!r.ok) { if (!quiet) console.warn('Anim manifest missing:', src); return null; }
+    const txt = await r.text();
+    let h = 0; for (let i = 0; i < txt.length; i++) h = (h * 31 + txt.charCodeAt(i)) | 0;
+    const j = JSON.parse(txt); j.__hash = (h >>> 0).toString(36); return j;
+  } catch (_) { if (!quiet) console.warn('Anim manifest failed:', src); return null; }
+}
+
+async function loadAnimManifests() {
+  const [main, enemies] = await Promise.all([
+    fetchManifest('assets/sprites/anims.json', false),
+    fetchManifest('assets/sprites/anims_enemies.json', true)   // optional (Jack's file)
+  ]);
+  // cache-bust strips by manifest content: any regenerate (mine or Jack's) changes the URL
+  ANIM_REV = [main && main.__hash, enemies && enemies.__hash].filter(Boolean).join('.') || String(Date.now());
+  for (const m of [main, enemies]) {
+    if (!m || !m.characters) continue;
+    for (const [key, ch] of Object.entries(m.characters)) {
+      const dst = ANIM_MANIFEST[key] || (ANIM_MANIFEST[key] = { file: ch.file, wideFile: ch.wideFile, states: {} });
+      if (ch.wideFile) dst.wideFile = ch.wideFile;
+      Object.assign(dst.states, ch.states || {});
+    }
+  }
+  const files = new Set();
+  for (const ch of Object.values(ANIM_MANIFEST)) {
+    if (ch.file) files.add(ch.file); if (ch.wideFile) files.add(ch.wideFile);
+    for (const st of Object.values(ch.states)) files.add(st.file || ch.file);
+  }
+  await Promise.all([...files].filter(Boolean).map(async (src) => {
+    try { animImages[src] = await loadImage(src + '?v=' + ANIM_REV); } catch (_) { console.warn('Anim strip missing:', src); }
+  }));
+}
+
+function outfitKey(o) {
+  if (o && typeof o === 'object') o = o.id || o.key || o.outfitId || o.name;
+  o = String(o || 'polo').toLowerCase().replace(/^matthew[_-]?/, '').replace(/[^a-z0-9]/g, '');
+  return o || 'polo';
+}
+const squash = (k) => String(k || '').replace(/([a-z])([A-Z])/g, '$1_$2').toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_|_$/g, '');
+// Accepts 'dee'/'Dee'/'coach_ray'/'coachRay'/'thug-Purple'/'matthew_hoodie'/'matthew' + outfit (string or {id}).
+function animKey(charKey, outfitId) {
+  let k = squash(charKey);
+  if (k.startsWith('matthew_') && !ANIM_MANIFEST[k]) { outfitId = k.slice(8); k = 'matthew'; }
+  if (!ANIM_MANIFEST[k]) k = CHAR_ALIASES[k.replace(/_/g, '')] || CHAR_ALIASES[k.split('_')[0]] || k;
+  if (!ANIM_MANIFEST[k] && !k.startsWith('matthew')) { const first = k.split('_')[0]; if (ANIM_MANIFEST[first]) k = first; }
+  if (k === 'matthew') {
+    const m = 'matthew_' + outfitKey(outfitId);
+    return ANIM_MANIFEST[m] ? m : 'matthew_polo';
+  }
+  return k;
+}
+
+/** True when charKey (and, for matthew, that exact outfit) has its own anim strips — no polo fallback. */
+export function hasAnims(charKey, outfitId) {
+  const k = animKey(charKey, outfitId);
+  if (k.startsWith('matthew_') && squash(charKey) === 'matthew') return k === 'matthew_' + outfitKey(outfitId) && !!ANIM_MANIFEST[k];
+  return !!ANIM_MANIFEST[k];
+}
+
+export function listAnims(charKey, outfitId) {
+  const ch = ANIM_MANIFEST[animKey(charKey, outfitId)];
+  return ch ? Object.keys(ch.states) : [];
+}
+
+// -> {img, sx, sy, sw, sh, anchorX, feetRow, done, active, hitbox, grounded, lying, index} or null (caller falls back).
+// Draw so frame-x anchorX sits on the actor's x and row feetRow on its ground y (sw/sh may exceed 144x192).
+// aliasOf: a state with no own frames is the concatenation of the named states (if it has frames, they win)
+function resolveState(ch, state, depth = 0) {
+  const st = ch && ch.states[state];
+  if (!st) return null;
+  if ((st.frames && st.frames.length) || !st.aliasOf || depth > 3) return st;
+  const parts = [].concat(st.aliasOf).map((n) => resolveState(ch, n, depth + 1)).filter(Boolean);
+  if (!parts.length) return null;
+  const cat = (k, d) => parts.flatMap((p) => p.frames.map((_, i) => (Array.isArray(p[k]) ? p[k][i] : (p[k] !== undefined ? p[k] : d))));
+  const r = { ...parts[0], ...st, frames: cat('frames'), file: undefined,
+    fwA: cat('fw', 144), fhA: cat('fh', 192), ax: cat('anchorX', null),
+    sx: cat('sx', null), sw: cat('sw', null), sy: cat('sy', 0), sh: cat('sh', null),
+    grounded: cat('grounded', true), lying: cat('lying', false), active: cat('active', false), hitbox: cat('hitbox', null) };
+  r._files = parts.flatMap((p) => p.frames.map(() => p.file || ch.file));
+  ch.states[state] = r;                      // cache
+  return r;
+}
+
+// -> {img, sx, sy, sw, sh, anchorX, feetRow, done, active, hitbox, grounded, lying, index} or null (caller falls back).
+// Draw so frame-x anchorX sits on the actor's x and row feetRow on its ground y (sw/sh may exceed 144x192).
+export function getAnimFrame(charKey, state, tMs, outfitId) {
+  const key = animKey(charKey, outfitId);
+  let ch = ANIM_MANIFEST[key];
+  let st = resolveState(ch, state);
+  if (!st && key.startsWith('matthew_') && key !== 'matthew_polo') { ch = ANIM_MANIFEST.matthew_polo; st = resolveState(ch, state); }
+  if (!st || !st.frames || !st.frames.length) return null;
+  const n = st.frames.length;
+  let i = Math.floor(Math.max(0, tMs || 0) * (st.fps || 10) / 1000);
+  let done = false;
+  if (st.loop) i %= n; else if (i >= n - 1) { i = n - 1; done = true; }
+  const pick = (a, d) => (Array.isArray(a) ? (a[i] != null ? a[i] : d) : (a != null ? a : d));
+  const file = st._files ? st._files[i] : (st.file || ch.file);
+  const img = animImages[file];
+  if (!img) return null;
+  const fw = pick(st.fwA, st.fw || 144), fh = pick(st.fhA, st.fh || 192), idx = st.frames[i];
+  const sw = pick(st.sw, fw), sh = pick(st.sh, fh), sx = pick(st.sx, idx * fw), sy = pick(st.sy, 0);
+  const anchorX = pick(st.ax, st.anchorX != null ? st.anchorX : sw / 2);
+  return { img, sx, sy, sw, sh, done, index: i, anchorX, feetRow: sh - 3,
+    active: !!pick(st.active, false), hitbox: pick(st.hitbox, null) || null,
+    grounded: pick(st.grounded, true) !== false, lying: !!pick(st.lying, false) };
 }
 
 export function getHeartImages() {
@@ -302,7 +433,49 @@ export function drawSprite(ctx, spriteCanvas, x, y, facing) {
   ctx.restore();
 }
 
+// ---------------------------------------------------------------- collectibles (tools/gen_collectibles.py)
+// collectibles.png: one row per item, 6 cols of 48x48 (bob + glint baked in); collectibles.json: id -> {row, frames, fw, fh, fps, name, names}
+const COLLECT = { img: null, items: {}, index: {} };
+const normName = (v) => String(v || '').toLowerCase().replace(/\([^)]*\)/g, '').replace(/[^a-z0-9]/g, '');
+async function loadCollectibles() {
+  const m = await fetchManifest('assets/sprites/collectibles.json', false);
+  if (!m) return;
+  const meta = m._meta || {};
+  for (const [id, it] of Object.entries(m)) {
+    if (id.startsWith('_')) continue;
+    COLLECT.items[id] = it;
+    for (const n of [id, it.name, ...(it.names || [])]) { const k = normName(n); if (k && !COLLECT.index[k]) COLLECT.index[k] = id; }
+  }
+  try { COLLECT.img = await loadImage((meta.file || 'assets/sprites/collectibles.png') + '?v=' + m.__hash); }
+  catch (_) { console.warn('Sprite missing: assets/sprites/collectibles.png'); }
+}
+function collectibleId(idOrName) {
+  if (idOrName && typeof idOrName === 'object') idOrName = idOrName.id || idOrName.name;
+  if (COLLECT.items[idOrName]) return idOrName;
+  const k = normName(idOrName);
+  if (COLLECT.index[k]) return COLLECT.index[k];
+  for (const [n, id] of Object.entries(COLLECT.index)) if (k && (n.startsWith(k) || k.startsWith(n)) && Math.min(n.length, k.length) >= 4) return id;
+  return null;
+}
+/** Item frame {img, sx, sy, sw, sh, anchorX:24, anchorY:47} or null. Accepts id or name (any case, parentheticals ignored). */
+export function getCollectibleSprite(idOrName, tMs = 0) {
+  const id = collectibleId(idOrName);
+  const it = id && COLLECT.items[id];
+  if (!it || !COLLECT.img) return null;
+  const fw = it.fw || 48, fh = it.fh || 48, n = it.frames || 6;
+  const f = Math.floor(Math.max(0, tMs || 0) * (it.fps || 8) / 1000) % n;
+  return { img: COLLECT.img, sx: f * fw, sy: it.row * fh, sw: fw, sh: fh, anchorX: 24, anchorY: 47, id, name: it.name };
+}
+
 export function drawCollectible(ctx, x, y, name, pulse) {
+  const spr = getCollectibleSprite(name, (pulse || 0) / 5 * 1000);   // pulse is seconds*5 at the call site
+  if (spr) {
+    const dx = Math.round(x - spr.anchorX), dy = Math.round(y - 4 - spr.anchorY);
+    ctx.drawImage(spr.img, spr.sx, spr.sy, spr.sw, spr.sh, dx, dy, spr.sw, spr.sh);
+    ctx.fillStyle = '#fff'; ctx.font = '9px sans-serif'; ctx.textAlign = 'center';
+    ctx.fillText(name, x, dy - 4); ctx.textAlign = 'left';
+    return;
+  }
   const s = 8 + Math.sin(pulse) * 2;
   ctx.fillStyle = 'rgba(255,210,74,0.3)';
   ctx.beginPath(); ctx.arc(x, y - 20, s + 6, 0, Math.PI * 2); ctx.fill();

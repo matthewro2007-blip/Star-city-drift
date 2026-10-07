@@ -129,8 +129,10 @@ export const OUTFITS = {
   mechanic: { name: 'Rail Yard Coveralls', shirt: '#3b5a7a', pants: '#3b5a7a', accent: '#d9a441' },
   diner: { name: "Dee's Diner Apron", shirt: '#fafaf8', pants: '#2a2a2e', accent: '#c0392b' },
   webslinger: { name: 'Star City Web-Slinger', shirt: '#b0182a', pants: '#1f3fa8', accent: '#ffd24a' }, // original design
-  gold: { name: 'Gold Star Suit', shirt: '#d4a52a', pants: '#3a2a10', accent: '#fff3b0' }
+  gold: { name: 'Gold Star Suit', shirt: '#d4a52a', pants: '#3a2a10', accent: '#fff3b0' },
+  // v3: original Star City design (Joe's matthew_beacon.png + anim set) — unlocked by the Beacon Ring
+  beacon: { name: 'Star City Beacon', shirt: '#1e8f5a', pants: '#14202e', accent: '#7dffb2' }
 };
 
-/** Outfit order for keys 1-9 + 0, L1/R1 (LB/RB) cycling and the pause-menu outfit button. */
-export const OUTFIT_ORDER = ['polo', 'hoodie', 'jacket', 'street', 'photo', 'varsity', 'mechanic', 'diner', 'gold', 'webslinger'];
+/** Outfit order for keys 1-9, 0 and - (or Shift+1), L1/R1 (LB/RB) cycling and the pause-menu outfit button. */
+export const OUTFIT_ORDER = ['polo', 'hoodie', 'jacket', 'street', 'photo', 'varsity', 'mechanic', 'diner', 'gold', 'webslinger', 'beacon'];

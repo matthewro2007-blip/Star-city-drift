@@ -9,8 +9,10 @@ import { createInput, getPromptLabel, getPromptDevice, rumble } from './input.js
 import {
   createPlayer, updatePlayer, updateEnemy, resolveHits,
   drawEnemy, spawnWave, createSilasFighter, clampDepth, setDepthBand, getDepthBand,
-  createThug, setDifficulty, getDifficulty, DIFFICULTIES, DIFFICULTY_ORDER
+  createThug, setDifficulty, getDifficulty, DIFFICULTIES, DIFFICULTY_ORDER, SPECIAL_COST, knockDown
 } from './combat.js';
+import { animFrame, animMs, setAnim, enemyCharKey, animApiReady } from './anim.js';
+import * as SpriteLib from './sprites.js'; // optional newer helpers (getCollectibleSprite) without a hard import
 import { getMatthewSprite, getNpcSprite, getEnemySprite, drawSprite, drawCollectible, clearSpriteCache, loadSprites, getHeartImages } from './sprites.js';
 import { createTitle } from './title.js';
 import { getHeroFrame, drawHero, clearHeroCache, HERO_DRAW_H, HERO_SHADOW_W } from './hero.js';
@@ -183,6 +185,7 @@ function showTitle() {
   input.showMobile(false);
   title.show(); // attract "PRESS START" first; the menu focuses itself when it opens
   menuFocus(0);
+  if (updateReady) applyUpdate(); // v3: new version installed while playing → restart now (title = safe)
 }
 
 /** Continue + New Game only when a valid save exists; otherwise just Start Free Roam. */
@@ -566,17 +569,17 @@ function sideTarget(e) {
 }
 
 function updateRunner(e, dt, area) {
+  if (!e.alive || e.kd) { updateEnemy(e, player, dt, area.width); return; } // caught / knockdown states
   e.animT += dt;
-  if (!e.alive) return;
-  if (e.stun > 0) { e.stun -= dt; e.pose = 'hurt'; return; }
+  if (e.stun > 0) { e.stun -= dt; e.pose = 'hurt'; setAnim(e, 'hurt', { key: 'snatcher', sec: e.stun + dt }); return; }
   if (e.restT > 0) {
-    e.restT -= dt; e.pose = 'idle'; e.facing = player.x > e.x ? 1 : -1;
+    e.restT -= dt; e.pose = 'idle'; e.facing = player.x > e.x ? 1 : -1; setAnim(e, 'idle');
     if (e.restT <= 0) e.runT = 2 + Math.random();
     return;
   }
   e.runT -= dt;
   if (e.runT <= 0) { e.restT = 0.9; return; } // winded
-  e.facing = 1; e.pose = 'chase';
+  e.facing = 1; e.pose = 'chase'; setAnim(e, 'run');
   e.x += getDifficulty().runner * dt;
   const s = stateBag.side;
   if (e.x >= area.width - 40) {
@@ -983,7 +986,7 @@ function refreshPrompts(force) {
   const L = getPromptLabel;
   const kbd = document.querySelector('#interact-prompt kbd');
   if (kbd) kbd.textContent = L('interact');
-  const parts = [['move', 'move'], ['punch', 'punch'], ['kick', 'kick'], ['heavy', 'heavy'],
+  const parts = [['move', 'move'], ['sprint', 'sprint'], ['punch', 'punch'], ['kick', 'kick'], ['special', 'Star Drive'], ['heavy', 'heavy'],
     ['interact', 'talk'], ['outfit', 'outfits'], ['pause', 'pause']];
   const hint = parts.filter(([a]) => L(a)).map(([a, w]) => `${L(a)} ${w}`).join(' · ');
   const pp = document.querySelector('#pause-screen p');
@@ -1008,6 +1011,7 @@ function frame(now) {
   requestAnimationFrame(frame);
 }
 
+const pressBuffer = {};
 function step(dt) {
   tickToast(dt);
   const inp = input.poll();
@@ -1030,7 +1034,7 @@ function step(dt) {
   }
 
   if (inp.outfitKey) {
-    const id = OUTFIT_ORDER[inp.outfitKey === '0' ? 9 : Number(inp.outfitKey) - 1];
+    const id = OUTFIT_ORDER[inp.outfitKey === '-' ? 10 : inp.outfitKey === '0' ? 9 : Number(inp.outfitKey) - 1];
     if (id) setOutfit(id);
   }
   if (inp.outfitCycle && gameState.mode === 'play') cycleOutfit(inp.outfitCycle);
@@ -1045,6 +1049,13 @@ function step(dt) {
   // PLAY
   gameState.playTime += dt;
   if (DEBUG && gameState.god) player.hp = player.maxHp;
+  if (!player.alive && player.koT > 0) {
+    // v3: hold the KO pose briefly before the respawn / game over
+    updatePlayer(player, inp, dt, AREAS[gameState.areaId].width);
+    for (const e of gameState.enemies) if (!e.runner) updateEnemy(e, player, dt, AREAS[gameState.areaId].width);
+    drawWorld(dt);
+    return;
+  }
   if (!player.alive && getDifficulty().arcade) {
     arcadeGameOver();
     return;
@@ -1054,6 +1065,7 @@ function step(dt) {
     const lostBoss = gameState.bossActive;
     player.hp = player.maxHp;
     player.alive = true;
+    player.kd = null; player.koT = 0; player.lift = 0; player.invuln = 1;
     player.x = 200;
     gameState.enemies = [];
     gameState.combatLock = false;
@@ -1069,31 +1081,40 @@ function step(dt) {
 
   const area = AREAS[gameState.areaId];
 
+  // v3: attack presses made during a hit-stop freeze are buffered, not dropped
+  const BUFFERED = ['punchPressed', 'kickPressed', 'heavyPressed', 'specialPressed'];
   if (gameState.hitStop > 0) {
     gameState.hitStop -= dt;
+    for (const k of BUFFERED) if (inp[k]) pressBuffer[k] = true;
   } else {
-    updatePlayer(player, inp, dt, area.width);
+    for (const k of BUFFERED) if (pressBuffer[k]) { inp[k] = true; pressBuffer[k] = false; }
+    updatePlayer(player, inp, dt, area.width, {
+      outfit: gameState.outfitId,
+      canSpecial: () => gameState.special >= SPECIAL_COST,
+      onSpecial: () => { gameState.special = Math.max(0, gameState.special - SPECIAL_COST); gameState.hitStop = 0; rumble(0.6, 0.6, 160); },
+      onSpecialDenied: (why) => { if (why === 'meter') toast(`Star Drive needs ${SPECIAL_COST}% special meter`); }
+    });
     for (const e of gameState.enemies) {
       if (e.runner) updateRunner(e, dt, area);
       else updateEnemy(e, e.target ? sideTarget(e) : player, dt, area.width);
     }
     resolveHits(player, gameState.enemies,
       (e) => {
-        gameState.hitStop = 0.04;
+        gameState.hitStop = e.kd ? 0.07 : 0.04;
         gameState.special = Math.min(100, gameState.special + 4);
         if (!e.alive) gameState.score += e.scoreValue || 100;
         rumble(0.25, 0.45, 60);
       },
-      () => {
+      (dmg, knocked) => {
         if (stateBag.side && stateBag.side.id === 'side_spar') stateBag.side.hits++;
-        rumble(0.8, 0.5, 140); updateHUD();
+        rumble(knocked ? 1 : 0.8, 0.5, knocked ? 260 : 140); updateHUD();
       },
       area.width
     );
     if (stateBag.side && stateBag.side.id === 'side_spar') {
       for (const e of gameState.enemies) if (e.sparring && !e.alive && !e.counted) { e.counted = true; stateBag.side.kos++; }
     }
-    gameState.enemies = gameState.enemies.filter((e) => e.alive || e.stun > 0 || (e.runner && sideMission()));
+    gameState.enemies = gameState.enemies.filter((e) => e.alive || e.stun > 0 || e.koT > 0 || (e.runner && sideMission()));
     if (gameState.combatLock && !hostilesAlive()) {
       gameState.combatLock = false;
       gameState.enemies = [];
@@ -1107,6 +1128,7 @@ function step(dt) {
       } else if (!stateBag.side) {
         toast('Street clear!');
         heal(15);
+        if (player.alive && !player.kd) { player.victoryT = 1.6; player.idleT = 0; } // victory pose
       }
     }
     if (gameState.mode === 'play') updateSide(dt);
@@ -1227,8 +1249,13 @@ function drawEnemyCast(e, cam) {
   const pose = e.pose === 'chase' ? 'walk' : e.pose;
   const spr = getEnemySprite(pose, e.color, e.animT, e.isBoss);
   const sx = e.x - cam;
-  if (e.invulnFlash) ctx.globalAlpha = 0.5;
-  const h = drawCastSprite(spr, sx, e.y, e.facing, castScaleEnemy(e));
+  if (e.invulnFlash || (e.invuln > 0 && Math.floor(performance.now() / 80) % 2)) ctx.globalAlpha = 0.5;
+  // >>> v3 anim states (game-logic lane): Joe's getAnimFrame when present, else the old sheet (+ lie-down tilt)
+  const af = animFrame(enemyCharKey(e), e.animState, animMs(e));
+  let h = 0;
+  if (af) h = drawAnimFrame(af, sx, e.y, e.facing, castScaleEnemy(e));
+  else withLie(e, sx, e.y, () => { h = drawCastSprite(spr, sx, e.y, e.facing, castScaleEnemy(e)); });
+  // <<< v3
   ctx.globalAlpha = 1;
   if (e.hp < e.maxHp && e.alive) {
     const pw = e.isBoss ? 44 : 32, py = Math.round(e.y - h * 0.92) - 6;
@@ -1271,6 +1298,76 @@ function drawMatthew(pose, outfitId, outfit, t, x, feetY, facing) {
   }
 }
 
+// >>> v3 anim draw helpers (game-logic lane; draw-only, used by the marked blocks in drawWorld)
+/** Draw a getAnimFrame() slice: frame-x anchorX on the actor's x, row feetRow on feetY; a 192-row
+ *  frame maps to the same 84*scale body height as the sheets (wide/tall frames just extend out). */
+function drawAnimFrame(f, x, feetY, facing, scale) {
+  const k = (84 * scale) / 192;
+  const ax = f.anchorX != null ? f.anchorX : f.sw / 2;
+  const feet = f.feetRow != null ? f.feetRow : (f.sh >= 192 ? f.sh - 3 : f.sh);
+  const dw = Math.round(f.sw * k), dh = Math.round(f.sh * k);
+  const top = Math.round(feetY - feet * k);
+  ctx.save();
+  ctx.imageSmoothingEnabled = false;
+  ctx.translate(Math.round(x), 0);
+  if (facing < 0) ctx.scale(-1, 1);
+  ctx.drawImage(f.img, f.sx, f.sy, f.sw, f.sh, -Math.round(ax * k), top, dw, dh);
+  ctx.restore();
+  return Math.round(feet * k);
+}
+/** Fallback knockdown look (no art yet): tip the old frame over around the feet. */
+function lieAmount(ent) {
+  const k = ent.kd;
+  if (k) return k.phase === 'fall' ? Math.min(1, 1 - k.t / 0.35) : k.phase === 'ground' ? 1 : Math.max(0, k.t / 0.4);
+  return ent.alive ? 0 : 1;
+}
+function withLie(ent, x, feetY, fn) {
+  const amt = lieAmount(ent);
+  if (!amt) { fn(); return; }
+  const dir = ent.kd ? ent.kd.dir : -ent.facing || 1;
+  ctx.save();
+  ctx.translate(x, feetY);
+  ctx.rotate(dir * (Math.PI / 2) * amt);
+  ctx.translate(-x, -feetY + 6 * amt);
+  fn();
+  ctx.restore();
+}
+/** Small stamina bar under Matthew's feet while it's refilling (orange = empty/locked). */
+function drawStaminaPip(x, feetY) {
+  const w = 40, y = Math.round(feetY + 8);
+  ctx.fillStyle = 'rgba(10,14,24,0.7)';
+  ctx.fillRect(Math.round(x - w / 2) - 1, y - 1, w + 2, 5);
+  ctx.fillStyle = player.staminaLock ? '#e67e22' : '#4fd1ff';
+  ctx.fillRect(Math.round(x - w / 2), y, Math.round(w * player.stamina / 100), 3);
+}
+/**
+ * Collectible as the actual item: Joe's getCollectibleSprite(id, tMs) → {img,sx,sy,sw,sh,anchorX,anchorY}
+ * drawn 1:1 at its anchor (the frames carry their own bob), over a soft pulsing glow + ground shadow.
+ * Falls back to the old yellow dot when the helper or that item's art isn't there yet.
+ */
+function drawCollectibleItem(c, x, y) {
+  const now = performance.now();
+  let f = null;
+  try { f = typeof SpriteLib.getCollectibleSprite === 'function' ? SpriteLib.getCollectibleSprite(c.id, now) : null; } catch (_) { f = null; }
+  if (!f || !f.img || !f.sw || !f.sh) { drawCollectible(ctx, x, y, c.name, now / 200); return; }
+  const ax = f.anchorX != null ? f.anchorX : f.sw / 2, ay = f.anchorY != null ? f.anchorY : f.sh - 1;
+  const dx = Math.round(x - ax), dy = Math.round(y - 4 - ay);
+  const cy = dy + f.sh / 2;
+  ctx.fillStyle = 'rgba(0,0,0,0.2)';
+  ctx.beginPath(); ctx.ellipse(x, y - 2, 13, 4, 0, 0, Math.PI * 2); ctx.fill();
+  const pulse = 0.55 + 0.25 * Math.sin(now / 330 + c.x);
+  const g = ctx.createRadialGradient(x, cy, 2, x, cy, 32);
+  g.addColorStop(0, `rgba(255,224,120,${0.5 * pulse})`); g.addColorStop(1, 'rgba(255,224,120,0)');
+  ctx.fillStyle = g; ctx.beginPath(); ctx.arc(x, cy, 32, 0, Math.PI * 2); ctx.fill();
+  ctx.save();
+  ctx.imageSmoothingEnabled = false;
+  ctx.drawImage(f.img, f.sx || 0, f.sy || 0, f.sw, f.sh, dx, dy, f.sw, f.sh);
+  ctx.restore();
+  ctx.fillStyle = '#fff'; ctx.font = '9px sans-serif'; ctx.textAlign = 'center';
+  ctx.fillText(c.name, x, dy - 4); ctx.textAlign = 'left';
+}
+// <<< v3
+
 function drawWorld(dt) {
   const area = AREAS[gameState.areaId];
   const cam = gameState.cameraX;
@@ -1279,7 +1376,7 @@ function drawWorld(dt) {
   // Collectibles
   for (const c of stateBag.collectibles) {
     if (c.taken || c.area !== gameState.areaId) continue;
-    drawCollectible(ctx, c.x - cam, collectY(), c.name, performance.now() / 200);
+    drawCollectibleItem(c, c.x - cam, collectY()); // v3: Joe's item art with bob + glow, dot fallback
   }
 
   // Sort draw by depth (y)
@@ -1288,7 +1385,7 @@ function drawWorld(dt) {
     drawList.push({ type: 'npc', y: npcFeetY(), n });
   }
   for (const e of gameState.enemies) {
-    if (e.alive || e.stun > 0) drawList.push({ type: 'enemy', y: e.y, e });
+    if (e.alive || e.stun > 0 || e.koT > 0) drawList.push({ type: 'enemy', y: e.y, e });
   }
   drawList.push({ type: 'player', y: player.y });
   drawList.sort((a, b) => a.y - b.y);
@@ -1305,7 +1402,11 @@ function drawWorld(dt) {
       const n = item.n;
       const spr = getNpcSprite(n.id, n.color, performance.now() / 1000);
       const sx = n.x - cam;
-      const nh = drawCastSprite(spr, sx, item.y, 1, castScaleNpc(n.id));
+      // >>> v3 anim states: talk while in dialogue with this NPC, idle_personality otherwise
+      const nState = gameState.mode === 'dialogue' && gameState.dialogueNpc === n ? 'talk' : 'idle_personality';
+      const naf = animFrame(n.id, nState, performance.now());
+      const nh = naf ? drawAnimFrame(naf, sx, item.y, 1, castScaleNpc(n.id)) : drawCastSprite(spr, sx, item.y, 1, castScaleNpc(n.id));
+      // <<< v3
       // nametag (sits just above the scaled frame; ty = tag top)
       ctx.font = 'bold 11px sans-serif';
       const tw = Math.max(ctx.measureText(n.name).width, (ctx.font = '9px sans-serif', ctx.measureText(n.role).width)) + 14;
@@ -1330,8 +1431,30 @@ function drawWorld(dt) {
       let pose = player.pose;
       if (player.invuln > 0 && Math.floor(performance.now() / 80) % 2) ctx.globalAlpha = 0.4;
       const t = USE_HERO_RENDER ? heroPoseTime(player) : player.animT;
-      drawMatthew(pose, gameState.outfitId, outfit, t, player.x - cam, player.y, player.facing);
+      // >>> v3 anim states (game-logic lane): getAnimFrame('matthew', state) when the art exists, else the
+      // old sheet with fallbacks: jump-kick lift, Star Drive afterimages, faster sprint cycle, lie-down tilt
+      const px = player.x - cam;
+      const maf = USE_HERO_RENDER ? null : animFrame('matthew', player.animState, animMs(player), gameState.outfitId);
+      if (player.attackType === 'special') {
+        const a0 = ctx.globalAlpha;
+        for (let i = 3; i >= 1; i--) {
+          ctx.globalAlpha = 0.16 * (4 - i);
+          if (maf) drawAnimFrame(maf, px - player.facing * 20 * i, player.y, player.facing, PLAYER_SCALE);
+          else drawMatthew(pose, gameState.outfitId, outfit, t, px - player.facing * 20 * i, player.y, player.facing);
+        }
+        ctx.globalAlpha = a0;
+        ctx.fillStyle = 'rgba(255,210,74,0.35)';
+        ctx.fillRect(Math.min(px, px - player.facing * 80), player.y - 62, 80, 6);
+        ctx.fillRect(Math.min(px, px - player.facing * 60), player.y - 40, 60, 4);
+      }
+      if (maf) drawAnimFrame(maf, px, player.y, player.facing, PLAYER_SCALE);
+      else {
+        const tt = player.sprinting ? t * 1.6 : t;
+        withLie(player, px, player.y, () => drawMatthew(pose, gameState.outfitId, outfit, tt, px, player.y - (player.lift || 0), player.facing));
+      }
       ctx.globalAlpha = 1;
+      if (player.stamina < 100 && player.alive) drawStaminaPip(px, player.y);
+      // <<< v3
     }
   }
 
@@ -1376,6 +1499,59 @@ function drawTitleBg(dt) {
   ctx.restore();
   title.drawGrade(ctx, W, H);
 }
+
+// >>> v3 PWA auto-update: check on launch / focus / reconnect; when a new service worker takes over,
+// restart right away on the title screen, otherwise toast and restart next time the title shows.
+let updateReady = false;
+function applyUpdate() {
+  updateReady = false;
+  toast('New version — restarting…', true);
+  setTimeout(() => location.reload(), 900);
+}
+/** Desktop (app://) and Android (Capacitor) shells: they serve the live GitHub Pages build and answer
+ *  /__live-version; a newer build is picked up on reload, so restart on the title screen. */
+function initShellUpdate() {
+  let lastCheck = 0, flagged = false;
+  const check = () => {
+    if (flagged || Date.now() - lastCheck < 30000) return;
+    lastCheck = Date.now();
+    fetch('__live-version', { cache: 'no-store' }).then((r) => (r.ok ? r.json() : null)).then((v) => {
+      if (!v || !v.latest || v.latest === v.current || flagged) return;
+      flagged = true;
+      if (gameState.mode === 'title') applyUpdate();
+      else { updateReady = true; toast('New version downloaded — it loads next time you’re on the title screen'); }
+    }).catch(() => {});
+  };
+  window.addEventListener('focus', check);
+  window.addEventListener('online', check);
+  document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') check(); });
+  setInterval(check, 20 * 60 * 1000);
+}
+function initAutoUpdate() {
+  if (location.protocol === 'app:' || (window.Capacitor && location.hostname === 'localhost')) { initShellUpdate(); return; }
+  if (!('serviceWorker' in navigator) || !/^https?:$/.test(location.protocol) || window.Capacitor) return;
+  const hadController = !!navigator.serviceWorker.controller; // first install also fires controllerchange
+  let seen = false;
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    if (!hadController || seen) return;
+    seen = true;
+    if (gameState.mode === 'title') applyUpdate();
+    else { updateReady = true; toast('New version downloaded — it loads next time you’re on the title screen'); }
+  });
+  let lastCheck = 0;
+  const check = () => {
+    if (Date.now() - lastCheck < 10000) return;
+    lastCheck = Date.now();
+    navigator.serviceWorker.getRegistration().then((r) => r && r.update()).catch(() => {});
+  };
+  window.addEventListener('focus', check);
+  window.addEventListener('online', check);
+  document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') check(); });
+  setTimeout(check, 2500);                  // launch (index.html registers + updates too)
+  setInterval(check, 20 * 60 * 1000);       // long sessions
+}
+initAutoUpdate();
+// <<< v3
 
 // Boot
 async function boot() {
@@ -1466,6 +1642,10 @@ if (DEBUG) {
     collectAt(id) { const c = stateBag.collectibles.find((k) => k.id === id); if (!c) throw new Error('no ' + id); this.warp(c.home, c.x); },
     killAll() { for (const e of gameState.enemies) { e.hp = 0; e.alive = false; e.stun = 0; } },
     god(on = true) { gameState.god = !!on; },
+    /** v3: knock an enemy (index) or Matthew ('player') down; anim API status. */
+    knockDown(which = 0) { const t = which === 'player' ? player : gameState.enemies[which]; if (t) knockDown(t, t === player ? -player.facing : player.facing); return !!t; },
+    animApiReady,
+    setSpecial(v) { gameState.special = v; },
     persist
   };
 }

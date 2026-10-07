@@ -569,3 +569,17 @@ kbd {
 .mission-list .mi { display: flex; justify-content: space-between; gap: 10px; }
 .mission-list .st { font-size: 11px; text-transform: uppercase; opacity: .9; }
 .mission-list .st.done { color: #2ecc71; } .mission-list .st.active { color: #ffd24a; } .mission-list .st.available { color: #8fd3ff; } .mission-list .st.locked { color: #888; }
+
+/* >>> v3 (game-logic lane): touch SPRINT (hold) + ★ Star Drive buttons. Right-hand cluster only, so they
+   never sit on the joystick (left). */
+#mobile-buttons .mob-sprint { font-size: 13px; letter-spacing: .04em; border-color: #4fd1ff; }
+#mobile-buttons #btn-special { color: #ffd24a; font-size: 22px; }
+@media (orientation: portrait) and (max-width: 700px) {
+  #mobile-buttons #btn-sprint { left: -64px; bottom: 0; width: 56px; height: 56px; }
+  #mobile-buttons #btn-special { left: -50px; bottom: 62px; width: 48px; height: 48px; }
+}
+@media (orientation: landscape) and (max-height: 500px) {
+  #mobile-buttons { gap: 5px; }
+  #mobile-buttons #btn-sprint, #mobile-buttons #btn-special { width: 48px; height: 48px; }
+}
+/* <<< v3 */
