@@ -12,6 +12,7 @@ import {
   createThug, setDifficulty, getDifficulty, DIFFICULTIES, DIFFICULTY_ORDER, SPECIAL_COST, knockDown
 } from './combat.js';
 import { animFrame, animMs, setAnim, enemyCharKey, animApiReady } from './anim.js';
+import * as SpriteLib from './sprites.js'; // optional newer helpers (getCollectibleSprite) without a hard import
 import { getMatthewSprite, getNpcSprite, getEnemySprite, drawSprite, drawCollectible, clearSpriteCache, loadSprites, getHeartImages } from './sprites.js';
 import { createTitle } from './title.js';
 import { getHeroFrame, drawHero, clearHeroCache, HERO_DRAW_H, HERO_SHADOW_W } from './hero.js';
@@ -1033,7 +1034,7 @@ function step(dt) {
   }
 
   if (inp.outfitKey) {
-    const id = OUTFIT_ORDER[inp.outfitKey === '0' ? 9 : Number(inp.outfitKey) - 1];
+    const id = OUTFIT_ORDER[inp.outfitKey === '-' ? 10 : inp.outfitKey === '0' ? 9 : Number(inp.outfitKey) - 1];
     if (id) setOutfit(id);
   }
   if (inp.outfitCycle && gameState.mode === 'play') cycleOutfit(inp.outfitCycle);
@@ -1339,6 +1340,32 @@ function drawStaminaPip(x, feetY) {
   ctx.fillStyle = player.staminaLock ? '#e67e22' : '#4fd1ff';
   ctx.fillRect(Math.round(x - w / 2), y, Math.round(w * player.stamina / 100), 3);
 }
+/**
+ * Collectible as the actual item: Joe's getCollectibleSprite(id, tMs) → {img,sx,sy,sw,sh,anchorX,anchorY}
+ * drawn 1:1 at its anchor (the frames carry their own bob), over a soft pulsing glow + ground shadow.
+ * Falls back to the old yellow dot when the helper or that item's art isn't there yet.
+ */
+function drawCollectibleItem(c, x, y) {
+  const now = performance.now();
+  let f = null;
+  try { f = typeof SpriteLib.getCollectibleSprite === 'function' ? SpriteLib.getCollectibleSprite(c.id, now) : null; } catch (_) { f = null; }
+  if (!f || !f.img || !f.sw || !f.sh) { drawCollectible(ctx, x, y, c.name, now / 200); return; }
+  const ax = f.anchorX != null ? f.anchorX : f.sw / 2, ay = f.anchorY != null ? f.anchorY : f.sh - 1;
+  const dx = Math.round(x - ax), dy = Math.round(y - 4 - ay);
+  const cy = dy + f.sh / 2;
+  ctx.fillStyle = 'rgba(0,0,0,0.2)';
+  ctx.beginPath(); ctx.ellipse(x, y - 2, 13, 4, 0, 0, Math.PI * 2); ctx.fill();
+  const pulse = 0.55 + 0.25 * Math.sin(now / 330 + c.x);
+  const g = ctx.createRadialGradient(x, cy, 2, x, cy, 32);
+  g.addColorStop(0, `rgba(255,224,120,${0.5 * pulse})`); g.addColorStop(1, 'rgba(255,224,120,0)');
+  ctx.fillStyle = g; ctx.beginPath(); ctx.arc(x, cy, 32, 0, Math.PI * 2); ctx.fill();
+  ctx.save();
+  ctx.imageSmoothingEnabled = false;
+  ctx.drawImage(f.img, f.sx || 0, f.sy || 0, f.sw, f.sh, dx, dy, f.sw, f.sh);
+  ctx.restore();
+  ctx.fillStyle = '#fff'; ctx.font = '9px sans-serif'; ctx.textAlign = 'center';
+  ctx.fillText(c.name, x, dy - 4); ctx.textAlign = 'left';
+}
 // <<< v3
 
 function drawWorld(dt) {
@@ -1349,7 +1376,7 @@ function drawWorld(dt) {
   // Collectibles
   for (const c of stateBag.collectibles) {
     if (c.taken || c.area !== gameState.areaId) continue;
-    drawCollectible(ctx, c.x - cam, collectY(), c.name, performance.now() / 200);
+    drawCollectibleItem(c, c.x - cam, collectY()); // v3: Joe's item art with bob + glow, dot fallback
   }
 
   // Sort draw by depth (y)

@@ -12,7 +12,7 @@ const promptState = { device: 'keyboard', padType: 'xbox', padId: '' };
 const PROMPTS = {
   keyboard: {
     punch: 'Z', kick: 'X', heavy: 'C', interact: 'E', pause: 'Esc',
-    confirm: 'Enter', back: 'Esc', move: 'WASD / Arrows', outfit: '1–9, 0',
+    confirm: 'Enter', back: 'Esc', move: 'WASD / Arrows', outfit: '1–9, 0, −',
     sprint: 'Shift', special: 'V', jumpkick: 'Shift + X'
   },
   touch: {
@@ -131,7 +131,8 @@ export function createInput(canvas, opts = {}) {
   window.addEventListener('keydown', (e) => {
     if (e.ctrlKey || e.metaKey || e.altKey) return;
     const a = keyMap[e.key] || (e.code === 'ShiftLeft' || e.code === 'ShiftRight' ? 'sprint' : undefined);
-    if (!a && !(e.key >= '0' && e.key <= '9')) return;
+    const beaconKey = e.key === '-' || (e.shiftKey && e.code === 'Digit1'); // 11th outfit: - or Shift+1
+    if (!a && !(e.key >= '0' && e.key <= '9') && !beaconKey) return;
     setDevice(state.mobile ? 'touch' : 'keyboard');
     if (a) {
       keys[a] = true;
@@ -139,6 +140,7 @@ export function createInput(canvas, opts = {}) {
     }
     if (e.repeat) return; // edge-triggered actions never auto-repeat
     if (e.key >= '0' && e.key <= '9') state.outfitKey = e.key;
+    if (beaconKey) state.outfitKey = '-';
     if (a === 'punch') state.punchPressed = true;
     if (a === 'kick') state.kickPressed = true;
     if (a === 'heavy') state.heavyPressed = true;

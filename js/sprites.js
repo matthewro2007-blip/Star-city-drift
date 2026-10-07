@@ -28,7 +28,8 @@ const OUTFIT_SHEETS = {
   mechanic: 'assets/sprites/matthew_mechanic.png',
   diner: 'assets/sprites/matthew_diner.png',
   gold: 'assets/sprites/matthew_gold.png',
-  webslinger: 'assets/sprites/matthew_webslinger.png'
+  webslinger: 'assets/sprites/matthew_webslinger.png',
+  beacon: 'assets/sprites/matthew_beacon.png'
 };
 const outfitSheets = {};      // outfitId -> Image (loaded)
 const outfitPending = {};     // outfitId -> true while lazily loading / after failure
@@ -89,7 +90,8 @@ export function loadSprites() {
         }),
         ...Object.entries(NPC_SRC).map(async ([k, src]) => { const img = await opt(src); if (img) images[k] = img; }),
         ...Object.entries(ENEMY_SHEET_SRC).map(async ([k, src]) => { const img = await opt(src); if (img) enemySheets[k] = img; }),
-        loadAnimManifests()
+        loadAnimManifests(),
+        loadCollectibles()
       ]);
       loaded = true;
     } catch (e) {
@@ -431,7 +433,49 @@ export function drawSprite(ctx, spriteCanvas, x, y, facing) {
   ctx.restore();
 }
 
+// ---------------------------------------------------------------- collectibles (tools/gen_collectibles.py)
+// collectibles.png: one row per item, 6 cols of 48x48 (bob + glint baked in); collectibles.json: id -> {row, frames, fw, fh, fps, name, names}
+const COLLECT = { img: null, items: {}, index: {} };
+const normName = (v) => String(v || '').toLowerCase().replace(/\([^)]*\)/g, '').replace(/[^a-z0-9]/g, '');
+async function loadCollectibles() {
+  const m = await fetchManifest('assets/sprites/collectibles.json', false);
+  if (!m) return;
+  const meta = m._meta || {};
+  for (const [id, it] of Object.entries(m)) {
+    if (id.startsWith('_')) continue;
+    COLLECT.items[id] = it;
+    for (const n of [id, it.name, ...(it.names || [])]) { const k = normName(n); if (k && !COLLECT.index[k]) COLLECT.index[k] = id; }
+  }
+  try { COLLECT.img = await loadImage((meta.file || 'assets/sprites/collectibles.png') + '?v=' + m.__hash); }
+  catch (_) { console.warn('Sprite missing: assets/sprites/collectibles.png'); }
+}
+function collectibleId(idOrName) {
+  if (idOrName && typeof idOrName === 'object') idOrName = idOrName.id || idOrName.name;
+  if (COLLECT.items[idOrName]) return idOrName;
+  const k = normName(idOrName);
+  if (COLLECT.index[k]) return COLLECT.index[k];
+  for (const [n, id] of Object.entries(COLLECT.index)) if (k && (n.startsWith(k) || k.startsWith(n)) && Math.min(n.length, k.length) >= 4) return id;
+  return null;
+}
+/** Item frame {img, sx, sy, sw, sh, anchorX:24, anchorY:47} or null. Accepts id or name (any case, parentheticals ignored). */
+export function getCollectibleSprite(idOrName, tMs = 0) {
+  const id = collectibleId(idOrName);
+  const it = id && COLLECT.items[id];
+  if (!it || !COLLECT.img) return null;
+  const fw = it.fw || 48, fh = it.fh || 48, n = it.frames || 6;
+  const f = Math.floor(Math.max(0, tMs || 0) * (it.fps || 8) / 1000) % n;
+  return { img: COLLECT.img, sx: f * fw, sy: it.row * fh, sw: fw, sh: fh, anchorX: 24, anchorY: 47, id, name: it.name };
+}
+
 export function drawCollectible(ctx, x, y, name, pulse) {
+  const spr = getCollectibleSprite(name, (pulse || 0) / 5 * 1000);   // pulse is seconds*5 at the call site
+  if (spr) {
+    const dx = Math.round(x - spr.anchorX), dy = Math.round(y - 4 - spr.anchorY);
+    ctx.drawImage(spr.img, spr.sx, spr.sy, spr.sw, spr.sh, dx, dy, spr.sw, spr.sh);
+    ctx.fillStyle = '#fff'; ctx.font = '9px sans-serif'; ctx.textAlign = 'center';
+    ctx.fillText(name, x, dy - 4); ctx.textAlign = 'left';
+    return;
+  }
   const s = 8 + Math.sin(pulse) * 2;
   ctx.fillStyle = 'rgba(255,210,74,0.3)';
   ctx.beginPath(); ctx.arc(x, y - 20, s + 6, 0, Math.PI * 2); ctx.fill();
