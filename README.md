@@ -12,7 +12,7 @@ Play it at https://matthewro2007-blip.github.io/Star-city-drift/
 
 ## Android APK
 
-Download [Star-City-Drift.apk](downloads/Star-City-Drift.apk) and sideload it. Allow installation from unknown sources when Android asks.
+Download [Star-City-Drift.apk](downloads/Star-City-Drift.apk) (v1.1.0) and sideload it. Allow installation from unknown sources when Android asks.
 
 ## Controls
 
@@ -20,4 +20,6 @@ Download [Star-City-Drift.apk](downloads/Star-City-Drift.apk) and sideload it. A
 - **Controllers:** PlayStation 5 and Xbox controllers are supported.
 - **Phones:** on-screen touch controls.
 
-The Windows desktop build is coming separately.
+## Windows
+
+The v1.1.0 desktop build for 64-bit Windows is in [downloads/windows/](downloads/windows/) as a five-part 7-Zip archive. Download every part into the same folder, then follow [README.txt](downloads/windows/README.txt).
