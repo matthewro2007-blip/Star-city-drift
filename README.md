@@ -22,4 +22,4 @@ Download [Star-City-Drift.apk](downloads/Star-City-Drift.apk) (v1.1.0) and sidel
 
 ## Windows
 
-The v1.1.0 desktop build for 64-bit Windows is in [downloads/windows/](downloads/windows/) as a five-part 7-Zip archive. Download every part into the same folder, then follow [README.txt](downloads/windows/README.txt).
+The v1.1.0 desktop build for 64-bit Windows is in [downloads/windows/](downloads/windows/) as a four-part 7-Zip archive. Download every part into the same folder, then follow [README.txt](downloads/windows/README.txt).
