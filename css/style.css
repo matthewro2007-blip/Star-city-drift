@@ -1,0 +1,421 @@
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body {
+  width: 100%; height: 100%; overflow: hidden;
+  background: #0a0e18;
+  font-family: "Segoe UI", system-ui, sans-serif;
+  color: #e8eef8;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+#game-wrap {
+  position: relative;
+  width: 100%; height: 100%;
+  display: flex; align-items: center; justify-content: center;
+  background: radial-gradient(ellipse at 50% 20%, #3a2010 0%, #0a0e18 65%);
+}
+#game {
+  display: block;
+  max-width: 100%; max-height: 100%;
+  width: min(100vw, calc(100vh * 16 / 9));
+  height: auto;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  background: #1a2030;
+  box-shadow: 0 0 60px rgba(244, 140, 60, 0.15);
+  border-radius: 4px;
+}
+#ui-layer {
+  position: absolute; inset: 0;
+  pointer-events: none;
+  max-width: min(100vw, calc(100vh * 16 / 9));
+  max-height: 100%;
+  margin: auto;
+  width: 100%; height: 100%;
+}
+.hidden { display: none !important; }
+
+#hud {
+  position: absolute; inset: 0;
+  pointer-events: none;
+  --gold: #ffd24a;
+  --gold-deep: #b8862a;
+  --plate: rgba(16,11,6,0.9);
+  --plate-2: rgba(10,12,20,0.88);
+  --chrome-border: 2px solid var(--gold);
+  --chrome-shadow: 0 0 0 1px rgba(60,36,8,0.9), inset 0 0 0 1px rgba(255,236,170,0.18), 0 4px 14px rgba(0,0,0,0.55);
+}
+#hud .star-icon { color: var(--gold); text-shadow: 0 0 6px rgba(255,210,74,0.8), 0 1px 0 #6a4310; }
+
+/* Portrait + hearts — concept top-left */
+#hud-player {
+  position: absolute; top: 10px; left: 10px;
+  display: grid;
+  grid-template-columns: auto auto;
+  grid-template-rows: auto auto auto;
+  gap: 5px 10px;
+  align-items: center;
+}
+#portrait-ring {
+  grid-row: 1 / 3;
+  width: 70px; height: 70px;
+  border-radius: 50%;
+  padding: 3px;
+  background: conic-gradient(from 210deg, #fff1b8, #ffd24a, #b8862a, #ffd24a, #fff1b8, #b8862a, #ffd24a);
+  box-shadow: 0 0 0 2px rgba(40,24,6,0.9), 0 0 16px rgba(255,190,70,0.65), 0 3px 10px rgba(0,0,0,0.6);
+}
+#portrait {
+  display: block;
+  width: 100%; height: 100%;
+  border-radius: 50%;
+  border: 2px solid #2a1a08;
+  background: radial-gradient(circle at 50% 35%, #f0b36a, #8a4a1c 70%);
+  /* front-facing 112x112 bust: whole square shown, centred (head sits mid-ring, shoulders at the rim) */
+  object-fit: contain;
+  object-position: 50% 50%;
+  image-rendering: auto;
+}
+#hearts {
+  display: flex; gap: 3px; grid-column: 2;
+  filter: drop-shadow(0 1px 1px rgba(0,0,0,0.9)) drop-shadow(0 0 3px rgba(0,0,0,0.5));
+}
+#hearts img { width: 22px; height: 22px; image-rendering: pixelated; }
+#hearts img.empty { opacity: 0.85; }
+.special-bar {
+  grid-column: 2;
+  width: 150px; height: 11px;
+  background: linear-gradient(180deg, #1a1208, #2e2210);
+  border: 2px solid var(--gold);
+  border-radius: 3px; overflow: hidden;
+  box-shadow: 0 0 0 1px rgba(40,24,6,0.9), 0 2px 6px rgba(0,0,0,0.55);
+}
+#special-fill {
+  height: 100%; width: 40%;
+  background: linear-gradient(180deg, #fff3a0 0%, #ffd24a 45%, #f0a020 100%);
+  box-shadow: 0 0 8px rgba(255,210,74,0.7);
+  transition: width 0.15s linear;
+}
+#combo-label {
+  grid-column: 1 / -1;
+  font-size: 12px; color: var(--gold); font-weight: 800; letter-spacing: 0.06em;
+  text-shadow: 0 1px 2px #000, 0 0 6px rgba(255,140,40,0.6); min-height: 14px;
+}
+
+/* Location banner — concept top-center ornate plaque */
+#location-banner {
+  position: absolute; top: 10px; left: 50%; transform: translateX(-50%);
+  display: flex; flex-direction: column; align-items: center; gap: 0;
+  text-align: center;
+}
+.plaque-main {
+  display: flex; align-items: center; gap: 8px;
+  background: linear-gradient(180deg, rgba(36,24,10,0.95), var(--plate));
+  border: var(--chrome-border);
+  border-radius: 6px;
+  padding: 4px 18px 4px 12px;
+  box-shadow: var(--chrome-shadow), 0 0 18px rgba(255,170,60,0.25);
+  position: relative;
+}
+.plaque-main::before, .plaque-main::after {
+  content: ""; position: absolute; top: 50%; width: 8px; height: 8px;
+  background: var(--gold); transform: translateY(-50%) rotate(45deg);
+  box-shadow: 0 0 0 1px #3a2408;
+}
+.plaque-main::before { left: -6px; }
+.plaque-main::after { right: -6px; }
+.plaque-main .star-icon { font-size: 18px; line-height: 1; }
+#location-label {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 19px; font-weight: 800; letter-spacing: 0.08em;
+  color: #fff4dc; text-transform: uppercase; white-space: nowrap;
+  text-shadow: 0 2px 0 #3a2408, 0 0 8px rgba(255,200,100,0.35);
+}
+#location-sub {
+  margin-top: -1px;
+  background: var(--plate-2);
+  border: 1px solid rgba(255,210,74,0.75);
+  border-top: none;
+  border-radius: 0 0 5px 5px;
+  padding: 2px 16px 3px;
+  font-size: 10px; font-weight: 700; color: #f1ddb0;
+  letter-spacing: 0.16em; text-transform: uppercase; white-space: nowrap;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.45);
+}
+#combat-banner {
+  margin-top: 6px;
+  background: linear-gradient(180deg, rgba(190,40,30,0.95), rgba(120,20,16,0.95));
+  border: 2px solid var(--gold);
+  border-radius: 4px;
+  padding: 3px 14px;
+  font-size: 12px; font-weight: 900; letter-spacing: 0.1em; text-transform: uppercase;
+  color: #fff; text-shadow: 0 1px 0 #400;
+  box-shadow: 0 0 14px rgba(255,60,40,0.5);
+  animation: fight-pulse 0.9s ease-in-out infinite;
+  white-space: nowrap;
+}
+@keyframes fight-pulse { 50% { box-shadow: 0 0 22px rgba(255,90,40,0.85); } }
+
+/* Right: score + minimap */
+#hud-right {
+  position: absolute; top: 10px; right: 10px;
+  display: flex; flex-direction: column; align-items: flex-end;
+}
+#score-row {
+  font-weight: 800; color: #fff4dc; font-size: 20px; letter-spacing: 0.04em;
+  margin-bottom: 6px;
+  text-shadow: 0 2px 0 #2a1806, 0 0 6px rgba(0,0,0,0.8);
+  font-variant-numeric: tabular-nums;
+}
+#score-row .star-icon { font-size: 22px; }
+#minimap {
+  display: block;
+  width: 140px; height: 72px;
+  background: rgba(10,14,24,0.9);
+  border: var(--chrome-border);
+  border-radius: 5px;
+  box-shadow: var(--chrome-shadow);
+  image-rendering: auto;
+}
+
+/* Objective — concept bottom-left. Compact + tucked into the corners (pass 4) so fighters at
+   the bottom of the walk band (canvas y ~470-528) stay visible: 3 short rows, translucent plate,
+   collectibles count shares the eyebrow row. */
+#objective-box, #time-box {
+  position: absolute; bottom: 6px;
+  background: linear-gradient(180deg, rgba(30,20,10,0.72), rgba(14,10,6,0.62));
+  border: var(--chrome-border);
+  border-radius: 5px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.45);
+}
+#objective-box {
+  left: 6px;
+  padding: 3px 9px 4px;
+  width: max-content;
+  min-width: 232px;
+  max-width: 270px;
+}
+#objective-box .eyebrow, #time-box .eyebrow {
+  font-size: 8px; font-weight: 800; letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--gold); margin-bottom: 0; line-height: 1.25;
+}
+#mission-title {
+  font-weight: 700; font-size: 12px; color: #fff4dc; text-shadow: 0 1px 1px #000; line-height: 1.2;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+#mission-desc {
+  font-size: 10px; color: #d8cdb6; margin-top: 1px; line-height: 1.2;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+#collect-row {
+  position: absolute; top: 3px; right: 9px; margin: 0;
+  font-size: 8px; line-height: 1.25; color: #f0c870; opacity: 0.9; white-space: nowrap;
+}
+
+#time-box {
+  right: 6px;
+  padding: 2px 10px 3px;
+  text-align: center;
+}
+#time-val {
+  font-weight: 800; font-size: 14px; color: #fff4dc; letter-spacing: 0.04em; line-height: 1.15;
+  font-variant-numeric: tabular-nums; text-shadow: 0 1px 1px #000;
+}
+
+#interact-prompt {
+  position: absolute; bottom: 110px; left: 50%; transform: translateX(-50%);
+  background: rgba(10,14,24,0.9); padding: 8px 16px; border-radius: 8px;
+  border: 2px solid rgba(255,210,74,0.5); font-size: 14px;
+}
+kbd {
+  display: inline-block; background: #2a3a55; padding: 2px 8px;
+  border-radius: 4px; border: 1px solid #ffd24a; margin-right: 6px;
+}
+#toast {
+  position: absolute; top: 120px; left: 50%; transform: translateX(-50%);
+  background: rgba(20,16,10,0.95); color: #ffd24a;
+  padding: 10px 20px; border-radius: 8px; font-weight: 700;
+  border: 2px solid #ffd24a; z-index: 20;
+}
+
+#dialogue {
+  position: absolute; bottom: 100px; left: 50%; transform: translateX(-50%);
+  width: min(520px, 92%); pointer-events: auto; z-index: 30;
+}
+.dialogue-card {
+  background: linear-gradient(180deg, rgba(20,16,10,0.96), rgba(10,14,24,0.96));
+  border: 2px solid #ffd24a;
+  border-radius: 12px; padding: 16px 20px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+}
+#dialogue-name {
+  color: #ffd24a; font-weight: 800; font-size: 14px; margin-bottom: 8px;
+  letter-spacing: 0.04em;
+}
+#dialogue-text { font-size: 15px; line-height: 1.45; margin-bottom: 12px; }
+#dialogue-next {
+  background: linear-gradient(135deg, #c45c26, #8b3a10); color: #fff;
+  border: 1px solid #ffd24a; padding: 8px 18px;
+  border-radius: 6px; cursor: pointer; font-weight: 700; pointer-events: auto;
+}
+
+#desktop-hint {
+  position: absolute; bottom: 8px; left: 50%; transform: translateX(-50%);
+  font-size: 11px; color: rgba(200,210,230,0.5); white-space: nowrap;
+}
+
+#mobile-controls { position: absolute; inset: 0; pointer-events: none; }
+#joystick-zone {
+  position: absolute; left: 20px; bottom: 24px;
+  width: 130px; height: 130px; pointer-events: auto;
+}
+#joystick-base {
+  width: 110px; height: 110px; border-radius: 50%;
+  background: rgba(30,40,60,0.55); border: 2px solid rgba(255,210,74,0.4);
+  position: relative;
+}
+#joystick-knob {
+  width: 48px; height: 48px; border-radius: 50%;
+  background: rgba(255,210,74,0.55); border: 2px solid rgba(255,255,255,0.4);
+  position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+}
+#mobile-buttons {
+  position: absolute; right: 16px; bottom: 28px;
+  display: flex; gap: 10px; pointer-events: auto;
+}
+.mob-btn {
+  width: 64px; height: 64px; border-radius: 50%;
+  background: rgba(40,30,20,0.8); border: 2px solid #ffd24a;
+  color: #fff; font-size: 18px; font-weight: 700; pointer-events: auto;
+}
+.mob-btn { padding: 0; line-height: 1; touch-action: none; -webkit-tap-highlight-color: transparent; }
+.mob-btn:active { background: rgba(255,210,74,0.45); }
+
+/* Phone touch layout (mobile-controls lane). Tap targets stay >= 44px.
+   Portrait: joystick bottom-left; Z/X/E triangle + small II in the bottom-right corner, kept under the
+   OBJECTIVE/TIME boxes (bottom 162px) even with a 34px home-indicator inset. */
+@media (orientation: portrait) and (max-width: 700px) {
+  #joystick-zone {
+    left: max(14px, env(safe-area-inset-left)); bottom: max(16px, env(safe-area-inset-bottom));
+    width: 120px; height: 120px;
+  }
+  #joystick-base { width: 108px; height: 108px; }
+  #mobile-buttons {
+    display: block; gap: 0;
+    right: max(12px, env(safe-area-inset-right)); bottom: max(12px, env(safe-area-inset-bottom));
+    width: 160px; height: 112px;
+  }
+  #mobile-buttons .mob-btn { position: absolute; width: 56px; height: 56px; background: rgba(40,30,20,0.62); }
+  #btn-punch { left: 0; bottom: 0; }
+  #btn-kick { left: 76px; bottom: 0; }
+  #mobile-buttons #btn-interact { left: 40px; bottom: 58px; width: 52px; height: 52px; }
+  #mobile-buttons #btn-pause { right: 0; top: 0; width: 44px; height: 44px; font-size: 14px; }
+  /* "E Talk" prompt: just under the letterboxed canvas (16:9 of the width, centred), not on the E button */
+  #interact-prompt { bottom: auto; top: calc(50% + 28.125vw + 8px); white-space: nowrap; max-width: 94%; }
+}
+/* Landscape phones: the controls leave #ui-layer (fixed to the viewport) and sit in the side gutters
+   beside the 16:9 canvas: joystick far left, Z X E stacked (Z lowest) + small II on the far right. */
+@media (orientation: landscape) and (max-height: 500px) {
+  #mobile-controls { position: fixed; inset: 0; }
+  #joystick-zone {
+    left: max(6px, env(safe-area-inset-left)); bottom: max(8px, env(safe-area-inset-bottom));
+    width: 104px; height: 104px;
+  }
+  #joystick-base { width: 96px; height: 96px; background: rgba(30,40,60,0.4); }
+  #joystick-knob { width: 42px; height: 42px; }
+  #mobile-buttons {
+    flex-direction: column-reverse; align-items: center; gap: 6px;
+    right: max(8px, env(safe-area-inset-right)); bottom: max(8px, env(safe-area-inset-bottom));
+  }
+  #mobile-buttons .mob-btn { width: 52px; height: 52px; background: rgba(40,30,20,0.55); }
+  #mobile-buttons #btn-pause { width: 44px; height: 44px; font-size: 14px; }
+}
+
+.overlay {
+  position: fixed; inset: 0; z-index: 100;
+  background: rgba(6,10,18,0.72);
+  display: flex; align-items: center; justify-content: center;
+  padding: 20px;
+}
+.overlay-card {
+  max-width: 480px; width: 100%;
+  background: linear-gradient(160deg, #2a1a10 0%, #0e1528 100%);
+  border: 2px solid #ffd24a;
+  border-radius: 16px; padding: 28px 32px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 40px rgba(255,160,40,0.12);
+  text-align: center;
+}
+.title-card .title-star { font-size: 36px; color: #ffd24a; text-shadow: 0 0 20px #ffd24a; }
+.overlay-card h1 {
+  font-size: 2.1rem; margin: 4px 0 12px;
+  background: linear-gradient(90deg, #ffd24a, #f4a261, #8ec5ff);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.tagline { color: #c8b080; line-height: 1.5; margin-bottom: 16px; font-size: 14px; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; margin-bottom: 20px; }
+.chip {
+  background: rgba(80,40,10,0.5); border: 1px solid rgba(255,210,74,0.35);
+  padding: 4px 10px; border-radius: 999px; font-size: 11px; color: #ffe8b0;
+}
+.title-actions { display: flex; flex-direction: column; gap: 8px; align-items: center; }
+.btn {
+  background: linear-gradient(135deg, #c45c26, #8b3a10);
+  color: #fff; border: 1px solid #ffd24a;
+  padding: 12px 28px; border-radius: 8px; font-size: 16px; font-weight: 700;
+  cursor: pointer; min-width: 200px; pointer-events: auto;
+}
+.btn:hover { filter: brightness(1.1); }
+.btn-secondary {
+  background: transparent; border-color: rgba(255,210,74,0.35);
+  font-size: 13px; padding: 8px 20px; min-width: 160px;
+}
+.ending #sequel-hooks {
+  text-align: left; font-size: 13px; color: #b8c4d8;
+  background: rgba(0,0,0,0.25); padding: 12px; border-radius: 8px;
+  margin-bottom: 16px; line-height: 1.55;
+}
+.eyebrow {
+  font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: #ffd24a;
+}
+
+@media (max-width: 700px), (max-height: 420px) {
+  #hud-player { top: 6px; left: 6px; gap: 3px 6px; }
+  #portrait-ring { width: 48px; height: 48px; padding: 2px; }
+  #hearts img { width: 15px; height: 15px; }
+  .special-bar { width: 100px; height: 8px; }
+  #location-banner { top: 6px; }
+  .plaque-main { padding: 2px 10px 2px 8px; gap: 5px; }
+  .plaque-main .star-icon { font-size: 13px; }
+  #location-label { font-size: 13px; }
+  #location-sub { font-size: 8px; padding: 1px 10px 2px; }
+  #combat-banner { font-size: 10px; padding: 2px 10px; margin-top: 4px; }
+  #hud-right { top: 6px; right: 6px; }
+  #score-row { font-size: 14px; margin-bottom: 3px; }
+  #score-row .star-icon { font-size: 15px; }
+  #minimap { width: 105px; height: 54px; }
+  /* phones: sit above the joystick zone (bottom 24 + 130px) and the Z X E II row (bottom 28 + 64px) */
+  #objective-box { min-width: 0; max-width: 200px; bottom: 162px; padding: 3px 8px; }
+  #time-box { bottom: 162px; padding: 2px 8px; }
+  #collect-row { position: static; margin-top: 1px; }
+  #mission-title { font-size: 11px; }
+  #mission-desc { font-size: 9px; }
+  #time-val { font-size: 12px; }
+  #toast { top: 84px; font-size: 13px; padding: 6px 14px; }
+  #desktop-hint { display: none !important; }
+}
+@media (max-width: 520px) {
+  /* Narrow portrait phones: stack plaque under player chrome to avoid collisions */
+  #location-banner { top: 82px; }
+  #toast { top: 150px; }
+  #minimap { width: 84px; height: 44px; }
+}
+@media (max-height: 420px) and (orientation: landscape) {
+  /* Phone landscape: keep the bottom corners free for joystick + buttons */
+  #objective-box { top: 64px; bottom: auto; left: 6px; max-width: 190px; }
+  #collect-row { display: none; }
+  #time-box { top: 88px; bottom: auto; right: 6px; }
+}
+
+/* Menu focus ring for gamepad / keyboard navigation (gameplay lane, additive) */
+.btn.pad-focus, #dialogue-next.pad-focus { outline: 3px solid #fff4dc; outline-offset: 3px; filter: brightness(1.15); }
+#pause-screen .btn { margin: 4px; }
