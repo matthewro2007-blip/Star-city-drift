@@ -12,7 +12,7 @@ Play it at https://matthewro2007-blip.github.io/Star-city-drift/
 
 ## Android APK
 
-Download [Star-City-Drift.apk](downloads/Star-City-Drift.apk) and sideload it. Allow installation from unknown sources when Android asks.
+Download [Star-City-Drift.apk](downloads/Star-City-Drift.apk) (v1.1.0) and sideload it. Allow installation from unknown sources when Android asks.
 
 ## Controls
 
@@ -20,4 +20,14 @@ Download [Star-City-Drift.apk](downloads/Star-City-Drift.apk) and sideload it. A
 - **Controllers:** PlayStation 5 and Xbox controllers are supported.
 - **Phones:** on-screen touch controls.
 
-The Windows desktop build is coming separately.
+## Windows
+
+The v1.1.0 desktop build for 64-bit Windows is split into five parts. Download all five into the same folder:
+
+- [Star-City-Drift-1.1.0-win-x64.7z.001](downloads/windows/Star-City-Drift-1.1.0-win-x64.7z.001)
+- [Star-City-Drift-1.1.0-win-x64.7z.002](downloads/windows/Star-City-Drift-1.1.0-win-x64.7z.002)
+- [Star-City-Drift-1.1.0-win-x64.7z.003](downloads/windows/Star-City-Drift-1.1.0-win-x64.7z.003)
+- [Star-City-Drift-1.1.0-win-x64.7z.004](downloads/windows/Star-City-Drift-1.1.0-win-x64.7z.004)
+- [Star-City-Drift-1.1.0-win-x64.7z.005](downloads/windows/Star-City-Drift-1.1.0-win-x64.7z.005)
+
+Install [7-Zip](https://www.7-zip.org/), then right-click `Star-City-Drift-1.1.0-win-x64.7z.001` and choose **7-Zip → Extract Here**. 7-Zip reads `.002` through `.005` automatically. Run the extracted `Star-City-Drift-Setup-1.1.0.exe`.
