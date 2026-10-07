@@ -1,5 +1,6 @@
 import { DEPTH, getDepth } from './world.js';
 import { getEnemySprite, drawSprite } from './sprites.js';
+import { setAnim, gateHitbox, enemyCharKey } from './anim.js';
 
 /**
  * Difficulty tuning. hp/dmg scale thugs, cool scales the gap between enemy attacks (lower = more
@@ -7,10 +8,10 @@ import { getEnemySprite, drawSprite } from './sprites.js';
  * Arcade = Hard numbers + no healing + game over reloads the last save.
  */
 export const DIFFICULTIES = {
-  easy:   { id: 'easy',   name: 'Easy',   hp: 0.7,  dmg: 0.6, cool: 1.4,  speed: 0.9,  wave: -1, bossHp: 0.75, bossDmg: 0.7, heal: 1.5, sparHits: 5, runner: 120 },
-  normal: { id: 'normal', name: 'Normal', hp: 1,    dmg: 1,   cool: 1,    speed: 1,    wave: 0,  bossHp: 1,    bossDmg: 1,   heal: 1,   sparHits: 3, runner: 135 },
-  hard:   { id: 'hard',   name: 'Hard',   hp: 1.35, dmg: 1.5, cool: 0.7,  speed: 1.15, wave: 1,  bossHp: 1.5,  bossDmg: 1.4, heal: 0.5, sparHits: 2, runner: 145 },
-  arcade: { id: 'arcade', name: 'Arcade', hp: 1.35, dmg: 1.5, cool: 0.7,  speed: 1.15, wave: 1,  bossHp: 1.5,  bossDmg: 1.4, heal: 0,   sparHits: 2, runner: 145, arcade: true }
+  easy:   { id: 'easy',   name: 'Easy',   hp: 0.7,  dmg: 0.6, cool: 1.4,  speed: 0.9,  wave: -1, bossHp: 0.75, bossDmg: 0.7, heal: 1.5, sparHits: 5, runner: 120, kdPlayer: 0.6, kdEnemy: 1.0 },
+  normal: { id: 'normal', name: 'Normal', hp: 1,    dmg: 1,   cool: 1,    speed: 1,    wave: 0,  bossHp: 1,    bossDmg: 1,   heal: 1,   sparHits: 3, runner: 135, kdPlayer: 0.8, kdEnemy: 0.85 },
+  hard:   { id: 'hard',   name: 'Hard',   hp: 1.35, dmg: 1.5, cool: 0.7,  speed: 1.15, wave: 1,  bossHp: 1.5,  bossDmg: 1.4, heal: 0.5, sparHits: 2, runner: 145, kdPlayer: 0.95, kdEnemy: 0.7 },
+  arcade: { id: 'arcade', name: 'Arcade', hp: 1.35, dmg: 1.5, cool: 0.7,  speed: 1.15, wave: 1,  bossHp: 1.5,  bossDmg: 1.4, heal: 0,   sparHits: 2, runner: 145, arcade: true, kdPlayer: 1.0, kdEnemy: 0.6 }
 };
 export const DIFFICULTY_ORDER = ['easy', 'normal', 'hard', 'arcade'];
 let diff = DIFFICULTIES.normal;
@@ -45,7 +46,11 @@ export function createPlayer(x, y) {
     hitbox: null,
     speed: 160,
     depthSpeed: 110,
-    alive: true
+    alive: true,
+    // v3: animation states, sprint/stamina, knockdown, special
+    animState: 'idle', animStart: 0, idleT: 0,
+    comboStep: 0, sprinting: false, stamina: 100, staminaLock: false, staminaDelay: 0,
+    kd: null, specialCd: 0, victoryT: 0, koT: 0, lift: 0
   };
 }
 
@@ -91,76 +96,226 @@ export function createSilasFighter(x, y) {
   };
 }
 
-export function updatePlayer(p, input, dt, areaWidth) {
-  if (!p.alive) return;
+// ---------------- v3: knockdown / sprint / special tuning ----------------
+export const SPRINT_MULT = 1.6;
+export const SPECIAL_COST = 25;      // special-meter cost of Star Drive
+export const SPECIAL_COOLDOWN = 3;   // seconds
+const SPECIAL_DUR = 0.45, SPECIAL_SPEED = 470, SPECIAL_DMG = 22;
+const JUMPKICK_DUR = 0.5;
+const KD_FALL = 0.35, KD_GETUP = 0.4, KD_IFRAMES = 0.5;
+const STAMINA_DRAIN = 32, STAMINA_REGEN = 28, STAMINA_UNLOCK = 25;
+const clampX = (x, w) => Math.max(30, Math.min(w - 30, x));
+
+/** Start a knockdown (fall → lie on the ground, invulnerable → get up with brief i-frames). */
+export function knockDown(ent, dir) {
+  if (ent.kd) return;
+  ent.kd = { phase: 'fall', t: KD_FALL, dir: dir || -ent.facing || 1 };
+  ent.attackTimer = 0; ent.attackType = null; ent.hitbox = null; ent.stun = 0; ent.tauntT = 0; ent.lift = 0;
+  ent.pose = 'hurt';
+}
+const groundTime = (ent, isPlayer) => (isPlayer ? diff.kdPlayer : diff.kdEnemy * (ent.isBoss ? 0.75 : 1)) || 0.8;
+/** Advance a knockdown. Dead fighters stay on the ground. */
+function tickKnockdown(ent, dt, areaWidth, isPlayer) {
+  const k = ent.kd;
+  k.t -= dt;
+  ent.pose = 'hurt';
+  if (k.phase === 'fall') {
+    ent.x = clampX(ent.x + k.dir * 150 * dt * Math.max(0, k.t / KD_FALL), areaWidth);
+    if (k.t <= 0) { k.phase = 'ground'; k.t = groundTime(ent, isPlayer); }
+  } else if (k.phase === 'ground') {
+    if (k.t <= 0 && ent.alive) { k.phase = 'getup'; k.t = KD_GETUP; }
+  } else if (k.t <= 0) {
+    ent.kd = null;
+    ent.invuln = Math.max(ent.invuln || 0, KD_IFRAMES);
+    ent.pose = 'idle';
+    if (!isPlayer) ent.aiCooldown = Math.max(ent.aiCooldown || 0, 0.35);
+  }
+}
+const KD_ANIM = { fall: 'knockdown_fall', ground: 'knockdown_ground', getup: 'getup' };
+
+function pickPlayerAnim(p) {
+  if (!p.alive) return 'ko';
+  if (p.kd) return KD_ANIM[p.kd.phase];
+  if (p.pose === 'hurt') return 'hurt';
+  if (p.attackType === 'special') return 'special';
+  if (p.attackType === 'jumpkick') return 'jump_kick';
+  if (p.attackType === 'combo') return 'combo' + Math.max(1, p.comboStep);
+  if (p.attackType === 'heavy') return 'combo3';
+  if (p.pose === 'walk') return p.sprinting ? 'sprint' : 'run';
+  if (p.victoryT > 0) return 'victory';
+  if (p.idleT >= 4) return 'idle_signature';
+  return 'idle'; // not a Matthew anim state → existing sheet
+}
+
+function makeHitbox(p, off, y, w, h, extra) {
+  const hb = { x: p.x + p.facing * off, y: p.y - y, w, h, hit: new Set(), off, oy: y, ...extra };
+  if (p.facing < 0) hb.x -= w;
+  return hb;
+}
+/** Keep a moving attack's hitbox glued to the attacker. */
+function followHitbox(p) {
+  const hb = p.hitbox;
+  if (!hb) return;
+  hb.x = p.x + p.facing * hb.off - (p.facing < 0 ? hb.w : 0);
+  hb.y = p.y - hb.oy;
+}
+
+/**
+ * hooks: { outfit, canSpecial(): bool, onSpecial(), onSpecialDenied(reason) } — main.js owns the meter.
+ */
+export function updatePlayer(p, input, dt, areaWidth, hooks = {}) {
   p.animT += dt;
+  p.outfit = hooks.outfit || p.outfit;
+  const done = () => {
+    const st = pickPlayerAnim(p);
+    const sec = p.kd ? (p.kd.phase === 'ground' ? 0 : p.kd.t) : p.attackTimer > 0 ? p.attackTimer : 0;
+    setAnim(p, st, { key: 'matthew', sec, outfit: hooks.outfit });
+  };
+  if (!p.alive) {
+    p.koT = Math.max(0, (p.koT || 0) - dt);
+    if (p.kd && p.kd.phase === 'fall') tickKnockdown(p, dt, areaWidth, true);
+    p.pose = 'hurt';
+    return done();
+  }
   if (p.invuln > 0) p.invuln -= dt;
+  if (p.specialCd > 0) p.specialCd -= dt;
+  if (p.victoryT > 0) p.victoryT -= dt;
+  // stamina: drains while sprinting, refills after a short pause; empty = locked until STAMINA_UNLOCK
+  if (p.sprinting) { p.stamina = Math.max(0, p.stamina - STAMINA_DRAIN * dt); p.staminaDelay = 0.5; if (p.stamina <= 0) p.staminaLock = true; }
+  else if (p.staminaDelay > 0) p.staminaDelay -= dt;
+  else p.stamina = Math.min(100, p.stamina + STAMINA_REGEN * dt);
+  if (p.staminaLock && p.stamina >= STAMINA_UNLOCK) p.staminaLock = false;
+  p.sprinting = false;
   if (p.comboTimer > 0) {
     p.comboTimer -= dt;
-    if (p.comboTimer <= 0) p.combo = 0;
+    if (p.comboTimer <= 0) { p.combo = 0; p.comboStep = 0; }
   }
+
+  // Input buffer: attack/special presses made while locked (attack, hurt, get-up) fire within 0.2 s
+  p.buf = p.buf || {};
+  for (const k of ['punchPressed', 'kickPressed', 'heavyPressed', 'specialPressed']) {
+    if (input[k]) p.buf[k] = 0.2;
+    else if (p.buf[k] > 0) p.buf[k] -= dt;
+  }
+  const locked = !!p.kd || p.attackTimer > 0;
+  if (!locked) {
+    const b = {};
+    for (const k in p.buf) if (p.buf[k] > 0) { b[k] = true; p.buf[k] = 0; }
+    input = { ...input, ...b };
+  }
+  if (p.kd) { tickKnockdown(p, dt, areaWidth, true); p.idleT = 0; return done(); }
 
   if (p.attackTimer > 0) {
     p.attackTimer -= dt;
+    if (p.attackType === 'special') {
+      p.x = clampX(p.x + p.facing * SPECIAL_SPEED * dt, areaWidth);
+      p.invuln = Math.max(p.invuln, 0.06); // dash goes through attacks
+      followHitbox(p);
+    } else if (p.attackType === 'jumpkick') {
+      p.x = clampX(p.x + p.facing * p.speed * 1.35 * dt, areaWidth);
+      p.lift = Math.sin(Math.PI * Math.min(1, 1 - p.attackTimer / JUMPKICK_DUR)) * 30;
+      followHitbox(p);
+    }
     if (p.attackTimer <= 0) {
       p.pose = 'idle';
       p.attackType = null;
       p.hitbox = null;
+      p.lift = 0;
     }
+    p.idleT = 0;
+    done();
+    gateHitbox(p, 'matthew', hooks.outfit);
     return; // lock movement during attack (SoR style)
-  }
-
-  // Attacks
-  if (input.heavyPressed) {
-    // Triangle / Y / C: slower haymaker with a wide hitbox and big knockback
-    p.attackType = 'heavy';
-    p.pose = 'punch';
-    p.attackTimer = 0.42;
-    p.combo = 0;
-    p.comboTimer = 0;
-    p.hitbox = { x: p.x + p.facing * 22, y: p.y - 34, w: 50, h: 32, dmg: 26, knock: 40, hit: new Set() };
-    if (p.facing < 0) p.hitbox.x -= p.hitbox.w;
-    return;
-  }
-  if (input.punchPressed) {
-    p.attackType = p.combo >= 2 ? 'punch' : 'punch';
-    p.pose = 'punch';
-    p.attackTimer = 0.22;
-    p.combo = (p.combo + 1) % 4;
-    p.comboTimer = 0.8;
-    p.hitbox = { x: p.x + p.facing * 10, y: p.y - 34, w: 36, h: 28, dmg: 12 + p.combo * 2, hit: new Set() };
-    if (p.facing < 0) p.hitbox.x -= p.hitbox.w;
-    return;
-  }
-  if (input.kickPressed) {
-    p.pose = 'kick';
-    p.attackType = 'kick';
-    p.attackTimer = 0.32;
-    p.combo = (p.combo + 1) % 4;
-    p.comboTimer = 0.8;
-    p.hitbox = { x: p.x + p.facing * 10, y: p.y - 28, w: 44, h: 24, dmg: 18, knock: 26, hit: new Set() };
-    if (p.facing < 0) p.hitbox.x -= p.hitbox.w;
-    return;
   }
 
   const ax = input.ax;
   const ay = input.ay;
-  p.vx = ax * p.speed;
-  p.vy = ay * p.depthSpeed;
+  const moving = Math.abs(ax) > 0.1 || Math.abs(ay) > 0.1;
+  const wantSprint = !!input.sprintHeld && moving && !p.staminaLock && p.stamina > 0;
+  const startAttack = (type, pose, dur) => { p.attackType = type; p.pose = pose; p.attackTimer = dur; p.idleT = 0; p.victoryT = 0; };
+
+  // Special: 'Star Drive' dash (V / R2 / RT / touch ★) — costs meter, has a cooldown, knocks down
+  if (input.specialPressed) {
+    const can = p.specialCd <= 0 && (!hooks.canSpecial || hooks.canSpecial());
+    if (can) {
+      if (Math.abs(ax) > 0.15) p.facing = ax > 0 ? 1 : -1;
+      startAttack('special', 'kick', SPECIAL_DUR);
+      p.specialCd = SPECIAL_COOLDOWN;
+      p.combo = 0; p.comboStep = 0; p.comboTimer = 0;
+      p.hitbox = makeHitbox(p, -6, 44, 56, 40, { dmg: SPECIAL_DMG, knock: 30, knockdown: true, special: true });
+      hooks.onSpecial && hooks.onSpecial();
+      done(); gateHitbox(p, 'matthew', hooks.outfit);
+      return;
+    }
+    hooks.onSpecialDenied && hooks.onSpecialDenied(p.specialCd > 0 ? 'cooldown' : 'meter');
+  }
+  if (input.heavyPressed) {
+    // Triangle / Y / C: slower haymaker with a wide hitbox and big knockback
+    startAttack('heavy', 'punch', 0.42);
+    p.combo = 0; p.comboStep = 0; p.comboTimer = 0;
+    p.hitbox = makeHitbox(p, 22, 34, 50, 32, { dmg: 26, knock: 40 });
+    done(); gateHitbox(p, 'matthew', hooks.outfit);
+    return;
+  }
+  if (input.kickPressed && wantSprint) {
+    // Running jump kick (sprint + kick): travels forward, knocks down
+    startAttack('jumpkick', 'kick', JUMPKICK_DUR);
+    p.combo = 0; p.comboStep = 0; p.comboTimer = 0;
+    p.hitbox = makeHitbox(p, -4, 46, 56, 34, { dmg: 20, knock: 30, knockdown: true });
+    done(); gateHitbox(p, 'matthew', hooks.outfit);
+    return;
+  }
+  if (input.punchPressed || input.kickPressed) {
+    // Combo chain: punches/kicks within 0.8 s count combo1 → combo2 → combo3 (finisher knocks down)
+    const kick = !input.punchPressed;
+    p.comboStep = p.comboStep >= 3 ? 1 : p.comboStep + 1;
+    p.combo = p.comboStep;
+    p.comboTimer = 0.8;
+    const fin = p.comboStep === 3;
+    if (kick) {
+      startAttack('combo', 'kick', fin ? 0.36 : 0.32);
+      p.hitbox = makeHitbox(p, 10, 28, 44, 24, { dmg: fin ? 20 : 18, knock: 26, knockdown: fin });
+    } else {
+      startAttack('combo', 'punch', fin ? 0.3 : 0.22);
+      p.hitbox = makeHitbox(p, 10, 34, 36, 28, { dmg: 12 + p.comboStep * 2, knock: fin ? 30 : undefined, knockdown: fin });
+    }
+    if (fin) p.comboTimer = 0.25;
+    done(); gateHitbox(p, 'matthew', hooks.outfit);
+    return;
+  }
+
+  p.sprinting = wantSprint;
+  const sp = wantSprint ? SPRINT_MULT : 1;
+  p.vx = ax * p.speed * sp;
+  p.vy = ay * p.depthSpeed * (wantSprint ? 1.25 : 1);
   if (Math.abs(ax) > 0.15) p.facing = ax > 0 ? 1 : -1;
   p.x += p.vx * dt;
   p.y += p.vy * dt;
-  p.x = Math.max(30, Math.min(areaWidth - 30, p.x));
+  p.x = clampX(p.x, areaWidth);
   p.y = clampDepth(p.y);
-  p.pose = (Math.abs(ax) > 0.1 || Math.abs(ay) > 0.1) ? 'walk' : 'idle';
+  p.pose = moving ? 'walk' : 'idle';
+  if (moving) { p.idleT = 0; p.victoryT = 0; }
+  else if (p.pose === 'idle' && p.victoryT <= 0) p.idleT += dt;
+  done();
 }
 
+function deadAnim(e) { return e.isBoss ? 'defeat' : e.runner ? 'caught' : 'ko'; }
+
 export function updateEnemy(e, player, dt, areaWidth = Infinity) {
-  if (!e.alive) return;
   e.animT += dt;
+  const key = enemyCharKey(e);
+  if (!e.alive) {
+    if (e.koT > 0) e.koT -= dt;
+    if (e.kd && e.kd.phase === 'fall') { tickKnockdown(e, dt, areaWidth, false); setAnim(e, 'knockdown_fall', { key, sec: e.kd.t }); }
+    else setAnim(e, deadAnim(e), { key, sec: Math.max(0.3, e.koT) });
+    return;
+  }
+  if (e.invuln > 0) e.invuln -= dt;
+  if (e.kd) { tickKnockdown(e, dt, areaWidth, false); setAnim(e, e.kd ? KD_ANIM[e.kd.phase] : 'idle', e.kd && e.kd.phase !== 'ground' ? { key, sec: e.kd.t } : null); return; }
   if (e.stun > 0) {
     e.stun -= dt;
     e.pose = 'hurt';
+    setAnim(e, 'hurt', { key, sec: e.stun });
     return;
   }
   if (e.attackTimer > 0) {
@@ -168,7 +323,16 @@ export function updateEnemy(e, player, dt, areaWidth = Infinity) {
     if (e.attackTimer <= 0) {
       e.pose = 'idle';
       e.hitbox = null;
+      if (e.tauntNext) { e.tauntNext = false; e.tauntT = 1.1; } // Silas taunts between attack patterns
     }
+    gateHitbox(e, key);
+    return;
+  }
+  if (e.tauntT > 0) {
+    e.tauntT -= dt;
+    e.pose = 'idle';
+    e.facing = player.x > e.x ? 1 : -1;
+    setAnim(e, 'taunt');
     return;
   }
 
@@ -178,18 +342,44 @@ export function updateEnemy(e, player, dt, areaWidth = Infinity) {
   const dist = Math.hypot(dx, dy);
   e.facing = dx > 0 ? 1 : -1;
 
-  if (dist < 42 && Math.abs(dy) < 18) {
+  if (player.kd) {
+    // don't pile on a downed Matthew: hold position
+    e.pose = 'idle';
+    setAnim(e, e.isBoss ? 'taunt' : 'idle');
+  } else if (dist < 42 && Math.abs(dy) < 18) {
     if (e.aiCooldown <= 0) {
       e.pose = 'punch';
       e.attackTimer = 0.28;
       e.aiCooldown = (0.7 + Math.random() * 0.6) * (e.cool || 1);
-      e.hitbox = { x: e.x + e.facing * 8, y: e.y - 32, w: 32, h: 26, dmg: e.dmg || (e.isBoss ? 16 : 10), hit: new Set() };
+      const dmg = e.dmg || (e.isBoss ? 16 : 10);
+      e.hitbox = { x: e.x + e.facing * 8, y: e.y - 32, w: 32, h: 26, dmg, hit: new Set() };
+      if (e.isBoss) {
+        // 3-hit pattern: attack1, attack2, then a heavy attack3 that knocks Matthew down → taunt
+        const step = (e.patIdx || 0) % 3;
+        e.patIdx = (e.patIdx || 0) + 1;
+        e.nextAnim = 'boss_attack' + (step + 1);
+        if (step === 2) {
+          e.attackTimer = 0.5;
+          e.hitbox = { x: e.x + e.facing * 6, y: e.y - 38, w: 46, h: 34, dmg: Math.round(dmg * 1.3), knockdown: true, hit: new Set() };
+          e.tauntNext = true;
+          e.aiCooldown = Math.max(e.aiCooldown, 0.5);
+        }
+      } else {
+        // thugs alternate attackA / attackB
+        e.altAtk = !e.altAtk;
+        e.nextAnim = e.altAtk ? 'attackA' : 'attackB';
+        if (!e.altAtk) e.attackTimer = 0.32;
+      }
       if (e.facing < 0) e.hitbox.x -= e.hitbox.w;
+      setAnim(e, e.nextAnim, { key, sec: e.attackTimer }, true); // restart even when the same attack repeats
+      gateHitbox(e, key);
     } else {
       e.pose = 'idle';
+      setAnim(e, 'idle');
     }
   } else {
     e.pose = 'chase';
+    setAnim(e, 'walk'); // thugs/Silas walk in; the snatcher's 'run' is set in main.js updateRunner
     const sp = e.speed * dt;
     if (dist > 1) {
       e.x += (dx / dist) * sp;
@@ -201,42 +391,56 @@ export function updateEnemy(e, player, dt, areaWidth = Infinity) {
 }
 
 export function resolveHits(player, enemies, onHitEnemy, onHitPlayer, areaWidth = Infinity) {
-  // Player hits enemies
-  if (player.hitbox) {
+  // Player hits enemies (hitbox.live === false = between 'active' frames)
+  const hb = player.hitbox;
+  if (hb && hb.live !== false) {
     for (const e of enemies) {
-      if (!e.alive || player.hitbox.hit.has(e)) continue;
-      if (overlap(player.hitbox, e.x - 14, e.y - 60, 28, 56) && Math.abs(player.y - e.y) < 22) {
-        player.hitbox.hit.add(e);
-        e.hp -= player.hitbox.dmg;
-        e.stun = player.hitbox.knock ? 0.4 : 0.25;
-        e.x = Math.max(30, Math.min(areaWidth - 30, e.x + player.facing * (player.hitbox.knock || 18)));
+      if (!e.alive || hb.hit.has(e) || e.kd || e.invuln > 0) continue;
+      if (overlap(hb, e.x - 14, e.y - 60, 28, 56) && Math.abs(player.y - e.y) < 22) {
+        hb.hit.add(e);
+        e.hp -= hb.dmg;
+        if (hb.knockdown) knockDown(e, player.facing);
+        else {
+          e.stun = hb.knock ? 0.4 : 0.25;
+          e.x = Math.max(30, Math.min(areaWidth - 30, e.x + player.facing * (hb.knock || 18)));
+        }
         if (e.hp <= 0) {
           e.alive = false;
           e.pose = 'hurt';
+          e.koT = e.kd ? 1.3 : 0.7; // body stays briefly for the ko / defeat / caught anim
         }
-        onHitEnemy && onHitEnemy(e, player.hitbox.dmg); // after the KO flag so score sees it
+        onHitEnemy && onHitEnemy(e, hb.dmg); // after the KO flag so score sees it
       }
     }
   }
   // Enemy hits player
-  if (player.invuln > 0) return;
+  if (player.invuln > 0 || player.kd || !player.alive) return;
   for (const e of enemies) {
-    if (!e.alive || !e.hitbox) continue;
+    if (!e.alive || !e.hitbox || e.hitbox.live === false) continue;
     if (e.hitbox.hit.has(player)) continue;
     if (overlap(e.hitbox, player.x - 14, player.y - 60, 28, 56) && Math.abs(player.y - e.y) < 22) {
       e.hitbox.hit.add(player);
       player.hp -= e.hitbox.dmg;
-      player.invuln = 0.6;
-      player.pose = 'hurt';
-      player.attackTimer = 0.2;
-      player.attackType = null;
-      player.hitbox = null;
-      player.x = Math.max(30, Math.min(areaWidth - 30, player.x + e.facing * 20));
-      onHitPlayer && onHitPlayer(e.hitbox.dmg);
+      player.victoryT = 0; player.idleT = 0; player.lift = 0;
+      if (e.hitbox.knockdown) {
+        knockDown(player, e.facing);
+      } else {
+        player.invuln = 0.6;
+        player.pose = 'hurt';
+        player.attackTimer = 0.2;
+        player.attackType = null;
+        player.hitbox = null;
+        player.x = Math.max(30, Math.min(areaWidth - 30, player.x + e.facing * 20));
+      }
+      setAnim(player, player.kd ? 'knockdown_fall' : 'hurt', { key: 'matthew', sec: player.kd ? KD_FALL : 0.2, outfit: player.outfit });
+      onHitPlayer && onHitPlayer(e.hitbox.dmg, !!e.hitbox.knockdown);
       if (player.hp <= 0) {
         player.hp = 0;
         player.alive = false;
+        player.koT = 1.2; // main.js waits for the KO pose before respawning
+        setAnim(player, 'ko', { key: 'matthew', sec: 1.2, outfit: player.outfit });
       }
+      if (player.kd || !player.alive) return;
     }
   }
 }
