@@ -46,6 +46,11 @@ export function getPromptLabel(action) {
   return set[action] ?? PROMPTS.keyboard[action] ?? action; // '' = no control for it on this device
 }
 
+/** Full label set for a device ('keyboard' | 'touch' | 'ps' | 'xbox'), e.g. for a controls panel. */
+export function getPromptSet(device) {
+  return PROMPTS[device] || PROMPTS.keyboard;
+}
+
 /** 'keyboard' | 'touch' | 'ps' | 'xbox' — handy for HUD code that wants icons. */
 export function getPromptDevice() {
   return promptState.device === 'pad' ? promptState.padType : promptState.device;

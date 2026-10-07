@@ -11,6 +11,7 @@ import {
   drawEnemy, spawnWave, createSilasFighter, clampDepth, setDepthBand, getDepthBand
 } from './combat.js';
 import { getMatthewSprite, getNpcSprite, getEnemySprite, drawSprite, drawCollectible, clearSpriteCache, loadSprites, getHeartImages } from './sprites.js';
+import { createTitle } from './title.js';
 import { getHeroFrame, drawHero, clearHeroCache, HERO_DRAW_H, HERO_SHADOW_W } from './hero.js';
 
 /** true: player + title Matthew use the high-res procedural hero (hero.js); false: Joe's matthew_sheet.png. */
@@ -175,6 +176,7 @@ function showTitle() {
   $('confirm-screen')?.classList.add('hidden');
   refreshTitleButtons();
   input.showMobile(false);
+  title.show(); // attract "PRESS START" first; the menu focuses itself when it opens
   menuFocus(0);
 }
 
@@ -626,6 +628,7 @@ bindTap('dialogue-next', () => advanceDialogue());
 // then set the title buttons right away so a pre-boot click can't skip the New Game confirm.
 const bootSaveState = inspectSave();
 refreshTitleButtons();
+const title = createTitle({ focusMenu: (i) => menuFocus(i, $('title-screen')) });
 
 /** Device-aware prompts in the DOM (interact kbd, pause/desktop hints, dialogue button). */
 let promptSig = '';
@@ -667,7 +670,7 @@ function step(dt) {
   refreshPrompts();
 
   if (gameState.mode === 'title') {
-    handleMenu(inp);
+    if (!title.update(inp, dt)) handleMenu(inp);
     drawTitleBg(dt);
     return;
   }
@@ -979,22 +982,28 @@ function drawWorld(dt) {
   if (banner) banner.classList.toggle('hidden', !fighting);
 }
 
-let titlePanT = 0;
+/** Title backdrop: animated Roanoke skyline (title.js) + Matthew heroic idle vs a Silas silhouette. */
 function drawTitleBg(dt) {
-  const area = AREAS.diner;
-  // Ping-pong pan across the diner plate
-  titlePanT += dt * 0.05;
-  const k = 0.5 - 0.5 * Math.cos(titlePanT * Math.PI);
-  gameState.cameraX = k * Math.max(0, area.width - W);
-  drawBackground(ctx, area, gameState.cameraX, W, H);
-  const outfit = OUTFITS.polo;
-  const band = getDepth(area); // title plate's own walk band (diner 388–528)
-  drawGroundShadow(ctx, W * 0.28, band.max - 10, CHAR_DRAW_W);
-  drawMatthew('idle', 'polo', outfit, performance.now() / 1000, W * 0.28, band.max - 10, 1);
-  const spr2 = getNpcSprite('dee', '#d35400', performance.now() / 1000);
-  drawGroundShadow(ctx, W * 0.72, band.max - 20, NPC_DRAW_W * NPC_SCALE);
-  drawCastSprite(spr2, W * 0.72, band.max - 20, -1, NPC_SCALE);
-  drawSceneGrade(ctx, area, W, H);
+  title.drawBackdrop(ctx, W, H, dt);
+  const t = performance.now() / 1000;
+  const feetY = 512;
+  // Silas: big rim-lit silhouette on the right, facing Matthew
+  const sil = title.silhouette(getNpcSprite('silas', '#2c3e50', t));
+  if (sil) {
+    ctx.save();
+    ctx.globalAlpha = 0.92;
+    drawGroundShadow(ctx, W * 0.78, feetY, 120);
+    drawCastSprite(sil, W * 0.78, feetY, -1, BOSS_SCALE * 1.55);
+    ctx.restore();
+  }
+  // Matthew (locked look) at heroic scale, left
+  const mx = W * 0.22;
+  drawGroundShadow(ctx, mx, feetY, CHAR_DRAW_W * 1.5);
+  ctx.save();
+  ctx.translate(mx, feetY); ctx.scale(1.5, 1.5); ctx.translate(-mx, -feetY);
+  drawMatthew('idle', 'polo', OUTFITS.polo, t, mx, feetY, 1);
+  ctx.restore();
+  title.drawGrade(ctx, W, H);
 }
 
 // Boot

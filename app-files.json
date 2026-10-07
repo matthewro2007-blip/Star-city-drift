@@ -1,7 +1,7 @@
 {
-  "version": "b4538a8597b1",
-  "generated": "2026-10-07T00:04:47.625Z",
-  "bytes": 4295203,
+  "version": "b604f242f496",
+  "generated": "2026-10-07T12:08:04.219Z",
+  "bytes": 4321017,
   "files": [
     "assets/bg/community.png",
     "assets/bg/community_v1.png",
@@ -104,6 +104,7 @@
     "js/props.js",
     "js/save.js",
     "js/sprites.js",
+    "js/title.js",
     "js/world.js",
     "manifest.webmanifest",
     "sw.js"
