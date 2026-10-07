@@ -216,7 +216,7 @@ export function createTitle({ focusMenu }) {
   }
 
   // ---------------- controls panel ----------------
-  const ACTIONS = [['move', 'Move'], ['punch', 'Punch'], ['kick', 'Kick'], ['heavy', 'Heavy'], ['interact', 'Talk / use'], ['outfit', 'Outfits'], ['pause', 'Pause'], ['confirm', 'Menu select'], ['back', 'Menu back']];
+  const ACTIONS = [['move', 'Move'], ['sprint', 'Sprint (hold)'], ['punch', 'Punch (combo x3 = knockdown)'], ['kick', 'Kick'], ['jumpkick', 'Jump kick (sprint + kick)'], ['special', 'Star Drive special'], ['heavy', 'Heavy'], ['interact', 'Talk / use'], ['outfit', 'Outfits'], ['pause', 'Pause'], ['confirm', 'Menu select'], ['back', 'Menu back']];
   function renderControls() {
     const dev = getPromptDevice();
     const padType = dev === 'ps' ? 'ps' : 'xbox';
