@@ -99,24 +99,41 @@
     </div>
   </div>
 
-  <div id="title-screen" class="overlay">
-    <div class="overlay-card title-card">
+  <div id="title-screen" class="overlay" data-phase="attract">
+    <div class="title-logo" aria-label="Star City Drift">
+      <div class="logo-star" aria-hidden="true">★</div>
       <div class="eyebrow">Roanoke, Virginia · Arcade Beat 'Em Up</div>
-      <div class="title-star">★</div>
-      <h1>Star City Drift</h1>
-      <p class="tagline">Golden hour on Jefferson. Trouble after leftovers.<br/>Play as <strong>Matthew Rose</strong> — free-roam the streets, clear thug waves, finish the job.</p>
-      <div class="chips">
-        <span class="chip">Streets of Rage Combat</span>
-        <span class="chip">Open-World Free Roam</span>
-        <span class="chip">Main + Side Missions</span>
-        <span class="chip">PC &amp; Phone</span>
-      </div>
-      <div id="title-actions" class="title-actions">
-        <button type="button" id="btn-continue" class="btn hidden">Continue</button>
-        <button type="button" id="btn-start" class="btn">Start Free Roam</button>
-        <button type="button" id="btn-new-game" class="btn btn-secondary hidden">New Game</button>
-      </div>
+      <h1 class="logo"><span class="logo-line l1" data-text="STAR CITY">STAR CITY</span><span class="logo-line l2" data-text="DRIFT">DRIFT</span></h1>
+      <div class="logo-sub">Starring Matthew Rose</div>
     </div>
+    <div class="title-attract">
+      <div id="title-press" class="press">PRESS START</div>
+      <div id="title-press-sub" class="press-sub"></div>
+    </div>
+    <nav id="title-actions" class="title-actions title-menu" aria-label="Main menu">
+      <button type="button" id="btn-continue" class="btn hidden">Continue</button>
+      <button type="button" id="btn-start" class="btn">New Game</button>
+      <button type="button" id="btn-new-game" class="btn hidden">New Game</button>
+      <button type="button" id="btn-controls" class="btn">Controls</button>
+      <button type="button" id="btn-credits" class="btn">Credits</button>
+      <div id="title-help" class="title-help"></div>
+    </nav>
+    <section id="title-controls" class="title-panel" aria-label="Controls">
+      <h2>Controls</h2>
+      <div class="table-wrap"><table id="controls-table"></table></div>
+      <button type="button" id="btn-controls-back" class="btn">Back</button>
+    </section>
+    <section id="title-credits" class="title-panel" aria-label="Credits">
+      <h2>Credits</h2>
+      <div class="credits-star">Starring <strong>Matthew Rose</strong></div>
+      <ul class="cast">
+        <li>Dee Morales</li><li>Hank "Rail" Pettigrew</li><li>Priya Shah</li><li>Cam Ortiz</li>
+        <li>June Whitaker</li><li>Silas Boone</li><li>Tessa Quinn</li><li>Coach Ray Delgado</li>
+      </ul>
+      <div class="made-with">Made with Arlo</div>
+      <button type="button" id="btn-credits-back" class="btn">Back</button>
+    </section>
+    <div class="title-flash" aria-hidden="true"></div>
   </div>
 
   <div id="confirm-screen" class="overlay hidden" role="dialog" aria-modal="true" aria-labelledby="confirm-title">
