@@ -16,17 +16,26 @@ import * as SpriteLib from './sprites.js'; // optional newer helpers (getCollect
 import { getMatthewSprite, getNpcSprite, getEnemySprite, drawSprite, drawCollectible, clearSpriteCache, loadSprites, getHeartImages } from './sprites.js';
 import { createTitle } from './title.js';
 import { getHeroFrame, drawHero, clearHeroCache, HERO_DRAW_H, HERO_SHADOW_W } from './hero.js';
+import { createFollowCamera } from './camera.js';
+import { createPresenter } from './present.js';
 
 /** true: player + title Matthew use the high-res procedural hero (hero.js); false: Joe's matthew_sheet.png. */
 const USE_HERO_RENDER = false; // Joe's approved v3 sheet ships; hero.js kept as an alternate renderer
 const PLAYER_SCALE = 1.3; // heroic presentation scale for Matthew vs 64x84 NPCs (draw only; hitboxes unchanged)
 
 const canvas = document.getElementById('game');
-const ctx = canvas.getContext('2d');
-ctx.imageSmoothingEnabled = false;
-
 const W = canvas.width;
 const H = canvas.height;
+// Gameplay draws into a 960×540 scene. present.js crops the follow camera and
+// upscales with filtering onto the display canvas. DOM HUD / touch controls
+// sit outside this canvas, so the lens never moves them.
+const scene = document.createElement('canvas');
+scene.width = W;
+scene.height = H;
+const ctx = scene.getContext('2d');
+ctx.imageSmoothingEnabled = false;
+const presenter = createPresenter(canvas, scene);
+const followCam = createFollowCamera();
 
 const stateBag = {};
 const missions = createMissionSystem(stateBag);
@@ -258,6 +267,7 @@ function startGame(fromSave) {
     maybeSpawnEncounter(true);
   }
   persist();
+  followCam.cut();
 }
 
 function maybeSpawnEncounter(force) {
@@ -719,6 +729,7 @@ function transitionArea(dir) {
     if (gameState.mode === 'play' && gameState.areaId === nextId) maybeSpawnEncounter(false);
   }, 300);
   persist();
+  followCam.cut();
   return true;
 }
 
@@ -1073,6 +1084,7 @@ function step(dt) {
     gameState.areaId = 'downtown';
     syncDepthBand();
     player.y = PLAYER_START_Y;
+    followCam.cut();
     toast('Matthew dusts himself off…');
     if (lostBoss) toast('Silas is still downtown. Talk to him to try again.');
     updateHUD();
@@ -1091,7 +1103,7 @@ function step(dt) {
     updatePlayer(player, inp, dt, area.width, {
       outfit: gameState.outfitId,
       canSpecial: () => gameState.special >= SPECIAL_COST,
-      onSpecial: () => { gameState.special = Math.max(0, gameState.special - SPECIAL_COST); gameState.hitStop = 0; rumble(0.6, 0.6, 160); },
+      onSpecial: () => { gameState.special = Math.max(0, gameState.special - SPECIAL_COST); gameState.hitStop = 0; rumble(0.6, 0.6, 160); followCam.kick(3); },
       onSpecialDenied: (why) => { if (why === 'meter') toast(`Star Drive needs ${SPECIAL_COST}% special meter`); }
     });
     for (const e of gameState.enemies) {
@@ -1104,10 +1116,12 @@ function step(dt) {
         gameState.special = Math.min(100, gameState.special + 4);
         if (!e.alive) gameState.score += e.scoreValue || 100;
         rumble(0.25, 0.45, 60);
+        followCam.kick(e.kd ? 3.5 : 2);
       },
       (dmg, knocked) => {
         if (stateBag.side && stateBag.side.id === 'side_spar') stateBag.side.hits++;
         rumble(knocked ? 1 : 0.8, 0.5, knocked ? 260 : 140); updateHUD();
+        followCam.kick(knocked ? 5 : 3.5);
       },
       area.width
     );
@@ -1156,9 +1170,9 @@ function step(dt) {
     $('interact-prompt').classList.add('hidden');
   }
 
-  // Camera
-  const camArea = AREAS[gameState.areaId];
-  gameState.cameraX = Math.max(0, Math.min(camArea.width - W, player.x - W * 0.4));
+  // Camera — eased follow, see CAMERA in camera.js. Drawn from drawWorld so
+  // pause / dialogue hold or settle with the same lens. The crop lives in
+  // present.js and does not touch the DOM HUD.
 
   // Autosave
   gameState.saveTimer += dt;
@@ -1231,15 +1245,19 @@ function drawCastSprite(spr, x, feetY, facing, scale) {
  * (world.js getSignRects); then hop above the sign, or drop under the feet if that would
  * run into the top HUD band.
  */
-function nametagY(sx, tw, ty0, feetY) {
+function nametagY(sx, tw, ty0, feetY, camFrame) {
   const rects = getSignRects(gameState.areaId);
   const x0 = sx - tw / 2 - 2, x1 = sx + tw / 2 + 2;
+  // The location plaque is screen-space DOM. In the cropped lens, its band
+  // starts at the top of the visible source rect, not at scene y = 0.
+  const zoom = camFrame && camFrame.zoom > 0 ? camFrame.zoom : 1;
+  const topLimit = Math.round((camFrame ? camFrame.y : 0) + 64 / zoom);
   let ty = ty0;
   for (let pass = 0; pass < 4; pass++) {
     const hit = rects.find((r) => r.x < x1 && r.x + r.w > x0 && r.y < ty + 30 && r.y + r.h > ty - 2);
     if (!hit) return ty;
     ty = Math.round(hit.y - 32);
-    if (ty < 64) return feetY + 6; // would sit under the location plaque / combat banner
+    if (ty < topLimit) return feetY + 6; // would sit under the location plaque / combat banner
   }
   return feetY + 6;
 }
@@ -1368,10 +1386,30 @@ function drawCollectibleItem(c, x, y) {
 }
 // <<< v3
 
+function syncCamera(dt) {
+  const area = AREAS[gameState.areaId];
+  const frame = followCam.update({
+    playerX: player.x,
+    facing: player.facing,
+    areaWidth: area.width,
+    areaId: gameState.areaId,
+    screenW: W,
+    screenH: H,
+    dt
+  });
+  gameState.cameraX = frame.x;
+  return frame;
+}
+
 function drawWorld(dt) {
   const area = AREAS[gameState.areaId];
-  const cam = gameState.cameraX;
-  drawBackground(ctx, area, cam, W, H, dt); // dt drives the ambient sedan (0 = frozen while paused)
+  const camFrame = syncCamera(dt);
+  const cam = camFrame.x;
+  const viewW = camFrame.viewW;
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
+  ctx.imageSmoothingEnabled = false;
+  ctx.clearRect(0, 0, W, H);
+  drawBackground(ctx, area, cam, viewW, H, dt); // dt drives the ambient sedan (0 = frozen while paused)
 
   // Collectibles
   for (const c of stateBag.collectibles) {
@@ -1410,7 +1448,7 @@ function drawWorld(dt) {
       // nametag (sits just above the scaled frame; ty = tag top)
       ctx.font = 'bold 11px sans-serif';
       const tw = Math.max(ctx.measureText(n.name).width, (ctx.font = '9px sans-serif', ctx.measureText(n.role).width)) + 14;
-      const ty = nametagY(sx, tw, Math.round(item.y - nh - 30), item.y);
+      const ty = nametagY(sx, tw, Math.round(item.y - nh - 30), item.y, camFrame);
       ctx.fillStyle = 'rgba(14,10,6,0.82)';
       ctx.fillRect(sx - tw / 2, ty, tw, 28);
       ctx.strokeStyle = 'rgba(255,210,74,0.7)';
@@ -1458,8 +1496,8 @@ function drawWorld(dt) {
     }
   }
 
-  // Shared golden-hour light over characters too
-  drawSceneGrade(ctx, area, W, H);
+  // Shared golden-hour light over characters too (lens width, full plate height)
+  drawSceneGrade(ctx, area, viewW, H);
 
   // HUD minimap (DOM canvas, not the game canvas)
   drawMinimap($('minimap'), {
@@ -1474,10 +1512,21 @@ function drawWorld(dt) {
   const fighting = gameState.combatLock && hostilesAlive();
   const banner = $('combat-banner');
   if (banner) banner.classList.toggle('hidden', !fighting);
+
+  presenter.present({
+    mode: 'world',
+    cameraY: camFrame.y,
+    viewW: camFrame.viewW,
+    viewH: camFrame.viewH
+  });
 }
 
 /** Title backdrop: animated Roanoke skyline (title.js) + Matthew heroic idle vs a Silas silhouette. */
 function drawTitleBg(dt) {
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
+  ctx.globalAlpha = 1;
+  ctx.globalCompositeOperation = 'source-over';
+  ctx.imageSmoothingEnabled = false;
   title.drawBackdrop(ctx, W, H, dt);
   const t = performance.now() / 1000;
   const feetY = 512;
@@ -1498,6 +1547,7 @@ function drawTitleBg(dt) {
   drawMatthew('idle', 'polo', OUTFITS.polo, t, mx, feetY, 1);
   ctx.restore();
   title.drawGrade(ctx, W, H);
+  presenter.present({ mode: 'full' });
 }
 
 // >>> v3 PWA auto-update: check on launch / focus / reconnect; when a new service worker takes over,
@@ -1597,6 +1647,7 @@ if (DEBUG) {
       player.x = x;
       syncDepthBand();
       if (y != null) player.y = clampDepth(y);
+      followCam.cut();
       gameState.areaVisitCombat[areaId] = (gameState.areaVisitCombat[areaId] || 0) + 1;
       updateHUD();
     },

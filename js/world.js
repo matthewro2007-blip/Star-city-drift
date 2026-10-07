@@ -2,6 +2,7 @@
 /** Connected Roanoke street areas — free-roam left/right between locations. */
 
 import { loadProps, drawSceneLayer } from './props.js';
+import { cheapPresentation } from './present.js';
 
 const bgImages = {};
 let bgsReady = false;
@@ -407,13 +408,14 @@ export function drawBackground(ctx, area, cameraX, W, H, dt) {
     const scale = H / img.height;
     const drawW = img.width * scale;
     const offsets = [];
-    if (drawW >= W * 1.5) {
-      // Wide plate: pan across area width (no tiling / seams).
+    if (drawW > W + 1) {
+      // Plate wider than the lens: pan across area width (no tiling / seams).
       // Map cameraX over [0, area.width - W] onto the plate, but never faster than
       // PLATE_PAN_MAX_RATIO× camera speed (plates have the street baked in, so a
       // faster pan makes the painted sidewalk slide under the characters). When the
       // area is too short to cover the whole plate, the travel window sits at the
       // plate's `focus` (0 = left, 0.5 = centered) so key art stays framed.
+      // W is the visible lens width (narrower than the canvas when the camera is zoomed).
       const maxCam = Math.max(1, area.width - W);
       const span = drawW - W;
       const travel = Math.min(span, maxCam * PLATE_PAN_MAX_RATIO);
@@ -461,8 +463,10 @@ export function drawBackground(ctx, area, cameraX, W, H, dt) {
     if (sp) glow.stars.push({ x: sp.x - cameraX, y: band.min - 140, r: 1.15, drawShape: true });
   }
 
-  // 1) Golden-hour grade over the plate
+  // 1) Golden-hour grade over the plate, then sun shafts, contact, and street sheen
   drawGoldenGrade(ctx, area, W, H, glow.stars[0], band);
+  drawSunShafts(ctx, W, H, glow.stars[0], band);
+  drawStreetMaterial(ctx, W, H, band);
 
   // 2) Additive glows (after grade so they stay punchy)
   ctx.save();
@@ -481,11 +485,12 @@ export function drawBackground(ctx, area, cameraX, W, H, dt) {
     }
   }
 
-  // 3) Sidewalk depth lanes (gameplay readability)
+  // 3) Sidewalk depth lanes (gameplay readability) + sunlit dust in the air
   drawDepthLanes(ctx, W, H, band);
+  drawDust(ctx, W, H, stepDt, band);
 
-  // 4) Vignette
-  drawVignette(ctx, W, H);
+  // Lens vignette is applied after the camera crop (present.js) so it frames the
+  // visible picture instead of the cropped sky.
 
   // Edge exit hints — on the back strip of this area's sidewalk (under the characters)
   ctx.font = 'bold 12px sans-serif';
@@ -612,10 +617,104 @@ function drawGoldenGrade(ctx, area, W, H, star, band = DEPTH) {
   // Rim of warm light raking across the sidewalk (feathered, no hard edge)
   g = ctx.createLinearGradient(0, band.min - 40, 0, band.max);
   g.addColorStop(0, 'rgba(255,170,90,0)');
-  g.addColorStop(0.45, 'rgba(255,170,90,0.06)');
+  g.addColorStop(0.45, 'rgba(255,170,90,0.1)');
   g.addColorStop(1, 'rgba(255,170,90,0)');
   ctx.fillStyle = g;
   ctx.fillRect(0, band.min - 40, W, band.max - band.min + 40);
+  ctx.restore();
+}
+
+/**
+ * A few screen-blended shafts from the low sun. Cheap stand-in for volumetric
+ * light: a handful of gradient wedges, no blur. Fewer wedges on small or
+ * low-power screens.
+ */
+function drawSunShafts(ctx, W, H, star, band) {
+  const sx = star ? Math.max(W * 0.12, Math.min(W * 0.88, star.x)) : W * 0.68;
+  const sy = star ? star.y : Math.min(band.min - 150, H * 0.22);
+  const angles = cheapPresentation() ? [0.7, 1.25, 1.8] : [0.55, 0.92, 1.25, 1.58, 1.95];
+  ctx.save();
+  ctx.globalCompositeOperation = 'screen';
+  ctx.translate(sx, sy);
+  for (let i = 0; i < angles.length; i++) {
+    ctx.save();
+    ctx.rotate(angles[i]);
+    const len = H * 0.92;
+    const g = ctx.createLinearGradient(0, 0, len, 0);
+    const a = 0.04 + (i % 2) * 0.018;
+    g.addColorStop(0, `rgba(255,220,160,${a + 0.025})`);
+    g.addColorStop(0.5, `rgba(255,186,110,${a})`);
+    g.addColorStop(1, 'rgba(255,170,80,0)');
+    ctx.fillStyle = g;
+    ctx.beginPath();
+    ctx.moveTo(0, -8 - i);
+    ctx.lineTo(len, -42 - i * 5);
+    ctx.lineTo(len, 42 + i * 5);
+    ctx.lineTo(0, 8 + i);
+    ctx.closePath();
+    ctx.fill();
+    ctx.restore();
+  }
+  ctx.restore();
+}
+
+/**
+ * Asphalt catching the low sun, plus a soft contact shadow where the
+ * storefronts meet the sidewalk (a cheap ambient-occlusion seam).
+ */
+function drawStreetMaterial(ctx, W, H, band) {
+  ctx.save();
+  ctx.globalCompositeOperation = 'soft-light';
+  const y0 = band.max - 50;
+  const g = ctx.createLinearGradient(0, y0, 0, H);
+  g.addColorStop(0, 'rgba(255,196,140,0)');
+  g.addColorStop(0.28, 'rgba(255,186,120,0.42)');
+  g.addColorStop(0.62, 'rgba(140,148,170,0.22)');
+  g.addColorStop(1, 'rgba(16,22,40,0.5)');
+  ctx.fillStyle = g;
+  ctx.fillRect(0, y0, W, H - y0);
+
+  const ao = ctx.createLinearGradient(0, band.min - 24, 0, band.min + 28);
+  ao.addColorStop(0, 'rgba(40,18,8,0)');
+  ao.addColorStop(0.55, 'rgba(24,10,6,0.62)');
+  ao.addColorStop(1, 'rgba(24,10,6,0)');
+  ctx.fillStyle = ao;
+  ctx.fillRect(0, band.min - 24, W, 52);
+  ctx.restore();
+}
+
+const DUST = [];
+function drawDust(ctx, W, H, dt, band) {
+  const count = cheapPresentation() ? 8 : 22;
+  if (!DUST.length) {
+    for (let i = 0; i < 22; i++) {
+      DUST.push({
+        x: Math.random(),
+        y: Math.random() * 0.72,
+        s: 0.7 + Math.random() * 1.3,
+        v: 0.01 + Math.random() * 0.028,
+        p: Math.random() * Math.PI * 2,
+        a: 0.12 + Math.random() * 0.28
+      });
+    }
+  }
+  const t = performance.now() / 1000;
+  const span = Math.max(band.min - 8, H * 0.72);
+  ctx.save();
+  ctx.fillStyle = '#ffe6b8';
+  for (let i = 0; i < count; i++) {
+    const p = DUST[i];
+    if (dt > 0) {
+      p.y -= p.v * dt;
+      p.x += Math.sin(t * 0.55 + p.p) * 0.02 * dt;
+      if (p.y < -0.02) { p.y = 0.74; p.x = Math.random(); }
+      if (p.x < -0.02) p.x += 1;
+      if (p.x > 1.02) p.x -= 1;
+    }
+    const tw = 0.4 + 0.6 * (0.5 + 0.5 * Math.sin(t * 1.3 + p.p));
+    ctx.globalAlpha = p.a * tw;
+    ctx.fillRect(p.x * W, p.y * span, p.s, p.s);
+  }
   ctx.restore();
 }
 
@@ -682,7 +781,9 @@ function drawLampGlow(ctx, x, y, t, s = 1) {
   const a = (0.22 + 0.03 * Math.sin(t * 5 + x)) * Math.min(1, 0.5 + s * 0.5);
   const r = 46 * s;
   const g = ctx.createRadialGradient(x, y, 0, x, y, r);
-  g.addColorStop(0, `rgba(255,210,120,${a})`);
+  // Hot core so the lamp head reads as an emissive material, then the spill.
+  g.addColorStop(0, `rgba(255,244,214,${Math.min(0.9, a + 0.34)})`);
+  g.addColorStop(0.16, `rgba(255,214,130,${a})`);
   g.addColorStop(1, 'rgba(255,180,80,0)');
   ctx.fillStyle = g;
   ctx.fillRect(x - r, y - r, r * 2, r * 2);
@@ -708,14 +809,6 @@ function drawDepthLanes(ctx, W, H, band = DEPTH) {
   g.addColorStop(1, 'rgba(10,14,30,0.35)');
   ctx.fillStyle = g;
   ctx.fillRect(0, band.max - 20, W, H - (band.max - 20));
-}
-
-function drawVignette(ctx, W, H) {
-  const g = ctx.createRadialGradient(W / 2, H * 0.48, H * 0.35, W / 2, H * 0.5, W * 0.72);
-  g.addColorStop(0, 'rgba(20,8,0,0)');
-  g.addColorStop(1, 'rgba(20,8,0,0.5)');
-  ctx.fillStyle = g;
-  ctx.fillRect(0, 0, W, H);
 }
 
 /** Procedural fallback scene (no PNG) — golden hour with neon + lamps + mountain star. */
@@ -864,15 +957,25 @@ function drawStar(ctx, cx, cy, spikes, outer, inner) {
   ctx.fill();
 }
 
-/** Final light pass over characters so the whole frame shares the golden-hour grade. */
+/**
+ * Final light pass over characters so sprites share the golden-hour grade:
+ * cool sky fill from the upper left, warm key from the sun side.
+ */
 export function drawSceneGrade(ctx, area, W, H) {
   ctx.save();
   ctx.globalCompositeOperation = 'soft-light';
-  const g = ctx.createLinearGradient(0, 0, W, 0);
-  g.addColorStop(0, 'rgba(255,150,70,0.18)');
-  g.addColorStop(0.6, 'rgba(255,190,110,0.10)');
-  g.addColorStop(1, 'rgba(255,140,60,0.22)');
+  const g = ctx.createLinearGradient(0, 0, W, H * 0.2);
+  g.addColorStop(0, 'rgba(130,160,210,0.2)');
+  g.addColorStop(0.4, 'rgba(255,180,100,0.08)');
+  g.addColorStop(1, 'rgba(255,140,50,0.24)');
   ctx.fillStyle = g;
+  ctx.fillRect(0, 0, W, H);
+  // Soft rim so the sun-facing side of a sprite picks up a little warmth.
+  ctx.globalCompositeOperation = 'screen';
+  const rim = ctx.createLinearGradient(W * 0.35, 0, W, H * 0.7);
+  rim.addColorStop(0, 'rgba(255,190,110,0)');
+  rim.addColorStop(1, 'rgba(255,176,80,0.07)');
+  ctx.fillStyle = rim;
   ctx.fillRect(0, 0, W, H);
   ctx.restore();
 }
