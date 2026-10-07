@@ -94,7 +94,7 @@
       </div>
 
       <div id="desktop-hint" class="hidden">
-        WASD / Arrows move · Z/J punch · X/K kick · E interact · Esc pause · 1–5 outfits
+        WASD / Arrows move · Z/J punch · X/K kick · E interact · Esc pause · 1–9,0 outfits
       </div>
     </div>
   </div>
@@ -122,6 +122,15 @@
       <h2>Controls</h2>
       <div class="table-wrap"><table id="controls-table"></table></div>
       <button type="button" id="btn-controls-back" class="btn">Back</button>
+    </section>
+    <section id="title-difficulty" class="title-panel" aria-label="Choose difficulty">
+      <h2>Difficulty</h2>
+      <button type="button" id="btn-diff-easy" class="btn" data-diff="easy">Easy</button>
+      <button type="button" id="btn-diff-normal" class="btn" data-diff="normal">Normal</button>
+      <button type="button" id="btn-diff-hard" class="btn" data-diff="hard">Hard</button>
+      <button type="button" id="btn-diff-arcade" class="btn" data-diff="arcade">Arcade</button>
+      <div id="diff-desc" class="title-help">Balanced fights. The way Star City was meant to be roamed.</div>
+      <button type="button" id="btn-diff-back" class="btn btn-secondary">Back</button>
     </section>
     <section id="title-credits" class="title-panel" aria-label="Credits">
       <h2>Credits</h2>
@@ -154,6 +163,9 @@
       <button type="button" id="btn-resume" class="btn">Resume</button>
       <button type="button" id="btn-save" class="btn">Save Game</button>
       <button type="button" id="btn-outfit" class="btn btn-secondary">Outfit: White Polo Tee ▸</button>
+      <button type="button" id="btn-difficulty" class="btn btn-secondary">Difficulty: Normal ▸</button>
+      <button type="button" id="btn-missions" class="btn btn-secondary">Missions ▾</button>
+      <div id="mission-list" class="mission-list hidden"></div>
     </div>
   </div>
 

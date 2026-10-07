@@ -12,7 +12,7 @@ const promptState = { device: 'keyboard', padType: 'xbox', padId: '' };
 const PROMPTS = {
   keyboard: {
     punch: 'Z', kick: 'X', heavy: 'C', interact: 'E', pause: 'Esc',
-    confirm: 'Enter', back: 'Esc', move: 'WASD / Arrows', outfit: '1–5'
+    confirm: 'Enter', back: 'Esc', move: 'WASD / Arrows', outfit: '1–9, 0'
   },
   touch: {
     punch: 'Z', kick: 'X', heavy: '', interact: 'E', pause: 'II',
@@ -124,14 +124,14 @@ export function createInput(canvas, opts = {}) {
   window.addEventListener('keydown', (e) => {
     if (e.ctrlKey || e.metaKey || e.altKey) return;
     const a = keyMap[e.key];
-    if (!a && !(e.key >= '1' && e.key <= '5')) return;
+    if (!a && !(e.key >= '0' && e.key <= '9')) return;
     setDevice(state.mobile ? 'touch' : 'keyboard');
     if (a) {
       keys[a] = true;
       e.preventDefault(); // also stops Enter re-clicking a focused button (we confirm ourselves)
     }
     if (e.repeat) return; // edge-triggered actions never auto-repeat
-    if (e.key >= '1' && e.key <= '5') state.outfitKey = e.key;
+    if (e.key >= '0' && e.key <= '9') state.outfitKey = e.key;
     if (a === 'punch') state.punchPressed = true;
     if (a === 'kick') state.kickPressed = true;
     if (a === 'heavy') state.heavyPressed = true;
