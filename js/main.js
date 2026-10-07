@@ -14,17 +14,25 @@ import {
 import { getMatthewSprite, getNpcSprite, getEnemySprite, drawSprite, drawCollectible, clearSpriteCache, loadSprites, getHeartImages } from './sprites.js';
 import { createTitle } from './title.js';
 import { getHeroFrame, drawHero, clearHeroCache, HERO_DRAW_H, HERO_SHADOW_W } from './hero.js';
+import { createFollowCamera } from './camera.js';
+import { createPresenter } from './present.js';
 
 /** true: player + title Matthew use the high-res procedural hero (hero.js); false: Joe's matthew_sheet.png. */
 const USE_HERO_RENDER = false; // Joe's approved v3 sheet ships; hero.js kept as an alternate renderer
 const PLAYER_SCALE = 1.3; // heroic presentation scale for Matthew vs 64x84 NPCs (draw only; hitboxes unchanged)
 
 const canvas = document.getElementById('game');
-const ctx = canvas.getContext('2d');
-ctx.imageSmoothingEnabled = false;
-
 const W = canvas.width;
 const H = canvas.height;
+// Gameplay draws into a 960×540 scene. present.js crops the follow camera and
+// upscales with filtering (anti-aliasing) onto the display backing store.
+const scene = document.createElement('canvas');
+scene.width = W;
+scene.height = H;
+const ctx = scene.getContext('2d');
+ctx.imageSmoothingEnabled = false;
+const presenter = createPresenter(canvas, scene);
+const followCam = createFollowCamera();
 
 const stateBag = {};
 const missions = createMissionSystem(stateBag);
@@ -255,6 +263,7 @@ function startGame(fromSave) {
     maybeSpawnEncounter(true);
   }
   persist();
+  followCam.cut();
 }
 
 function maybeSpawnEncounter(force) {
@@ -716,6 +725,7 @@ function transitionArea(dir) {
     if (gameState.mode === 'play' && gameState.areaId === nextId) maybeSpawnEncounter(false);
   }, 300);
   persist();
+  followCam.cut();
   return true;
 }
 
@@ -1061,6 +1071,7 @@ function step(dt) {
     gameState.areaId = 'downtown';
     syncDepthBand();
     player.y = PLAYER_START_Y;
+    followCam.cut();
     toast('Matthew dusts himself off…');
     if (lostBoss) toast('Silas is still downtown. Talk to him to try again.');
     updateHUD();
@@ -1134,9 +1145,8 @@ function step(dt) {
     $('interact-prompt').classList.add('hidden');
   }
 
-  // Camera
-  const camArea = AREAS[gameState.areaId];
-  gameState.cameraX = Math.max(0, Math.min(camArea.width - W, player.x - W * 0.4));
+  // Camera — eased follow, see CAMERA in camera.js. Drawn from drawWorld so
+  // pause / dialogue hold or settle with the same lens.
 
   // Autosave
   gameState.saveTimer += dt;
@@ -1271,10 +1281,30 @@ function drawMatthew(pose, outfitId, outfit, t, x, feetY, facing) {
   }
 }
 
+function syncCamera(dt) {
+  const area = AREAS[gameState.areaId];
+  const frame = followCam.update({
+    playerX: player.x,
+    facing: player.facing,
+    areaWidth: area.width,
+    areaId: gameState.areaId,
+    screenW: W,
+    screenH: H,
+    dt
+  });
+  gameState.cameraX = frame.x;
+  return frame;
+}
+
 function drawWorld(dt) {
   const area = AREAS[gameState.areaId];
-  const cam = gameState.cameraX;
-  drawBackground(ctx, area, cam, W, H, dt); // dt drives the ambient sedan (0 = frozen while paused)
+  const camFrame = syncCamera(dt);
+  const cam = camFrame.x;
+  const viewW = camFrame.viewW;
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
+  ctx.imageSmoothingEnabled = false;
+  ctx.clearRect(0, 0, W, H);
+  drawBackground(ctx, area, cam, viewW, H, dt); // dt drives the ambient sedan (0 = frozen while paused)
 
   // Collectibles
   for (const c of stateBag.collectibles) {
@@ -1335,8 +1365,8 @@ function drawWorld(dt) {
     }
   }
 
-  // Shared golden-hour light over characters too
-  drawSceneGrade(ctx, area, W, H);
+  // Shared golden-hour light over characters too (lens width, full plate height)
+  drawSceneGrade(ctx, area, viewW, H);
 
   // HUD minimap (DOM canvas, not the game canvas)
   drawMinimap($('minimap'), {
@@ -1351,6 +1381,13 @@ function drawWorld(dt) {
   const fighting = gameState.combatLock && hostilesAlive();
   const banner = $('combat-banner');
   if (banner) banner.classList.toggle('hidden', !fighting);
+
+  presenter.present({
+    mode: 'world',
+    cameraY: camFrame.y,
+    viewW: camFrame.viewW,
+    viewH: camFrame.viewH
+  });
 }
 
 /** Title backdrop: animated Roanoke skyline (title.js) + Matthew heroic idle vs a Silas silhouette. */
@@ -1375,6 +1412,7 @@ function drawTitleBg(dt) {
   drawMatthew('idle', 'polo', OUTFITS.polo, t, mx, feetY, 1);
   ctx.restore();
   title.drawGrade(ctx, W, H);
+  presenter.present({ mode: 'full' });
 }
 
 // Boot
@@ -1421,6 +1459,7 @@ if (DEBUG) {
       player.x = x;
       syncDepthBand();
       if (y != null) player.y = clampDepth(y);
+      followCam.cut();
       gameState.areaVisitCombat[areaId] = (gameState.areaVisitCombat[areaId] || 0) + 1;
       updateHUD();
     },

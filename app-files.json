@@ -1,5 +1,5 @@
 {
-  "version": "562fdde04f42",
+  "version": "c4a1e8b07d21",
   "generated": "2026-10-07T12:56:43.473Z",
   "bytes": 4979535,
   "files": [
@@ -100,12 +100,14 @@
     "icons/icon-maskable-512.png",
     "icons/icon.ico",
     "index.html",
+    "js/camera.js",
     "js/combat.js",
     "js/hero.js",
     "js/input.js",
     "js/main.js",
     "js/missions.js",
     "js/npcs.js",
+    "js/present.js",
     "js/props.js",
     "js/save.js",
     "js/sprites.js",
