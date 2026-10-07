@@ -23,7 +23,12 @@ const OUTFIT_SHEETS = {
   photo: 'assets/sprites/matthew_photo.png',
   hoodie: 'assets/sprites/matthew_hoodie.png',
   jacket: 'assets/sprites/matthew_jacket.png',
-  street: 'assets/sprites/matthew_street.png'
+  street: 'assets/sprites/matthew_street.png',
+  varsity: 'assets/sprites/matthew_varsity.png',
+  mechanic: 'assets/sprites/matthew_mechanic.png',
+  diner: 'assets/sprites/matthew_diner.png',
+  gold: 'assets/sprites/matthew_gold.png',
+  webslinger: 'assets/sprites/matthew_webslinger.png'
 };
 const outfitSheets = {};      // outfitId -> Image (loaded)
 const outfitPending = {};     // outfitId -> true while lazily loading / after failure

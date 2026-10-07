@@ -560,3 +560,12 @@ kbd {
   #title-screen[data-phase="flash"] .title-flash { animation-duration: .12s; }
   #title-screen[data-phase="flash"] .logo { animation: none; }
 }
+
+/* v2 (game-logic lane): difficulty panel on the title + pause-menu mission list */
+#title-screen[data-phase="difficulty"] #title-difficulty { display: flex; animation: menuIn .25s ease-out both; }
+#title-screen[data-phase="difficulty"] .title-logo { display: none; }
+.mission-list { text-align: left; max-height: 38vh; overflow-y: auto; margin: 6px auto 0; max-width: 420px; font-size: 13px; line-height: 1.45; }
+.mission-list .mh { color: #ffd24a; font-weight: 700; margin-top: 4px; letter-spacing: .08em; }
+.mission-list .mi { display: flex; justify-content: space-between; gap: 10px; }
+.mission-list .st { font-size: 11px; text-transform: uppercase; opacity: .9; }
+.mission-list .st.done { color: #2ecc71; } .mission-list .st.active { color: #ffd24a; } .mission-list .st.available { color: #8fd3ff; } .mission-list .st.locked { color: #888; }

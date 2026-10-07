@@ -89,7 +89,7 @@ function starPath(g, cx, cy, R, r) {
 
 export function createTitle({ focusMenu }) {
   const screen = $('title-screen');
-  let phase = 'attract'; // attract | flash | menu | controls | credits
+  let phase = 'attract'; // attract | flash | menu | controls | credits | difficulty
   let flashT = 0, t = 0, starOnT = 0;
   let layers = null;
   let parts = [];
@@ -257,7 +257,9 @@ export function createTitle({ focusMenu }) {
     const from = phase;
     setPhase('menu');
     const ids = ['btn-continue', 'btn-start', 'btn-new-game', 'btn-controls', 'btn-credits'].filter((id) => !$(id).classList.contains('hidden'));
-    focusMenu(Math.max(0, ids.indexOf(from === 'controls' ? 'btn-controls' : 'btn-credits')));
+    const back = from === 'controls' ? 'btn-controls' : from === 'credits' ? 'btn-credits'
+      : (!$('btn-new-game').classList.contains('hidden') ? 'btn-new-game' : 'btn-start');
+    focusMenu(Math.max(0, ids.indexOf(back)));
   }
 
   // pointer: tap/click anywhere to leave attract
@@ -274,14 +276,25 @@ export function createTitle({ focusMenu }) {
   $('btn-credits').addEventListener('click', () => openPanel('credits'));
   $('btn-controls-back').addEventListener('click', closePanel);
   $('btn-credits-back').addEventListener('click', closePanel);
+  $('btn-diff-back').addEventListener('click', closePanel);
+  // difficulty descriptions follow focus (mouse hover, keys, pad)
+  const DIFF_DESC = {
+    easy: 'Softer thugs, gentler hits, extra healing. Enjoy the sights.',
+    normal: 'Balanced fights. The way Star City was meant to be roamed.',
+    hard: 'Tougher, faster, meaner thugs and a stronger Silas. Less healing. Beat it for the Gold Star Suit.',
+    arcade: 'Hard rules, no healing, and a knockout sends you back to your last save.'
+  };
+  screen.querySelectorAll('[data-diff]').forEach((b) => b.addEventListener('focus', () => { $('diff-desc').textContent = DIFF_DESC[b.dataset.diff]; }));
   // touch: bindTap-style instant tap for the new buttons (click after touch is a no-op on hidden menus)
-  ['btn-controls', 'btn-credits', 'btn-controls-back', 'btn-credits-back'].forEach((id) => {
+  ['btn-controls', 'btn-credits', 'btn-controls-back', 'btn-credits-back', 'btn-diff-back'].forEach((id) => {
     $(id).addEventListener('touchend', (e) => { if (e.cancelable) e.preventDefault(); $(id).click(); }, { passive: false });
   });
 
   return {
     drawBackdrop, drawGrade, silhouette,
     get phase() { return phase; },
+    /** New Game flow: open the difficulty selector (focus defaults to Normal). */
+    openDifficulty() { setPhase('difficulty'); focusMenu(1); },
     show() { setPhase('attract'); starOnT = 0; lastDev = ''; refreshPrompt(); },
     /** Title-mode input. Returns true when the input was consumed (skip handleMenu). */
     update(inp, dt) {
@@ -306,7 +319,7 @@ export function createTitle({ focusMenu }) {
       if (inp.navUp || inp.navDown || inp.navLeft || inp.navRight) blip('move');
       if (inp.backPressed) {
         blip('back');
-        if (phase === 'controls' || phase === 'credits') closePanel();
+        if (phase === 'controls' || phase === 'credits' || phase === 'difficulty') closePanel();
         else { setPhase('attract'); }
         return true;
       }

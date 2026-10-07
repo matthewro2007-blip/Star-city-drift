@@ -1,12 +1,14 @@
 /**
- * localStorage save — versioned. Current key/format: `starCityDrift_v1`, data.v = 2.
- * Older saves (`starCityDrift2d_v1`, data.v = 1) are migrated on read.
+ * localStorage save — versioned. Current key/format: `starCityDrift_v1`, data.v = 3.
+ * Older saves are migrated on read: `starCityDrift2d_v1` (v1) -> v2 -> v3, and v2 under the
+ * current key -> v3 (adds difficulty 'normal', fetchItems, beatHard; all progress kept).
  * A corrupt/unknown save never throws: it is moved aside and reported as 'corrupt'.
  */
 import { getDepth } from './world.js';
 
 export const SAVE_KEY = 'starCityDrift_v1';
-export const SAVE_VERSION = 2;
+export const SAVE_VERSION = 3;
+const DIFF_IDS = ['easy', 'normal', 'hard', 'arcade'];
 const LEGACY_KEYS = ['starCityDrift2d_v1'];
 const BAD_KEY = SAVE_KEY + '_corrupt';
 
@@ -17,10 +19,16 @@ function ls() {
 function isObj(o) { return !!o && typeof o === 'object' && !Array.isArray(o); }
 function num(v, d) { return typeof v === 'number' && Number.isFinite(v) ? v : d; }
 
-/** Convert a legacy v1 payload into the v2 shape. */
+/** v2 -> v3: keep everything, add the new fields with safe defaults. */
+function migrateV2(d) {
+  if (!isObj(d)) return d;
+  return { ...d, v: 3, difficulty: 'normal', fetchItems: [], fetchActive: false, beatHard: false };
+}
+
+/** Convert a legacy v1 payload into the v2 shape (then migrateV2). */
 function migrateV1(d) {
-  return {
-    v: SAVE_VERSION,
+  return migrateV2({
+    v: 2,
     savedAt: num(d.savedAt, Date.now()),
     areaId: typeof d.areaId === 'string' ? d.areaId : 'downtown',
     player: isObj(d.player) ? d.player : {},
@@ -35,7 +43,7 @@ function migrateV1(d) {
     score: 0,
     special: 40,
     playTime: 0
-  };
+  });
 }
 
 /** Throws if the payload can't be trusted. */
@@ -60,7 +68,13 @@ export function inspectSave() {
   try { raw = store.getItem(SAVE_KEY); } catch { return { status: 'none', data: null }; }
   if (raw) {
     try {
-      return { status: 'ok', data: validate(JSON.parse(raw)) };
+      const parsed = JSON.parse(raw);
+      if (isObj(parsed) && parsed.v === 2) {
+        const data = validate(migrateV2(parsed));
+        try { store.setItem(SAVE_KEY, JSON.stringify(data)); } catch (_) {}
+        return { status: 'migrated', data };
+      }
+      return { status: 'ok', data: validate(parsed) };
     } catch (e) {
       try { store.setItem(BAD_KEY, raw); store.removeItem(SAVE_KEY); } catch (_) {}
       console.warn('[save] ignoring corrupt save:', e.message);
@@ -121,7 +135,11 @@ export function serializeSave({ player, stateBag, gameState, outfitId, areaId })
     deliveryActive: !!stateBag.deliveryActive,
     score: gameState.score || 0,
     special: gameState.special ?? 40,
-    playTime: Math.floor(gameState.playTime || 0)
+    playTime: Math.floor(gameState.playTime || 0),
+    difficulty: gameState.difficulty || 'normal',
+    fetchItems: [...(stateBag.fetchItems || [])],
+    fetchActive: !!(stateBag.side && stateBag.side.id === 'side_potluck'),
+    beatHard: !!stateBag.beatHard
   };
 }
 
@@ -161,6 +179,14 @@ export function applySave(data, { player, stateBag, gameState, areas }) {
     stateBag.unlockedOutfits = new Set(['polo', ...(data.unlockedOutfits || []).filter((o) => typeof o === 'string')]);
     const taken = new Set(data.collectTaken || []);
     for (const c of stateBag.collectibles) c.taken = taken.has(c.id);
+    stateBag.fetchItems = Array.isArray(data.fetchItems) ? data.fetchItems.filter((x) => typeof x === 'string') : [];
+    stateBag.beatHard = !!data.beatHard;
+    // timed / wave missions restart from their giver after a load; the fetch run resumes
+    stateBag.side = data.fetchActive && !stateBag.missions.side_potluck?.done ? { id: 'side_potluck' } : null;
+    for (const c of stateBag.collectibles) {
+      if (c.reveal) c.area = stateBag.missions[c.reveal]?.done ? c.home : 'hidden:' + c.home;
+    }
+    gameState.difficulty = DIFF_IDS.includes(data.difficulty) ? data.difficulty : 'normal';
 
     const areaId = areas && areas[data.areaId] ? data.areaId : 'downtown';
     const areaW = areas && areas[areaId] ? areas[areaId].width : 1000;

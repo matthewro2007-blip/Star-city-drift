@@ -8,7 +8,8 @@ import { hasSave, clearSave, serializeSave, saveGame, inspectSave, applySave } f
 import { createInput, getPromptLabel, getPromptDevice, rumble } from './input.js';
 import {
   createPlayer, updatePlayer, updateEnemy, resolveHits,
-  drawEnemy, spawnWave, createSilasFighter, clampDepth, setDepthBand, getDepthBand
+  drawEnemy, spawnWave, createSilasFighter, clampDepth, setDepthBand, getDepthBand,
+  createThug, setDifficulty, getDifficulty, DIFFICULTIES, DIFFICULTY_ORDER
 } from './combat.js';
 import { getMatthewSprite, getNpcSprite, getEnemySprite, drawSprite, drawCollectible, clearSpriteCache, loadSprites, getHeartImages } from './sprites.js';
 import { createTitle } from './title.js';
@@ -63,7 +64,10 @@ const gameState = {
   areaVisitCombat: {},
   score: 0,
   playTime: 0,
-  special: 40
+  special: 40,
+  difficulty: 'normal',      // easy | normal | hard | arcade (saved; old saves default to normal)
+  pendingDifficulty: null,   // picked on the title difficulty selector for a New Game
+  fetchGive: null            // Potluck Run item being handed over in the current dialogue
 };
 
 /**
@@ -129,8 +133,9 @@ const HUD_LOCATION = {
 
 function updateHUD() {
   const m = missions.getActive();
-  $('mission-title').textContent = m ? m.title : 'Free Roam';
-  $('mission-desc').textContent = m ? m.desc : (stateBag.deliveryActive ? 'Deliver to River Bridge' : 'Explore Star City');
+  const sm = sideMission();
+  $('mission-title').textContent = sm ? sm.title : m ? m.title : 'Free Roam';
+  $('mission-desc').textContent = sm ? sideObjective(sm) : m ? m.desc : (stateBag.deliveryActive ? 'Deliver to River Bridge' : 'Explore Star City');
   $('outfit-count').textContent = `${stateBag.unlockedOutfits.size}/${OUTFIT_ORDER.length}`;
   $('collect-count').textContent = `${missions.collectCount()}/${missions.collectTotal()}`;
   const area = AREAS[gameState.areaId];
@@ -204,6 +209,9 @@ function startGame(fromSave) {
   gameState.playTime = 0;
   gameState.special = 40;
   gameState.bossActive = false;
+  gameState.difficulty = (!fromSave && gameState.pendingDifficulty) || 'normal';
+  gameState.pendingDifficulty = null;
+  gameState.fetchGive = null;
   let restored = false;
   if (fromSave) {
     const r = inspectSave();
@@ -220,6 +228,7 @@ function startGame(fromSave) {
       toast("Couldn't read that save — starting a new game");
     }
   }
+  setDifficulty(gameState.difficulty);
   gameState.enemies = [];
   gameState.combatLock = false;
   gameState.wave = 0;
@@ -252,14 +261,17 @@ function maybeSpawnEncounter(force) {
   if (gameState.mode !== 'play') return;
   const area = AREAS[gameState.areaId];
   if (!area.spawnCombat) return;
-  if (gameState.enemies.some((e) => e.alive)) return;
+  if (hostilesAlive()) return;
   const visited = gameState.areaVisitCombat[gameState.areaId] || 0;
   if (!force && visited > 0 && Math.random() > area.combatChance) return;
   // Don't spawn on first moment at diner until after talking? Actually spawn street thugs elsewhere
   if (gameState.areaId === 'diner' && !stateBag.missions.main1.done && !force) return;
   if (gameState.areaId === 'star') return;
+  const sk = sideMission()?.kind;
+  if (sk === 'defend' || sk === 'survive' || sk === 'spar' || sk === 'chase') return; // the mission runs its own fights
+  if (sk === 'escort' && gameState.areaId === sideMission().dest) return;           // the ambush handles the bridge
 
-  const count = 2 + Math.min(3, gameState.wave);
+  const count = Math.max(1, 2 + Math.min(3, gameState.wave) + getDifficulty().wave);
   gameState.enemies = spawnWave(area, count, gameState.wave, player.x);
   gameState.combatLock = true;
   gameState.areaVisitCombat[gameState.areaId] = visited + 1;
@@ -269,8 +281,15 @@ function maybeSpawnEncounter(force) {
 
 function npcsInArea() {
   // Silas is the boss while the fight is on, and he's gone after the ending.
-  return NPC_DEFS.filter((n) => n.area === gameState.areaId &&
-    !(n.id === 'silas' && (gameState.bossActive || stateBag.mainComplete)));
+  const esc = stateBag.side && stateBag.missions[stateBag.side.id]?.kind === 'escort' ? stateBag.side : null;
+  const list = NPC_DEFS.filter((n) => n.area === gameState.areaId &&
+    !(n.id === 'silas' && (gameState.bossActive || stateBag.mainComplete)) &&
+    !(esc && n.id === 'hank'));
+  if (esc && esc.area === gameState.areaId) {
+    const hank = NPC_DEFS.find((n) => n.id === 'hank');
+    list.push({ ...hank, area: esc.area, x: esc.x });
+  }
+  return list;
 }
 
 function nearestNPC() {
@@ -294,6 +313,16 @@ function canTalkTo(npc) {
 
 /** Lines depend on the NPC's mission state: story lines, "not yet", "in progress", or "done". */
 function linesFor(npc) {
+  const sm = missions.missionFor(npc.id);
+  if (sm && sm.offer) {
+    if (stateBag.side && stateBag.side.id === sm.id) {
+      return sm.kind === 'fetch' && fetchDone()
+        ? ["You found everything! Matthew, this potluck is going to be perfect."]
+        : sm.active;
+    }
+    if (stateBag.side) return ["Looks like you've got your hands full. Finish that first, then come see me."];
+    return sm.offer;
+  }
   const st = missions.npcStatus(npc.id);
   if (st === 'locked') return npc.waitLines || npc.lines;
   if (st === 'active') return npc.activeLines || npc.doneLines || npc.lines;
@@ -302,7 +331,13 @@ function linesFor(npc) {
 }
 
 function startDialogue(npc) {
-  const lines = linesFor(npc);
+  let lines = linesFor(npc);
+  gameState.fetchGive = null;
+  const fm = sideMission();
+  if (fm && fm.kind === 'fetch') {
+    const item = fm.items.find((it) => it.npc === npc.id && !stateBag.fetchItems.includes(it.id));
+    if (item) { gameState.fetchGive = item; lines = [item.line]; }
+  }
   gameState.mode = 'dialogue';
   gameState.dialogueNpc = npc;
   gameState.dialogue = lines;
@@ -347,8 +382,25 @@ function finishDialogue() {
   input.focusGame();
   if (!npc) return;
 
+  if (gameState.fetchGive) {
+    const it = gameState.fetchGive;
+    gameState.fetchGive = null;
+    if (!stateBag.fetchItems.includes(it.id)) stateBag.fetchItems.push(it.id);
+    const n = stateBag.fetchItems.length, total = stateBag.missions.side_potluck.items.length;
+    toast(`Got ${it.name} (${n}/${total})${n >= total ? ' — back to June!' : ''}`);
+    updateHUD();
+    persist();
+    return;
+  }
+
   const m = missions.missionFor(npc.id);
-  if (m) {
+  if (m && m.kind) {
+    if (stateBag.side && stateBag.side.id === m.id) {
+      if (m.kind === 'fetch' && fetchDone()) completeSide();
+    } else if (!stateBag.side) {
+      startSide(m);
+    }
+  } else if (m) {
     if (m.id === 'side_coach') {
       // Accepting the job starts the delivery; it completes at the River Bridge.
       missions.startDelivery(toast, onProgress);
@@ -361,7 +413,7 @@ function finishDialogue() {
         // street fight after Dee
         const areaId = gameState.areaId;
         setTimeout(() => {
-          if (gameState.mode === 'play' && gameState.areaId === areaId && !gameState.enemies.some((e) => e.alive)) {
+          if (gameState.mode === 'play' && gameState.areaId === areaId && !hostilesAlive()) {
             gameState.enemies = spawnWave(AREAS[gameState.areaId], 3, gameState.wave++, player.x);
             gameState.combatLock = true;
             toast('Ambush outside the diner!');
@@ -388,12 +440,238 @@ function startBossFight() {
 
 /** Progress happened (mission, collectible, outfit): refresh HUD and autosave. */
 function onProgress() {
+  checkGold();
   updateHUD();
   persist();
 }
 
+// ---------- v2 side-mission engine (defend / chase / survive / fetch / spar / escort) ----------
+function hostilesAlive() { return gameState.enemies.some((e) => e.alive && !e.noLock); }
+function sideMission() { return stateBag.side ? stateBag.missions[stateBag.side.id] || null : null; }
+function fetchDone() {
+  const m = stateBag.missions.side_potluck;
+  return m.items.every((it) => stateBag.fetchItems.includes(it.id));
+}
+const npcDef = (id) => NPC_DEFS.find((n) => n.id === id);
+
+function sideObjective(m) {
+  const s = stateBag.side;
+  switch (m.kind) {
+    case 'defend': return `Wave ${Math.min(m.waves, Math.max(1, s.wave))}/${m.waves} · Diner window ${Math.max(0, Math.ceil(s.hp))}%`;
+    case 'survive': return `Survive! ${Math.max(0, Math.ceil(s.t))}s left`;
+    case 'spar': return `KOs ${s.kos}/${m.target} · Hits taken ${s.hits}/${s.maxHits}`;
+    case 'chase': {
+      const where = s.runnerArea && s.runnerArea !== gameState.areaId ? ` — he ran to ${AREAS[s.runnerArea].name}` : '';
+      return `Catch the snatcher! ${Math.max(0, Math.ceil(s.t))}s${where}`;
+    }
+    case 'escort': return `Hank ${Math.max(0, Math.ceil(s.hp))}/100 · ${s.ambush ? 'Fight off the ambush!' : 'Walk him to the River Bridge'}`;
+    case 'fetch': {
+      const left = m.items.filter((it) => !stateBag.fetchItems.includes(it.id));
+      return left.length ? `Fetch: ${left.map((it) => `${it.name} (${npcDef(it.npc).name.split(' ')[0]})`).join(', ')}` : 'Bring everything back to June';
+    }
+    default: return m.desc;
+  }
+}
+
+function addSideWave(n, extra) {
+  const area = AREAS[gameState.areaId];
+  const list = spawnWave(area, Math.max(1, n), gameState.wave++, player.x);
+  list.forEach((e, i) => extra && extra(e, i));
+  gameState.enemies.push(...list);
+  gameState.combatLock = true;
+  return list;
+}
+
+function makeRunner(x) {
+  const e = createThug(x, getDepthBand().min + 30, 0);
+  Object.assign(e, { runner: true, noLock: true, hp: 1, maxHp: 1, color: '#d35400', scoreValue: 0, runT: 2.4, restT: 0 });
+  return e;
+}
+
+function startSide(m) {
+  if (stateBag.side) { toast('Finish your current job first'); return; }
+  const D = getDifficulty();
+  const s = { id: m.id };
+  stateBag.side = s;
+  if (m.kind === 'defend') { s.wave = 0; s.hp = 100; s.next = 0.8; }
+  else if (m.kind === 'survive') { s.t = m.time; s.next = 0.5; }
+  else if (m.kind === 'spar') { s.kos = 0; s.hits = 0; s.maxHits = D.sparHits; s.next = 0.6; }
+  else if (m.kind === 'chase') {
+    s.t = m.time; s.runnerArea = gameState.areaId;
+    gameState.enemies.push(makeRunner(Math.min(AREAS[gameState.areaId].width - 120, npcDef(m.npc).x + 90)));
+  } else if (m.kind === 'escort') { s.hp = 100; s.area = gameState.areaId; s.x = npcDef(m.npc).x; s.ambush = false; }
+  else if (m.kind === 'fetch') { stateBag.fetchItems = []; }
+  toast(`Mission started: ${m.title}`);
+  onProgress();
+}
+
+function failSide(msg) {
+  const m = sideMission();
+  if (!m) return;
+  stateBag.side = null;
+  gameState.enemies = gameState.enemies.filter((e) => !e.runner && !e.sideFoe);
+  if (!hostilesAlive()) { gameState.enemies = []; gameState.combatLock = false; }
+  toast(msg, true);
+  toast(`Talk to ${npcDef(m.npc).name} to try "${m.title}" again.`);
+  updateHUD();
+  if (!getDifficulty().arcade) persist();
+}
+
+function completeSide() {
+  const m = sideMission();
+  if (!m) return;
+  gameState.enemies = gameState.enemies.filter((e) => !e.runner && !e.sideFoe);
+  if (!hostilesAlive()) { gameState.enemies = []; gameState.combatLock = false; }
+  gameState.score += m.reward?.score || 0;
+  heal(30, false);
+  if (m.winLines) toast(m.winLines);
+  missions.completeMission(m.id, toast, onProgress); // clears stateBag.side, reveals reward pickups, autosaves
+  if (m.reward?.score) toast(`+${m.reward.score} score`);
+}
+
+/** Healing scales with difficulty (Arcade: none). */
+function heal(base, announce = true) {
+  const amt = Math.round(base * getDifficulty().heal);
+  if (amt <= 0 || player.hp >= player.maxHp) return 0;
+  player.hp = Math.min(player.maxHp, player.hp + amt);
+  if (announce) toast(`Breather: +${amt} HP`);
+  return amt;
+}
+
+/** Gold Star Suit: 100% completion (all missions + collectibles) or beating Silas on Hard / Arcade. */
+function checkGold() {
+  if (!stateBag.unlockedOutfits || stateBag.unlockedOutfits.has('gold')) return;
+  if (stateBag.beatHard || missions.allDone()) {
+    stateBag.unlockedOutfits.add('gold');
+    toast(stateBag.beatHard ? 'Beat Silas on Hard — Gold Star Suit unlocked! (key 9)' : '100% complete — Gold Star Suit unlocked! (key 9)', true);
+  }
+}
+
+/** Collectible pickup: score for pure collectibles, outfits are worn right away. */
+function collectHere() {
+  const got = missions.tryCollect(gameState.areaId, player.x, toast, () => {});
+  if (!got) return null;
+  if (got.score) { gameState.score += got.score; toast(`+${got.score} score`); }
+  if (got.outfit) setOutfit(got.outfit);
+  onProgress();
+  return got;
+}
+
+/** Where a side mission's enemies walk to (Dee's window, escorted Hank), else the player. */
+function sideTarget(e) {
+  const s = stateBag.side;
+  if (s && e.target === 'dee') { const dx = npcDef('dee').x; return { x: dx + (e.x < dx ? -26 : 26), y: npcFeetY() }; }
+  if (s && e.target === 'escort' && s.area === gameState.areaId) return { x: s.x + (e.x < s.x ? -26 : 26), y: npcFeetY() };
+  return player;
+}
+
+function updateRunner(e, dt, area) {
+  e.animT += dt;
+  if (!e.alive) return;
+  if (e.stun > 0) { e.stun -= dt; e.pose = 'hurt'; return; }
+  if (e.restT > 0) {
+    e.restT -= dt; e.pose = 'idle'; e.facing = player.x > e.x ? 1 : -1;
+    if (e.restT <= 0) e.runT = 2 + Math.random();
+    return;
+  }
+  e.runT -= dt;
+  if (e.runT <= 0) { e.restT = 0.9; return; } // winded
+  e.facing = 1; e.pose = 'chase';
+  e.x += getDifficulty().runner * dt;
+  const s = stateBag.side;
+  if (e.x >= area.width - 40) {
+    if (!area.rightTo || gameState.areaId === 'pages') { failSide('The snatcher got away past Valley Pages.'); return; }
+    s.runnerArea = area.rightTo;
+    gameState.enemies = gameState.enemies.filter((k) => k !== e);
+    toast(`He ducked into ${AREAS[area.rightTo].name}!`);
+  }
+}
+
+/** Per-frame side-mission logic (only in play, after combat). */
+function updateSide(dt) {
+  const m = sideMission();
+  if (!m) return;
+  const s = stateBag.side;
+  const D = getDifficulty();
+  const inArea = gameState.areaId === m.area;
+  if ((m.kind === 'defend' || m.kind === 'survive' || m.kind === 'spar') && !inArea) {
+    failSide(`You left ${AREAS[m.area].name} — mission failed.`);
+    return;
+  }
+  if (m.kind === 'defend') {
+    const deeX = npcDef('dee').x;
+    for (const e of gameState.enemies) {
+      if (e.alive && e.target === 'dee' && e.hitbox && !e.hitbox.hit.has('window') && Math.abs(e.x - deeX) < 60) {
+        e.hitbox.hit.add('window');
+        s.hp -= e.dmg * 0.8;
+      }
+    }
+    if (s.hp <= 0) { failSide("The diner window's smashed — Dee's furious (at them, not you)."); return; }
+    if (!hostilesAlive()) {
+      if (s.wave >= m.waves) { completeSide(); return; }
+      s.next -= dt;
+      if (s.next <= 0) {
+        s.wave++;
+        addSideWave(2 + s.wave + D.wave, (e, i) => { e.sideFoe = true; if (i % 2 === 0) e.target = 'dee'; });
+        toast(`Lunch rush wave ${s.wave}/${m.waves}!`);
+        s.next = 1.5;
+      }
+    }
+  } else if (m.kind === 'survive') {
+    s.t -= dt;
+    s.next -= dt;
+    const alive = gameState.enemies.filter((e) => e.alive && !e.noLock).length;
+    if (s.t <= 0) { toast('Time! The crew bails.'); completeSide(); return; }
+    if (s.next <= 0 && alive < 2 + Math.max(0, D.wave)) {
+      addSideWave(2 + D.wave, (e) => { e.sideFoe = true; });
+      s.next = 7;
+    }
+  } else if (m.kind === 'spar') {
+    if (s.hits > s.maxHits) {
+      s.kos = 0; s.hits = 0; s.next = 1.2;
+      for (const e of gameState.enemies) if (e.sideFoe) { e.alive = false; e.stun = 0; }
+      gameState.enemies = gameState.enemies.filter((e) => !e.sideFoe);
+      toast('Tagged too often — Coach resets the round!', true);
+      return;
+    }
+    if (s.kos >= m.target) { completeSide(); return; }
+    if (!hostilesAlive()) {
+      s.next -= dt;
+      if (s.next <= 0) {
+        addSideWave(Math.min(2 + Math.max(0, D.wave), m.target - s.kos), (e) => { e.sideFoe = true; e.sparring = true; e.dmg = Math.max(1, Math.round(e.dmg * 0.6)); });
+        s.next = 0.8;
+      }
+    }
+  } else if (m.kind === 'chase') {
+    s.t -= dt;
+    if (s.t <= 0) { failSide('Out of breath — the snatcher vanished into the crowd.'); return; }
+    const r = gameState.enemies.find((e) => e.runner);
+    if (r && !r.alive) { toast('Caught him! Purse recovered.'); completeSide(); return; }
+  } else if (m.kind === 'escort') {
+    if (s.area === gameState.areaId) {
+      const goal = player.x - player.facing * 50;
+      const d = goal - s.x;
+      if (Math.abs(d) > 4) s.x += Math.sign(d) * Math.min(Math.abs(d), 150 * dt);
+      for (const e of gameState.enemies) {
+        if (e.alive && e.target === 'escort' && e.hitbox && !e.hitbox.hit.has('hank') && Math.abs(e.x - s.x) < 50) {
+          e.hitbox.hit.add('hank');
+          s.hp -= e.dmg;
+        }
+      }
+    }
+    if (s.hp <= 0) { failSide("Hank's knees have had enough — he heads home."); return; }
+    if (gameState.areaId === m.dest && !s.ambush) {
+      s.ambush = true;
+      addSideWave(3 + D.wave, (e, i) => { e.sideFoe = true; if (i % 2 === 0) e.target = 'escort'; });
+      toast('Ambush on the bridge — protect Hank!', true);
+    } else if (s.ambush && !hostilesAlive()) {
+      completeSide();
+    }
+  }
+}
+
 function tryInteract() {
-  if (gameState.combatLock && gameState.enemies.some((e) => e.alive)) {
+  if (gameState.combatLock && hostilesAlive()) {
     toast('Clear the thugs first!');
     return;
   }
@@ -403,13 +681,12 @@ function tryInteract() {
     return;
   }
   // collectibles
-  const got = missions.tryCollect(gameState.areaId, player.x, toast, onProgress);
-  if (got && got.outfit) setOutfit(got.outfit);
+  collectHere();
   missions.checkDelivery(gameState.areaId, toast, onProgress);
 }
 
 function transitionArea(dir) {
-  if (gameState.combatLock && gameState.enemies.some((e) => e.alive)) {
+  if (gameState.combatLock && hostilesAlive()) {
     toast('Defeat all enemies to leave!');
     return false;
   }
@@ -422,6 +699,14 @@ function transitionArea(dir) {
   syncDepthBand();
   gameState.enemies = [];
   gameState.combatLock = false;
+  const side = stateBag.side, sm = sideMission();
+  if (sm && sm.kind === 'escort' && side.area !== nextId) {
+    side.area = nextId; // Hank tags along
+    side.x = Math.max(40, Math.min(next.width - 40, player.x + (dir === 'left' ? 50 : -50)));
+  }
+  if (sm && sm.kind === 'chase' && side.runnerArea === nextId) {
+    gameState.enemies.push(makeRunner(Math.min(next.width - 200, player.x + 200)));
+  }
   gameState.spawnChecked = false;
   updateHUD();
   toast(next.name);
@@ -578,6 +863,8 @@ function pauseGame() {
   $('pause-screen').classList.remove('hidden');
   $('btn-save').textContent = 'Save Game';
   updateOutfitButton();
+  updateDifficultyButton();
+  renderMissionList();
   $('interact-prompt').classList.add('hidden');
   menuFocus(0, $('pause-screen'));
 }
@@ -589,6 +876,52 @@ function resumeGame() {
   input.flush();
   input.focusGame();
 }
+function updateDifficultyButton() {
+  const b = $('btn-difficulty');
+  if (b) b.textContent = `Difficulty: ${getDifficulty().name} ▸`;
+}
+function cycleDifficulty() {
+  const i = DIFFICULTY_ORDER.indexOf(gameState.difficulty);
+  gameState.difficulty = DIFFICULTY_ORDER[(i + 1) % DIFFICULTY_ORDER.length];
+  setDifficulty(gameState.difficulty);
+  updateDifficultyButton();
+  toast(`Difficulty: ${getDifficulty().name}${getDifficulty().arcade ? ' — no healing, KO = back to last save' : ''} (applies to new fights)`, true);
+  persist();
+}
+const STATUS_LABEL = { done: 'Done ✓', active: 'Active', available: 'Available', locked: 'Locked' };
+function renderMissionList() {
+  const el = $('mission-list');
+  if (!el) return;
+  const all = Object.values(stateBag.missions || {});
+  const row = (m) => {
+    const st = missions.missionStatus(m.id);
+    const who = npcDef(m.npc);
+    return `<div class="mi" data-mission="${m.id}" data-status="${st}"><span>${m.title}<small> · ${who ? who.name.split(' ')[0] : ''}</small></span><span class="st ${st}">${STATUS_LABEL[st]}</span></div>`;
+  };
+  const done = all.filter((m) => m.done).length;
+  el.innerHTML = `<div class="mh">MAIN STORY</div>${all.filter((m) => m.type === 'main').map(row).join('')}` +
+    `<div class="mh">SIDE MISSIONS</div>${all.filter((m) => m.type === 'side').map(row).join('')}` +
+    `<div class="mh">${done}/${all.length} missions · ${missions.collectCount()}/${missions.collectTotal()} collectibles · ${getDifficulty().name}</div>`;
+}
+function toggleMissionList() {
+  const el = $('mission-list');
+  renderMissionList();
+  el.classList.toggle('hidden');
+  $('btn-missions').textContent = el.classList.contains('hidden') ? 'Missions ▾' : 'Missions ▴';
+}
+
+/** Arcade knockout: game over, reload the last save at full health. */
+function arcadeGameOver() {
+  toast('GAME OVER — back to your last save', true);
+  stateBag.side = null;
+  gameState.mode = 'title';
+  startGame(true);
+  player.hp = player.maxHp;
+  player.alive = true;
+  setTimeout(() => toast('GAME OVER — back to your last save', true), 0);
+  updateHUD();
+}
+
 let saveLabelTimer = null;
 function manualSave() {
   const ok = persist();
@@ -599,17 +932,28 @@ function manualSave() {
   toast(ok ? 'Saved' : 'Save failed — storage unavailable', true);
 }
 
-bindTap('btn-start', () => whenReady(() => startGame(false)));
+// New Game -> (overwrite confirm) -> difficulty selector -> start
+bindTap('btn-start', () => whenReady(() => title.openDifficulty()));
 bindTap('btn-continue', () => whenReady(() => startGame(true)));
 bindTap('btn-new-game', () => {
   if (hasSave()) openConfirm();
-  else whenReady(() => startGame(false));
+  else whenReady(() => title.openDifficulty());
 });
 bindTap('btn-confirm-yes', () => {
-  clearSave();
   $('confirm-screen').classList.add('hidden');
-  whenReady(() => startGame(false));
+  whenReady(() => title.openDifficulty());
 });
+for (const id of DIFFICULTY_ORDER) {
+  bindTap(`btn-diff-${id}`, () => whenReady(() => {
+    if (gameState.mode !== 'title') return;
+    clearSave(); // only reachable via New Game (with the overwrite confirm when a save exists)
+    gameState.pendingDifficulty = id;
+    startGame(false);
+    toast(`Difficulty: ${DIFFICULTIES[id].name}`);
+  }));
+}
+bindTap('btn-difficulty', () => cycleDifficulty());
+bindTap('btn-missions', () => toggleMissionList());
 bindTap('btn-confirm-no', () => closeConfirm());
 bindTap('btn-resume', () => resumeGame());
 bindTap('btn-save', () => manualSave());
@@ -686,7 +1030,7 @@ function step(dt) {
   }
 
   if (inp.outfitKey) {
-    const id = OUTFIT_ORDER[Number(inp.outfitKey) - 1];
+    const id = OUTFIT_ORDER[inp.outfitKey === '0' ? 9 : Number(inp.outfitKey) - 1];
     if (id) setOutfit(id);
   }
   if (inp.outfitCycle && gameState.mode === 'play') cycleOutfit(inp.outfitCycle);
@@ -701,7 +1045,12 @@ function step(dt) {
   // PLAY
   gameState.playTime += dt;
   if (DEBUG && gameState.god) player.hp = player.maxHp;
+  if (!player.alive && getDifficulty().arcade) {
+    arcadeGameOver();
+    return;
+  }
   if (!player.alive) {
+    if (stateBag.side) failSide('Matthew got knocked down — mission failed.');
     const lostBoss = gameState.bossActive;
     player.hp = player.maxHp;
     player.alive = true;
@@ -724,7 +1073,10 @@ function step(dt) {
     gameState.hitStop -= dt;
   } else {
     updatePlayer(player, inp, dt, area.width);
-    for (const e of gameState.enemies) updateEnemy(e, player, dt, area.width);
+    for (const e of gameState.enemies) {
+      if (e.runner) updateRunner(e, dt, area);
+      else updateEnemy(e, e.target ? sideTarget(e) : player, dt, area.width);
+    }
     resolveHits(player, gameState.enemies,
       (e) => {
         gameState.hitStop = 0.04;
@@ -732,23 +1084,32 @@ function step(dt) {
         if (!e.alive) gameState.score += e.scoreValue || 100;
         rumble(0.25, 0.45, 60);
       },
-      () => { rumble(0.8, 0.5, 140); updateHUD(); },
+      () => {
+        if (stateBag.side && stateBag.side.id === 'side_spar') stateBag.side.hits++;
+        rumble(0.8, 0.5, 140); updateHUD();
+      },
       area.width
     );
-    gameState.enemies = gameState.enemies.filter((e) => e.alive || e.stun > 0);
-    if (gameState.combatLock && !gameState.enemies.some((e) => e.alive)) {
+    if (stateBag.side && stateBag.side.id === 'side_spar') {
+      for (const e of gameState.enemies) if (e.sparring && !e.alive && !e.counted) { e.counted = true; stateBag.side.kos++; }
+    }
+    gameState.enemies = gameState.enemies.filter((e) => e.alive || e.stun > 0 || (e.runner && sideMission()));
+    if (gameState.combatLock && !hostilesAlive()) {
       gameState.combatLock = false;
       gameState.enemies = [];
       if (gameState.bossActive) {
         // Silas is down: story complete → good ending
         gameState.bossActive = false;
+        if (gameState.difficulty === 'hard' || gameState.difficulty === 'arcade') stateBag.beatHard = true;
         toast('Silas Boone backs off.');
         missions.completeMission('main4', toast, onProgress);
         if (!gameState.ended) showEnding();
-      } else {
+      } else if (!stateBag.side) {
         toast('Street clear!');
+        heal(15);
       }
     }
+    if (gameState.mode === 'play') updateSide(dt);
   }
   if (gameState.mode !== 'play') { drawWorld(0); return; }
 
@@ -762,12 +1123,11 @@ function step(dt) {
   if (gameState.mode !== 'play') { drawWorld(dt); return; }
 
   // Auto pickup nearby collectibles (autosaves; outfit pickups are worn right away)
-  const got = missions.tryCollect(gameState.areaId, player.x, toast, onProgress);
-  if (got && got.outfit) setOutfit(got.outfit);
+  collectHere();
 
   // Interact prompt
   const npc = nearestNPC();
-  if (npc && !(gameState.combatLock && gameState.enemies.some((e) => e.alive))) {
+  if (npc && !(gameState.combatLock && hostilesAlive())) {
     $('interact-prompt').classList.remove('hidden');
     $('interact-text').textContent = `Talk to ${npc.name}`;
   } else {
@@ -780,7 +1140,7 @@ function step(dt) {
 
   // Autosave
   gameState.saveTimer += dt;
-  if (gameState.saveTimer > 8) {
+  if (gameState.saveTimer > 8 && !(getDifficulty().arcade && hostilesAlive())) { // Arcade: last save = pre-fight checkpoint
     gameState.saveTimer = 0;
     persist();
   }
@@ -791,6 +1151,17 @@ function step(dt) {
 
 /** Where the minimap should point: active mission NPC, or delivery target. */
 function currentDestination() {
+  const sm = sideMission();
+  if (sm) {
+    if (sm.kind === 'escort') return { areaId: sm.dest, x: null };
+    if (sm.kind === 'chase') return { areaId: stateBag.side.runnerArea || sm.area, x: null };
+    if (sm.kind === 'fetch') {
+      const it = sm.items.find((k) => !stateBag.fetchItems.includes(k.id));
+      const n = npcDef(it ? it.npc : sm.npc);
+      return { areaId: n.area, x: n.x };
+    }
+    return { areaId: sm.area, x: null };
+  }
   if (stateBag.deliveryActive && stateBag.deliveryTarget) {
     return { areaId: stateBag.deliveryTarget.area, x: null };
   }
@@ -977,7 +1348,7 @@ function drawWorld(dt) {
   });
 
   // Combat banner — DOM element sits under the location plaque (no overlap)
-  const fighting = gameState.combatLock && gameState.enemies.some((e) => e.alive);
+  const fighting = gameState.combatLock && hostilesAlive();
   const banner = $('combat-banner');
   if (banner) banner.classList.toggle('hidden', !fighting);
 }
@@ -1071,6 +1442,28 @@ if (DEBUG) {
       if (m && m.npc) this.warpToNpc(m.npc);
       persist();
     },
+    setDifficulty(id) { if (!DIFFICULTIES[id]) throw new Error('unknown difficulty ' + id); gameState.difficulty = id; setDifficulty(id); persist(); },
+    difficulty: () => getDifficulty(),
+    /** Fresh thug / Silas stat sample for the current difficulty. */
+    sampleThug: (wave = 0) => { const e = createThug(0, 0, wave); return { hp: e.hp, dmg: e.dmg, speed: e.speed, cool: e.cool }; },
+    sampleBoss: () => { const e = createSilasFighter(0, 0); return { hp: e.hp, dmg: e.dmg, speed: e.speed, cool: e.cool }; },
+    get side() { return stateBag.side; },
+    /** Stand next to a side mission's giver and accept it (prerequisites are marked done). */
+    startSide(id) {
+      const m = stateBag.missions[id];
+      if (!m || !m.kind) throw new Error('not a v2 side mission ' + id);
+      if (m.requires) stateBag.missions[m.requires].done = true;
+      if (m.requires && m.requires.startsWith('main')) {
+        for (const k of MAIN_ORDER) { stateBag.missions[k].done = true; if (k === m.requires) break; }
+        const nx = MAIN_ORDER[MAIN_ORDER.indexOf(m.requires) + 1];
+        stateBag.activeMissionId = nx || null;
+      }
+      this.warpToNpc(m.npc);
+      startSide(m);
+    },
+    /** Skip time on the timed missions (survive / chase). */
+    fastForward(sec) { if (stateBag.side && stateBag.side.t != null) stateBag.side.t -= sec; },
+    collectAt(id) { const c = stateBag.collectibles.find((k) => k.id === id); if (!c) throw new Error('no ' + id); this.warp(c.home, c.x); },
     killAll() { for (const e of gameState.enemies) { e.hp = 0; e.alive = false; e.stun = 0; } },
     god(on = true) { gameState.god = !!on; },
     persist

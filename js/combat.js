@@ -1,6 +1,22 @@
 import { DEPTH, getDepth } from './world.js';
 import { getEnemySprite, drawSprite } from './sprites.js';
 
+/**
+ * Difficulty tuning. hp/dmg scale thugs, cool scales the gap between enemy attacks (lower = more
+ * aggressive), wave adds thugs per encounter, boss* scale Silas, heal scales healing (0 = none).
+ * Arcade = Hard numbers + no healing + game over reloads the last save.
+ */
+export const DIFFICULTIES = {
+  easy:   { id: 'easy',   name: 'Easy',   hp: 0.7,  dmg: 0.6, cool: 1.4,  speed: 0.9,  wave: -1, bossHp: 0.75, bossDmg: 0.7, heal: 1.5, sparHits: 5, runner: 120 },
+  normal: { id: 'normal', name: 'Normal', hp: 1,    dmg: 1,   cool: 1,    speed: 1,    wave: 0,  bossHp: 1,    bossDmg: 1,   heal: 1,   sparHits: 3, runner: 135 },
+  hard:   { id: 'hard',   name: 'Hard',   hp: 1.35, dmg: 1.5, cool: 0.7,  speed: 1.15, wave: 1,  bossHp: 1.5,  bossDmg: 1.4, heal: 0.5, sparHits: 2, runner: 145 },
+  arcade: { id: 'arcade', name: 'Arcade', hp: 1.35, dmg: 1.5, cool: 0.7,  speed: 1.15, wave: 1,  bossHp: 1.5,  bossDmg: 1.4, heal: 0,   sparHits: 2, runner: 145, arcade: true }
+};
+export const DIFFICULTY_ORDER = ['easy', 'normal', 'hard', 'arcade'];
+let diff = DIFFICULTIES.normal;
+export function setDifficulty(id) { diff = DIFFICULTIES[id] || DIFFICULTIES.normal; return diff; }
+export function getDifficulty() { return diff; }
+
 const THUG_COLORS = ['#8e44ad', '#c0392b', '#16a085', '#d35400', '#7f8c8d'];
 
 /** Walkable feet-Y band of the current area (main.js sets it on every area change). */
@@ -38,14 +54,16 @@ export function createThug(x, y, wave) {
   return {
     x, y,
     facing: -1,
-    hp: 30 + wave * 8,
-    maxHp: 30 + wave * 8,
+    hp: Math.round((30 + wave * 8) * diff.hp),
+    maxHp: Math.round((30 + wave * 8) * diff.hp),
+    dmg: Math.max(1, Math.round(10 * diff.dmg)),
+    cool: diff.cool,
     pose: 'idle',
     animT: Math.random() * 10,
     attackTimer: 0,
     stun: 0,
     color: THUG_COLORS[Math.floor(Math.random() * THUG_COLORS.length)],
-    speed: 70 + wave * 5,
+    speed: Math.min(150, (70 + wave * 5) * diff.speed),
     alive: true,
     aiCooldown: 0.3 + Math.random() * 0.5,
     isBoss: boss,
@@ -57,13 +75,15 @@ export function createSilasFighter(x, y) {
   return {
     x, y,
     facing: -1,
-    hp: 120, maxHp: 120,
+    hp: Math.round(120 * diff.bossHp), maxHp: Math.round(120 * diff.bossHp),
+    dmg: Math.round(16 * diff.bossDmg),
+    cool: diff.cool,
     pose: 'idle',
     animT: 0,
     attackTimer: 0,
     stun: 0,
     color: '#2c3e50',
-    speed: 95,
+    speed: 95 * Math.min(1.1, diff.speed),
     alive: true,
     aiCooldown: 0.4,
     isBoss: true,
@@ -162,8 +182,8 @@ export function updateEnemy(e, player, dt, areaWidth = Infinity) {
     if (e.aiCooldown <= 0) {
       e.pose = 'punch';
       e.attackTimer = 0.28;
-      e.aiCooldown = 0.7 + Math.random() * 0.6;
-      e.hitbox = { x: e.x + e.facing * 8, y: e.y - 32, w: 32, h: 26, dmg: e.isBoss ? 16 : 10, hit: new Set() };
+      e.aiCooldown = (0.7 + Math.random() * 0.6) * (e.cool || 1);
+      e.hitbox = { x: e.x + e.facing * 8, y: e.y - 32, w: 32, h: 26, dmg: e.dmg || (e.isBoss ? 16 : 10), hit: new Set() };
       if (e.facing < 0) e.hitbox.x -= e.hitbox.w;
     } else {
       e.pose = 'idle';
