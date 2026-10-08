@@ -6,39 +6,15 @@
  * so main.js start / continue / confirm / save logic is untouched.
  */
 import { getPromptLabel, getPromptDevice, getPromptSet } from './input.js';
+import { unlockAudio, uiSound, mountAudioSettings } from './audio.js';
 
 const $ = (id) => document.getElementById(id);
 const reduceMQ = window.matchMedia ? window.matchMedia('(prefers-reduced-motion: reduce)') : null;
 const reduced = () => !!(reduceMQ && reduceMQ.matches);
 const lowPower = () => (window.matchMedia && window.matchMedia('(pointer: coarse)').matches) || (navigator.hardwareConcurrency || 8) <= 4;
 
-// ---------------- tiny WebAudio blips (silent until the first user gesture) ----------------
-let actx = null;
-function unlockAudio() {
-  if (actx) { if (actx.state === 'suspended') actx.resume().catch(() => {}); return; }
-  const AC = window.AudioContext || window.webkitAudioContext;
-  if (!AC) return;
-  try { actx = new AC(); } catch (_) { actx = null; }
-}
-function blip(kind) {
-  if (!actx || actx.state !== 'running') return;
-  const now = actx.currentTime;
-  const tone = (f0, f1, dur, type = 'square', vol = 0.05, at = 0) => {
-    const o = actx.createOscillator(), g = actx.createGain();
-    o.type = type;
-    o.frequency.setValueAtTime(f0, now + at);
-    o.frequency.exponentialRampToValueAtTime(f1, now + at + dur);
-    g.gain.setValueAtTime(vol, now + at);
-    g.gain.exponentialRampToValueAtTime(0.0001, now + at + dur);
-    o.connect(g).connect(actx.destination);
-    o.start(now + at); o.stop(now + at + dur + 0.02);
-  };
-  if (kind === 'move') tone(660, 760, 0.05, 'square', 0.035);
-  else if (kind === 'select') { tone(520, 1040, 0.09, 'square', 0.05); tone(1040, 1400, 0.08, 'triangle', 0.04, 0.07); }
-  else if (kind === 'back') tone(520, 300, 0.09, 'square', 0.04);
-  else if (kind === 'start') { tone(392, 784, 0.12, 'square', 0.05); tone(587, 1175, 0.12, 'square', 0.04, 0.1); tone(784, 1568, 0.2, 'triangle', 0.05, 0.2); }
-}
-['pointerdown', 'keydown', 'touchstart'].forEach((ev) => window.addEventListener(ev, unlockAudio, { capture: true, passive: true }));
+// ---------------- menu sounds: js/audio.js (one AudioContext for the whole game; unlocks on Press Start) ----------------
+const blip = (kind) => uiSound(kind === 'select' ? 'select' : kind);
 
 // ---------------- backdrop (pre-rendered layers, cheap per frame) ----------------
 function rng(seed) { let s = seed >>> 0; return () => ((s = (s * 1664525 + 1013904223) >>> 0) / 4294967296); }
@@ -251,7 +227,7 @@ export function createTitle({ focusMenu }) {
   function openPanel(p) {
     if (p === 'controls') renderControls();
     setPhase(p);
-    focusMenu(0);
+    focusMenu(p === 'controls' ? -1 : 0); // Controls: focus Back (audio sliders sit above it)
   }
   function closePanel() {
     const from = phase;
@@ -269,9 +245,19 @@ export function createTitle({ focusMenu }) {
   let lastSnd = 0;
   const sel = () => { const n = performance.now(); if (n - lastSnd > 120) { lastSnd = n; blip('select'); } };
   screen.querySelectorAll('button').forEach((b) => {
+    if (b.closest('.audio-settings')) return; // audio widget plays its own ticks
     b.addEventListener('click', sel); b.addEventListener('touchend', sel, { passive: true });
     b.addEventListener('mouseenter', () => { if (b.offsetParent && document.activeElement !== b) { b.focus({ preventScroll: true }); blip('move'); } });
   });
+  // audio settings (Music / SFX / mute) on the Controls panel, above Back
+  const ctlBack = $('btn-controls-back');
+  if (ctlBack) {
+    const slot = document.createElement('div');
+    slot.className = 'audio-slot';
+    slot.innerHTML = '<h3 class="audio-title">Audio</h3>';
+    ctlBack.parentNode.insertBefore(slot, ctlBack);
+    mountAudioSettings(slot);
+  }
   $('btn-controls').addEventListener('click', () => openPanel('controls'));
   $('btn-credits').addEventListener('click', () => openPanel('credits'));
   $('btn-controls-back').addEventListener('click', closePanel);
@@ -316,7 +302,8 @@ export function createTitle({ focusMenu }) {
         if (inp.backPressed) blip('back');
         return false;
       }
-      if (inp.navUp || inp.navDown || inp.navLeft || inp.navRight) blip('move');
+      const onSlider = !!(document.activeElement && document.activeElement.classList && document.activeElement.classList.contains('audio-slider'));
+      if (inp.navUp || inp.navDown || ((inp.navLeft || inp.navRight) && !onSlider)) blip('move');
       if (inp.backPressed) {
         blip('back');
         if (phase === 'controls' || phase === 'credits' || phase === 'difficulty') closePanel();

@@ -1,3 +1,4 @@
+import { sfx } from './audio.js'; // audio: mission start / complete, pickups, outfit unlocks
 /** Mission + collectible system — preserved from 3D Star City Drift. */
 export function createMissionSystem(state) {
   const missions = {
@@ -201,6 +202,7 @@ export function createMissionSystem(state) {
       if (m.done || state.deliveryActive) return false;
       state.deliveryActive = true;
       state.deliveryTarget = m.deliver;
+      sfx('mission_start');
       toast(`Job accepted: deliver the package to the ${m.deliver.name}`);
       onUpdate && onUpdate();
       return true;
@@ -228,6 +230,7 @@ export function createMissionSystem(state) {
       const m = state.missions[id];
       if (!m || m.done) return;
       m.done = true;
+      sfx('mission_complete');
       toast(`Mission complete: ${m.title}`);
       if (state.side && state.side.id === id) state.side = null;
       if (m.reward?.reveal) {
@@ -259,6 +262,7 @@ export function createMissionSystem(state) {
         if (c.taken || c.area !== areaId) continue;
         if (Math.abs(c.x - x) < 40) {
           c.taken = true;
+          sfx(c.outfit ? 'unlock' : 'pickup'); // audio: outfit unlocks get the bigger fanfare
           const n = state.collectibles.filter((k) => k.taken).length;
           if (c.outfit) {
             state.unlockedOutfits.add(c.outfit);
