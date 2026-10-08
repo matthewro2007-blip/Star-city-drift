@@ -1,6 +1,6 @@
 {
-  "version": "15b1f1cbfe4a",
-  "generated": "2026-10-07T19:26:07.050Z",
+  "version": "736fd1325813",
+  "generated": "2026-10-07T20:20:32.638Z",
   "bytes": 19180297,
   "files": [
     "assets/bg/community.png",
@@ -338,6 +338,6 @@
     "js/title.js": "28700df8cc6f3c6f",
     "js/world.js": "8f3aabaff30da45f",
     "manifest.webmanifest": "8329dfbc4e169e94",
-    "sw.js": "190841de358ffea2"
+    "sw.js": "aa739550cc5bf9da"
   }
 }
