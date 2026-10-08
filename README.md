@@ -12,7 +12,7 @@ Play it at https://matthewro2007-blip.github.io/Star-city-drift/
 
 ## Android APK
 
-Download [Star-City-Drift.apk](downloads/Star-City-Drift.apk) (v1.3.1) and sideload it. Allow installation from unknown sources when Android asks. Music, sound effects, character voices, the Beacon outfit, item collectibles, and the closer camera are built in. The app auto-updates when online.
+Download [Star-City-Drift.apk](downloads/Star-City-Drift.apk) (v1.3.2) and sideload it. Allow installation from unknown sources when Android asks. Music, sound effects, character voices, the Beacon outfit, item collectibles, and the closer camera are built in. The app auto-updates when online.
 
 ## Controls
 
@@ -22,15 +22,15 @@ Download [Star-City-Drift.apk](downloads/Star-City-Drift.apk) (v1.3.1) and sidel
 
 ## Windows
 
-The v1.3.1 desktop build for 64-bit Windows is split into six parts. Download all six into the same folder:
+The v1.3.2 desktop build for 64-bit Windows is split into six parts. Download all six into the same folder:
 
-- [Star-City-Drift-1.3.1-Setup-win-x64.7z.001](downloads/windows/Star-City-Drift-1.3.1-Setup-win-x64.7z.001)
-- [Star-City-Drift-1.3.1-Setup-win-x64.7z.002](downloads/windows/Star-City-Drift-1.3.1-Setup-win-x64.7z.002)
-- [Star-City-Drift-1.3.1-Setup-win-x64.7z.003](downloads/windows/Star-City-Drift-1.3.1-Setup-win-x64.7z.003)
-- [Star-City-Drift-1.3.1-Setup-win-x64.7z.004](downloads/windows/Star-City-Drift-1.3.1-Setup-win-x64.7z.004)
-- [Star-City-Drift-1.3.1-Setup-win-x64.7z.005](downloads/windows/Star-City-Drift-1.3.1-Setup-win-x64.7z.005)
-- [Star-City-Drift-1.3.1-Setup-win-x64.7z.006](downloads/windows/Star-City-Drift-1.3.1-Setup-win-x64.7z.006)
+- [Star-City-Drift-1.3.2-Setup-win-x64.7z.001](downloads/windows/Star-City-Drift-1.3.2-Setup-win-x64.7z.001)
+- [Star-City-Drift-1.3.2-Setup-win-x64.7z.002](downloads/windows/Star-City-Drift-1.3.2-Setup-win-x64.7z.002)
+- [Star-City-Drift-1.3.2-Setup-win-x64.7z.003](downloads/windows/Star-City-Drift-1.3.2-Setup-win-x64.7z.003)
+- [Star-City-Drift-1.3.2-Setup-win-x64.7z.004](downloads/windows/Star-City-Drift-1.3.2-Setup-win-x64.7z.004)
+- [Star-City-Drift-1.3.2-Setup-win-x64.7z.005](downloads/windows/Star-City-Drift-1.3.2-Setup-win-x64.7z.005)
+- [Star-City-Drift-1.3.2-Setup-win-x64.7z.006](downloads/windows/Star-City-Drift-1.3.2-Setup-win-x64.7z.006)
 
-Install [7-Zip](https://www.7-zip.org/), then right-click `Star-City-Drift-1.3.1-Setup-win-x64.7z.001` and choose **7-Zip → Extract Here**. 7-Zip reads `.002` through `.006` automatically. Run the extracted `Star-City-Drift-Setup-1.3.1.exe`.
+Install [7-Zip](https://www.7-zip.org/), then right-click `Star-City-Drift-1.3.2-Setup-win-x64.7z.001` and choose **7-Zip → Extract Here**. 7-Zip reads `.002` through `.006` automatically. Run the extracted `Star-City-Drift-Setup-1.3.2.exe`.
 
 Music, sound effects, character voices, the Beacon outfit, item collectibles, and the closer camera are built in. The app auto-updates when online. It downloads only the files that changed. Offline, it plays the copy that came with the installer.
