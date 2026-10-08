@@ -18,6 +18,7 @@ import { createTitle } from './title.js';
 import { getHeroFrame, drawHero, clearHeroCache, HERO_DRAW_H, HERO_SHADOW_W } from './hero.js';
 import { createFollowCamera } from './camera.js';
 import { createPresenter } from './present.js';
+import { setMusic, sting, setPaused, setDialogueDuck, sfx, voice, talk, stopTalk, adjustFocusedSlider, mountAudioSettings, audioDebug } from './audio.js';
 
 /** true: player + title Matthew use the high-res procedural hero (hero.js); false: Joe's matthew_sheet.png. */
 const USE_HERO_RENDER = false; // Joe's approved v3 sheet ships; hero.js kept as an alternate renderer
@@ -289,6 +290,7 @@ function maybeSpawnEncounter(force) {
   gameState.combatLock = true;
   gameState.areaVisitCombat[gameState.areaId] = visited + 1;
   gameState.wave++;
+  sfx('fight_start');
   toast('Thugs! Clear the street!');
 }
 
@@ -358,6 +360,7 @@ function startDialogue(npc) {
   $('dialogue').classList.remove('hidden');
   $('dialogue-name').textContent = `${npc.name} — ${npc.role}`;
   $('dialogue-text').textContent = lines[0];
+  talk(npc.id, lines[0], true); // audio: greeting + this character's talk blips
   $('interact-prompt').classList.add('hidden');
   updateDialogueButton();
   input.flush();
@@ -379,6 +382,7 @@ function advanceDialogue() {
     finishDialogue();
   } else {
     $('dialogue-text').textContent = gameState.dialogue[gameState.dialogueIdx];
+    if (gameState.dialogueNpc) talk(gameState.dialogueNpc.id, gameState.dialogue[gameState.dialogueIdx]);
     updateDialogueButton();
   }
 }
@@ -386,6 +390,7 @@ function advanceDialogue() {
 function finishDialogue() {
   if (gameState.mode !== 'dialogue') return;
   const npc = gameState.dialogueNpc;
+  stopTalk();
   $('dialogue').classList.add('hidden');
   $('dialogue-next').classList.remove('pad-focus');
   gameState.mode = 'play';
@@ -429,6 +434,7 @@ function finishDialogue() {
           if (gameState.mode === 'play' && gameState.areaId === areaId && !hostilesAlive()) {
             gameState.enemies = spawnWave(AREAS[gameState.areaId], 3, gameState.wave++, player.x);
             gameState.combatLock = true;
+            sfx('fight_start');
             toast('Ambush outside the diner!');
           }
         }, 400);
@@ -448,6 +454,7 @@ function startBossFight() {
   gameState.enemies = [createSilasFighter(bx, player.y)];
   gameState.combatLock = true;
   gameState.bossActive = true;
+  sfx('fight_start'); voice('silas_boss', 'taunt', { delay: 0.3 });
   toast('Silas wants a word — with fists.');
 }
 
@@ -514,6 +521,7 @@ function startSide(m) {
     gameState.enemies.push(makeRunner(Math.min(AREAS[gameState.areaId].width - 120, npcDef(m.npc).x + 90)));
   } else if (m.kind === 'escort') { s.hp = 100; s.area = gameState.areaId; s.x = npcDef(m.npc).x; s.ambush = false; }
   else if (m.kind === 'fetch') { stateBag.fetchItems = []; }
+  sfx('mission_start');
   toast(`Mission started: ${m.title}`);
   onProgress();
 }
@@ -565,7 +573,7 @@ function collectHere() {
   const got = missions.tryCollect(gameState.areaId, player.x, toast, () => {});
   if (!got) return null;
   if (got.score) { gameState.score += got.score; toast(`+${got.score} score`); }
-  if (got.outfit) setOutfit(got.outfit);
+  if (got.outfit) setOutfit(got.outfit, true); // the unlock fanfare already played
   onProgress();
   return got;
 }
@@ -617,6 +625,7 @@ function updateSide(dt) {
       if (e.alive && e.target === 'dee' && e.hitbox && !e.hitbox.hit.has('window') && Math.abs(e.x - deeX) < 60) {
         e.hitbox.hit.add('window');
         s.hp -= e.dmg * 0.8;
+        sfx('glass', { big: s.hp <= 0 }); // audio: the diner window cracking
       }
     }
     if (s.hp <= 0) { failSide("The diner window's smashed — Dee's furious (at them, not you)."); return; }
@@ -753,12 +762,14 @@ function showEnding() {
   menuFocus(0);
 }
 
-function setOutfit(id) {
+function setOutfit(id, quiet = false) {
   if (!OUTFITS[id]) return;
   if (!stateBag.unlockedOutfits.has(id)) {
+    sfx('denied');
     toast('Outfit locked — find collectibles');
     return;
   }
+  if (!quiet && id !== gameState.outfitId) sfx('outfit');
   gameState.outfitId = id;
   clearSpriteCache();
   clearHeroCache();
@@ -849,13 +860,18 @@ function handleMenu(inp) {
   const btns = menuButtons(el);
   const cur = btns.indexOf(document.activeElement);
   if (cur >= 0 && cur !== menuIdx) menuFocus(cur, el);
-  if (inp.navUp || inp.navLeft) menuFocus(menuIdx - 1, el);
-  else if (inp.navDown || inp.navRight) menuFocus(menuIdx + 1, el);
+  // audio sliders: left / right change the volume instead of moving focus
+  if ((inp.navLeft || inp.navRight) && adjustFocusedSlider(inp.navRight ? 1 : -1)) { inp.navLeft = inp.navRight = false; }
+  const inGameMenu = el.id !== 'title-screen'; // title.js plays its own menu blips
+  if (inp.navUp || inp.navLeft) { menuFocus(menuIdx - 1, el); if (inGameMenu) sfx('ui_move'); }
+  else if (inp.navDown || inp.navRight) { menuFocus(menuIdx + 1, el); if (inGameMenu) sfx('ui_move'); }
   if (inp.confirmPressed) {
     const b = menuButtons(el)[menuIdx];
+    if (b && inGameMenu && !b.closest('.audio-settings')) sfx('ui_select');
     if (b) b.click();
     return;
   }
+  if ((inp.backPressed || inp.pausePressed) && inGameMenu) sfx('ui_back');
   if (inp.backPressed || inp.pausePressed) {
     if (el.id === 'confirm-screen') closeConfirm();
     else if (el.id === 'pause-screen') resumeGame();
@@ -880,11 +896,13 @@ function pauseGame() {
   updateDifficultyButton();
   renderMissionList();
   $('interact-prompt').classList.add('hidden');
+  setPaused(true);
   menuFocus(0, $('pause-screen'));
 }
 function resumeGame() {
   if (gameState.mode !== 'pause') return;
   gameState.mode = 'play';
+  setPaused(false);
   $('pause-screen').classList.add('hidden');
   clearMenuFocus();
   input.flush();
@@ -943,6 +961,7 @@ function manualSave() {
   btn.textContent = ok ? 'Saved ✓' : 'Save failed';
   clearTimeout(saveLabelTimer);
   saveLabelTimer = setTimeout(() => { btn.textContent = 'Save Game'; }, 1500);
+  sfx(ok ? 'save' : 'denied');
   toast(ok ? 'Saved' : 'Save failed — storage unavailable', true);
 }
 
@@ -987,6 +1006,8 @@ bindTap('dialogue-next', () => advanceDialogue());
 const bootSaveState = inspectSave();
 refreshTitleButtons();
 const title = createTitle({ focusMenu: (i) => menuFocus(i, $('title-screen')) });
+// audio: Music / SFX sliders + mute at the bottom of the pause menu (same widget as the title Controls panel)
+if ($('pause-screen')) mountAudioSettings($('pause-screen').querySelector('.overlay-card'));
 
 /** Device-aware prompts in the DOM (interact kbd, pause/desktop hints, dialogue button). */
 let promptSig = '';
@@ -1022,11 +1043,24 @@ function frame(now) {
   requestAnimationFrame(frame);
 }
 
+/** audio: title / street / fight (crossfades in with a fight, out when the street is clear) / Silas. */
+let fightHold = 0;
+function syncMusic(dt) {
+  const m = gameState.mode;
+  setDialogueDuck(m === 'dialogue');
+  if (m === 'title' || m === 'ending') { setMusic('title'); return; }
+  if (gameState.bossActive) { setMusic('boss'); return; }
+  if (gameState.combatLock && hostilesAlive()) fightHold = stateBag.side ? 2.5 : 0.05; // side-mission waves have gaps
+  else if (m === 'play') fightHold -= dt;
+  setMusic(fightHold > 0 ? 'fight' : 'street');
+}
+
 const pressBuffer = {};
 function step(dt) {
   tickToast(dt);
   const inp = input.poll();
   refreshPrompts();
+  syncMusic(dt);
 
   if (gameState.mode === 'title') {
     if (!title.update(inp, dt)) handleMenu(inp);
@@ -1062,6 +1096,7 @@ function step(dt) {
   if (DEBUG && gameState.god) player.hp = player.maxHp;
   if (!player.alive && player.koT > 0) {
     // v3: hold the KO pose briefly before the respawn / game over
+    if (!player.koSting) { player.koSting = true; sting('gameover'); }
     updatePlayer(player, inp, dt, AREAS[gameState.areaId].width);
     for (const e of gameState.enemies) if (!e.runner) updateEnemy(e, player, dt, AREAS[gameState.areaId].width);
     drawWorld(dt);
@@ -1076,7 +1111,7 @@ function step(dt) {
     const lostBoss = gameState.bossActive;
     player.hp = player.maxHp;
     player.alive = true;
-    player.kd = null; player.koT = 0; player.lift = 0; player.invuln = 1;
+    player.kd = null; player.koT = 0; player.lift = 0; player.invuln = 1; player.koSting = false;
     player.x = 200;
     gameState.enemies = [];
     gameState.combatLock = false;
@@ -1104,7 +1139,7 @@ function step(dt) {
       outfit: gameState.outfitId,
       canSpecial: () => gameState.special >= SPECIAL_COST,
       onSpecial: () => { gameState.special = Math.max(0, gameState.special - SPECIAL_COST); gameState.hitStop = 0; rumble(0.6, 0.6, 160); followCam.kick(3); },
-      onSpecialDenied: (why) => { if (why === 'meter') toast(`Star Drive needs ${SPECIAL_COST}% special meter`); }
+      onSpecialDenied: (why) => { sfx('denied'); if (why === 'meter') toast(`Star Drive needs ${SPECIAL_COST}% special meter`); }
     });
     for (const e of gameState.enemies) {
       if (e.runner) updateRunner(e, dt, area);
@@ -1136,13 +1171,15 @@ function step(dt) {
         // Silas is down: story complete → good ending
         gameState.bossActive = false;
         if (gameState.difficulty === 'hard' || gameState.difficulty === 'arcade') stateBag.beatHard = true;
+        sting('victory_big');
         toast('Silas Boone backs off.');
         missions.completeMission('main4', toast, onProgress);
         if (!gameState.ended) showEnding();
       } else if (!stateBag.side) {
         toast('Street clear!');
         heal(15);
-        if (player.alive && !player.kd) { player.victoryT = 1.6; player.idleT = 0; } // victory pose
+        sting('victory');
+        if (player.alive && !player.kd) { player.victoryT = 1.6; player.idleT = 0; voice('matthew', 'victory', { delay: 0.25 }); } // victory pose
       }
     }
     if (gameState.mode === 'play') updateSide(dt);
@@ -1697,6 +1734,7 @@ if (DEBUG) {
     knockDown(which = 0) { const t = which === 'player' ? player : gameState.enemies[which]; if (t) knockDown(t, t === player ? -player.facing : player.facing); return !!t; },
     animApiReady,
     setSpecial(v) { gameState.special = v; },
+    audio: audioDebug,
     persist
   };
 }

@@ -2,6 +2,8 @@
 export const NPC_DEFS = [
   {
     id: 'dee', name: 'Dee Morales', role: 'Diner cook',
+    // audio: talk-blip voice (waveform, pitch, cadence) + greeting, used by js/audio.js
+    voice: { wave: 'triangle', f0: 255, rate: 0.075, len: 0.06, steps: [1, 1.12, 1.26, 1.5], vowels: ['a', 'o', 'e'], fs: 1.12, greet: ['e', 'o'] },
     area: 'diner', x: 320, color: '#d35400',
     lines: [
       "Matthew? Grab a stool — wait, that bag of leftovers wasn't yours.",
@@ -14,6 +16,8 @@ export const NPC_DEFS = [
   },
   {
     id: 'priya', name: 'Priya Shah', role: 'Bookstore clerk',
+    // audio: talk-blip voice (waveform, pitch, cadence) + greeting, used by js/audio.js
+    voice: { wave: 'sine', f0: 330, rate: 0.065, len: 0.05, steps: [1, 1.12, 1.33, 1.5, 1.68], vowels: ['i', 'e', 'a'], fs: 1.18, slide: 1.08, greet: ['a', 'i'] },
     area: 'pages', x: 380, color: '#8e44ad',
     lines: [
       "You're Matthew? Dee texted. Our rare-map shipment never showed.",
@@ -29,6 +33,8 @@ export const NPC_DEFS = [
   },
   {
     id: 'hank', name: 'Hank "Rail" Pettigrew', role: 'Retired rail worker',
+    // audio: talk-blip voice (waveform, pitch, cadence) + greeting, used by js/audio.js
+    voice: { wave: 'sawtooth', f0: 105, rate: 0.115, len: 0.09, steps: [1, 0.94, 1.06], vowels: ['o', 'u', 'uh'], fs: 0.86, grit: 0.35, greet: ['uh', 'o'], greetFall: true },
     area: 'rails', x: 450, color: '#7f8c8d',
     lines: [
       "Saw a crate get moved after hours. Not by my old crew.",
@@ -44,6 +50,8 @@ export const NPC_DEFS = [
   },
   {
     id: 'june', name: 'June Whitaker', role: 'Community center volunteer',
+    // audio: talk-blip voice (waveform, pitch, cadence) + greeting, used by js/audio.js
+    voice: { wave: 'triangle', f0: 290, rate: 0.095, len: 0.075, steps: [1, 1.12, 1.25], vowels: ['o', 'a', 'u'], fs: 1.12, slide: 0.94, greet: ['e', 'o'] },
     area: 'community', x: 300, color: '#27ae60',
     lines: [
       "Rough day? Community Center's open. We've got side work that pays in favors.",
@@ -56,6 +64,8 @@ export const NPC_DEFS = [
   },
   {
     id: 'tessa', name: 'Tessa Quinn', role: 'Skate-shop kid',
+    // audio: talk-blip voice (waveform, pitch, cadence) + greeting, used by js/audio.js
+    voice: { wave: 'square', f0: 385, rate: 0.05, len: 0.04, steps: [1, 1.19, 1.33, 1.5, 1.78], vowels: ['i', 'e', 'ae'], fs: 1.25, greet: ['ae', 'o'] },
     area: 'skate', x: 340, color: '#e74c3c',
     lines: [
       "Yo — outfits stash around Star City. Hoodie near the Star path, jacket by the rails.",
@@ -68,6 +78,8 @@ export const NPC_DEFS = [
   },
   {
     id: 'coach', name: 'Coach Ray Delgado', role: 'Gym acquaintance',
+    // audio: talk-blip voice (waveform, pitch, cadence) + greeting, used by js/audio.js
+    voice: { wave: 'sawtooth', f0: 150, rate: 0.08, len: 0.07, steps: [1, 1.25, 1.5], vowels: ['a', 'o', 'uh'], fs: 0.95, grit: 0.1, greet: ['ae', 'a'], greetFall: true },
     area: 'gym', x: 360, color: '#2980b9',
     lines: [
       "Matthew! Need a courier who can hustle. Delivery to the river bridge.",
@@ -83,6 +95,8 @@ export const NPC_DEFS = [
   },
   {
     id: 'cam', name: 'Cam Ortiz', role: 'Rideshare driver',
+    // audio: talk-blip voice (waveform, pitch, cadence) + greeting, used by js/audio.js
+    voice: { wave: 'square', f0: 205, rate: 0.058, len: 0.05, steps: [1, 1.12, 1.26, 0.89], vowels: ['a', 'e', 'uh'], fs: 1.02, slide: 1.05, greet: ['ae', 'o'] },
     area: 'downtown', x: 520, color: '#f1c40f',
     lines: [
       "Need a lift? Wait — wrong pin again. Always the wrong pin lately.",
@@ -96,12 +110,16 @@ export const NPC_DEFS = [
   {
     // v2 minor NPC (original). No sheet yet: drawn with the procedural NPC body tinted teal.
     id: 'wren', name: 'Wren Calloway', role: 'City Market flower seller',
+    // audio: talk-blip voice (waveform, pitch, cadence) + greeting, used by js/audio.js
+    voice: { wave: 'sine', f0: 430, rate: 0.088, len: 0.07, steps: [1, 1.26, 1.5, 2], vowels: ['i', 'e', 'o'], fs: 1.3, slide: 1.12, greet: ['i', 'o'] },
     area: 'downtown', x: 1000, color: '#1abc9c',
     lines: ["Fresh zinnias! Two for five — hey, careful with that cart."],
     doneLines: ["Purse is back, petals are fine. You're a good egg, Matthew."]
   },
   {
     id: 'silas', name: 'Silas Boone', role: 'Polite stranger',
+    // audio: talk-blip voice (waveform, pitch, cadence) + greeting, used by js/audio.js
+    voice: { wave: 'sawtooth', f0: 118, rate: 0.105, len: 0.08, steps: [1, 0.89, 1.06], vowels: ['o', 'e', 'uh'], fs: 0.92, slide: 0.95, greet: ['e', 'o'], greetFall: true },
     area: 'downtown', x: 700, color: '#2c3e50',
     lines: [
       "Matthew Rose. Everyday guy, unexpected bag of leftovers. Curious coincidence.",

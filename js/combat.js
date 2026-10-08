@@ -1,6 +1,7 @@
 import { DEPTH, getDepth } from './world.js';
 import { getEnemySprite, drawSprite } from './sprites.js';
 import { setAnim, gateHitbox, enemyCharKey } from './anim.js';
+import { sfx, voice } from './audio.js'; // audio: hits, whooshes, knockdowns, fighter voices
 
 /**
  * Difficulty tuning. hp/dmg scale thugs, cool scales the gap between enemy attacks (lower = more
@@ -121,9 +122,9 @@ function tickKnockdown(ent, dt, areaWidth, isPlayer) {
   ent.pose = 'hurt';
   if (k.phase === 'fall') {
     ent.x = clampX(ent.x + k.dir * 150 * dt * Math.max(0, k.t / KD_FALL), areaWidth);
-    if (k.t <= 0) { k.phase = 'ground'; k.t = groundTime(ent, isPlayer); }
+    if (k.t <= 0) { k.phase = 'ground'; k.t = groundTime(ent, isPlayer); sfx('thud', { heavy: !!ent.isBoss }); }
   } else if (k.phase === 'ground') {
-    if (k.t <= 0 && ent.alive) { k.phase = 'getup'; k.t = KD_GETUP; }
+    if (k.t <= 0 && ent.alive) { k.phase = 'getup'; k.t = KD_GETUP; sfx('getup'); }
   } else if (k.t <= 0) {
     ent.kd = null;
     ent.invuln = Math.max(ent.invuln || 0, KD_IFRAMES);
@@ -217,6 +218,7 @@ export function updatePlayer(p, input, dt, areaWidth, hooks = {}) {
       followHitbox(p);
     }
     if (p.attackTimer <= 0) {
+      if (p.attackType === 'jumpkick') sfx('land');
       p.pose = 'idle';
       p.attackType = null;
       p.hitbox = null;
@@ -242,7 +244,8 @@ export function updatePlayer(p, input, dt, areaWidth, hooks = {}) {
       startAttack('special', 'kick', SPECIAL_DUR);
       p.specialCd = SPECIAL_COOLDOWN;
       p.combo = 0; p.comboStep = 0; p.comboTimer = 0;
-      p.hitbox = makeHitbox(p, -6, 44, 56, 40, { dmg: SPECIAL_DMG, knock: 30, knockdown: true, special: true });
+      p.hitbox = makeHitbox(p, -6, 44, 56, 40, { dmg: SPECIAL_DMG, knock: 30, knockdown: true, special: true, sfx: 'star' });
+      sfx('stardrive'); voice('matthew', 'special');
       hooks.onSpecial && hooks.onSpecial();
       done(); gateHitbox(p, 'matthew', hooks.outfit);
       return;
@@ -253,7 +256,8 @@ export function updatePlayer(p, input, dt, areaWidth, hooks = {}) {
     // Triangle / Y / C: slower haymaker with a wide hitbox and big knockback
     startAttack('heavy', 'punch', 0.42);
     p.combo = 0; p.comboStep = 0; p.comboTimer = 0;
-    p.hitbox = makeHitbox(p, 22, 34, 50, 32, { dmg: 26, knock: 40 });
+    p.hitbox = makeHitbox(p, 22, 34, 50, 32, { dmg: 26, knock: 40, sfx: 'heavy' });
+    sfx('whiff', { heavy: true }); voice('matthew', 'attack', { chance: 0.6 });
     done(); gateHitbox(p, 'matthew', hooks.outfit);
     return;
   }
@@ -261,7 +265,8 @@ export function updatePlayer(p, input, dt, areaWidth, hooks = {}) {
     // Running jump kick (sprint + kick): travels forward, knocks down
     startAttack('jumpkick', 'kick', JUMPKICK_DUR);
     p.combo = 0; p.comboStep = 0; p.comboTimer = 0;
-    p.hitbox = makeHitbox(p, -4, 46, 56, 34, { dmg: 20, knock: 30, knockdown: true });
+    p.hitbox = makeHitbox(p, -4, 46, 56, 34, { dmg: 20, knock: 30, knockdown: true, sfx: 'finisher' });
+    sfx('jump'); voice('matthew', 'big');
     done(); gateHitbox(p, 'matthew', hooks.outfit);
     return;
   }
@@ -274,17 +279,20 @@ export function updatePlayer(p, input, dt, areaWidth, hooks = {}) {
     const fin = p.comboStep === 3;
     if (kick) {
       startAttack('combo', 'kick', fin ? 0.36 : 0.32);
-      p.hitbox = makeHitbox(p, 10, 28, 44, 24, { dmg: fin ? 20 : 18, knock: 26, knockdown: fin });
+      p.hitbox = makeHitbox(p, 10, 28, 44, 24, { dmg: fin ? 20 : 18, knock: 26, knockdown: fin, sfx: fin ? 'finisher' : 'kick' });
     } else {
       startAttack('combo', 'punch', fin ? 0.3 : 0.22);
-      p.hitbox = makeHitbox(p, 10, 34, 36, 28, { dmg: 12 + p.comboStep * 2, knock: fin ? 30 : undefined, knockdown: fin });
+      p.hitbox = makeHitbox(p, 10, 34, 36, 28, { dmg: 12 + p.comboStep * 2, knock: fin ? 30 : undefined, knockdown: fin, sfx: fin ? 'finisher' : 'punch' });
     }
+    sfx('whiff', { heavy: kick }); voice('matthew', fin ? 'big' : 'attack', { chance: fin ? 1 : 0.3 });
     if (fin) p.comboTimer = 0.25;
     done(); gateHitbox(p, 'matthew', hooks.outfit);
     return;
   }
 
   p.sprinting = wantSprint;
+  if (wantSprint) { p.stepT = (p.stepT || 0) - dt; if (p.stepT <= 0) { p.stepT = 0.17; p.stepAlt = !p.stepAlt; sfx('step', { alt: p.stepAlt }); } }
+  else p.stepT = 0;
   const sp = wantSprint ? SPRINT_MULT : 1;
   p.vx = ax * p.speed * sp;
   p.vy = ay * p.depthSpeed * (wantSprint ? 1.25 : 1);
@@ -323,7 +331,7 @@ export function updateEnemy(e, player, dt, areaWidth = Infinity) {
     if (e.attackTimer <= 0) {
       e.pose = 'idle';
       e.hitbox = null;
-      if (e.tauntNext) { e.tauntNext = false; e.tauntT = 1.1; } // Silas taunts between attack patterns
+      if (e.tauntNext) { e.tauntNext = false; e.tauntT = 1.1; voice(key, 'taunt', { delay: 0.15 }); } // Silas taunts between attack patterns
     }
     gateHitbox(e, key);
     return;
@@ -372,6 +380,8 @@ export function updateEnemy(e, player, dt, areaWidth = Infinity) {
       }
       if (e.facing < 0) e.hitbox.x -= e.hitbox.w;
       setAnim(e, e.nextAnim, { key, sec: e.attackTimer }, true); // restart even when the same attack repeats
+      sfx('whiff', { quiet: !e.isBoss, heavy: e.isBoss && e.nextAnim === 'boss_attack3' });
+      voice(key, e.isBoss ? (e.nextAnim === 'boss_attack3' ? 'big' : 'attack') : 'grunt', { chance: e.isBoss ? 0.75 : 0.3, id: e });
       gateHitbox(e, key);
     } else {
       e.pose = 'idle';
@@ -395,7 +405,12 @@ export function resolveHits(player, enemies, onHitEnemy, onHitPlayer, areaWidth 
   const hb = player.hitbox;
   if (hb && hb.live !== false) {
     for (const e of enemies) {
-      if (!e.alive || hb.hit.has(e) || e.kd || e.invuln > 0) continue;
+      if (!e.alive || hb.hit.has(e) || e.kd) continue;
+      if (e.invuln > 0) {
+        // getting-up i-frames: the blow glances off (once per swing)
+        if (overlap(hb, e.x - 14, e.y - 60, 28, 56) && Math.abs(player.y - e.y) < 22) { hb.hit.add(e); sfx('block'); }
+        continue;
+      }
       if (overlap(hb, e.x - 14, e.y - 60, 28, 56) && Math.abs(player.y - e.y) < 22) {
         hb.hit.add(e);
         e.hp -= hb.dmg;
@@ -409,11 +424,28 @@ export function resolveHits(player, enemies, onHitEnemy, onHitPlayer, areaWidth 
           e.pose = 'hurt';
           e.koT = e.kd ? 1.3 : 0.7; // body stays briefly for the ko / defeat / caught anim
         }
+        { // audio: impact by attack type, then the foe's own voice (hurt / ko / defeat / caught)
+          const pan = Math.max(-0.6, Math.min(0.6, (e.x - player.x) / 300)), vk = enemyCharKey(e);
+          sfx(hb.sfx || 'punch', { pan });
+          if (e.alive) voice(vk, 'hurt', { chance: 0.6, id: e, pan });
+          else {
+            voice(vk, deadAnim(e) === 'caught' ? 'caught' : deadAnim(e), { pan });
+            if (e.runner) sfx('caught');
+            else if (!e.kd) sfx('thud', { delay: 0.4, pan }); // KO'd body hits the pavement (knockdowns thud on landing)
+          }
+        }
         onHitEnemy && onHitEnemy(e, hb.dmg); // after the KO flag so score sees it
       }
     }
   }
   // Enemy hits player
+  if (player.attackType === 'special' && player.invuln > 0) {
+    // Star Drive dashes through attacks: they clank off
+    for (const e of enemies) {
+      if (e.alive && e.hitbox && e.hitbox.live !== false && !e.hitbox.hit.has(player) &&
+          overlap(e.hitbox, player.x - 14, player.y - 60, 28, 56) && Math.abs(player.y - e.y) < 22) { e.hitbox.hit.add(player); sfx('block'); }
+    }
+  }
   if (player.invuln > 0 || player.kd || !player.alive) return;
   for (const e of enemies) {
     if (!e.alive || !e.hitbox || e.hitbox.live === false) continue;
@@ -433,12 +465,15 @@ export function resolveHits(player, enemies, onHitEnemy, onHitPlayer, areaWidth 
         player.x = Math.max(30, Math.min(areaWidth - 30, player.x + e.facing * 20));
       }
       setAnim(player, player.kd ? 'knockdown_fall' : 'hurt', { key: 'matthew', sec: player.kd ? KD_FALL : 0.2, outfit: player.outfit });
+      sfx(e.isBoss ? 'heavy' : 'punch', { taken: true });
+      if (player.hp > 0) voice('matthew', 'hurt', { cd: 0.35 });
       onHitPlayer && onHitPlayer(e.hitbox.dmg, !!e.hitbox.knockdown);
       if (player.hp <= 0) {
         player.hp = 0;
         player.alive = false;
         player.koT = 1.2; // main.js waits for the KO pose before respawning
         setAnim(player, 'ko', { key: 'matthew', sec: 1.2, outfit: player.outfit });
+        voice('matthew', 'ko');
       }
       if (player.kd || !player.alive) return;
     }

@@ -583,3 +583,19 @@ kbd {
   #mobile-buttons #btn-sprint, #mobile-buttons #btn-special { width: 48px; height: 48px; }
 }
 /* <<< v3 */
+
+/* >>> audio settings (audio lane — widget built by js/audio.js mountAudioSettings; pause menu + title Controls) */
+.audio-slot { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.audio-title { font: italic 900 15px Impact, "Arial Black", system-ui, sans-serif; letter-spacing: .14em; color: #ffd24a; text-transform: uppercase; margin: 2px 0 0; }
+.audio-settings { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 4px 10px; margin-top: 6px; }
+.audio-row { display: flex; align-items: center; gap: 6px; }
+.audio-settings .btn { min-width: 0 !important; padding: 5px 12px !important; font-size: 13px !important; margin: 2px !important; white-space: nowrap; }
+.audio-settings .audio-bars { letter-spacing: -1px; color: #ffd24a; font-size: 11px; }
+.audio-settings input[type=range] { width: 92px; accent-color: #ffd24a; cursor: pointer; }
+.audio-settings.muted .audio-row { opacity: .45; }
+@media (max-height: 500px), (max-width: 520px) {
+  .audio-settings input[type=range] { display: none; }  /* phones: tap the slider button (+10%, wraps) */
+  .audio-settings .btn { padding: 3px 8px !important; font-size: 11px !important; }
+  .audio-title { font-size: 12px; }
+}
+/* <<< audio settings */
