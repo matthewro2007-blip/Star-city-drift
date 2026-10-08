@@ -7,10 +7,12 @@
  * dark silhouettes with a lock and the unlock hint, and refuse to equip (denied blip).
  *
  * The DOM is built here and mounted next to #pause-screen; styling is the marked block in style.css.
- * Equipping goes through main.js setOutfit() — the same path as keys 1-9/0/- and L1/R1 cycling.
+ * Equipping goes through main.js setOutfit() — the same path as keys 1-9/0/-/= and L1/R1 cycling.
+ * Outfits with their own bust (Sprites.getOutfitPortrait, e.g. Hell's Nightmare's helmet) show it as a
+ * badge on the large preview once unlocked.
  * The preview animation runs on its own requestAnimationFrame only while the picker is open.
  */
-import { OUTFITS, OUTFIT_ORDER } from './npcs.js';
+import { OUTFITS, OUTFIT_ORDER, OUTFIT_HOTKEYS } from './npcs.js';
 import * as Sprites from './sprites.js';
 import { sfx } from './audio.js';
 
@@ -41,6 +43,7 @@ export function createOutfitsMenu(opts) {
       <div class="outfit-body">
         <div class="outfit-feature">
           <canvas class="outfit-big" width="${BIG_W}" height="${BIG_H}" aria-hidden="true"></canvas>
+          <img class="of-portrait hidden" id="outfit-picker-portrait" alt="" aria-hidden="true" />
           <div class="of-name" id="outfit-picker-name"></div>
           <div class="of-desc" id="outfit-picker-desc"></div>
           <button type="button" class="btn" id="btn-outfit-equip">Equip</button>
@@ -75,6 +78,7 @@ export function createOutfitsMenu(opts) {
     const c = (bag.collectibles || []).find((k) => k.outfit === id);
     if (!c) return 'Unlock: keep exploring Star City.';
     const home = c.home || String(c.area || '').replace(/^hidden:/, '');
+    if (c.hint) return c.spotted && !c.taken ? `Unlock: you've spotted the ${c.name} in the ${opts.areaName ? opts.areaName(home) : home}. Go grab it!` : c.hint;
     let h = `Unlock: find the ${c.name} — ${opts.areaName ? opts.areaName(home) : home}.`;
     const m = c.reveal && bag.missions && bag.missions[c.reveal];
     if (m && !m.done) h += ` Appears after "${m.title}".`;
@@ -102,6 +106,13 @@ export function createOutfitsMenu(opts) {
     } else {
       const spr = Sprites.getMatthewSprite && Sprites.getMatthewSprite('idle', id, OUTFITS[id], tMs / 1000);
       if (spr) { const dh = H * 0.86, dw = dh * (spr.width / spr.height); ctx.drawImage(spr, Math.round(W / 2 - dw / 2), Math.round(feetY - dh), Math.round(dw), Math.round(dh)); }
+    }
+    if (!locked && id !== 'polo' && Sprites.hasAnims && !Sprites.hasAnims('matthew', id) && OUTFITS[id] && OUTFITS[id].shirt) {
+      // outfit art not in yet (polo frames): wash them in the outfit's colours so the card still reads
+      ctx.globalCompositeOperation = 'source-atop';
+      ctx.globalAlpha = 0.5; ctx.fillStyle = OUTFITS[id].shirt; ctx.fillRect(0, 0, W, H);
+      ctx.globalAlpha = 0.35; ctx.fillStyle = OUTFITS[id].accent || OUTFITS[id].shirt; ctx.fillRect(0, 0, W, H * 0.3);
+      ctx.globalAlpha = 1; ctx.globalCompositeOperation = 'source-over';
     }
     if (locked) { // dark silhouette with a faint cool rim
       ctx.globalCompositeOperation = 'source-atop';
@@ -156,10 +167,22 @@ export function createOutfitsMenu(opts) {
     $('outfit-picker-name').textContent = locked ? `🔒 ${OUTFITS[id].name}` : OUTFITS[id].name;
     $('outfit-picker-desc').textContent = locked ? hintFor(id) : OUTFITS[id].desc || '';
     root.querySelector('.outfit-feature').classList.toggle('locked', locked);
+    syncPortrait(id, locked);
     const eb = $('btn-outfit-equip');
     eb.textContent = locked ? 'Locked' : id === current ? 'Equipped ✓' : 'Equip';
     eb.classList.toggle('disabled', locked || id === current);
     eb.setAttribute('aria-disabled', String(locked));
+  }
+  /** Outfit bust badge (only for outfits that have their own portrait, e.g. Hell's Nightmare). */
+  function syncPortrait(id, locked) {
+    const el = $('outfit-picker-portrait');
+    let src = '';
+    try {
+      const own = Sprites.getOutfitPortrait && Sprites.getOutfitPortrait(id), base = Sprites.getOutfitPortrait && Sprites.getOutfitPortrait('polo');
+      if (!locked && own && own !== base && own.src) src = own.src;
+    } catch (_) { src = ''; }
+    if (src && el.getAttribute('src') !== src) el.setAttribute('src', src);
+    el.classList.toggle('hidden', !src);
   }
   function setHelp(dev) {
     $('outfit-picker-help').textContent = dev === 'touch' ? 'Tap a card, tap again to equip'
@@ -247,7 +270,7 @@ export function createOutfitsMenu(opts) {
       else if (inp.navUp) focus(idx - cols >= 0 ? idx - cols : idx);
       else if (inp.navDown) focus(idx + cols < tiles.length ? idx + cols : (Math.floor(idx / cols) < Math.floor((tiles.length - 1) / cols) ? tiles.length - 1 : idx));
       if (inp.outfitCycle) focus(idx + inp.outfitCycle); // L1/R1 flip through cards
-      if (inp.outfitKey) { const k = inp.outfitKey; focus(k === '-' ? 10 : k === '0' ? 9 : Number(k) - 1); } // 1-9/0/- jump to a card
+      if (inp.outfitKey) { const k = inp.outfitKey; focus(k in OUTFIT_HOTKEYS ? OUTFIT_HOTKEYS[k] : Number(k) - 1); } // 1-9/0/-/= jump to a card
       if (inp.confirmPressed || inp.punchPressed) equip();
       else if (inp.backPressed || inp.pausePressed || inp.kickPressed) close();
       return true;

@@ -233,5 +233,22 @@
    "Beacon Ring (under the Mill Mountain Star)",
    "Beacon Ring"
   ]
+ },
+ "ironclad": {
+  "row": 19,
+  "frames": 6,
+  "fw": 48,
+  "fh": 48,
+  "fps": 8,
+  "name": "Hell's Nightmare",
+  "names": [
+   "Hell's Nightmare",
+   "ironcrate",
+   "Hell's Nightmare Armor Crate",
+   "Hell's Nightmare Helmet",
+   "Ironclad",
+   "Ironclad Helmet",
+   "Star City Ironclad"
+  ]
  }
 }

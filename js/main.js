@@ -2,7 +2,7 @@ import {
   AREAS, AREA_ORDER, drawBackground, drawMinimap, DEPTH, getDepth, loadBackgrounds,
   drawSceneGrade, drawGroundShadow, getSignRects
 } from './world.js';
-import { NPC_DEFS, OUTFITS, OUTFIT_ORDER } from './npcs.js';
+import { NPC_DEFS, OUTFITS, OUTFIT_ORDER, OUTFIT_HOTKEYS } from './npcs.js';
 import { createMissionSystem, SEQUEL_HOOKS, ENDING_TEXT } from './missions.js';
 import { hasSave, clearSave, serializeSave, saveGame, inspectSave, applySave } from './save.js';
 import { createInput, getPromptLabel, getPromptDevice, rumble } from './input.js';
@@ -144,7 +144,17 @@ const HUD_LOCATION = {
   community: ['COMMUNITY CENTER', 'Neighborhood']
 };
 
+/** 1.3.2: HUD portrait follows the outfit (Sprites.getOutfitPortrait: helmet bust for Hell's Nightmare, else default). */
+function syncPortrait() {
+  const el = $('portrait');
+  if (!el || typeof SpriteLib.getOutfitPortrait !== 'function') return;
+  let img = null;
+  try { img = SpriteLib.getOutfitPortrait(gameState.outfitId); } catch (_) { img = null; }
+  const src = img && img.src;
+  if (src && el.src !== src) el.src = src;
+}
 function updateHUD() {
+  syncPortrait();
   const m = missions.getActive();
   const sm = sideMission();
   $('mission-title').textContent = sm ? sm.title : m ? m.title : 'Free Roam';
@@ -569,12 +579,33 @@ function checkGold() {
   }
 }
 
+// ---------- 1.3.2: Hell's Nightmare helmet (outfit `ironclad`) — hidden collectible in the Rail Yards ----------
+// `stealth` collectibles are drawn faint and unlabelled until Matthew gets close; the first time he does,
+// the helmet is "spotted" (glint sound + toast) and stays fully visible from then on (saved: save v4 `spotted`).
+const STEALTH_SPOT_DIST = 170;
+function stealthVis(c) {
+  if (!c.stealth || c.spotted) return 1;
+  const d = Math.abs(c.x - player.x);
+  return d >= STEALTH_SPOT_DIST + 230 ? 0.12 : d <= STEALTH_SPOT_DIST ? 1 : 0.12 + 0.88 * (1 - (d - STEALTH_SPOT_DIST) / 230);
+}
+function checkStealthSpots() {
+  for (const c of stateBag.collectibles) {
+    if (!c.stealth || c.spotted || c.taken || c.area !== gameState.areaId) continue;
+    if (Math.abs(c.x - player.x) > STEALTH_SPOT_DIST) continue;
+    c.spotted = true;
+    sfx('glint');
+    toast(c.outfit === 'ironclad' ? 'Something glints by the last boxcar… a helmet?' : `You spotted the ${c.name}!`);
+    persist();
+  }
+}
+
 /** Collectible pickup: score for pure collectibles, outfits are worn right away. */
 function collectHere() {
   const got = missions.tryCollect(gameState.areaId, player.x, toast, () => {});
   if (!got) return null;
   if (got.score) { gameState.score += got.score; toast(`+${got.score} score`); }
   if (got.outfit) setOutfit(got.outfit, true); // the unlock fanfare already played
+  if (got.outfit === 'ironclad') toast("Hell's Nightmare suit unlocked! Wear it any time with = or Shift+2 (L1/R1 to cycle).");
   onProgress();
   return got;
 }
@@ -1017,7 +1048,7 @@ bindTap('btn-missions', () => toggleMissionList());
 bindTap('btn-confirm-no', () => closeConfirm());
 bindTap('btn-resume', () => resumeGame());
 bindTap('btn-save', () => manualSave());
-bindTap('btn-outfit', () => openOutfitPicker()); // opens the visual picker (L1/R1 + 1-9/0/- still cycle in play)
+bindTap('btn-outfit', () => openOutfitPicker()); // opens the visual picker (L1/R1 + 1-9/0/-/= still cycle in play)
 bindTap('btn-pause', () => pauseGame()); // phone pause button (Save Game / outfits live there)
 bindTap('btn-replay', () => {
   $('ending-screen').classList.add('hidden');
@@ -1111,7 +1142,8 @@ function step(dt) {
   }
 
   if (inp.outfitKey) {
-    const id = OUTFIT_ORDER[inp.outfitKey === '-' ? 10 : inp.outfitKey === '0' ? 9 : Number(inp.outfitKey) - 1];
+    const k = inp.outfitKey;
+    const id = OUTFIT_ORDER[k in OUTFIT_HOTKEYS ? OUTFIT_HOTKEYS[k] : Number(k) - 1];
     if (id) setOutfit(id);
   }
   if (inp.outfitCycle && gameState.mode === 'play') cycleOutfit(inp.outfitCycle);
@@ -1228,6 +1260,7 @@ function step(dt) {
   if (gameState.mode !== 'play') { drawWorld(dt); return; }
 
   // Auto pickup nearby collectibles (autosaves; outfit pickups are worn right away)
+  checkStealthSpots(); // 1.3.2: hidden Hell's Nightmare helmet reveals itself up close
   collectHere();
 
   // Interact prompt
@@ -1436,13 +1469,16 @@ function drawCollectibleItem(c, x, y) {
   const now = performance.now();
   let f = null;
   try { f = typeof SpriteLib.getCollectibleSprite === 'function' ? SpriteLib.getCollectibleSprite(c.id, now) : null; } catch (_) { f = null; }
-  if (!f || !f.img || !f.sw || !f.sh) { drawCollectible(ctx, x, y, c.name, now / 200); return; }
+  const vis = stealthVis(c); // 1.3.2: hidden (stealth) items are faint + unlabelled until Matthew is close
+  if (vis <= 0) return;
+  if (vis < 1) { ctx.save(); ctx.globalAlpha = vis; }
+  if (!f || !f.img || !f.sw || !f.sh) { drawCollectible(ctx, x, y, c.name, now / 200); if (vis < 1) ctx.restore(); return; }
   const ax = f.anchorX != null ? f.anchorX : f.sw / 2, ay = f.anchorY != null ? f.anchorY : f.sh - 1;
   const dx = Math.round(x - ax), dy = Math.round(y - 4 - ay);
   const cy = dy + f.sh / 2;
   ctx.fillStyle = 'rgba(0,0,0,0.2)';
   ctx.beginPath(); ctx.ellipse(x, y - 2, 13, 4, 0, 0, Math.PI * 2); ctx.fill();
-  const pulse = 0.55 + 0.25 * Math.sin(now / 330 + c.x);
+  const pulse = (0.55 + 0.25 * Math.sin(now / 330 + c.x)) * (vis < 1 ? 0.3 : 1);
   const g = ctx.createRadialGradient(x, cy, 2, x, cy, 32);
   g.addColorStop(0, `rgba(255,224,120,${0.5 * pulse})`); g.addColorStop(1, 'rgba(255,224,120,0)');
   ctx.fillStyle = g; ctx.beginPath(); ctx.arc(x, cy, 32, 0, Math.PI * 2); ctx.fill();
@@ -1450,10 +1486,12 @@ function drawCollectibleItem(c, x, y) {
   ctx.imageSmoothingEnabled = false;
   ctx.drawImage(f.img, f.sx || 0, f.sy || 0, f.sw, f.sh, dx, dy, f.sw, f.sh);
   ctx.restore();
+  if (vis < 1) { ctx.restore(); return; } // no name tag until it's been spotted
   ctx.fillStyle = '#fff'; ctx.font = '9px sans-serif'; ctx.textAlign = 'center';
   ctx.fillText(c.name, x, dy - 4); ctx.textAlign = 'left';
 }
 // <<< v3
+
 
 function syncCamera(dt) {
   const area = AREAS[gameState.areaId];

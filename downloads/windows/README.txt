@@ -1,27 +1,27 @@
-STAR CITY DRIFT 1.3.1 - Windows (64-bit) installer, sent in 6 parts
+STAR CITY DRIFT 1.3.2 - Windows (64-bit) installer, sent in 6 parts
 ===================================================================
 
 You need all 6 files in the SAME folder:
-  Star-City-Drift-1.3.1-Setup-win-x64.7z.001   (23.1 MB)
-  Star-City-Drift-1.3.1-Setup-win-x64.7z.002   (23.1 MB)
-  Star-City-Drift-1.3.1-Setup-win-x64.7z.003   (23.1 MB)
-  Star-City-Drift-1.3.1-Setup-win-x64.7z.004   (23.1 MB)
-  Star-City-Drift-1.3.1-Setup-win-x64.7z.005   (23.1 MB)
-  Star-City-Drift-1.3.1-Setup-win-x64.7z.006   (2.9 MB)
-Together they're one 7-Zip archive holding Star-City-Drift-Setup-1.3.1.exe (118 MB).
+  Star-City-Drift-1.3.2-Setup-win-x64.7z.001   (23.1 MB)
+  Star-City-Drift-1.3.2-Setup-win-x64.7z.002   (23.1 MB)
+  Star-City-Drift-1.3.2-Setup-win-x64.7z.003   (23.1 MB)
+  Star-City-Drift-1.3.2-Setup-win-x64.7z.004   (23.1 MB)
+  Star-City-Drift-1.3.2-Setup-win-x64.7z.005   (23.1 MB)
+  Star-City-Drift-1.3.2-Setup-win-x64.7z.006   (4.0 MB)
+Together they're one 7-Zip archive holding Star-City-Drift-Setup-1.3.2.exe (119 MB).
 
 EASIEST: 7-Zip (free, https://www.7-zip.org)
   1. Install 7-Zip.
-  2. Right-click Star-City-Drift-1.3.1-Setup-win-x64.7z.001 > 7-Zip > Extract Here
+  2. Right-click Star-City-Drift-1.3.2-Setup-win-x64.7z.001 > 7-Zip > Extract Here
      (or open the .001 in 7-Zip). It reads .002-.006 by itself.
-  3. Double-click Star-City-Drift-Setup-1.3.1.exe and follow the installer.
+  3. Double-click Star-City-Drift-Setup-1.3.2.exe and follow the installer.
   NanaZip, PeaZip and WinRAR open the .001 the same way.
 
 WITHOUT 7-ZIP (Windows 11 only)
   Windows can't open the .001 file directly. Join the parts into one .7z first:
   in that folder, click the address bar, type  cmd  and press Enter, then run:
-    copy /b Star-City-Drift-1.3.1-Setup-win-x64.7z.001+Star-City-Drift-1.3.1-Setup-win-x64.7z.002+Star-City-Drift-1.3.1-Setup-win-x64.7z.003+Star-City-Drift-1.3.1-Setup-win-x64.7z.004+Star-City-Drift-1.3.1-Setup-win-x64.7z.005+Star-City-Drift-1.3.1-Setup-win-x64.7z.006 Star-City-Drift-1.3.1-Setup-win-x64.7z
-  Then right-click Star-City-Drift-1.3.1-Setup-win-x64.7z > Extract All. Windows 11 has opened .7z files natively since the
+    copy /b Star-City-Drift-1.3.2-Setup-win-x64.7z.001+Star-City-Drift-1.3.2-Setup-win-x64.7z.002+Star-City-Drift-1.3.2-Setup-win-x64.7z.003+Star-City-Drift-1.3.2-Setup-win-x64.7z.004+Star-City-Drift-1.3.2-Setup-win-x64.7z.005+Star-City-Drift-1.3.2-Setup-win-x64.7z.006 Star-City-Drift-1.3.2-Setup-win-x64.7z
+  Then right-click Star-City-Drift-1.3.2-Setup-win-x64.7z > Extract All. Windows 11 has opened .7z files natively since the
   23H2 update. Windows 10 can't open .7z, so use 7-Zip there.
 
 FIRST RUN
@@ -29,16 +29,21 @@ FIRST RUN
   Click "More info" > "Run anyway".
   F11 or Alt+Enter toggles fullscreen. Esc pauses. Saves are kept in %APPDATA%\Star City Drift.
 
-  Already have 1.2.x or 1.3.0? You don't need this: it updates itself from the website. Installing 1.3.1
+  Already have 1.2.x, 1.3.0 or 1.3.1? You don't need this: it updates itself from the website. Installing 1.3.2
   over it is fine too and keeps your saves.
 
-NEW IN 1.3.1: VISUAL OUTFIT PICKER
-  Pause > Outfits now opens a picker with a card for every outfit (all 11, including
-  Web-Slinger and Beacon). Each card shows Matthew animated in that outfit, and the selected
-  card gets a big preview and a short description. Locked outfits show as dark silhouettes with
-  a hint telling you where to find them. Use the arrow keys / D-pad / left stick to move and
-  Enter, Z, A or Cross to put the outfit on. Esc, B or Circle goes back. On a phone, tap a card
-  and then tap it again (or press Equip). Keys 1-9, 0 and - and L1/R1 still switch outfits during play.
+NEW IN 1.3.2: HELL'S NIGHTMARE SUIT
+  A 12th outfit: Hell's Nightmare, bulky olive demon-hunter armor with an amber-visored helmet.
+  Its helmet is hidden in the Rail Yards. It stays faint until you get close, so look along the
+  last boxcar at the far end of the yard. Walk into it to unlock the suit and put it on.
+  The HUD portrait switches to the helmet, and Star Drive lands with a heavier armored boom.
+  Press = (or Shift+2) to wear it, or cycle with L1/R1 (LB/RB). It also has a card in
+  Pause > Outfits, which now holds all 12 outfits and still fits on a phone held either way.
+  Old saves carry over.
+
+ALSO IN 1.3.1: VISUAL OUTFIT PICKER
+  Pause > Outfits shows a card for every outfit with Matthew animated in it, a big preview and
+  a short description. Locked outfits show as silhouettes with a hint telling you where to find them.
 
 ALSO IN 1.3.0: SOUND
   Original music, punchy hit sounds and a voice for every character. Volume sliders and mute
@@ -47,7 +52,7 @@ ALSO IN 1.3.0: SOUND
 WHAT'S BUILT IN
   Everything up to now works offline: animations, knockdowns, sprint and Star Drive, the Star City
   Beacon outfit and Beacon Ring, the collectible item art, the closer camera and golden-hour
-  lighting, the audio and the new outfit picker.
+  lighting, the audio, the outfit picker and the Hell's Nightmare suit.
 
 UPDATES ARE AUTOMATIC
   When you're online, the app plays the latest version of the game from the Star City Drift
@@ -57,9 +62,9 @@ UPDATES ARE AUTOMATIC
   title screen.
 
 SHA-256 checksums (optional check):
-82bfdae5536fb3d7032721f6b88453dc2d4a4b7af81e1766ab47e03b06e556c1  Star-City-Drift-1.3.1-Setup-win-x64.7z.001
-e486e82f5fafe372c5fca559c6d41a29714f605e9cb5c1e26f6c49966cac46fa  Star-City-Drift-1.3.1-Setup-win-x64.7z.002
-c69e86d47ccaae73b3756eab70f426689900a3c2993e615dee673fa7bb05ba97  Star-City-Drift-1.3.1-Setup-win-x64.7z.003
-2c8133b43754bd97d5c9a039f166b390776f9797635dcd27d26d9bf54f6647eb  Star-City-Drift-1.3.1-Setup-win-x64.7z.004
-aac248aa613d50124c13149e188f04bcae9fb8b498cdaa0a3a25918f2d4a58dc  Star-City-Drift-1.3.1-Setup-win-x64.7z.005
-f5920625d31705279efe6c9f0d87a558627fe3d0100502fdacd3a6369a18f265  Star-City-Drift-1.3.1-Setup-win-x64.7z.006
+cdbd2b6ba3db9ae18fd174cd9e0097b0d0fdcaa862bb928c3b541108dea180be  Star-City-Drift-1.3.2-Setup-win-x64.7z.001
+6c12b44f4f974df094745522f52f46dd88fb437417b4c5d84914a5b1b3a7aefe  Star-City-Drift-1.3.2-Setup-win-x64.7z.002
+5deae949b94f71a22b8523fd8e5afcb0b7040cce23f705ee8e5a30621a846a0f  Star-City-Drift-1.3.2-Setup-win-x64.7z.003
+09ce794f8a32accf3420a6e52037a281298706af71a2a0d925edadc63cd2d256  Star-City-Drift-1.3.2-Setup-win-x64.7z.004
+0c87a4aa63c626caeb77624af8dc6bd80b8f6a78ae4b6d8f5582c651ae6ba194  Star-City-Drift-1.3.2-Setup-win-x64.7z.005
+acaafa65fc5f265a2e776c44867fe0f3ffabe836649b6af1a0157531fe8fb6f2  Star-City-Drift-1.3.2-Setup-win-x64.7z.006

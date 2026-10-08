@@ -613,7 +613,7 @@ kbd {
 .outfit-count { color: #ffd24a; font-size: 14px; font-weight: 700; letter-spacing: 0.04em; }
 .outfit-body { display: flex; gap: 16px; min-height: 0; flex: 1 1 auto; }
 .outfit-feature {
-  flex: 0 0 260px; display: flex; flex-direction: column; align-items: center; gap: 6px;
+  position: relative; flex: 0 0 260px; display: flex; flex-direction: column; align-items: center; gap: 6px;
   background: radial-gradient(ellipse at 50% 70%, rgba(255,200,90,0.16), rgba(0,0,0,0.25) 70%);
   border: 1px solid rgba(255,210,74,0.35); border-radius: 12px; padding: 10px 12px 12px;
 }
@@ -621,6 +621,8 @@ kbd {
 .of-name { font-size: 19px; font-weight: 800; color: #fff4dc; text-align: center; }
 .of-desc { font-size: 14px; line-height: 1.35; color: #d8d0c0; text-align: center; min-height: 3.9em; }
 .outfit-feature.locked .of-desc { color: #9fb4d8; }
+.of-portrait { position: absolute; top: 8px; right: 8px; width: 56px; height: 56px; image-rendering: pixelated; border-radius: 50%; border: 2px solid #ffb020; background: rgba(0,0,0,0.45); box-shadow: 0 0 10px rgba(255,176,32,0.45); }
+.of-portrait.hidden { display: none; }
 .outfit-feature .btn { margin-top: auto; min-width: 150px; }
 .outfit-feature .btn.disabled { opacity: 0.55; filter: grayscale(0.4); }
 .outfit-grid {
@@ -655,6 +657,7 @@ kbd {
   .outfit-head h2 { font-size: 18px; }
   .outfit-feature { flex-basis: 190px; padding: 6px 8px 8px; gap: 3px; }
   .outfit-big { width: 112px; height: 140px; }
+  .of-portrait { width: 40px; height: 40px; top: 5px; right: 5px; }
   .of-name { font-size: 15px; }
   .of-desc { font-size: 12px; min-height: 0; }
   .outfit-feature .btn { min-width: 120px; padding: 6px 14px; font-size: 14px; }
@@ -671,6 +674,7 @@ kbd {
   .outfit-body { flex-direction: column; gap: 8px; }
   .outfit-feature { flex: 0 0 auto; display: grid; grid-template-columns: 110px 1fr; grid-template-rows: auto 1fr auto; column-gap: 10px; align-items: center; padding: 6px 10px; }
   .outfit-big { grid-row: 1 / span 3; width: 104px; height: 130px; }
+  .of-portrait { width: 36px; height: 36px; top: 5px; left: 76px; right: auto; }
   .of-name, .of-desc { text-align: left; }
   .of-name { font-size: 16px; }
   .of-desc { font-size: 12.5px; min-height: 0; align-self: start; }

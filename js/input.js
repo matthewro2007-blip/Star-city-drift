@@ -12,22 +12,22 @@ const promptState = { device: 'keyboard', padType: 'xbox', padId: '' };
 const PROMPTS = {
   keyboard: {
     punch: 'Z', kick: 'X', heavy: 'C', interact: 'E', pause: 'Esc',
-    confirm: 'Enter', back: 'Esc', move: 'WASD / Arrows', outfit: '1–9, 0, −',
+    confirm: 'Enter', back: 'Esc', move: 'WASD / Arrows', outfit: '1–9, 0, −, =', nightmare: '= or Shift+2',
     sprint: 'Shift', special: 'V', jumpkick: 'Shift + X'
   },
   touch: {
     punch: 'Z', kick: 'X', heavy: '', interact: 'E', pause: 'II',
-    confirm: 'Tap', back: 'Tap', move: 'Stick', outfit: '',
+    confirm: 'Tap', back: 'Tap', move: 'Stick', outfit: '', nightmare: 'II ▸ Outfits',
     sprint: 'RUN', special: '★', jumpkick: 'RUN + X'
   },
   ps: {
     punch: '✕ Cross', kick: '○ Circle', heavy: '△ Triangle', interact: '□ Square',
-    pause: 'Options', confirm: '✕ Cross', back: '○ Circle', move: 'Left stick / D-pad', outfit: 'L1 / R1',
+    pause: 'Options', confirm: '✕ Cross', back: '○ Circle', move: 'Left stick / D-pad', outfit: 'L1 / R1', nightmare: 'L1 / R1',
     sprint: 'L3 / L2', special: 'R2', jumpkick: 'L2 + ○'
   },
   xbox: {
     punch: 'A', kick: 'B', heavy: 'Y', interact: 'X', pause: 'Menu',
-    confirm: 'A', back: 'B', move: 'Left stick / D-pad', outfit: 'LB / RB',
+    confirm: 'A', back: 'B', move: 'Left stick / D-pad', outfit: 'LB / RB', nightmare: 'LB / RB',
     sprint: 'LS / LT', special: 'RT', jumpkick: 'LT + B'
   }
 };
@@ -132,7 +132,8 @@ export function createInput(canvas, opts = {}) {
     if (e.ctrlKey || e.metaKey || e.altKey) return;
     const a = keyMap[e.key] || (e.code === 'ShiftLeft' || e.code === 'ShiftRight' ? 'sprint' : undefined);
     const beaconKey = e.key === '-' || (e.shiftKey && e.code === 'Digit1'); // 11th outfit: - or Shift+1
-    if (!a && !(e.key >= '0' && e.key <= '9') && !beaconKey) return;
+    const nightmareKey = e.key === '=' || e.key === '+' || (e.shiftKey && e.code === 'Digit2'); // 12th (Hell's Nightmare): = or Shift+2
+    if (!a && !(e.key >= '0' && e.key <= '9') && !beaconKey && !nightmareKey) return;
     setDevice(state.mobile ? 'touch' : 'keyboard');
     if (a) {
       keys[a] = true;
@@ -141,6 +142,7 @@ export function createInput(canvas, opts = {}) {
     if (e.repeat) return; // edge-triggered actions never auto-repeat
     if (e.key >= '0' && e.key <= '9') state.outfitKey = e.key;
     if (beaconKey) state.outfitKey = '-';
+    if (nightmareKey) state.outfitKey = '=';
     if (a === 'punch') state.punchPressed = true;
     if (a === 'kick') state.kickPressed = true;
     if (a === 'heavy') state.heavyPressed = true;

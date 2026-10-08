@@ -426,6 +426,14 @@ class Engine {
         this.sfx('finisher', t, { prio: true });
         [2093, 2637, 3136, 4186].forEach((f, k) => this.tone(t + 0.02 + k * 0.035, 'triangle', f, f, 0.45, 0.07, out, 0.6));
         break;
+      case 'star_iron': { // Star Drive landing in the Hell's Nightmare armor: sub boom + armour clang
+        this.sfx('finisher', t, { prio: true });
+        this.thump(t, 70, 26, 0.6, 1, out);
+        this.burst(t, 'lowpass', 300, 0.8, 0.45, 0.7, out, 0.4);
+        [311, 467, 739, 1093].forEach((f, k) => this.tone(t + 0.01, 'square', f * v, f * v * 0.97, 0.5 - k * 0.08, 0.05, out, 0.5));
+        const sv = this.ac.createGain(); sv.gain.value = 0.35; this.burst(t + 0.02, 'bandpass', 1400, 2, 0.3, 0.25, sv); sv.connect(this.sfxVerbIn);
+        break;
+      }
       case 'whiff': {
         const n = this.noise(t, 0.18), bp = this.filt('bandpass', o.heavy ? 350 : 600, 1.6, t);
         this.sweep(bp.frequency, t, o.heavy ? 350 : 600 * v, o.heavy ? 1500 : 2600 * v, o.heavy ? 0.18 : 0.13);
@@ -474,8 +482,16 @@ class Engine {
         const o2 = this.osc('sawtooth', 180, t, 0.45); this.sweep(o2.frequency, t, 180, 1600, 0.4);
         o2.connect(this.filt('lowpass', 2400)).connect(this.env(t, 0.03, 0.07, 0.42)).connect(out);
         for (let k = 0; k < 5; k++) this.tone(t + 0.05 + k * 0.07, 'triangle', rnd(2600, 5200), 0, 0.12, 0.04, out, 0.5);
+        if (o.iron) { // armoured launch: servo growl under the whoosh
+          const g2 = this.osc('sawtooth', 90, t, 0.5); this.sweep(g2.frequency, t, 90, 42, 0.45);
+          g2.connect(this.filt('lowpass', 500)).connect(this.env(t, 0.02, 0.2, 0.45)).connect(out);
+          this.thump(t, 60, 30, 0.3, 0.6, out);
+        }
         break;
       }
+      case 'glint': // hidden collectible spotted (Hell's Nightmare helmet): two soft high sparkles
+        [2637, 3520].forEach((f, k) => this.tone(t + k * 0.09, 'sine', f, f * 1.01, 0.22, 0.05, out, 0.5));
+        break;
       case 'pickup':
         [1046.5, 1318.5, 1568, 2093].forEach((f, k) => { this.tone(t + k * 0.05, 'triangle', f, f, 0.2, 0.16, out, 0.3); this.tone(t + k * 0.05, 'sine', f * 2, f * 2, 0.12, 0.04, out); });
         break;
