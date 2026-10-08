@@ -1,7 +1,7 @@
 {
-  "version": "f09bde5f977c",
-  "generated": "2026-10-08T02:16:30.632Z",
-  "bytes": 19240057,
+  "version": "b065d547d8d8",
+  "generated": "2026-10-08T12:09:28.308Z",
+  "bytes": 19260899,
   "files": [
     "assets/bg/community.png",
     "assets/bg/community_v1.png",
@@ -163,6 +163,7 @@
     "js/main.js",
     "js/missions.js",
     "js/npcs.js",
+    "js/outfits_menu.js",
     "js/present.js",
     "js/props.js",
     "js/save.js",
@@ -312,7 +313,7 @@
     "assets/sprites/wren.png": "b1eacda6e42f231e",
     "assets/sprites/wren_anim.png": "5af8a6a733516d6b",
     "assets/sprites/wren_sheet.png": "75f9f244319f93cf",
-    "css/style.css": "6080ea61ec224bd0",
+    "css/style.css": "390bc837810135d0",
     "icons/apple-touch-icon.png": "cd36c5291515737d",
     "icons/favicon-32.png": "b42a1478f9bcbb51",
     "icons/favicon.ico": "bd47916f00123663",
@@ -330,9 +331,10 @@
     "js/combat.js": "017bb548c17d434c",
     "js/hero.js": "88fa1b6a4acd1104",
     "js/input.js": "bf660601157258ac",
-    "js/main.js": "b501e38b91324021",
+    "js/main.js": "9b690dd43c24c58a",
     "js/missions.js": "c393bc1023d31d7d",
-    "js/npcs.js": "fb5c6c74d97c9801",
+    "js/npcs.js": "ff1c8a65e13b7154",
+    "js/outfits_menu.js": "abdeb81054651d83",
     "js/present.js": "b1937f02065e5819",
     "js/props.js": "e92a34a0d8ef1f1b",
     "js/save.js": "3096ebf73a82cf83",
@@ -340,6 +342,6 @@
     "js/title.js": "27dbdb9640ffea1c",
     "js/world.js": "8f3aabaff30da45f",
     "manifest.webmanifest": "8329dfbc4e169e94",
-    "sw.js": "037a509d22518be7"
+    "sw.js": "e687df773fc26c8b"
   }
 }

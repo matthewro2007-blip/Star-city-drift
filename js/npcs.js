@@ -136,20 +136,20 @@ export const NPC_DEFS = [
 ];
 
 export const OUTFITS = {
-  polo: { name: 'White Polo Tee', shirt: '#fafaf8', pants: '#5a7aa8', accent: '#1a2f5c' },
-  hoodie: { name: 'Star City Hoodie', shirt: '#2c4a7a', pants: '#2a2a2e', accent: '#ffd24a' },
-  jacket: { name: 'Rail Yard Jacket', shirt: '#3d4a3a', pants: '#3a3a48', accent: '#c45c26' },
-  street: { name: 'Skate Fit', shirt: '#111111', pants: '#5a7aaa', accent: '#e83e3e' },
+  polo: { name: 'White Polo Tee', shirt: '#fafaf8', pants: '#5a7aa8', accent: '#1a2f5c', desc: "Matthew's everyday white polo. Clean, easy, ready for anything." },
+  hoodie: { name: 'Star City Hoodie', shirt: '#2c4a7a', pants: '#2a2a2e', accent: '#ffd24a', desc: "Navy Star City hoodie with the gold star — the Mill Mountain classic." },
+  jacket: { name: 'Rail Yard Jacket', shirt: '#3d4a3a', pants: '#3a3a48', accent: '#c45c26', desc: "Weathered rail-yard work jacket with burnt-orange trim." },
+  street: { name: 'Skate Fit', shirt: '#111111', pants: '#5a7aaa', accent: '#e83e3e', desc: "All-black skate fit with red kicks, straight from Starboard Skate." },
   // Matthew's real look from his classroom photo (sheet: assets/sprites/matthew_photo.png)
-  photo: { name: 'Classroom Photo Tee', shirt: '#fafaf8', pants: '#5a7aa8', accent: '#1a2f5c' },
+  photo: { name: 'Classroom Photo Tee', shirt: '#fafaf8', pants: '#5a7aa8', accent: '#1a2f5c', desc: "The tee from Matthew's classroom photo. A little piece of the real guy." },
   // v2 outfits — Joe's sheets load as matthew_<id>.png; until then getMatthewSprite falls back to polo
-  varsity: { name: 'Valley Gym Varsity Jacket', shirt: '#7a1f2b', pants: '#2a2a2e', accent: '#f2e6c8' },
-  mechanic: { name: 'Rail Yard Coveralls', shirt: '#3b5a7a', pants: '#3b5a7a', accent: '#d9a441' },
-  diner: { name: "Dee's Diner Apron", shirt: '#fafaf8', pants: '#2a2a2e', accent: '#c0392b' },
-  webslinger: { name: 'Star City Web-Slinger', shirt: '#b0182a', pants: '#1f3fa8', accent: '#ffd24a' }, // original design
-  gold: { name: 'Gold Star Suit', shirt: '#d4a52a', pants: '#3a2a10', accent: '#fff3b0' },
+  varsity: { name: 'Valley Gym Varsity Jacket', shirt: '#7a1f2b', pants: '#2a2a2e', accent: '#f2e6c8', desc: "Valley Gym varsity jacket in maroon and cream. Earned in the ring." },
+  mechanic: { name: 'Rail Yard Coveralls', shirt: '#3b5a7a', pants: '#3b5a7a', accent: '#d9a441', desc: "Steel-blue rail yard coveralls with brass buttons. Built for night shifts." },
+  diner: { name: "Dee's Diner Apron", shirt: '#fafaf8', pants: '#2a2a2e', accent: '#c0392b', desc: "Dee's spare apron over a white tee. Smells faintly of hash browns." },
+  webslinger: { name: 'Star City Web-Slinger', shirt: '#b0182a', pants: '#1f3fa8', accent: '#ffd24a', desc: "An original Star City hero suit: red, blue and a lot of attitude." }, // original design
+  gold: { name: 'Gold Star Suit', shirt: '#d4a52a', pants: '#3a2a10', accent: '#fff3b0', desc: "Pure gold, head to toe — proof you've truly conquered Star City." },
   // v3: original Star City design (Joe's matthew_beacon.png + anim set) — unlocked by the Beacon Ring
-  beacon: { name: 'Star City Beacon', shirt: '#1e8f5a', pants: '#14202e', accent: '#7dffb2' }
+  beacon: { name: 'Star City Beacon', shirt: '#1e8f5a', pants: '#14202e', accent: '#7dffb2', desc: "Emerald glow from the ring hidden under the Mill Mountain Star." }
 };
 
 /** Outfit order for keys 1-9, 0 and - (or Shift+1), L1/R1 (LB/RB) cycling and the pause-menu outfit button. */

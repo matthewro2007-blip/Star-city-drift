@@ -15,6 +15,7 @@ import { animFrame, animMs, setAnim, enemyCharKey, animApiReady } from './anim.j
 import * as SpriteLib from './sprites.js'; // optional newer helpers (getCollectibleSprite) without a hard import
 import { getMatthewSprite, getNpcSprite, getEnemySprite, drawSprite, drawCollectible, clearSpriteCache, loadSprites, getHeartImages } from './sprites.js';
 import { createTitle } from './title.js';
+import { createOutfitsMenu } from './outfits_menu.js';
 import { getHeroFrame, drawHero, clearHeroCache, HERO_DRAW_H, HERO_SHADOW_W } from './hero.js';
 import { createFollowCamera } from './camera.js';
 import { createPresenter } from './present.js';
@@ -773,7 +774,10 @@ function setOutfit(id, quiet = false) {
   gameState.outfitId = id;
   clearSpriteCache();
   clearHeroCache();
-  toast(`Outfit: ${OUTFITS[id].name}`);
+  // replace (not queue behind) an earlier outfit toast so rapid picker / L1-R1 changes stay current
+  for (let i = toastQueue.length - 1; i >= 0; i--) if (toastQueue[i].startsWith('Outfit: ')) toastQueue.splice(i, 1);
+  const tEl = $('toast');
+  toast(`Outfit: ${OUTFITS[id].name}`, !tEl.classList.contains('hidden') && tEl.textContent.startsWith('Outfit: '));
   updateOutfitButton();
   updateHUD();
   persist();
@@ -790,7 +794,29 @@ function updateOutfitButton() {
   const b = $('btn-outfit');
   if (!b) return;
   const n = OUTFIT_ORDER.filter((id) => stateBag.unlockedOutfits?.has(id)).length;
-  b.textContent = `Outfit: ${(OUTFITS[gameState.outfitId] || OUTFITS.polo).name} ▸ (${n}/${OUTFIT_ORDER.length})`;
+  b.textContent = `Outfits: ${(OUTFITS[gameState.outfitId] || OUTFITS.polo).name} ▸ (${n}/${OUTFIT_ORDER.length})`;
+}
+
+// ---------- Visual outfit picker (pause → Outfits; js/outfits_menu.js) ----------
+const outfitsMenu = createOutfitsMenu({
+  state: () => ({ unlocked: stateBag.unlockedOutfits, current: gameState.outfitId, stateBag }),
+  equip: (id) => setOutfit(id),
+  areaName: (id) => (AREAS[id] ? AREAS[id].name : id),
+  onClose: () => { // back to the pause menu, focus on the Outfits button
+    if (gameState.mode !== 'pause') return;
+    $('pause-screen').classList.remove('hidden');
+    updateOutfitButton();
+    const el = $('pause-screen');
+    menuFocus(Math.max(0, menuButtons(el).indexOf($('btn-outfit'))), el);
+    input.flush();
+  }
+});
+function openOutfitPicker() {
+  if (gameState.mode !== 'pause') return;
+  $('pause-screen').classList.add('hidden');
+  clearMenuFocus();
+  input.flush();
+  outfitsMenu.open(getPromptDevice());
 }
 
 // ---------- Menus (mouse / touch / keyboard / gamepad) ----------
@@ -903,6 +929,7 @@ function resumeGame() {
   if (gameState.mode !== 'pause') return;
   gameState.mode = 'play';
   setPaused(false);
+  outfitsMenu.close(true);
   $('pause-screen').classList.add('hidden');
   clearMenuFocus();
   input.flush();
@@ -990,7 +1017,7 @@ bindTap('btn-missions', () => toggleMissionList());
 bindTap('btn-confirm-no', () => closeConfirm());
 bindTap('btn-resume', () => resumeGame());
 bindTap('btn-save', () => manualSave());
-bindTap('btn-outfit', () => cycleOutfit(1));
+bindTap('btn-outfit', () => openOutfitPicker()); // opens the visual picker (L1/R1 + 1-9/0/- still cycle in play)
 bindTap('btn-pause', () => pauseGame()); // phone pause button (Save Game / outfits live there)
 bindTap('btn-replay', () => {
   $('ending-screen').classList.add('hidden');
@@ -1065,6 +1092,11 @@ function step(dt) {
   if (gameState.mode === 'title') {
     if (!title.update(inp, dt)) handleMenu(inp);
     drawTitleBg(dt);
+    return;
+  }
+  if (gameState.mode === 'pause' && outfitsMenu.isOpen()) {
+    outfitsMenu.update(inp, getPromptDevice());
+    drawWorld(0);
     return;
   }
   if (gameState.mode === 'pause' || gameState.mode === 'ending') {
@@ -1671,6 +1703,7 @@ if (DEBUG) {
     get gameState() { return gameState; },
     get stateBag() { return stateBag; },
     get player() { return player; },
+    outfits: outfitsMenu,
     missions,
     input,
     depth: () => getDepthBand(),

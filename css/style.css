@@ -599,3 +599,86 @@ kbd {
   .audio-title { font-size: 12px; }
 }
 /* <<< audio settings */
+
+/* >>> outfit picker (game-logic lane: js/outfits_menu.js builds #outfit-screen) */
+#outfit-screen { z-index: 105; padding: max(10px, env(safe-area-inset-top)) max(10px, env(safe-area-inset-right)) max(10px, env(safe-area-inset-bottom)) max(10px, env(safe-area-inset-left)); }
+#outfit-screen .outfit-panel {
+  max-width: 1040px; width: 100%; max-height: 100%; padding: 16px 20px 12px;
+  display: flex; flex-direction: column; gap: 10px; overflow: hidden; text-align: left;
+}
+#outfit-screen.shake .outfit-panel { animation: outfit-shake 0.28s ease; }
+@keyframes outfit-shake { 0%,100% { transform: none; } 25% { transform: translateX(-6px); } 50% { transform: translateX(5px); } 75% { transform: translateX(-3px); } }
+.outfit-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+.outfit-head h2 { margin: 0; }
+.outfit-count { color: #ffd24a; font-size: 14px; font-weight: 700; letter-spacing: 0.04em; }
+.outfit-body { display: flex; gap: 16px; min-height: 0; flex: 1 1 auto; }
+.outfit-feature {
+  flex: 0 0 260px; display: flex; flex-direction: column; align-items: center; gap: 6px;
+  background: radial-gradient(ellipse at 50% 70%, rgba(255,200,90,0.16), rgba(0,0,0,0.25) 70%);
+  border: 1px solid rgba(255,210,74,0.35); border-radius: 12px; padding: 10px 12px 12px;
+}
+.outfit-big { width: 200px; height: 250px; image-rendering: pixelated; }
+.of-name { font-size: 19px; font-weight: 800; color: #fff4dc; text-align: center; }
+.of-desc { font-size: 14px; line-height: 1.35; color: #d8d0c0; text-align: center; min-height: 3.9em; }
+.outfit-feature.locked .of-desc { color: #9fb4d8; }
+.outfit-feature .btn { margin-top: auto; min-width: 150px; }
+.outfit-feature .btn.disabled { opacity: 0.55; filter: grayscale(0.4); }
+.outfit-grid {
+  flex: 1 1 auto; min-height: 0; overflow-y: auto; -webkit-overflow-scrolling: touch; touch-action: pan-y;
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(118px, 1fr)); gap: 10px; align-content: start;
+  padding: 4px;
+}
+.outfit-tile {
+  position: relative; display: flex; flex-direction: column; align-items: center; gap: 2px;
+  padding: 6px 4px 8px; min-height: 0; border-radius: 10px; cursor: pointer; color: #fff4dc;
+  background: linear-gradient(170deg, rgba(255,255,255,0.07), rgba(0,0,0,0.25));
+  border: 2px solid rgba(255,255,255,0.12); font: inherit; touch-action: manipulation;
+  transition: transform 0.08s ease, border-color 0.08s ease;
+}
+.outfit-tile canvas { width: 84px; height: 105px; image-rendering: pixelated; }
+.outfit-tile .ot-name { font-size: 12px; font-weight: 700; line-height: 1.15; text-align: center; min-height: 2.3em; display: flex; align-items: center; }
+.outfit-tile .ot-lock { display: none; position: absolute; top: 6px; right: 7px; font-size: 16px; }
+.outfit-tile .ot-on { display: none; position: absolute; top: 5px; left: 6px; font-size: 9px; font-weight: 800; letter-spacing: 0.06em; color: #1a1206; background: #ffd24a; border-radius: 4px; padding: 1px 4px; }
+.outfit-tile.equipped { border-color: #ffd24a; box-shadow: 0 0 14px rgba(255,210,74,0.35) inset; }
+.outfit-tile.equipped .ot-on { display: block; }
+.outfit-tile.locked { background: linear-gradient(170deg, rgba(40,50,80,0.35), rgba(0,0,0,0.45)); color: #8d9ab8; }
+.outfit-tile.locked .ot-lock { display: block; }
+.outfit-tile.focused { border-color: #fff4dc; outline: 3px solid #fff4dc; outline-offset: 2px; transform: translateY(-2px); filter: brightness(1.12); }
+.outfit-tile.locked.focused { outline-color: #9fb4d8; border-color: #9fb4d8; }
+.outfit-tile:focus { outline-style: solid; }
+.outfit-foot { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.outfit-help { color: #bdb3a2; font-size: 13px; }
+.outfit-foot .btn { margin: 0; }
+/* phones, landscape: compact everything */
+@media (max-height: 520px) {
+  #outfit-screen .outfit-panel { padding: 8px 12px 8px; gap: 6px; border-radius: 12px; }
+  .outfit-head h2 { font-size: 18px; }
+  .outfit-feature { flex-basis: 190px; padding: 6px 8px 8px; gap: 3px; }
+  .outfit-big { width: 112px; height: 140px; }
+  .of-name { font-size: 15px; }
+  .of-desc { font-size: 12px; min-height: 0; }
+  .outfit-feature .btn { min-width: 120px; padding: 6px 14px; font-size: 14px; }
+  .outfit-grid { grid-template-columns: repeat(auto-fill, minmax(92px, 1fr)); gap: 6px; }
+  .outfit-tile { padding: 4px 2px 5px; }
+  .outfit-tile canvas { width: 56px; height: 70px; }
+  .outfit-tile .ot-name { font-size: 10.5px; }
+  .outfit-foot .btn { padding: 5px 14px; font-size: 13px; }
+  .outfit-help { font-size: 11px; }
+}
+/* phones, portrait: preview on top, grid below */
+@media (max-width: 640px) and (orientation: portrait) {
+  #outfit-screen .outfit-panel { padding: 10px 10px 8px; gap: 8px; }
+  .outfit-body { flex-direction: column; gap: 8px; }
+  .outfit-feature { flex: 0 0 auto; display: grid; grid-template-columns: 110px 1fr; grid-template-rows: auto 1fr auto; column-gap: 10px; align-items: center; padding: 6px 10px; }
+  .outfit-big { grid-row: 1 / span 3; width: 104px; height: 130px; }
+  .of-name, .of-desc { text-align: left; }
+  .of-name { font-size: 16px; }
+  .of-desc { font-size: 12.5px; min-height: 0; align-self: start; }
+  .outfit-feature .btn { margin-top: 0; min-width: 0; justify-self: start; padding: 6px 18px; }
+  .outfit-grid { grid-template-columns: repeat(3, 1fr); gap: 7px; }
+  .outfit-tile canvas { width: 60px; height: 75px; }
+  .outfit-tile .ot-name { font-size: 11px; }
+  .outfit-help { font-size: 11px; }
+}
+@media (prefers-reduced-motion: reduce) { #outfit-screen.shake .outfit-panel { animation: none; } .outfit-tile { transition: none; } }
+/* <<< outfit picker */
