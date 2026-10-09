@@ -133,7 +133,8 @@ export function createInput(canvas, opts = {}) {
     const a = keyMap[e.key] || (e.code === 'ShiftLeft' || e.code === 'ShiftRight' ? 'sprint' : undefined);
     const beaconKey = e.key === '-' || (e.shiftKey && e.code === 'Digit1'); // 11th outfit: - or Shift+1
     const nightmareKey = e.key === '=' || e.key === '+' || (e.shiftKey && e.code === 'Digit2'); // 12th (Hell's Nightmare): = or Shift+2
-    if (!a && !(e.key >= '0' && e.key <= '9') && !beaconKey && !nightmareKey) return;
+    const suitKey = e.key === '#' || e.key === '£' || (e.shiftKey && e.code === 'Digit3'); // 13th (Silas's Suit, 1.5.0): Shift+3
+    if (!a && !(e.key >= '0' && e.key <= '9') && !beaconKey && !nightmareKey && !suitKey) return;
     setDevice(state.mobile ? 'touch' : 'keyboard');
     if (a) {
       keys[a] = true;
@@ -143,6 +144,7 @@ export function createInput(canvas, opts = {}) {
     if (e.key >= '0' && e.key <= '9') state.outfitKey = e.key;
     if (beaconKey) state.outfitKey = '-';
     if (nightmareKey) state.outfitKey = '=';
+    if (suitKey) state.outfitKey = '#';
     if (a === 'punch') state.punchPressed = true;
     if (a === 'kick') state.kickPressed = true;
     if (a === 'heavy') state.heavyPressed = true;
@@ -348,6 +350,8 @@ export function createInput(canvas, opts = {}) {
 
   return {
     state,
+    /** DLC: Silas prequel — wire a touch button created later (e.g. #btn-grip → heavy). */
+    bindButton: bindBtn,
     isMobile: () => state.mobile,
     hasPad: () => activePadIndex != null,
     showMobile(show) {

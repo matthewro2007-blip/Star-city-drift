@@ -123,6 +123,9 @@
       <button type="button" id="btn-new-game" class="btn hidden">New Game</button>
       <button type="button" id="btn-controls" class="btn">Controls</button>
       <button type="button" id="btn-credits" class="btn">Credits</button>
+      <!-- DLC: Silas prequel (Bob) -->
+      <button type="button" id="btn-prequel" class="btn btn-prequel" aria-label="Prequel: Silas Boone (Free DLC)"><span class="prequel-label">Prequel: Silas Boone</span><span class="dlc-badge" aria-hidden="true">FREE DLC</span></button>
+      <!-- end DLC: Silas prequel (Bob) -->
       <div id="title-help" class="title-help"></div>
     </nav>
     <section id="title-controls" class="title-panel" aria-label="Controls">
@@ -185,6 +188,37 @@
       <button type="button" id="btn-replay" class="btn">Keep Roaming</button>
     </div>
   </div>
+
+  <!-- DLC: Silas prequel (Bob) -->
+  <div id="dlc-mission-card" class="overlay dlc-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="dlc-mission-title">
+    <div class="dlc-card">
+      <div id="dlc-mission-eyebrow" class="dlc-eyebrow">Prequel · Silas Boone</div>
+      <h2 id="dlc-mission-title" class="dlc-card-title">Mission Complete</h2>
+      <div class="dlc-rule" aria-hidden="true"><span>★</span></div>
+      <div id="dlc-mission-name" class="dlc-mission-name"></div>
+      <p id="dlc-mission-sub" class="dlc-mission-sub"></p>
+      <button type="button" id="btn-dlc-mission-continue" class="btn dlc-btn">Continue</button>
+      <div id="dlc-mission-hint" class="dlc-hint">Enter · Ⓐ / ✕ · tap to continue</div>
+    </div>
+  </div>
+
+  <div id="dlc-ending-screen" class="overlay dlc-overlay dlc-ending hidden" role="dialog" aria-modal="true" aria-labelledby="dlc-ending-title">
+    <div class="dlc-ending-inner">
+      <div id="dlc-ending-eyebrow" class="dlc-eyebrow">Prequel Ending</div>
+      <h1 id="dlc-ending-title" class="dlc-ending-title">Before the Star</h1>
+      <p id="dlc-ending-text" class="dlc-ending-text"></p>
+      <div id="dlc-unlock-banner" class="dlc-unlock">
+        <div class="dlc-unlock-art"><img id="dlc-unlock-img" src="assets/sprites/silas.png" alt="Silas's Suit" /></div>
+        <div class="dlc-unlock-copy">
+          <div class="dlc-unlock-kicker">Unlocked</div>
+          <div id="dlc-unlock-label" class="dlc-unlock-label">Silas's Suit unlocked for Matthew</div>
+          <div id="dlc-unlock-sub" class="dlc-unlock-sub">Equip it from the Outfits menu in the main game.</div>
+        </div>
+      </div>
+      <button type="button" id="btn-dlc-ending-continue" class="btn dlc-btn">Back to Title</button>
+    </div>
+  </div>
+  <!-- end DLC: Silas prequel (Bob) -->
 
   <script type="module" src="js/main.js"></script>
 </body>

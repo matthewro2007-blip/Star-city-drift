@@ -10,6 +10,7 @@ const THUG_NAMES = { '#8e44ad': 'purple', '#c0392b': 'red', '#16a085': 'teal', '
 
 /** charKey for a combat entity: matthew | silas_boss | snatcher | thug_<colour>. */
 export function enemyCharKey(e) {
+  if (e.charKey) return e.charKey; // DLC: Silas prequel bosses reuse a thug's art
   if (e.isBoss) return 'silas_boss';
   if (e.runner) return 'snatcher';
   return 'thug_' + (THUG_NAMES[e.color] || 'grey');

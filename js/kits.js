@@ -88,6 +88,14 @@ export const KITS = {
     weapon: 'Breach Gauntlets', move: 'Breach', ability: 'Planted-palm shockwave — heavy knockback, slower start.', sfx: 'kit_ironclad',
     special: { dmg: 26, startup: 0.27, lunge: 0, effect: 'knockdown', knockdown: true, kdPush: 3.2, pad: { reach: 84, depth: 30 }, cost: 25, cooldown: 3 },
     combo3: { dmg: 22, knock: 32, knockdown: true }
+  },
+  // 1.5.0 (DLC: Silas prequel reward): Silas's Suit. Matthew in this outfit fights with Silas Boone's own
+  // moveset (js/silas_moves.js, numbers in SILAS_MOVES below); the kit entry keeps the HUD / picker / tables
+  // working. The special slot is Iron Handshake (grab-and-slam shockwave).
+  silas: {
+    weapon: 'Iron Gauntlet', move: 'Iron Handshake', ability: 'Grab-and-slam: a ground shockwave knocks down everyone nearby.', sfx: 'silas_slam',
+    special: { dmg: 28, startup: 0.3, lunge: 0, effect: 'shockwave', knockdown: true, pad: { reach: 150, depth: 40 }, cost: 25, cooldown: 3 },
+    combo3: { dmg: 16, knock: 52 }
   }
 };
 export const KIT_ORDER = Object.keys(KITS);
@@ -96,7 +104,7 @@ export const KIT_ORDER = Object.keys(KITS);
  *  when the art isn't loaded (the live frames' own `active` flags win); gold hits on 3 and 5. */
 export const SPECIAL_ACTIVE = {
   polo: [3, 4], street: [3, 4], varsity: [3, 4], mechanic: [3, 4], webslinger: [3, 4], ironclad: [3, 4],
-  photo: [2, 3], hoodie: [2, 3], jacket: [2, 3], diner: [2, 3], beacon: [2, 3], gold: [3, 5]
+  photo: [2, 3], hoodie: [2, 3], jacket: [2, 3], diner: [2, 3], beacon: [2, 3], gold: [3, 5], silas: [0, 1, 4, 5] /* Joe's Iron Handshake: grab 0-1, slam + shockwave 4-5 */
 };
 export const COMBO3_ACTIVE = [1, 2];
 export const SPECIAL_FRAMES = 8, COMBO3_FRAMES = 4, KIT_FPS = 12;
@@ -122,8 +130,41 @@ export function artBoxToWorld(f, hb) {
 export function kitRow(id) {
   const k = KITS[id], s = k.special;
   const eff = { stun: `stun ${s.stun}s`, area_stun: `area stun ${s.stun}s`, knockdown: 'knockdown', sweep: `knockback ${s.knock}px + ${s.stun}s stagger`,
-    projectile: `projectile, stun ${s.stun}s (1 target)`, slow: `slow ${Math.round((1 - s.slow.mul) * 100)}% for ${s.slow.t}s`, double: '2 hits (2nd knocks down)',
-    pull: `pull from ${s.pull.range}px + stun ${s.stun}s`, cone: 'cone, knockdown' }[s.effect];
+    projectile: `projectile, stun ${s.stun}s (1 target)`, slow: s.slow ? `slow ${Math.round((1 - s.slow.mul) * 100)}% for ${s.slow.t}s` : '', double: '2 hits (2nd knocks down)',
+    pull: s.pull ? `pull from ${s.pull.range}px + stun ${s.stun}s` : '', cone: 'cone, knockdown', shockwave: `grab-slam + shockwave ${s.pad && s.pad.reach}px, knockdown` }[s.effect];
   return { id, weapon: k.weapon, move: k.move, dmg: s.dmg2 ? `${s.dmg}+${s.dmg2}` : String(s.dmg), startup: s.startup, effect: eff + (s.kdPush ? `, heavy knockback x${s.kdPush}` : '') + (s.armor ? `, x${s.armor} vs armored` : ''),
     cost: s.cost, cooldown: s.cooldown, combo3: k.combo3.dmg };
+}
+
+/**
+ * 1.5.0 DLC: Silas Boone's moveset (playable Silas in the prequel + Matthew in Silas's Suit). One table,
+ * one implementation (js/silas_moves.js). Times in seconds, distances in world px, stun/hesitate scale with
+ * KIT_DIFF[difficulty].stun like the kits. "Boss-like" foes (main-game Silas, DLC bosses) are immune to
+ * Cold Stare and take a strong hit instead of being thrown.
+ */
+export const SILAS_MOVES = {
+  jab: { name: "Gentleman's Jab", window: 0.8, hits: [
+    { dmg: 10, startup: 0.08, active: 0.1, dur: 0.22, reach: 42, knock: 8 },
+    { dmg: 11, startup: 0.08, active: 0.1, dur: 0.22, reach: 42, knock: 8 },
+    { dmg: 16, startup: 0.12, active: 0.1, dur: 0.34, reach: 48, knock: 52, stun: 0.45 } // pushes back
+  ] },
+  grip: { name: 'Velvet Grip', startup: 0.12, reach: 52, depth: 22, hold: 0.3, throwDur: 0.3, whiff: 0.35, cooldown: 0.6,
+    dmg: 14, splash: 12, throwSpeed: 430, flight: 0.42, bossDmg: 24, bossStun: 0.5 },
+  handshake: { name: 'Iron Handshake', cost: 25, cooldown: 3, startup: 0.3, dur: 0.62, grabReach: 58, depth: 24,
+    dmg: 28, bossDmg: 20, radius: 150, waveDepth: 40, waveDmg: 14, kdPush: 1.6 },
+  lastWord: { name: 'Last Word', window: 0.6, maxHold: 1.0, recover: 0.25, cooldown: 1.0, startup: 0.06, counterDur: 0.34, dmg: 24, reach: 90 },
+  stare: { name: 'Cold Stare', cooldown: 8, radius: 240, depth: 70, hesitate: 1.0, dur: 0.45 },
+  rush: { name: 'Boss Rush', startup: 0.1, dist: 160, travel: 0.36, dur: 0.5, dmg: 16, depth: 24, stamina: 20, cooldown: 1.0 }
+};
+/** Rows for README / report / tests. */
+export function silasMoveRows() {
+  const M = SILAS_MOVES;
+  return [
+    { move: M.jab.name, input: 'punch', dmg: M.jab.hits.map((h) => h.dmg).join('/'), startup: M.jab.hits.map((h) => h.startup).join('/'), cooldown: `chain window ${M.jab.window}s`, effect: `3-hit combo; hit 3 pushes back ${M.jab.hits[2].knock}px + ${M.jab.hits[2].stun}s stagger` },
+    { move: M.grip.name, input: 'heavy near a foe', dmg: `${M.grip.dmg} (+${M.grip.splash} to each foe hit by the body)`, startup: M.grip.startup, cooldown: M.grip.cooldown, effect: `grab within ${M.grip.reach}px, hold ${M.grip.hold}s (aim), throw ${Math.round(M.grip.throwSpeed * M.grip.flight)}px+; bosses: ${M.grip.bossDmg} dmg hit, no throw` },
+    { move: M.handshake.name, input: 'Star Drive (special)', dmg: `${M.handshake.dmg} grabbed / ${M.handshake.waveDmg} wave`, startup: M.handshake.startup, cooldown: `${M.handshake.cooldown}s, ${M.handshake.cost}% meter`, effect: `grab-slam; shockwave ${M.handshake.radius}px knocks down everyone nearby` },
+    { move: M.lastWord.name, input: 'kick (hold)', dmg: M.lastWord.dmg, startup: M.lastWord.startup, cooldown: M.lastWord.cooldown, effect: `counter stance ${M.lastWord.window}s (hold up to ${M.lastWord.maxHold}s): a hit taken does 0 dmg and is answered with a knockdown strike` },
+    { move: M.stare.name, input: 'talk (no NPC in range)', dmg: 0, startup: 0, cooldown: M.stare.cooldown, effect: `thugs within ${M.stare.radius}px hesitate ${M.stare.hesitate}s; bosses immune` },
+    { move: M.rush.name, input: 'punch while sprinting', dmg: M.rush.dmg, startup: M.rush.startup, cooldown: M.rush.cooldown, effect: `${M.rush.dist}px shoulder charge through a line of foes, knockdown each; ${M.rush.stamina} stamina` }
+  ];
 }

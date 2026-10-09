@@ -250,5 +250,20 @@
    "Ironclad Helmet",
    "Star City Ironclad"
   ]
+ },
+ "silas": {
+  "row": 20,
+  "frames": 6,
+  "fw": 48,
+  "fh": 48,
+  "fps": 8,
+  "name": "Boone's Overcoat",
+  "names": [
+   "Boone's Overcoat",
+   "Silas Boone's Overcoat",
+   "Silas Outfit",
+   "Silas Coat",
+   "Iron Handshake"
+  ]
  }
 }

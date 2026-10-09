@@ -7,6 +7,7 @@
  */
 import { getPromptLabel, getPromptDevice, getPromptSet } from './input.js';
 import { unlockAudio, uiSound, mountAudioSettings } from './audio.js';
+import { silasMoveRows } from './kits.js'; // DLC: Silas prequel moves on the Controls screen
 
 const $ = (id) => document.getElementById(id);
 const reduceMQ = window.matchMedia ? window.matchMedia('(prefers-reduced-motion: reduce)') : null;
@@ -65,7 +66,7 @@ function starPath(g, cx, cy, R, r) {
 
 export function createTitle({ focusMenu }) {
   const screen = $('title-screen');
-  let phase = 'attract'; // attract | flash | menu | controls | credits | difficulty
+  let phase = 'attract'; // attract | flash | menu | controls | credits | difficulty | prequel (DLC)
   let flashT = 0, t = 0, starOnT = 0;
   let layers = null;
   let parts = [];
@@ -204,7 +205,17 @@ export function createTitle({ focusMenu }) {
       if (k === 'keyboard' && a === 'back') v = 'Esc / X';
       return `<td class="${k === dev ? 'cur' : ''}"><kbd>${v}</kbd></td>`;
     }).join('')}</tr>`).join('');
-    $('controls-table').innerHTML = `<thead><tr><th></th>${head}</tr></thead><tbody>${rows}</tbody>`;
+    // DLC: Silas Boone's six moves (prequel Silas and Matthew in Silas's Suit share them)
+    const P = (k) => getPromptSet(k);
+    const keyFor = (k, a) => (P(k)[a] || '—');
+    const silasInputs = {
+      punch: (k) => keyFor(k, 'punch'), heavy: (k) => k === 'touch' ? 'GRIP' : keyFor(k, 'heavy'), special: (k) => keyFor(k, 'special'),
+      kick: (k) => `${keyFor(k, 'kick')} (hold)`, interact: (k) => keyFor(k, 'interact'), rush: (k) => `${keyFor(k, 'sprint')} + ${keyFor(k, 'punch')}`
+    };
+    const order = ['punch', 'heavy', 'special', 'kick', 'interact', 'rush'];
+    const srows = silasMoveRows().map((r, i) => `<tr class="silas-move"><td>${r.move} <small>· ${r.input}</small></td>${cols.map(([k]) => `<td class="${k === dev ? 'cur' : ''}"><kbd>${silasInputs[order[i]](k)}</kbd></td>`).join('')}</tr>`).join('');
+    const sh = `<tr class="silas-head"><td colspan="${cols.length + 1}">Silas Boone's moveset · Prequel &amp; Silas's Suit</td></tr>`;
+    $('controls-table').innerHTML = `<thead><tr><th></th>${head}</tr></thead><tbody>${rows}${sh}${srows}</tbody>`;
   }
 
   function refreshPrompt() {
@@ -229,12 +240,15 @@ export function createTitle({ focusMenu }) {
     setPhase(p);
     focusMenu(p === 'controls' ? -1 : 0); // Controls: focus Back (audio sliders sit above it)
   }
+  let prequelFlow = false; // DLC: difficulty picker opened for the prequel
   function closePanel() {
     const from = phase;
     setPhase('menu');
-    const ids = ['btn-continue', 'btn-start', 'btn-new-game', 'btn-controls', 'btn-credits'].filter((id) => !$(id).classList.contains('hidden'));
+    const ids = ['btn-continue', 'btn-start', 'btn-new-game', 'btn-controls', 'btn-credits', 'btn-prequel'].filter((id) => $(id) && !$(id).classList.contains('hidden'));
     const back = from === 'controls' ? 'btn-controls' : from === 'credits' ? 'btn-credits'
+      : (from === 'prequel' || prequelFlow) ? 'btn-prequel' // DLC: back to the prequel entry
       : (!$('btn-new-game').classList.contains('hidden') ? 'btn-new-game' : 'btn-start');
+    prequelFlow = false;
     focusMenu(Math.max(0, ids.indexOf(back)));
   }
 
@@ -263,6 +277,7 @@ export function createTitle({ focusMenu }) {
   $('btn-controls-back').addEventListener('click', closePanel);
   $('btn-credits-back').addEventListener('click', closePanel);
   $('btn-diff-back').addEventListener('click', closePanel);
+  if ($('btn-prequel-back')) $('btn-prequel-back').addEventListener('click', closePanel); // DLC
   // difficulty descriptions follow focus (mouse hover, keys, pad)
   const DIFF_DESC = {
     easy: 'Softer thugs, gentler hits, extra healing. Enjoy the sights.',
@@ -272,7 +287,8 @@ export function createTitle({ focusMenu }) {
   };
   screen.querySelectorAll('[data-diff]').forEach((b) => b.addEventListener('focus', () => { $('diff-desc').textContent = DIFF_DESC[b.dataset.diff]; }));
   // touch: bindTap-style instant tap for the new buttons (click after touch is a no-op on hidden menus)
-  ['btn-controls', 'btn-credits', 'btn-controls-back', 'btn-credits-back', 'btn-diff-back'].forEach((id) => {
+  ['btn-controls', 'btn-credits', 'btn-controls-back', 'btn-credits-back', 'btn-diff-back', 'btn-prequel-back'].forEach((id) => {
+    if (!$(id)) return;
     $(id).addEventListener('touchend', (e) => { if (e.cancelable) e.preventDefault(); $(id).click(); }, { passive: false });
   });
 
@@ -280,7 +296,9 @@ export function createTitle({ focusMenu }) {
     drawBackdrop, drawGrade, silhouette,
     get phase() { return phase; },
     /** New Game flow: open the difficulty selector (focus defaults to Normal). */
-    openDifficulty() { setPhase('difficulty'); focusMenu(1); },
+    openDifficulty(fromPrequel = false) { prequelFlow = !!fromPrequel; setPhase('difficulty'); focusMenu(1); },
+    /** DLC: Prequel panel (Continue / New / Back) when a prequel run is saved. */
+    openPrequel() { setPhase('prequel'); focusMenu(0); },
     show() { setPhase('attract'); starOnT = 0; lastDev = ''; refreshPrompt(); },
     /** Title-mode input. Returns true when the input was consumed (skip handleMenu). */
     update(inp, dt) {
@@ -306,7 +324,7 @@ export function createTitle({ focusMenu }) {
       if (inp.navUp || inp.navDown || ((inp.navLeft || inp.navRight) && !onSlider)) blip('move');
       if (inp.backPressed) {
         blip('back');
-        if (phase === 'controls' || phase === 'credits' || phase === 'difficulty') closePanel();
+        if (phase === 'controls' || phase === 'credits' || phase === 'difficulty' || phase === 'prequel') closePanel();
         else { setPhase('attract'); }
         return true;
       }

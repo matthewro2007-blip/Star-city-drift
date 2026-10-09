@@ -30,14 +30,18 @@ const OUTFIT_SHEETS = {
   gold: 'assets/sprites/matthew_gold.png',
   webslinger: 'assets/sprites/matthew_webslinger.png',
   beacon: 'assets/sprites/matthew_beacon.png',
-  ironclad: 'assets/sprites/matthew_ironclad.png'      // display name "Hell's Nightmare"
+  ironclad: 'assets/sprites/matthew_ironclad.png',     // display name "Hell's Nightmare"
+  silas: 'assets/sprites/matthew_silas.png'             // 1.5.1: Silas's Suit (prequel DLC reward)
 };
 /** Cache-bust for outfit sheets / outfit portraits (bump when sheets are regenerated). */
-const SPRITE_REV = '1.3.1-kits';
+const SPRITE_REV = '1.5.1-silas-outfit';
 const vb = (src) => src + (src.includes('?') ? '&' : '?') + 'v=' + SPRITE_REV;
 /** Optional per-outfit HUD/picker busts (112x112); outfits without one use portrait_matthew.png. */
-const OUTFIT_PORTRAITS = { ironclad: 'assets/sprites/portrait_matthew_ironclad.png' };
+const OUTFIT_PORTRAITS = { ironclad: 'assets/sprites/portrait_matthew_ironclad.png', silas: 'assets/sprites/portrait_matthew_silas.png' };
 const outfitPortraits = {};
+/** 1.5.0 DLC: per-character HUD busts (112x112) for non-Matthew playable characters. */
+const CHARACTER_PORTRAITS = { silas_player: 'assets/sprites/portrait_silas.png' };
+const characterPortraits = {};
 const outfitSheets = {};      // outfitId -> Image (loaded)
 const outfitPending = {};     // outfitId -> true while lazily loading / after failure
 
@@ -96,6 +100,7 @@ export function loadSprites() {
           const img = await opt(vb(src)); if (img) outfitSheets[id] = img; else outfitPending[id] = true;
         }),
         ...Object.entries(OUTFIT_PORTRAITS).map(async ([id, src]) => { const img = await opt(vb(src)); if (img) outfitPortraits[id] = img; }),
+        ...Object.entries(CHARACTER_PORTRAITS).map(async ([k, src]) => { const img = await opt(vb(src)); if (img) characterPortraits[k] = img; }),
         ...Object.entries(NPC_SRC).map(async ([k, src]) => { const img = await opt(src); if (img) images[k] = img; }),
         ...Object.entries(ENEMY_SHEET_SRC).map(async ([k, src]) => { const img = await opt(src); if (img) enemySheets[k] = img; }),
         loadAnimManifests(),
@@ -128,7 +133,14 @@ export const ANIM_STATES = {
   cast: ['idle_personality', 'talk'],
   boss: ['boss_attack1', 'boss_attack2', 'boss_attack3', 'taunt', 'defeat', 'knockdown_fall', 'knockdown_ground', 'getup'],
   thug: ['attackA', 'attackB', 'ko', 'knockdown_fall', 'knockdown_ground', 'getup'],
-  snatcher: ['idle', 'run', 'caught', 'ko', 'knockdown_fall', 'knockdown_ground', 'getup']
+  snatcher: ['idle', 'run', 'caught', 'ko', 'knockdown_fall', 'knockdown_ground', 'getup'],
+  silas_player: ['idle_signature', 'idle', 'walk', 'run', 'sprint', 'combo1', 'combo2', 'combo3', 'jump_kick', 'special',
+    'hurt', 'ko', 'victory', 'knockdown_fall', 'knockdown_ground', 'getup',
+    'hs_grab', 'hs_slam', 'velvet_grip_grab', 'velvet_grip_throw', 'last_word_stance', 'last_word_strike', 'cold_stare', 'boss_rush',
+    'gentlemans_jab', 'jab1', 'jab2', 'jab3', 'iron_handshake', 'velvet_grip', 'last_word', 'grab', 'whiff', 'throw', 'stance', 'counter', 'stare', 'rush'],
+  /** 1.5.1: extra states of matthew_silas (Silas's Suit) on top of ANIM_STATES.matthew; same names/aliases as silas_player. */
+  matthew_silas: ['jab1', 'jab2', 'jab3', 'gentlemans_jab', 'velvet_grip_grab', 'velvet_grip_throw', 'velvet_grip', 'hs_grab', 'hs_slam', 'iron_handshake',
+    'last_word_stance', 'last_word_strike', 'last_word', 'cold_stare', 'boss_rush', 'grab', 'whiff', 'throw', 'stance', 'counter', 'stare', 'rush']
 };
 
 async function fetchManifest(src, quiet) {
@@ -371,6 +383,12 @@ function sliceFrame(img, idx, key) {
 export function getOutfitPortrait(outfitId) {
   const id = outfitId && typeof outfitId === 'object' ? outfitId.id : outfitId;
   return outfitPortraits[id] || images.portrait || null;
+}
+
+/** 112x112 HUD bust for a playable character key (e.g. 'silas_player' -> portrait_silas.png), else the default HUD portrait (or null before load). */
+export function getCharacterPortrait(charKey) {
+  const k = squash(charKey && typeof charKey === 'object' ? charKey.id || charKey.key : charKey);
+  return characterPortraits[k] || images.portrait || null;
 }
 
 /** Sheet for an outfit; lazily tries matthew_<id>.png for ids not in OUTFIT_SHEETS. Falls back to the default sheet. */

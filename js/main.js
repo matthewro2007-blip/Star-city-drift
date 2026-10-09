@@ -22,6 +22,12 @@ import { getHeroFrame, drawHero, clearHeroCache, HERO_DRAW_H, HERO_SHADOW_W } fr
 import { createFollowCamera } from './camera.js';
 import { createPresenter } from './present.js';
 import { setMusic, sting, setPaused, setDialogueDuck, sfx, voice, talk, stopTalk, adjustFocusedSlider, mountAudioSettings, audioDebug } from './audio.js';
+// >>> DLC: Silas prequel (1.5.0) — shared Silas moveset, Silas's Suit art glue, prequel content + own save slot
+import { silasWorld, coldStare, silasAnimMap, silasCooldowns } from './silas_moves.js';
+import { artOutfitFor, suitAnimMap, suitNeedsTint, tintedFrame, tintedCanvas, suitPortraitSrc } from './silas_outfit.js';
+import { createDlc, dlcHasRun, dlcCompleted, silasPortraitSrc, silasPlayerKey, drawNightGrade, MISSIONS as DLC_MISSIONS } from './dlc_silas.js';
+import { SILAS_MOVES, silasMoveRows } from './kits.js';
+// <<< DLC: Silas prequel
 
 /** true: player + title Matthew use the high-res procedural hero (hero.js); false: Joe's matthew_sheet.png. */
 const USE_HERO_RENDER = false; // Joe's approved v3 sheet ships; hero.js kept as an alternate renderer
@@ -82,8 +88,15 @@ const gameState = {
   special: 40,
   difficulty: 'normal',      // easy | normal | hard | arcade (saved; old saves default to normal)
   pendingDifficulty: null,   // picked on the title difficulty selector for a New Game
-  fetchGive: null            // Potluck Run item being handed over in the current dialogue
+  fetchGive: null,           // Potluck Run item being handed over in the current dialogue
+  dlc: false,                // DLC: Silas prequel running (own save slot; main save untouched)
+  pendingDlc: false,         // title difficulty picker opened for the prequel
+  cutscene: null,            // DLC closing scene (input locked)
+  finaleActors: []           // DLC closing scene extras (Matthew far off, crew gathering)
 };
+const isDlc = () => !!gameState.dlc;
+/** Silas's moveset is active: playing Silas in the prequel, or Matthew in Silas's Suit. */
+const silasSet = () => isDlc() || gameState.outfitId === 'silas';
 
 /**
  * Ground rows inside the current area's walkable band (getDepth(area) = feet-Y range measured
@@ -151,6 +164,10 @@ const HUD_LOCATION = {
 function syncPortrait() {
   const el = $('portrait');
   if (!el || typeof SpriteLib.getOutfitPortrait !== 'function') return;
+  // DLC: Silas in the prequel; Matthew in Silas's Suit (Joe's bust when installed, else a tinted default)
+  const dsrc = isDlc() ? silasPortraitSrc() : gameState.outfitId === 'silas' ? suitPortraitSrc() : null;
+  if (dsrc) { if (el.src !== dsrc) { el.src = dsrc; el.alt = isDlc() ? 'Silas Boone' : 'Matthew'; } return; }
+  if (el.alt !== 'Matthew') el.alt = 'Matthew';
   let img = null;
   try { img = SpriteLib.getOutfitPortrait(gameState.outfitId); } catch (_) { img = null; }
   const src = img && img.src;
@@ -161,12 +178,13 @@ let weaponSig = '';
 function syncWeaponIcon() {
   const c = $('hud-weapon-icon'), wrap = $('hud-weapon');
   if (!c || !wrap) return;
-  const kit = getKit(gameState.outfitId);
+  const kitId = isDlc() ? 'silas' : gameState.outfitId; // DLC: Silas's own signature (Iron Handshake)
+  const kit = getKit(kitId);
   const ready = player.specialCd <= 0 && gameState.special >= kit.special.cost;
-  const sig = gameState.outfitId + '|' + ready;
+  const sig = kitId + '|' + ready;
   if (sig === weaponSig && c.dataset.drawn === '1') return;
   let icon = null;
-  try { icon = typeof SpriteLib.getWeaponIcon === 'function' ? SpriteLib.getWeaponIcon(gameState.outfitId) : null; } catch (_) { icon = null; }
+  try { icon = typeof SpriteLib.getWeaponIcon === 'function' ? SpriteLib.getWeaponIcon(kitId) : null; } catch (_) { icon = null; }
   const g = c.getContext('2d');
   g.clearRect(0, 0, c.width, c.height);
   g.imageSmoothingEnabled = false;
@@ -174,7 +192,7 @@ function syncWeaponIcon() {
   else { g.fillStyle = '#ffd24a'; g.font = 'bold 28px sans-serif'; g.textAlign = 'center'; g.fillText('★', c.width / 2, c.height * 0.72); c.dataset.drawn = '0'; }
   weaponSig = sig;
   wrap.classList.toggle('ready', ready);
-  wrap.dataset.outfit = gameState.outfitId;
+  wrap.dataset.outfit = kitId;
   wrap.title = `${kit.weapon} — ${kit.move}: ${kit.ability}`;
   const mv = $('hud-weapon-move');
   if (mv) mv.textContent = kit.move;
@@ -182,12 +200,21 @@ function syncWeaponIcon() {
 function updateHUD() {
   syncPortrait();
   syncWeaponIcon();
+  if (isDlc() && dlc.state) { // DLC: Silas prequel objective + keepsakes
+    const o = dlc.objective();
+    $('mission-title').textContent = o.title;
+    $('mission-desc').textContent = o.desc;
+    $('collect-row').dataset.dlc = '1';
+    $('collect-row').textContent = `${dlc.collectText()} · ${getDifficulty().name}`;
+  } else {
+  if ($('collect-row').dataset.dlc) { delete $('collect-row').dataset.dlc; $('collect-row').innerHTML = 'Collectibles <span id="collect-count">0/7</span> · Outfits <span id="outfit-count">1/5</span>'; }
   const m = missions.getActive();
   const sm = sideMission();
   $('mission-title').textContent = sm ? sm.title : m ? m.title : 'Free Roam';
   $('mission-desc').textContent = sm ? sideObjective(sm) : m ? m.desc : (stateBag.deliveryActive ? 'Deliver to River Bridge' : 'Explore Star City');
   $('outfit-count').textContent = `${stateBag.unlockedOutfits.size}/${OUTFIT_ORDER.length}`;
   $('collect-count').textContent = `${missions.collectCount()}/${missions.collectTotal()}`;
+  }
   const area = AREAS[gameState.areaId];
   const loc = HUD_LOCATION[gameState.areaId] || [area.name.toUpperCase(), ''];
   $('location-label').textContent = loc[0];
@@ -224,6 +251,7 @@ function updateHUD() {
 
 function showTitle() {
   gameState.mode = 'title';
+  leaveDlcUi();
   $('title-screen').classList.remove('hidden');
   $('hud').classList.add('hidden');
   $('pause-screen').classList.add('hidden');
@@ -280,6 +308,13 @@ function startGame(fromSave) {
     }
   }
   setDifficulty(gameState.difficulty);
+  // >>> DLC: Silas prequel — finishing the prequel (its own save slot) unlocks Silas's Suit; the main save keeps a flag
+  let suitNew = false;
+  if (dlcCompleted() || stateBag.dlcSilas) {
+    stateBag.dlcSilas = true;
+    if (!stateBag.unlockedOutfits.has('silas')) { stateBag.unlockedOutfits.add('silas'); suitNew = true; }
+  }
+  // <<< DLC
   gameState.enemies = [];
   gameState.combatLock = false;
   gameState.wave = 0;
@@ -305,6 +340,7 @@ function startGame(fromSave) {
     toast("Find Dee Morales at Dee's Diner");
     maybeSpawnEncounter(true);
   }
+  if (suitNew) toast("Silas's Suit unlocked — Pause → Outfits (Shift+3)", true);
   persist();
   followCam.cut();
 }
@@ -314,6 +350,14 @@ function maybeSpawnEncounter(force) {
   const area = AREAS[gameState.areaId];
   if (!area.spawnCombat) return;
   if (hostilesAlive()) return;
+  if (isDlc()) { // DLC: light night-time ambushes on the way; mission areas run their own fights
+    if (gameState.cutscene || !dlc.ambientFights() || gameState.areaId === dlc.missionArea() || gameState.areaId === 'star') return;
+    if (Math.random() > area.combatChance * 0.6) return;
+    dlcApi.spawnCrew(2 + Math.min(2, gameState.wave) + getDifficulty().wave, { color: Math.random() < 0.5 ? '#7f8c8d' : '#c0392b', wave: Math.min(3, gameState.wave) });
+    gameState.wave++;
+    toast("The Foreman's boys want a word.");
+    return;
+  }
   const visited = gameState.areaVisitCombat[gameState.areaId] || 0;
   if (!force && visited > 0 && Math.random() > area.combatChance) return;
   // Don't spawn on first moment at diner until after talking? Actually spawn street thugs elsewhere
@@ -333,6 +377,7 @@ function maybeSpawnEncounter(force) {
 }
 
 function npcsInArea() {
+  if (isDlc()) return dlc.npcs(gameState.areaId); // DLC: the prequel's own cast
   // Silas is the boss while the fight is on, and he's gone after the ending.
   const esc = stateBag.side && stateBag.missions[stateBag.side.id]?.kind === 'escort' ? stateBag.side : null;
   const list = NPC_DEFS.filter((n) => n.area === gameState.areaId &&
@@ -366,6 +411,7 @@ function canTalkTo(npc) {
 
 /** Lines depend on the NPC's mission state: story lines, "not yet", "in progress", or "done". */
 function linesFor(npc) {
+  if (isDlc()) return dlc.linesFor(npc);
   const sm = missions.missionFor(npc.id);
   if (sm && sm.offer) {
     if (stateBag.side && stateBag.side.id === sm.id) {
@@ -396,14 +442,21 @@ function startDialogue(npc) {
   gameState.dialogue = lines;
   gameState.dialogueIdx = 0;
   $('dialogue').classList.remove('hidden');
-  $('dialogue-name').textContent = `${npc.name} — ${npc.role}`;
-  $('dialogue-text').textContent = lines[0];
-  talk(npc.id, lines[0], true); // audio: greeting + this character's talk blips
+  showLine(npc, lines[0], true);
   $('interact-prompt').classList.add('hidden');
   updateDialogueButton();
   input.flush();
 }
 
+/** One dialogue line: a string (spoken by the NPC) or, in the prequel, { id, name, text } per speaker. */
+function showLine(npc, line, greet) {
+  const obj = line && typeof line === 'object';
+  const text = obj ? line.text : line, id = obj ? line.id : npc.id;
+  const castRole = obj && line.id === npc.id ? npc.role : obj && line.id === 'silas' ? (isDlc() ? 'Second shift' : 'Polite stranger') : null;
+  $('dialogue-name').textContent = obj ? (castRole ? `${line.name} — ${castRole}` : line.name) : `${npc.name} — ${npc.role}`;
+  $('dialogue-text').textContent = text;
+  talk(id, text, greet); // audio: greeting + this character's talk blips
+}
 function updateDialogueButton() {
   const btn = $('dialogue-next');
   if (!btn || !gameState.dialogue) return;
@@ -419,8 +472,7 @@ function advanceDialogue() {
   if (gameState.dialogueIdx >= gameState.dialogue.length) {
     finishDialogue();
   } else {
-    $('dialogue-text').textContent = gameState.dialogue[gameState.dialogueIdx];
-    if (gameState.dialogueNpc) talk(gameState.dialogueNpc.id, gameState.dialogue[gameState.dialogueIdx]);
+    if (gameState.dialogueNpc) showLine(gameState.dialogueNpc, gameState.dialogue[gameState.dialogueIdx], false);
     updateDialogueButton();
   }
 }
@@ -437,6 +489,8 @@ function finishDialogue() {
   input.flush();
   input.focusGame();
   if (!npc) return;
+  if (npc.onDone) { npc.onDone(); updateHUD(); return; } // DLC scene lines
+  if (isDlc()) { dlc.onTalkDone(npc); updateHUD(); persist(); return; }
 
   if (gameState.fetchGive) {
     const it = gameState.fetchGive;
@@ -754,6 +808,25 @@ function updateSide(dt) {
 }
 
 function tryInteract() {
+  // >>> DLC: Silas prequel — Cold Stare lives on the talk button, but only with no NPC in talk range
+  if (silasSet()) {
+    const npcNear = nearestNPC();
+    const fighting = gameState.combatLock && hostilesAlive();
+    if (!npcNear && isDlc() && !fighting && dlc.usable(gameState.areaId, player.x)) { dlc.use(); return; }
+    if (!npcNear && (fighting || gameState.enemies.some((e) => e.alive))) {
+      const r = coldStare(player, gameState.enemies);
+      if (!r.ok && r.reason === 'cooldown') toast(`Cold Stare ready in ${Math.ceil(r.left)}s`);
+      return;
+    }
+    if (!npcNear) {
+      collectHere();
+      if (!isDlc()) missions.checkDelivery(gameState.areaId, toast, onProgress);
+      const r = coldStare(player, gameState.enemies); // nobody to stare down: still a pose (cooldown applies)
+      if (!r.ok && r.reason === 'cooldown') toast(`Cold Stare ready in ${Math.ceil(r.left)}s`);
+      return;
+    }
+  }
+  // <<< DLC
   if (gameState.combatLock && hostilesAlive()) {
     toast('Clear the thugs first!');
     return;
@@ -793,7 +866,7 @@ function transitionArea(dir) {
   gameState.spawnChecked = false;
   updateHUD();
   toast(next.name);
-  missions.checkDelivery(nextId, toast, onProgress);
+  if (!isDlc()) missions.checkDelivery(nextId, toast, onProgress);
   // chance encounter on enter (only if still here and playing)
   setTimeout(() => {
     if (gameState.mode === 'play' && gameState.areaId === nextId) maybeSpawnEncounter(false);
@@ -804,6 +877,9 @@ function transitionArea(dir) {
 }
 
 function persist() {
+  if (isDlc()) { // DLC: its own slot only — the main save is never written while the prequel runs
+    return dlc.persist({ areaId: gameState.areaId, x: Math.round(player.x), y: Math.round(player.y), hp: player.hp, special: gameState.special, score: gameState.score, difficulty: gameState.difficulty });
+  }
   const payload = serializeSave({
     player, stateBag, gameState,
     outfitId: gameState.outfitId,
@@ -824,7 +900,7 @@ function showEnding() {
 }
 
 function setOutfit(id, quiet = false) {
-  if (!OUTFITS[id]) return;
+  if (!OUTFITS[id] || isDlc()) return;
   if (!stateBag.unlockedOutfits.has(id)) {
     sfx('denied');
     toast('Outfit locked — find collectibles');
@@ -838,6 +914,9 @@ function setOutfit(id, quiet = false) {
   for (let i = toastQueue.length - 1; i >= 0; i--) if (toastQueue[i].startsWith('Outfit: ')) toastQueue.splice(i, 1);
   const tEl = $('toast');
   toast(`Outfit: ${OUTFITS[id].name}`, !tEl.classList.contains('hidden') && tEl.textContent.startsWith('Outfit: '));
+  if (id === 'silas' && !quiet) toast("Silas's moves: Z jab · C grip · V Iron Handshake · X hold Last Word · E Cold Stare · sprint+Z Boss Rush");
+  syncSilasControls();
+  refreshPrompts(true);
   updateOutfitButton();
   updateHUD();
   persist();
@@ -845,6 +924,7 @@ function setOutfit(id, quiet = false) {
 
 /** Next/previous unlocked outfit (L1/R1 · LB/RB, pause-menu Outfit button). */
 function cycleOutfit(dir = 1) {
+  if (isDlc()) return;
   const owned = OUTFIT_ORDER.filter((id) => stateBag.unlockedOutfits.has(id));
   if (owned.length < 2) { toast('Find collectibles to unlock more outfits'); return; }
   const i = Math.max(0, owned.indexOf(gameState.outfitId));
@@ -912,7 +992,7 @@ function whenReady(fn) {
 }
 
 function activeMenuEl() {
-  for (const id of ['confirm-screen', 'ending-screen', 'pause-screen', 'title-screen']) {
+  for (const id of ['dlc-ending-screen', 'dlc-mission-card', 'confirm-screen', 'ending-screen', 'pause-screen', 'title-screen']) { // DLC cards sit on top (Bob)
     const el = $(id);
     if (el && !el.classList.contains('hidden')) return el;
   }
@@ -1052,20 +1132,445 @@ function manualSave() {
   toast(ok ? 'Saved' : 'Save failed — storage unavailable', true);
 }
 
+// ============================================================ >>> DLC: Silas prequel (1.5.0) — game-logic lane
+/** main.js's hit callback (shared by resolveHits, kits and Silas's thrown bodies). */
+function onHitEnemy(e) {
+  gameState.hitStop = e.kd ? 0.07 : 0.04;
+  gameState.special = Math.min(100, gameState.special + 4);
+  if (!e.alive) gameState.score += e.scoreValue || 100;
+  rumble(0.25, 0.45, 60);
+  followCam.kick(e.kd ? 3.5 : 2);
+}
+const NEUTRAL_INPUT = { ax: 0, ay: 0, punchPressed: false, kickPressed: false, heavyPressed: false, specialPressed: false, interactPressed: false,
+  sprintHeld: false, kickHeld: false, punchHeld: false, outfitKey: null, outfitCycle: 0 };
+/** Extra updatePlayer hooks: ONE shared Silas moveset for prequel Silas and Matthew in Silas's Suit; {} otherwise. */
+function silasHooks() {
+  if (isDlc()) {
+    const key = player.animKey || 'silas_boss';
+    return { moveset: 'silas', animMap: silasAnimMap(key), enemies: gameState.enemies, onHitEnemy };
+  }
+  if (gameState.outfitId === 'silas') return { moveset: 'silas', animMap: suitAnimMap(), artOutfit: artOutfitFor('silas'), enemies: gameState.enemies, onHitEnemy };
+  return {};
+}
+
+// ---------- prequel controller + the api it drives ----------
+const DLC_CREW = { tint: 'rgba(38,30,22,0.42)' }; // the Foreman's crew: dark work coats over the thug art
+function crewify(e) { e.tint = DLC_CREW.tint; e.tintFrac = 0.55; e.crew = true; return e; }
+const dlcApi = {
+  toast, sfx, sting, voice,
+  player: () => player,
+  areaId: () => gameState.areaId,
+  hostiles: () => hostilesAlive(),
+  foeCount: () => gameState.enemies.filter((e) => e.alive).length,
+  setSpecial: (v) => { gameState.special = v; },
+  heal: (n) => heal(n, false),
+  spawnCrew(n, { color = '#7f8c8d', wave = 0 } = {}) {
+    const area = AREAS[gameState.areaId];
+    const add = spawnWave(area, Math.max(1, n), wave, player.x).map((e) => { e.color = color; return crewify(e); });
+    gameState.enemies = gameState.enemies.filter((e) => e.alive).concat(add);
+    gameState.combatLock = true;
+    sfx('fight_start');
+    return add;
+  },
+  clearFoes(msg) {
+    for (const e of gameState.enemies) if (e.alive) { e.alive = false; e.hp = 0; e.stun = 0; e.koT = 0; }
+    gameState.enemies = []; gameState.combatLock = false; gameState.bossActive = false;
+    if (msg) toast(msg, true);
+  },
+  spawnBoss(who, adds = 0) {
+    const area = AREAS[gameState.areaId];
+    const D = getDifficulty();
+    const bx = player.x + 180 < area.width - 60 ? player.x + 180 : player.x - 180;
+    const b = createThug(bx, player.y, 2);
+    if (who === 'vera') Object.assign(b, { color: '#16a085', charKey: 'thug_teal', nameTag: 'Vera Lisk', drawScale: 1.32, hp: Math.round(130 * D.bossHp), dmg: Math.round(13 * D.bossDmg), speed: 105 * Math.min(1.1, D.speed), scoreValue: 1500 });
+    else Object.assign(b, { color: '#7f8c8d', charKey: 'thug_grey', nameTag: 'Mort "The Foreman" Kessler', drawScale: 1.5, hp: Math.round(200 * D.bossHp), dmg: Math.round(17 * D.bossDmg), speed: 90 * Math.min(1.1, D.speed), scoreValue: 3000 });
+    b.maxHp = b.hp; b.miniBoss = true; b.tint = who === 'vera' ? 'rgba(20,40,60,0.35)' : 'rgba(30,22,14,0.5)'; b.tintFrac = 0.6; b.boss = who;
+    gameState.enemies = [b, ...this.spawnCrew(adds, { color: who === 'vera' ? '#16a085' : '#c0392b', wave: 2 })];
+    gameState.combatLock = true; gameState.bossActive = true;
+    sfx('fight_start');
+    toast(who === 'vera' ? 'Vera Lisk wants her lamp back.' : 'The Foreman blows his whistle.', true);
+    return b;
+  },
+  /** Scene / extra lines (no NPC to stand next to). */
+  say(lines, onDone) {
+    const first = lines[0] || {};
+    startDialogueRaw({ id: first.id || 'silas', name: first.name || 'Silas Boone', role: '', onDone }, lines);
+  },
+  missionCard(info, onDone) { showDlcCard(info, onDone); },
+  finale(onDone) { startFinale(onDone); },
+  ending() { showDlcEnding(); }
+};
+const dlc = createDlc(dlcApi);
+
+/** startDialogue with explicit lines (DLC scenes). */
+function startDialogueRaw(npc, lines) {
+  gameState.fetchGive = null;
+  gameState.mode = 'dialogue';
+  gameState.dialogueNpc = npc;
+  gameState.dialogue = lines;
+  gameState.dialogueIdx = 0;
+  $('dialogue').classList.remove('hidden');
+  showLine(npc, lines[0], true);
+  $('interact-prompt').classList.add('hidden');
+  updateDialogueButton();
+  input.flush();
+}
+
+/** Prequel start: New (difficulty picked on the shared selector) or Continue (own save slot). */
+function startDlc(cont) {
+  if (!booted) { pendingAction = () => startDlc(cont); return; }
+  if (gameState.mode !== 'title') return;
+  clearSpriteCache();
+  clearHeroCache();
+  Object.keys(stateBag).forEach((k) => delete stateBag[k]);
+  createMissionSystem(stateBag);      // a throwaway mission bag so shared code paths stay valid; never saved
+  stateBag.collectibles = [];
+  stateBag.unlockedOutfits = new Set(['polo']);
+  let run = cont ? dlc.continueRun() : null;
+  if (!run) run = dlc.newRun(gameState.pendingDifficulty || 'normal');
+  gameState.pendingDifficulty = null;
+  gameState.dlc = true;
+  gameState.difficulty = run.difficulty || 'normal';
+  setDifficulty(gameState.difficulty);
+  gameState.areaId = AREAS[run.areaId] ? run.areaId : 'downtown';
+  gameState.outfitId = 'polo';
+  gameState.ended = false;
+  gameState.score = run.score || 0;
+  gameState.playTime = run.playTime || 0;
+  gameState.special = run.special != null ? run.special : 100;
+  gameState.bossActive = false;
+  gameState.cutscene = null; gameState.finaleActors = [];
+  player = createPlayer(run.x || 200, PLAYER_START_Y);
+  player.animKey = silasPlayerKey();  // Jack's 'silas_player' when installed, else 'silas_boss'
+  player.voiceKey = 'silas';
+  player.maxHp = 120; player.hp = Math.max(1, Math.min(120, run.hp || 120));
+  gameState.enemies = [];
+  gameState.combatLock = false;
+  gameState.wave = 0;
+  gameState.spawnChecked = false;
+  gameState.areaVisitCombat = { [gameState.areaId]: 1 };
+  gameState.saveTimer = 0;
+  syncDepthBand();
+  if (run.y != null) player.y = clampDepth(run.y);
+  gameState.mode = 'play';
+  document.body.classList.add('dlc-silas'); // Bob's prequel theme
+  $('title-screen').classList.add('hidden');
+  $('confirm-screen')?.classList.add('hidden');
+  clearMenuFocus();
+  $('hud').classList.remove('hidden');
+  $('desktop-hint').classList.toggle('hidden', input.isMobile());
+  input.showMobile(input.isMobile());
+  input.flush();
+  input.focusGame();
+  syncSilasControls();
+  syncDlcPause();
+  refreshPrompts(true);
+  updateHUD();
+  const m = DLC_MISSIONS[run.mi];
+  toast(cont ? 'Prequel: welcome back, Mr. Boone' : 'Prequel: Silas Boone — "Second Shift"', true);
+  if (m) toast(`${m.title} — ${m.obj || m.sub}`);
+  persist();
+  followCam.cut();
+}
+/** Leave the prequel (title / main story): theme off, Silas-only UI hidden. */
+function leaveDlcUi() {
+  if (gameState.dlc) { persist(); }
+  gameState.dlc = false; gameState.cutscene = null; gameState.finaleActors = [];
+  dlc.stop();
+  document.body.classList.remove('dlc-silas');
+  $('dlc-mission-card')?.classList.add('hidden');
+  $('dlc-ending-screen')?.classList.add('hidden');
+  syncSilasControls();
+  syncDlcPause();
+  const el = $('portrait'); if (el) { el.alt = 'Matthew'; }
+  weaponSig = '';
+}
+function quitDlcToTitle() {
+  setPaused(false);
+  $('pause-screen').classList.add('hidden');
+  player = createPlayer(200, PLAYER_START_Y);
+  showTitle();
+}
+/** Knocked out in the prequel: Arcade reloads the prequel save, otherwise restart the step at full health. */
+function dlcKnockout() {
+  const arcade = getDifficulty().arcade;
+  player.hp = player.maxHp; player.alive = true;
+  player.kd = null; player.koT = 0; player.lift = 0; player.invuln = 1.2; player.koSting = false;
+  gameState.enemies = []; gameState.combatLock = false; gameState.bossActive = false;
+  if (arcade) {
+    gameState.dlc = false; gameState.mode = 'title';
+    startDlc(true);
+    toast('GAME OVER — back to your last prequel save', true);
+    return;
+  }
+  dlc.onKO();
+  toast('Silas straightens his tie… and tries again.', true);
+  syncDepthBand();
+  followCam.cut();
+  updateHUD();
+  persist();
+}
+function dlcCollect() {
+  for (const c of dlc.visibleCollectibles(gameState.areaId)) {
+    if (Math.abs(c.x - player.x) < 42) dlc.take(c);
+  }
+}
+function drawUseMarker(cam) {
+  const u = dlc.usableMarker();
+  if (!u || u.area !== gameState.areaId) return;
+  const x = u.x - cam, y = npcFeetY() - 4, now = performance.now() / 1000;
+  ctx.save();
+  ctx.fillStyle = `rgba(255,220,140,${0.25 + 0.15 * Math.sin(now * 4)})`;
+  ctx.beginPath(); ctx.ellipse(x, y, 26, 7, 0, 0, Math.PI * 2); ctx.fill();
+  ctx.fillStyle = '#c9a77a'; ctx.fillRect(x - 9, y - 22, 18, 20);     // paper to-go bag
+  ctx.fillStyle = '#a3825a'; ctx.fillRect(x - 9, y - 22, 18, 4);
+  ctx.fillStyle = '#fff'; ctx.fillRect(x - 5, y - 15, 10, 6);           // order ticket
+  ctx.font = 'bold 9px sans-serif'; ctx.textAlign = 'center'; ctx.fillStyle = '#e6d3a2';
+  ctx.fillText('PICK-UP', x, y - 28); ctx.textAlign = 'left';
+  ctx.restore();
+}
+/** Playable Silas: Jack's silas_player (or the silas_boss art) at BOSS_SCALE, sheet fallback. */
+function drawDlcSilas(cam) {
+  const px = player.x - cam;
+  if (player.invuln > 0 && player.attackType !== 'silas' && Math.floor(performance.now() / 80) % 2) ctx.globalAlpha = 0.45;
+  const key = player.animKey || 'silas_boss';
+  let f = animFrame(key, player.animState, animMs(player));
+  if (!f && key !== 'silas_boss') f = animFrame('silas_boss', (silasAnimMap('silas_boss')[player.animState] || player.animState), animMs(player));
+  if (player.silasMove && player.silasMove.kind === 'rush' && f) { // shoulder-charge afterimages
+    const a0 = ctx.globalAlpha;
+    for (let i = 3; i >= 1; i--) { ctx.globalAlpha = 0.14 * (4 - i); drawAnimFrame(f, px - player.facing * 18 * i, player.y, player.facing, BOSS_SCALE); }
+    ctx.globalAlpha = a0;
+  }
+  if (f) drawAnimFrame(f, px, player.y, player.facing, BOSS_SCALE);
+  else {
+    const pose = player.pose === 'walk' ? 'walk' : player.pose === 'hurt' ? 'hurt' : player.attackType ? 'attack' : 'idle';
+    withLie(player, px, player.y, () => drawCastSprite(getEnemySprite(pose, '#2c3e50', player.animT, true), px, player.y, player.facing, BOSS_SCALE));
+  }
+  ctx.globalAlpha = 1;
+  if (player.stamina < 100 && player.alive) drawStaminaPip(px, player.y);
+}
+/** Closing scene extras: Matthew far off (polo, no interaction) and the crew gathering at the far end. */
+function drawFinaleActor(a, cam) {
+  const x = a.x - cam;
+  if (a.kind === 'matthew') {
+    const st = a.walking ? 'run' : 'idle_signature';
+    const f = animFrame('matthew', st, a.t * 1000, 'polo');
+    if (f && a.walking) drawAnimFrame(f, x, a.y, a.facing, PLAYER_SCALE);
+    else drawMatthew(a.walking ? 'walk' : 'idle', 'polo', OUTFITS.polo, a.t, x, a.y, a.facing);
+  } else {
+    let f = animFrame('thug_' + (a.color || 'grey'), 'idle', a.t * 1000);
+    if (f) { f = tintedFrame(f, DLC_CREW.tint, 0.55); drawAnimFrame(f, x, a.y, a.facing, THUG_SCALE); }
+    else drawCastSprite(getEnemySprite('idle', '#7f8c8d', a.t, false), x, a.y, a.facing, THUG_SCALE);
+  }
+}
+/** Closing scene: golden hour, Silas at x 700, Cam at 520; Matthew walks into frame far off; no meeting. */
+function startFinale(onDone) {
+  gameState.enemies = []; gameState.combatLock = false;
+  const band = getDepthBand();
+  player.x = 700; player.y = clampDepth(Math.round((band.min + band.max) / 2)); player.facing = -1; player.vx = 0;
+  player.attackType = null; player.attackTimer = 0; player.hitbox = null;
+  gameState.finaleActors = [
+    { kind: 'matthew', area: 'downtown', x: -30, y: band.max - 6, facing: 1, walking: true, t: 0, stopAt: 200 },
+    { kind: 'thug', color: 'grey', area: 'downtown', x: 1180, y: band.min + 10, facing: -1, t: 0 },
+    { kind: 'thug', color: 'red', area: 'downtown', x: 1240, y: band.min + 26, facing: -1, t: 0.4 }
+  ];
+  gameState.cutscene = { t: 0, phase: 'walk', onDone };
+  toast('Golden hour, Jefferson Street.', true);
+}
+function updateCutscene(dt) {
+  const cs = gameState.cutscene;
+  if (!cs) return;
+  cs.t += dt;
+  for (const a of gameState.finaleActors) {
+    a.t += dt;
+    if (a.kind === 'matthew' && a.walking) { a.x += 70 * dt; if (a.x >= a.stopAt) { a.x = a.stopAt; a.walking = false; } }
+  }
+  player.facing = -1;
+  const mat = gameState.finaleActors.find((a) => a.kind === 'matthew');
+  if (cs.phase === 'walk' && ((mat && !mat.walking) || cs.t > 6)) {
+    cs.phase = 'talk';
+    dlcApi.say([
+      { id: 'silas', name: 'Silas Boone', text: 'An everyday guy in a white polo. Walking home with somebody else\'s leftovers.' },
+      { id: 'silas', name: 'Silas Boone', text: 'Matthew Rose… curious coincidence.' },
+      { id: 'silas', name: 'Silas Boone', text: 'Let him do his homework. We\'ll talk properly after.' }
+    ], () => { cs.phase = 'done'; cs.doneT = cs.t; });
+  } else if (cs.phase === 'done' && cs.t - cs.doneT > 0.8) {
+    const fn = cs.onDone;
+    gameState.cutscene = null;
+    if (fn) fn();
+  }
+}
+
+// ---------- Bob's cards (#dlc-mission-card, #dlc-ending-screen) ----------
+let dlcCardDone = null;
+function showDlcCard({ eyebrow = 'Prequel · Silas Boone', title: t = 'Mission Complete', name = '', sub = '' }, onDone) {
+  $('dlc-mission-eyebrow').textContent = eyebrow;
+  $('dlc-mission-title').textContent = t;
+  $('dlc-mission-name').textContent = name;
+  $('dlc-mission-sub').textContent = sub;
+  const dev = getPromptDevice();
+  $('dlc-mission-hint').textContent = dev === 'touch' ? 'Tap to continue' : dev === 'keyboard' ? 'Enter · Z to continue' : `${getPromptLabel('confirm')} to continue`;
+  dlcCardDone = onDone || null;
+  gameState.mode = 'card';            // game loop + input paused while the card is up
+  $('interact-prompt').classList.add('hidden');
+  $('dlc-mission-card').classList.remove('hidden');
+  input.flush();
+  menuFocus(0, $('dlc-mission-card'));
+}
+function closeDlcCard() {
+  if (gameState.mode !== 'card') return;
+  $('dlc-mission-card').classList.add('hidden');
+  clearMenuFocus();
+  gameState.mode = 'play';
+  input.flush(); input.focusGame();
+  const fn = dlcCardDone; dlcCardDone = null;
+  if (fn) fn();
+  updateHUD();
+}
+function suitStillSrc() {
+  try {
+    const own = SpriteLib.getAnimFrame && SpriteLib.getAnimFrame('matthew', 'idle_signature', 0, artOutfitFor('silas'));
+    let c;
+    if (own && !suitNeedsTint('silas')) { c = document.createElement('canvas'); c.width = own.sw; c.height = own.sh; c.getContext('2d').drawImage(own.img, own.sx, own.sy, own.sw, own.sh, 0, 0, own.sw, own.sh); }
+    else c = tintedCanvas(getMatthewSprite('idle', artOutfitFor('silas'), OUTFITS[artOutfitFor('silas')], 0));
+    return c ? c.toDataURL('image/png') : null;
+  } catch (_) { return null; }
+}
+function showDlcEnding() {
+  gameState.mode = 'ending';
+  gameState.ended = true;
+  $('dlc-ending-eyebrow').textContent = 'Prequel Ending · Second Shift';
+  $('dlc-ending-title').textContent = 'Before the Star';
+  $('dlc-ending-text').textContent = 'A crate rolled out of the Rail Yards after hours. Priya\'s maps never reached her shelf.\n' +
+    'A lantern stencilled "S.B. — 2nd shift" waits under the River Bridge rail.\n' +
+    'And a bag marked "M. Rose — to go" is on its way home with the wrong man.\n\n' +
+    'Silas Boone straightens his gloves on Jefferson Street. Lovely evening.';
+  const src = suitStillSrc(); if (src) $('dlc-unlock-img').src = src;
+  $('dlc-unlock-label').textContent = "Silas's Suit unlocked for Matthew";
+  $('dlc-unlock-sub').textContent = 'Main game: Pause → Outfits (Shift+3). Fights with all six of Silas\'s moves.';
+  const mainBtn = $('btn-dlc-ending-main');
+  if (mainBtn) mainBtn.textContent = hasSave() ? 'Continue the Main Story ▸' : 'Start the Main Story ▸';
+  $('interact-prompt').classList.add('hidden');
+  $('dlc-ending-screen').classList.remove('hidden');
+  persist();
+  input.flush();
+  menuFocus(mainBtn ? 0 : 0, $('dlc-ending-screen'));
+}
+// one extra button next to Bob's "Back to Title": straight into the main opening ("Find Dee Morales")
+(() => {
+  const back = $('btn-dlc-ending-continue');
+  if (!back || $('btn-dlc-ending-main')) return;
+  const b = document.createElement('button');
+  b.type = 'button'; b.id = 'btn-dlc-ending-main'; b.className = 'btn dlc-btn';
+  b.textContent = 'Start the Main Story ▸';
+  back.parentNode.insertBefore(b, back);
+})();
+
+// ---------- pause (prequel): Quit to Title instead of Outfits ----------
+(() => {
+  const card = $('pause-screen') && $('pause-screen').querySelector('.overlay-card');
+  if (!card || $('btn-dlc-quit')) return;
+  const b = document.createElement('button');
+  b.type = 'button'; b.id = 'btn-dlc-quit'; b.className = 'btn btn-secondary hidden';
+  b.textContent = 'Save & Quit to Title';
+  const ref = $('btn-missions');
+  card.insertBefore(b, ref || null);
+})();
+function syncDlcPause() {
+  $('btn-dlc-quit')?.classList.toggle('hidden', !isDlc());
+  $('btn-outfit')?.classList.toggle('hidden', isDlc());
+  $('btn-missions')?.classList.toggle('hidden', isDlc());
+  if (isDlc()) $('mission-list')?.classList.add('hidden');
+}
+
+// ---------- touch: GRIP button (Velvet Grip / heavy) while Silas's moveset is active ----------
+(() => {
+  const host = $('mobile-buttons');
+  if (!host || $('btn-grip')) return;
+  const b = document.createElement('button');
+  b.type = 'button'; b.id = 'btn-grip'; b.className = 'mob-btn hidden';
+  b.setAttribute('aria-label', 'Velvet Grip (heavy)');
+  b.textContent = 'GRIP';
+  host.insertBefore(b, $('btn-pause') || null);
+  input.bindButton && input.bindButton('btn-grip', () => { input.state.heavyPressed = true; });
+})();
+function syncSilasControls() {
+  $('btn-grip')?.classList.toggle('hidden', !silasSet());
+  const sp = $('btn-special');
+  if (sp) sp.setAttribute('aria-label', silasSet() ? 'Iron Handshake (special)' : 'Star Drive special');
+}
+
+// ---------- title: Prequel entry (Bob's #btn-prequel) ----------
+// small prequel panel (Continue / New / Back) — only shown when a prequel run is saved; uses the title panel styles
+(() => {
+  const host = $('title-screen');
+  if (!host || $('title-prequel')) return;
+  const sec = document.createElement('section');
+  sec.id = 'title-prequel'; sec.className = 'title-panel'; sec.setAttribute('aria-label', 'Prequel: Silas Boone');
+  sec.innerHTML = '<h2>Prequel: Silas Boone</h2><div class="title-help prequel-blurb">Second Shift: one long night in Star City, before Matthew Rose picked up the wrong bag.</div>' +
+    '<button type="button" id="btn-prequel-continue" class="btn">Continue Prequel</button>' +
+    '<button type="button" id="btn-prequel-new" class="btn">New Prequel</button>' +
+    '<button type="button" id="btn-prequel-back" class="btn btn-secondary">Back</button>';
+  const after = $('title-difficulty');
+  host.insertBefore(sec, after ? after.nextSibling : null);
+})();
+let confirmTextSaved = null;
+function restoreConfirmText() {
+  if (confirmTextSaved) { $('confirm-title').textContent = confirmTextSaved[0]; $('confirm-text').textContent = confirmTextSaved[1]; $('btn-confirm-yes').textContent = confirmTextSaved[2]; }
+  confirmTextSaved = null; gameState.confirmDlc = false;
+}
+function openPrequel() {
+  if (dlcHasRun()) title.openPrequel();
+  else { gameState.pendingDlc = true; title.openDifficulty(true); }
+}
+bindTap('btn-prequel', () => whenReady(openPrequel));
+bindTap('btn-prequel-continue', () => whenReady(() => startDlc(true)));
+bindTap('btn-prequel-new', () => whenReady(() => {
+  gameState.pendingDlc = true;
+  if (!dlcHasRun()) { title.openDifficulty(true); return; }
+  confirmTextSaved = [$('confirm-title').textContent, $('confirm-text').textContent, $('btn-confirm-yes').textContent];
+  gameState.confirmDlc = true;
+  $('confirm-title').textContent = 'Start the Prequel Over?';
+  $('confirm-text').textContent = 'This restarts your Silas Boone run. Your main-game save and any unlocked Silas\'s Suit are kept.';
+  $('btn-confirm-yes').textContent = 'Yes, Start Over';
+  openConfirm();
+}));
+bindTap('btn-dlc-mission-continue', () => closeDlcCard());
+bindTap('btn-dlc-ending-continue', () => { $('dlc-ending-screen').classList.add('hidden'); quitDlcToTitle(); });
+bindTap('btn-dlc-ending-main', () => {
+  $('dlc-ending-screen').classList.add('hidden');
+  quitDlcToTitle();
+  whenReady(() => {
+    if (hasSave()) startGame(true);
+    else { gameState.pendingDlc = false; title.openDifficulty(); }
+  });
+});
+bindTap('btn-dlc-quit', () => { if (gameState.mode === 'pause') quitDlcToTitle(); });
+// ============================================================ <<< DLC: Silas prequel
+
 // New Game -> (overwrite confirm) -> difficulty selector -> start
-bindTap('btn-start', () => whenReady(() => title.openDifficulty()));
+bindTap('btn-start', () => whenReady(() => { gameState.pendingDlc = false; title.openDifficulty(); }));
 bindTap('btn-continue', () => whenReady(() => startGame(true)));
 bindTap('btn-new-game', () => {
+  gameState.pendingDlc = false;
   if (hasSave()) openConfirm();
   else whenReady(() => title.openDifficulty());
 });
 bindTap('btn-confirm-yes', () => {
   $('confirm-screen').classList.add('hidden');
-  whenReady(() => title.openDifficulty());
+  if (gameState.confirmDlc) restoreConfirmText(); // DLC: "start the prequel over" used the same dialog
+  whenReady(() => title.openDifficulty(gameState.pendingDlc));
 });
 for (const id of DIFFICULTY_ORDER) {
   bindTap(`btn-diff-${id}`, () => whenReady(() => {
     if (gameState.mode !== 'title') return;
+    if (gameState.pendingDlc) { // DLC: Silas prequel — its own slot; the main save is not touched
+      gameState.pendingDlc = false;
+      gameState.pendingDifficulty = id;
+      startDlc(false);
+      toast(`Difficulty: ${DIFFICULTIES[id].name}`);
+      return;
+    }
     clearSave(); // only reachable via New Game (with the overwrite confirm when a save exists)
     gameState.pendingDifficulty = id;
     startGame(false);
@@ -1074,7 +1579,7 @@ for (const id of DIFFICULTY_ORDER) {
 }
 bindTap('btn-difficulty', () => cycleDifficulty());
 bindTap('btn-missions', () => toggleMissionList());
-bindTap('btn-confirm-no', () => closeConfirm());
+bindTap('btn-confirm-no', () => { if (gameState.confirmDlc) { restoreConfirmText(); gameState.pendingDlc = false; } closeConfirm(); });
 bindTap('btn-resume', () => resumeGame());
 bindTap('btn-save', () => manualSave());
 bindTap('btn-outfit', () => openOutfitPicker()); // opens the visual picker (L1/R1 + 1-9/0/-/= still cycle in play)
@@ -1105,7 +1610,10 @@ function refreshPrompts(force) {
   const L = getPromptLabel;
   const kbd = document.querySelector('#interact-prompt kbd');
   if (kbd) kbd.textContent = L('interact');
-  const parts = [['move', 'move'], ['sprint', 'sprint'], ['punch', 'punch'], ['kick', 'kick'], ['special', 'Star Drive'], ['heavy', 'heavy'],
+  const parts = silasSet()
+    ? [['move', 'move'], ['sprint', 'sprint (+punch: Boss Rush)'], ['punch', 'Jab'], ['heavy', 'Velvet Grip'], ['special', 'Iron Handshake'], ['kick', 'hold: Last Word'],
+      ['interact', 'talk / Cold Stare'], ...(isDlc() ? [] : [['outfit', 'outfits']]), ['pause', 'pause']]
+    : [['move', 'move'], ['sprint', 'sprint'], ['punch', 'punch'], ['kick', 'kick'], ['special', 'Star Drive'], ['heavy', 'heavy'],
     ['interact', 'talk'], ['outfit', 'outfits'], ['pause', 'pause']];
   const hint = parts.filter(([a]) => L(a)).map(([a, w]) => `${L(a)} ${w}`).join(' · ');
   const pp = document.querySelector('#pause-screen p');
@@ -1136,6 +1644,11 @@ function syncMusic(dt) {
   const m = gameState.mode;
   setDialogueDuck(m === 'dialogue');
   if (m === 'title' || m === 'ending') { setMusic('title'); return; }
+  if (isDlc()) { // DLC: night-shift variations on Silas's motif
+    if (gameState.combatLock && hostilesAlive()) fightHold = 1.5; else if (m === 'play') fightHold -= dt;
+    setMusic(dlc.music(fightHold > 0, gameState.bossActive));
+    return;
+  }
   if (gameState.bossActive) { setMusic('boss'); return; }
   if (gameState.combatLock && hostilesAlive()) fightHold = stateBag.side ? 2.5 : 0.05; // side-mission waves have gaps
   else if (m === 'play') fightHold -= dt;
@@ -1159,7 +1672,7 @@ function step(dt) {
     drawWorld(0);
     return;
   }
-  if (gameState.mode === 'pause' || gameState.mode === 'ending') {
+  if (gameState.mode === 'pause' || gameState.mode === 'ending' || gameState.mode === 'card') { // 'card' = DLC mission card
     handleMenu(inp);
     drawWorld(0);
     return;
@@ -1170,12 +1683,12 @@ function step(dt) {
     return;
   }
 
-  if (inp.outfitKey) {
+  if (inp.outfitKey && !isDlc()) {
     const k = inp.outfitKey;
     const id = OUTFIT_ORDER[k in OUTFIT_HOTKEYS ? OUTFIT_HOTKEYS[k] : Number(k) - 1];
     if (id) setOutfit(id);
   }
-  if (inp.outfitCycle && gameState.mode === 'play') cycleOutfit(inp.outfitCycle);
+  if (inp.outfitCycle && gameState.mode === 'play' && !isDlc()) cycleOutfit(inp.outfitCycle);
 
   if (gameState.mode === 'dialogue') {
     if (inp.backPressed) finishDialogue();                       // Circle/B/Esc: close
@@ -1195,6 +1708,7 @@ function step(dt) {
     drawWorld(dt);
     return;
   }
+  if (!player.alive && isDlc()) { dlcKnockout(); return; } // DLC: back to the step's start
   if (!player.alive && getDifficulty().arcade) {
     arcadeGameOver();
     return;
@@ -1220,6 +1734,7 @@ function step(dt) {
   }
 
   const area = AREAS[gameState.areaId];
+  if (gameState.cutscene) Object.assign(inp, NEUTRAL_INPUT); // DLC closing scene: hands off
 
   // v3: attack presses made during a hit-stop freeze are buffered, not dropped
   const BUFFERED = ['punchPressed', 'kickPressed', 'heavyPressed', 'specialPressed'];
@@ -1232,19 +1747,13 @@ function step(dt) {
       outfit: gameState.outfitId,
       canSpecial: (cost = SPECIAL_COST) => gameState.special >= cost,
       onSpecial: (cost = SPECIAL_COST) => { gameState.special = Math.max(0, gameState.special - cost); gameState.hitStop = 0; rumble(0.6, 0.6, 160); followCam.kick(3); },
-      onSpecialDenied: (why, cost = SPECIAL_COST) => { sfx('denied'); if (why === 'meter') toast(`${getKit(gameState.outfitId).move} (Star Drive) needs ${cost}% special meter`); }
+      onSpecialDenied: (why, cost = SPECIAL_COST) => { sfx('denied'); if (why === 'meter') toast(`${getKit(isDlc() ? 'silas' : gameState.outfitId).move} (Star Drive) needs ${cost}% special meter`); },
+      ...silasHooks() // DLC: Silas's six moves (prequel Silas / Silas's Suit); {} for every other outfit
     });
     for (const e of gameState.enemies) {
       if (e.runner) updateRunner(e, dt, area);
       else updateEnemy(e, e.target ? sideTarget(e) : player, dt, area.width);
     }
-    const onHitEnemy = (e) => {
-      gameState.hitStop = e.kd ? 0.07 : 0.04;
-      gameState.special = Math.min(100, gameState.special + 4);
-      if (!e.alive) gameState.score += e.scoreValue || 100;
-      rumble(0.25, 0.45, 60);
-      followCam.kick(e.kd ? 3.5 : 2);
-    };
     resolveHits(player, gameState.enemies,
       onHitEnemy,
       (dmg, knocked) => {
@@ -1255,6 +1764,7 @@ function step(dt) {
       area.width
     );
     updateKits(player, gameState.enemies, dt, area.width, onHitEnemy); // 1.4.0: Spiral flight, Star Yank, kit FX
+    silasWorld(player, gameState.enemies, dt, area.width, onHitEnemy); // DLC: Silas cooldowns, held / thrown bodies
     if (stateBag.side && stateBag.side.id === 'side_spar') {
       for (const e of gameState.enemies) if (e.sparring && !e.alive && !e.counted) { e.counted = true; stateBag.side.kos++; }
     }
@@ -1262,7 +1772,11 @@ function step(dt) {
     if (gameState.combatLock && !hostilesAlive()) {
       gameState.combatLock = false;
       gameState.enemies = [];
-      if (gameState.bossActive) {
+      if (isDlc()) { // DLC: the prequel's mission logic reacts to the cleared street itself
+        gameState.bossActive = false;
+        sting('victory');
+        if (player.alive && !player.kd) { player.victoryT = 1.2; player.idleT = 0; }
+      } else if (gameState.bossActive) {
         // Silas is down: story complete → good ending
         gameState.bossActive = false;
         if (gameState.difficulty === 'hard' || gameState.difficulty === 'arcade') stateBag.beatHard = true;
@@ -1287,18 +1801,30 @@ function step(dt) {
     else if (player.x >= area.width - 35 && area.rightTo) transitionArea('right');
   }
 
-  if (inp.interactPressed) tryInteract();
+  if (inp.interactPressed && !gameState.cutscene) tryInteract();
   if (gameState.mode !== 'play') { drawWorld(dt); return; }
+  if (isDlc()) { dlc.update(dt); updateCutscene(dt); if (gameState.mode !== 'play') { drawWorld(dt); return; } }
 
   // Auto pickup nearby collectibles (autosaves; outfit pickups are worn right away)
-  checkStealthSpots(); // 1.3.2: hidden Hell's Nightmare helmet reveals itself up close
-  collectHere();
+  if (isDlc()) dlcCollect();
+  else {
+    checkStealthSpots(); // 1.3.2: hidden Hell's Nightmare helmet reveals itself up close
+    collectHere();
+  }
 
   // Interact prompt
   const npc = nearestNPC();
-  if (npc && !(gameState.combatLock && hostilesAlive())) {
+  const useSpot = isDlc() && !npc && !hostilesAlive() ? dlc.usable(gameState.areaId, player.x) : null;
+  if (npc && !(gameState.combatLock && hostilesAlive()) && !gameState.cutscene) {
     $('interact-prompt').classList.remove('hidden');
     $('interact-text').textContent = `Talk to ${npc.name}`;
+  } else if (useSpot && !gameState.cutscene) {
+    $('interact-prompt').classList.remove('hidden');
+    $('interact-text').textContent = useSpot.label;
+  } else if (silasSet() && !npc && hostilesAlive() && !gameState.cutscene) {
+    const cd = silasCooldowns(player).stare;
+    $('interact-prompt').classList.remove('hidden');
+    $('interact-text').textContent = cd > 0 ? `Cold Stare ${Math.ceil(cd)}s` : 'Cold Stare';
   } else {
     $('interact-prompt').classList.add('hidden');
   }
@@ -1320,6 +1846,7 @@ function step(dt) {
 
 /** Where the minimap should point: active mission NPC, or delivery target. */
 function currentDestination() {
+  if (isDlc()) return dlc.dest();
   const sm = sideMission();
   if (sm) {
     if (sm.kind === 'escort') return { areaId: sm.dest, x: null };
@@ -1352,7 +1879,7 @@ const THUG_SCALE = 1.2;
 const NPC_SCALE = 1.2;
 const BOSS_SCALE = 1.4; // Silas as the boss and as the pre-fight NPC (same person, same size)
 const castScaleNpc = (id) => (id === 'silas' ? BOSS_SCALE : NPC_SCALE);
-const castScaleEnemy = (e) => (e.isBoss ? BOSS_SCALE : THUG_SCALE);
+const castScaleEnemy = (e) => (e.drawScale || (e.isBoss ? BOSS_SCALE : THUG_SCALE)); // DLC bosses carry drawScale
 
 /** Any cast frame at `scale`, feet on feetY (same footPad rule as drawMatthew). Returns draw height. */
 function drawCastSprite(spr, x, feetY, facing, scale) {
@@ -1402,18 +1929,24 @@ function drawEnemyCast(e, cam) {
   const sx = e.x - cam;
   if (e.invulnFlash || (e.invuln > 0 && Math.floor(performance.now() / 80) % 2)) ctx.globalAlpha = 0.5;
   // >>> v3 anim states (game-logic lane): Joe's getAnimFrame when present, else the old sheet (+ lie-down tilt)
-  const af = animFrame(enemyCharKey(e), e.animState, animMs(e));
+  let af = animFrame(enemyCharKey(e), e.animState, animMs(e));
+  if (af && e.tint) af = tintedFrame(af, e.tint, e.tintFrac || 0.62); // DLC: the Foreman's crew wear dark work coats
   let h = 0;
   if (af) h = drawAnimFrame(af, sx, e.y, e.facing, castScaleEnemy(e));
-  else withLie(e, sx, e.y, () => { h = drawCastSprite(spr, sx, e.y, e.facing, castScaleEnemy(e)); });
+  else withLie(e, sx, e.y, () => { h = drawCastSprite(e.tint ? tintedCanvas(spr, e.tint, e.tintFrac || 0.62) : spr, sx, e.y, e.facing, castScaleEnemy(e)); });
   // <<< v3
   ctx.globalAlpha = 1;
   drawFoeStatus(e, sx, h); // 1.4.0 kit effects: stun stars, Hot Plate slow
+  if (e.nameTag && e.alive) { // DLC bosses: name over the head
+    ctx.font = 'bold 11px sans-serif'; ctx.textAlign = 'center';
+    ctx.lineWidth = 3; ctx.strokeStyle = 'rgba(10,8,6,0.9)'; ctx.strokeText(e.nameTag, sx, Math.round(e.y - h * 0.92) - 12);
+    ctx.fillStyle = '#e6d3a2'; ctx.fillText(e.nameTag, sx, Math.round(e.y - h * 0.92) - 12); ctx.textAlign = 'left';
+  }
   if (e.hp < e.maxHp && e.alive) {
-    const pw = e.isBoss ? 44 : 32, py = Math.round(e.y - h * 0.92) - 6;
+    const pw = e.isBoss || e.miniBoss ? 44 : 32, py = Math.round(e.y - h * 0.92) - 6;
     ctx.fillStyle = '#2a2a30';
     ctx.fillRect(sx - pw / 2, py, pw, 4);
-    ctx.fillStyle = e.isBoss ? '#e74c3c' : '#2ecc71';
+    ctx.fillStyle = e.isBoss || e.miniBoss ? '#e74c3c' : '#2ecc71';
     ctx.fillRect(sx - pw / 2, py, pw * Math.max(0, e.hp / e.maxHp), 4);
   }
 }
@@ -1431,8 +1964,10 @@ function drawMatthew(pose, outfitId, outfit, t, x, feetY, facing) {
   if (USE_HERO_RENDER) {
     drawHero(ctx, getHeroFrame(pose, outfitId, outfit, t), x, feetY, facing, HERO_DRAW_H);
   } else {
-    const spr = getMatthewSprite(pose, outfitId, outfit, t);
+    const artId = artOutfitFor(outfitId); // DLC: Silas's Suit → fallback outfit + dark-suit tint until Joe's art lands
+    let spr = getMatthewSprite(pose, artId, artId !== outfitId ? OUTFITS[artId] : outfit, t);
     if (!spr) return;
+    if (suitNeedsTint(outfitId)) spr = tintedCanvas(spr);
     // Draw Joe's 144x192 frame at heroic scale; v3 feet sit on row 189 of 192, so anchor that row to feetY
     const dw = Math.round(64 * PLAYER_SCALE), dh = Math.round(84 * PLAYER_SCALE);
     const footPad = spr.height >= 192 ? Math.round(dh * (3 / 192)) : 0;
@@ -1494,7 +2029,7 @@ function drawStaminaPip(x, feetY) {
 }
 // >>> 1.4.0 outfit kits (game-logic lane; draw-only)
 const KIT_FX_COLOR = { polo: '#fff4dc', photo: '#fffbe0', hoodie: '#ffd24a', jacket: '#ffb36b', street: '#ffffff', varsity: '#f2e6c8', mechanic: '#ffd27a',
-  diner: '#ff9a4a', gold: '#ffd24a', webslinger: '#ff5a6a', beacon: '#7dffb2', ironclad: '#ffb020' };
+  diner: '#ff9a4a', gold: '#ffd24a', webslinger: '#ff5a6a', beacon: '#7dffb2', ironclad: '#ffb020', silas: '#e6d3a2' };
 function star(x, y, r, color, rot = 0) {
   ctx.beginPath();
   for (let i = 0; i < 10; i++) { const a = rot + i * Math.PI / 5 - Math.PI / 2, rr = i % 2 ? r * 0.45 : r; ctx.lineTo(x + Math.cos(a) * rr, y + Math.sin(a) * rr); }
@@ -1623,6 +2158,37 @@ function drawKitFx(cam) {
         for (let i = 0; i < 6; i++) { const ang = i * Math.PI / 3; ctx.beginPath(); ctx.moveTo(x + Math.cos(ang) * 4, fx.y + Math.sin(ang) * 4); ctx.lineTo(x + Math.cos(ang) * (8 + k * (fx.small ? 4 : 10)), fx.y + Math.sin(ang) * (8 + k * (fx.small ? 4 : 10))); ctx.stroke(); }
         break;
       }
+      // >>> DLC: Silas moveset FX
+      case 'stance': { // Last Word: brass guard ring while the counter window is open
+        if (!(player.silasMove && player.silasMove.kind === 'stance' && player.silasMove.el < player.silasMove.stanceEnd)) break;
+        const cy = player.y - 60;
+        ctx.globalAlpha = 0.55 + 0.25 * Math.sin(now * 18);
+        ctx.strokeStyle = '#e6d3a2'; ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.arc(x + player.facing * 10, cy, 34, -1.1, 1.1); ctx.stroke();
+        ctx.beginPath(); ctx.arc(x - player.facing * 2, cy, 40, Math.PI - 1.1, Math.PI + 1.1); ctx.stroke();
+        ctx.fillStyle = 'rgba(194,164,103,0.15)'; ctx.beginPath(); ctx.ellipse(x, player.y - 2, 26, 6, 0, 0, Math.PI * 2); ctx.fill();
+        break;
+      }
+      case 'shock': { // Iron Handshake: ground shockwave ring + dust wall
+        const r = 16 + (fx.reach || 150) * k;
+        ctx.strokeStyle = `rgba(230,211,162,${0.95 * a})`; ctx.lineWidth = 6 * a + 1;
+        ctx.beginPath(); ctx.ellipse(x, fx.y - 2, r, r * 0.26, 0, 0, Math.PI * 2); ctx.stroke();
+        ctx.strokeStyle = `rgba(168,32,42,${0.7 * a})`; ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.ellipse(x, fx.y - 2, r * 0.7, r * 0.18, 0, 0, Math.PI * 2); ctx.stroke();
+        ctx.fillStyle = `rgba(200,180,150,${0.45 * a})`;
+        for (let i = -1; i <= 1; i += 2) for (let j = 0; j < 3; j++) { ctx.beginPath(); ctx.arc(x + i * r * (0.85 + j * 0.05), fx.y - 6 - j * 6 * a, 6 + j * 2, 0, Math.PI * 2); ctx.fill(); }
+        break;
+      }
+      case 'stare': { // Cold Stare: icy sweep from the eyes
+        const cy = player.y - 74, r = 40 + 200 * k, f = fx.facing || player.facing;
+        const g = ctx.createRadialGradient(x, cy, 2, x, cy, r);
+        g.addColorStop(0, `rgba(200,230,255,${0.5 * a})`); g.addColorStop(1, 'rgba(120,170,230,0)');
+        ctx.fillStyle = g;
+        ctx.beginPath(); ctx.moveTo(x, cy); ctx.arc(x, cy, r, f > 0 ? -0.35 : Math.PI - 0.35, f > 0 ? 0.35 : Math.PI + 0.35); ctx.closePath(); ctx.fill();
+        ctx.fillStyle = `rgba(4,8,20,${0.25 * a})`; ctx.fillRect(-W, -H, W * 4, H * 3);
+        break;
+      }
+      // <<< DLC
       case 'cord': { // Star Yank: line from Matthew's hand to the foe (or out to full length on a miss)
         const hx = player.x + player.facing * 30 - cam, hy = player.y - 62;
         const tx = fx.target ? fx.target.x - cam : fx.tx - cam, ty = fx.target ? fx.target.y - 58 : fx.ty;
@@ -1698,10 +2264,11 @@ function drawWorld(dt) {
   drawBackground(ctx, area, cam, viewW, H, dt); // dt drives the ambient sedan (0 = frozen while paused)
 
   // Collectibles
-  for (const c of stateBag.collectibles) {
+  for (const c of (isDlc() ? dlc.visibleCollectibles(gameState.areaId) : stateBag.collectibles)) {
     if (c.taken || c.area !== gameState.areaId) continue;
     drawCollectibleItem(c, c.x - cam, collectY()); // v3: Joe's item art with bob + glow, dot fallback
   }
+  if (isDlc()) drawUseMarker(cam);
 
   // Sort draw by depth (y)
   const drawList = [];
@@ -1712,13 +2279,15 @@ function drawWorld(dt) {
     if (e.alive || e.stun > 0 || e.koT > 0) drawList.push({ type: 'enemy', y: e.y, e });
   }
   drawList.push({ type: 'player', y: player.y });
+  for (const a of gameState.finaleActors) if (a.area === gameState.areaId) drawList.push({ type: 'actor', y: a.y, a }); // DLC closing scene
   drawList.sort((a, b) => a.y - b.y);
 
   // Ground shadows first so no character's shadow overlaps another's body
   for (const item of drawList) {
     if (item.type === 'npc') drawGroundShadow(ctx, item.n.x - cam, item.y, NPC_DRAW_W * castScaleNpc(item.n.id));
     else if (item.type === 'enemy') drawGroundShadow(ctx, item.e.x - cam, item.e.y, NPC_DRAW_W * castScaleEnemy(item.e), item.e.alive ? 0.42 : 0.25);
-    else drawGroundShadow(ctx, player.x - cam, player.y, CHAR_DRAW_W);
+    else if (item.type === 'actor') drawGroundShadow(ctx, item.a.x - cam, item.a.y, item.a.kind === 'matthew' ? CHAR_DRAW_W : NPC_DRAW_W * THUG_SCALE, 0.35);
+    else drawGroundShadow(ctx, player.x - cam, player.y, isDlc() ? NPC_DRAW_W * BOSS_SCALE : CHAR_DRAW_W);
   }
 
   for (const item of drawList) {
@@ -1750,6 +2319,10 @@ function drawWorld(dt) {
       ctx.textAlign = 'left';
     } else if (item.type === 'enemy') {
       drawEnemyCast(item.e, cam);
+    } else if (item.type === 'actor') {
+      drawFinaleActor(item.a, cam);
+    } else if (item.type === 'player' && isDlc()) {
+      drawDlcSilas(cam); // DLC: playable Silas (silas_boss art at BOSS_SCALE)
     } else if (item.type === 'player') {
       const outfit = OUTFITS[gameState.outfitId] || OUTFITS.polo;
       let pose = player.pose;
@@ -1758,7 +2331,8 @@ function drawWorld(dt) {
       // >>> v3 anim states (game-logic lane): getAnimFrame('matthew', state) when the art exists, else the
       // old sheet with fallbacks: jump-kick lift, Star Drive afterimages, faster sprint cycle, lie-down tilt
       const px = player.x - cam;
-      const maf = USE_HERO_RENDER ? null : animFrame('matthew', player.animState, animMs(player), gameState.outfitId);
+      let maf = USE_HERO_RENDER ? null : animFrame('matthew', player.animState, animMs(player), artOutfitFor(gameState.outfitId));
+      if (maf && suitNeedsTint(gameState.outfitId)) maf = tintedFrame(maf); // DLC: Silas's Suit fallback look
       if (player.attackType === 'special' && player.kitMove && player.kitMove.lunge >= 60 && player.kitMove.el < player.kitMove.lungeT) {
         // 1.4.0: afterimages only for the moves that travel (Kickflip); planted moves stay crisp
         const a0 = ctx.globalAlpha;
@@ -1786,6 +2360,7 @@ function drawWorld(dt) {
 
   // Shared golden-hour light over characters too (lens width, full plate height)
   drawSceneGrade(ctx, area, viewW, H);
+  if (isDlc() && dlc.isNight()) drawNightGrade(ctx, viewW, H, performance.now() / 1000); // DLC: night shift
 
   // HUD minimap (DOM canvas, not the game canvas)
   drawMinimap($('minimap'), {
@@ -1866,6 +2441,7 @@ function initShellUpdate() {
   setInterval(check, 20 * 60 * 1000);
 }
 function initAutoUpdate() {
+  if (window.__SCD_PREVIEW) return; // 1.5.0 preview build (/preview/): no SW, no auto-update
   if (location.protocol === 'app:' || (window.Capacitor && location.hostname === 'localhost')) { initShellUpdate(); return; }
   if (!('serviceWorker' in navigator) || !/^https?:$/.test(location.protocol) || window.Capacitor) return;
   const hadController = !!navigator.serviceWorker.controller; // first install also fires controllerchange
@@ -1989,7 +2565,22 @@ if (DEBUG) {
     /** 1.4.0 outfit kits: table, art timing, live FX / projectiles (tests). */
     kits: { KITS, getKit, kitRow, specialTiming, fx: () => getKitFx(), projectiles: () => getProjectiles() },
     audio: audioDebug,
-    persist
+    persist,
+    // >>> DLC: Silas prequel (tests)
+    dlc,
+    startDlc: (cont = false, diff = 'normal') => { if (gameState.mode !== 'title') showTitle(); gameState.pendingDifficulty = diff; startDlc(cont); },
+    quitDlc: () => quitDlcToTitle(),
+    showTitle: () => showTitle(),
+    startMain: (fromSave = true) => { if (gameState.mode !== 'title') showTitle(); startGame(fromSave); },
+    silasCooldowns: () => silasCooldowns(player),
+    silasHooks: () => silasHooks(),
+    coldStare: () => coldStare(player, gameState.enemies),
+    interact: () => tryInteract(),
+    silasMoves: { SILAS_MOVES, rows: silasMoveRows },
+    dlcCard: () => ({ mission: !$('dlc-mission-card').classList.contains('hidden'), ending: !$('dlc-ending-screen').classList.contains('hidden') }),
+    closeCard: () => closeDlcCard(),
+    finishFinale: () => { if (gameState.cutscene) { const fn = gameState.cutscene.onDone; gameState.cutscene = null; if (gameState.mode === 'dialogue') finishDialogue(); fn && fn(); } }
+    // <<< DLC
   };
 }
 boot();

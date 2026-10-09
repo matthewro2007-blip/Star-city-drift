@@ -1,27 +1,27 @@
-STAR CITY DRIFT 1.4.0 - Windows (64-bit) installer, sent in 6 parts
+STAR CITY DRIFT 1.5.0 - Windows (64-bit) installer, sent in 6 parts
 ===================================================================
 
 You need all 6 files in the SAME folder:
-  Star-City-Drift-1.4.0-Setup-win-x64.7z.001   (23.1 MB)
-  Star-City-Drift-1.4.0-Setup-win-x64.7z.002   (23.1 MB)
-  Star-City-Drift-1.4.0-Setup-win-x64.7z.003   (23.1 MB)
-  Star-City-Drift-1.4.0-Setup-win-x64.7z.004   (23.1 MB)
-  Star-City-Drift-1.4.0-Setup-win-x64.7z.005   (23.1 MB)
-  Star-City-Drift-1.4.0-Setup-win-x64.7z.006   (6.9 MB)
-Together they're one 7-Zip archive holding Star-City-Drift-Setup-1.4.0.exe (122 MB).
+  Star-City-Drift-1.5.0-Setup-win-x64.7z.001   (23.1 MB)
+  Star-City-Drift-1.5.0-Setup-win-x64.7z.002   (23.1 MB)
+  Star-City-Drift-1.5.0-Setup-win-x64.7z.003   (23.1 MB)
+  Star-City-Drift-1.5.0-Setup-win-x64.7z.004   (23.1 MB)
+  Star-City-Drift-1.5.0-Setup-win-x64.7z.005   (23.1 MB)
+  Star-City-Drift-1.5.0-Setup-win-x64.7z.006   (9.4 MB)
+Together they're one 7-Zip archive holding Star-City-Drift-Setup-1.5.0.exe (125 MB).
 
 EASIEST: 7-Zip (free, https://www.7-zip.org)
   1. Install 7-Zip.
-  2. Right-click Star-City-Drift-1.4.0-Setup-win-x64.7z.001 > 7-Zip > Extract Here
+  2. Right-click Star-City-Drift-1.5.0-Setup-win-x64.7z.001 > 7-Zip > Extract Here
      (or open the .001 in 7-Zip). It reads .002-.006 by itself.
-  3. Double-click Star-City-Drift-Setup-1.4.0.exe and follow the installer.
+  3. Double-click Star-City-Drift-Setup-1.5.0.exe and follow the installer.
   NanaZip, PeaZip and WinRAR open the .001 the same way.
 
 WITHOUT 7-ZIP (Windows 11 only)
   Windows can't open the .001 file directly. Join the parts into one .7z first:
   in that folder, click the address bar, type  cmd  and press Enter, then run:
-    copy /b Star-City-Drift-1.4.0-Setup-win-x64.7z.001+Star-City-Drift-1.4.0-Setup-win-x64.7z.002+Star-City-Drift-1.4.0-Setup-win-x64.7z.003+Star-City-Drift-1.4.0-Setup-win-x64.7z.004+Star-City-Drift-1.4.0-Setup-win-x64.7z.005+Star-City-Drift-1.4.0-Setup-win-x64.7z.006 Star-City-Drift-1.4.0-Setup-win-x64.7z
-  Then right-click Star-City-Drift-1.4.0-Setup-win-x64.7z > Extract All. Windows 11 has opened .7z files natively since the
+    copy /b Star-City-Drift-1.5.0-Setup-win-x64.7z.001+Star-City-Drift-1.5.0-Setup-win-x64.7z.002+Star-City-Drift-1.5.0-Setup-win-x64.7z.003+Star-City-Drift-1.5.0-Setup-win-x64.7z.004+Star-City-Drift-1.5.0-Setup-win-x64.7z.005+Star-City-Drift-1.5.0-Setup-win-x64.7z.006 Star-City-Drift-1.5.0-Setup-win-x64.7z
+  Then right-click Star-City-Drift-1.5.0-Setup-win-x64.7z > Extract All. Windows 11 has opened .7z files natively since the
   23H2 update. Windows 10 can't open .7z, so use 7-Zip there.
 
 FIRST RUN
@@ -29,11 +29,30 @@ FIRST RUN
   Click "More info" > "Run anyway".
   F11 or Alt+Enter toggles fullscreen. Esc pauses. Saves are kept in %APPDATA%\Star City Drift.
 
-  Already have 1.2.x or 1.3.x? You don't need this: it updates itself from the website. Installing 1.4.0
+  Already have 1.2.x, 1.3.x or 1.4.x? You don't need this: it updates itself from the website. Installing 1.5.0
   over it is fine too and keeps your saves.
 
-NEW IN 1.4.0: EVERY OUTFIT HAS ITS OWN WEAPON AND SIGNATURE MOVE
-  Each of the 12 outfits now fights its own way. The 3rd punch of a combo finishes with the
+NEW IN 1.5.0: FREE PREQUEL DLC - "PREQUEL: SILAS BOONE"
+  Play as Silas Boone, years before Matthew's story, on a night shift in the Roanoke districts.
+  Six missions with new characters, two bosses (Vera Lisk and Mort "The Foreman" Kessler),
+  five keepsakes to find, its own music and a closing scene that leads into the main story.
+  HOW TO START IT: on the title screen choose "Prequel: Silas Boone (Free DLC)", then
+  New (or Continue) and pick a difficulty. It's free and open from the start. It has its own
+  save slot and never changes your main save. Pause > Save & Quit to Title takes you back.
+  SILAS'S MOVES (keyboard / PlayStation / Xbox / touch):
+    Gentleman's Jab   Z or J x3 / Cross / A / Z         3-hit combo, the 3rd hit pushes back
+    Velvet Grip       C or L near a foe / Triangle / Y / GRIP   grab and throw (a strong hit on bosses)
+    Iron Handshake    V / R2 / RT / Star                grab-slam with a shockwave that knocks down everyone nearby
+    Last Word         hold X or K / Circle / B / hold X   counter stance: take a hit for 0, answer with a knockdown
+    Cold Stare        E with nobody to talk to / Square / X / E   thugs nearby hesitate (bosses don't)
+    Boss Rush         punch while sprinting (Shift / L3 or L2 / LS or LT / RUN)   shoulder charge through a line
+  The full list is under Title > Controls.
+  UNLOCK: beat the prequel to unlock SILAS'S SUIT for Matthew in the main game: outfit 13, weapon
+  Iron Gauntlet, signature move Iron Handshake, and Matthew fights with all six of Silas's moves.
+  Wear it with # (or Shift+3), cycle with L1/R1 (LB/RB), or pick it in Pause > Outfits. Old saves carry over.
+
+ALSO IN 1.4.0: EVERY OUTFIT HAS ITS OWN WEAPON AND SIGNATURE MOVE
+  Each of the 12 original outfits fights its own way. The 3rd punch of a combo finishes with the
   outfit's weapon, and Star Drive (special) becomes that outfit's signature move. The HUD shows
   your weapon next to the portrait, and Pause > Outfits previews each outfit's weapon, move and ability.
     Polo: Hardcover Book, "Detention" (stuns)
@@ -71,7 +90,8 @@ ALSO IN 1.3.0: SOUND
 WHAT'S BUILT IN
   Everything up to now works offline: animations, knockdowns, sprint and Star Drive, the Star City
   Beacon outfit and Beacon Ring, the collectible item art, the closer camera and golden-hour
-  lighting, the audio, the outfit picker, the Hell's Nightmare suit and all 12 outfit weapons and moves.
+  lighting, the audio, the outfit picker, the Hell's Nightmare suit, all outfit weapons and moves,
+  and the Silas Boone prequel with Silas's Suit.
 
 UPDATES ARE AUTOMATIC
   When you're online, the app plays the latest version of the game from the Star City Drift
@@ -81,9 +101,9 @@ UPDATES ARE AUTOMATIC
   title screen.
 
 SHA-256 checksums (optional check):
-4c86aeac71065c7b30331e1aa7e2424d0a4b561c49e30b846a27a365793da11a  Star-City-Drift-1.4.0-Setup-win-x64.7z.001
-174abdc8d6035aa9899d465115c262793b5b7811cee493f10ea7d62c694de1eb  Star-City-Drift-1.4.0-Setup-win-x64.7z.002
-f6fbba0c9d3d31333ffeb1b1f55693110170811b4130176e6fae62ac9d073e09  Star-City-Drift-1.4.0-Setup-win-x64.7z.003
-b70aec2a5da168d342732598e84d3b320013699bf1804e8b278f04c4f3bda519  Star-City-Drift-1.4.0-Setup-win-x64.7z.004
-4c2d33c7522ca66de2ec1d21c733aedb0e2b2ecd0fd63c1ef0758ab5bcfe4e4c  Star-City-Drift-1.4.0-Setup-win-x64.7z.005
-5b0a1dcbd56239546f82908122934438a2eec4170b0c785d86bdae89c9d50153  Star-City-Drift-1.4.0-Setup-win-x64.7z.006
+0fe99383b24a897da830c46f2e548ccc1decaf60188c0ed73619a9bab5bb5fa0  Star-City-Drift-1.5.0-Setup-win-x64.7z.001
+c5b1b1be4e82765c8a307a36c3b0387b270afa47a240c63b0bea622216f64e4b  Star-City-Drift-1.5.0-Setup-win-x64.7z.002
+8ba5f35856f44925b11e9c826dcd045a64ebd43f107a60df7ad72724623abe6e  Star-City-Drift-1.5.0-Setup-win-x64.7z.003
+135a866b7e81a1bc7699a20375d067c89b47ce17aa49ac16094eacea3dd29ce1  Star-City-Drift-1.5.0-Setup-win-x64.7z.004
+960a6416a6e239d8df48b0f40c1bf79e9c831ac2c3caecf339e2b604f0630ad6  Star-City-Drift-1.5.0-Setup-win-x64.7z.005
+91035e3bc46fa920b9279137d420f77a9f00f2ff64f890cb7aad8350da146549  Star-City-Drift-1.5.0-Setup-win-x64.7z.006
