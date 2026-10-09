@@ -121,7 +121,7 @@ export const MISSIONS = [
         S("So they did. Let it travel. Things that travel leave tracks."),
         L(CAST.gus, "Every night-shift lantern gets initials. What do I paint on yours?"),
         S("S.B. Second shift."),
-        L(CAST.gus, "'S.B. — 2nd shift.' There you go. Mind the bridge, somebody's been signalling from it.")],
+        L(CAST.gus, "'S.B. — 2nd shift.' There you go. Mind the bridge, somebody's been signaling from it.")],
         reward: "Got the Night-Shift Lantern: 'S.B. — 2nd shift'" }
     ] },
   { id: 'm4', title: 'Signals on the Bridge', area: 'river', night: true,
@@ -152,7 +152,7 @@ export const MISSIONS = [
       { type: 'boss', who: 'foreman', obj: 'Defeat the Foreman', adds: 2, final: true },
       { type: 'scene', lines: [
         { id: 'foreman', name: 'Mort "The Foreman" Kessler', text: 'Who do you even work for?' },
-        S("Lovely evening, isn't it? Go home, Mr. Kessler. Take your whistle."),
+        S("Nearly dawn, Mr. Kessler. Go home. Take your whistle."),
         S("The crate, the maps, the bridge… everyone in this town has something worth knowing.")],
         reward: 'The crews scatter into the dark. Dawn breaks over the Star.' }
     ] },
@@ -165,13 +165,13 @@ export const MISSIONS = [
       { type: 'talk', npc: 'dee', obj: 'Have a word at the counter', lines: [
         L(CAST.dee, "Evening! Table, or to-go?"),
         S("Just admiring your pick-up shelf. Busy night?"),
-        L(CAST.dee, "Regulars. That bag's for one of mine. He always forgets his leftovers."),
-        S("Then let's make sure he doesn't forget them tonight.")] },
-      { type: 'use', area: 'diner', x: 560, label: 'Swap the to-go bag', obj: 'Swap the bag on the pick-up shelf', lines: [
-        S("A ticket in the window: 'M. Rose — to go.'"),
-        S("One bag of leftovers out… one very particular parcel in."),
-        S("Matthew Rose. Let's see what kind of man takes home the wrong bag.")],
-        reward: "The bag marked 'M. Rose — to go' isn't leftovers any more." },
+        L(CAST.dee, "Regulars. Two leftover bags tonight, same brown paper. One's for a regular who always forgets his."),
+        S("Then let's make sure he takes one home tonight.")] },
+      { type: 'use', area: 'diner', x: 560, label: 'Swap the to-go bags', obj: 'Swap the bags on the pick-up shelf', lines: [
+        S("Two bags on the shelf. The ticket on one reads 'Matthew Rose — leftovers, to go.'"),
+        S("The parcel goes into the other bag… and the tickets trade places."),
+        S("Matthew Rose. Let's see what a man does with somebody else's leftovers.")],
+        reward: "Matthew Rose's ticket now sits on somebody else's leftovers, parcel inside." },
       { type: 'goto', area: 'downtown', x: 700, obj: 'Take your spot on Jefferson Street' },
       { type: 'finale' }
     ] }
@@ -181,9 +181,9 @@ const TUTORIAL = [
   ['jab', "Gentleman's Jab", 'punch ×3'],
   ['grip', 'Velvet Grip', 'heavy near a foe'],
   ['handshake', 'Iron Handshake', 'Star Drive / special'],
-  ['lastword', 'Last Word', 'kick (hold): counter'],
+  ['lastword', 'Last Word', 'kick: counter stance'],
   ['stare', 'Cold Stare', 'talk with no one near'],
-  ['rush', 'Boss Rush', 'punch while sprinting']
+  ['rush', 'Boss Rush', 'sprint + punch']
 ];
 export const TUTORIAL_MOVES = TUTORIAL;
 
@@ -251,6 +251,29 @@ export function drawNightGrade(ctx, W, H, t) {
  *   hostiles() → bool, player() → p, areaId() → id, setSpecial(v), heal(n), say(lines, onDone),
  *   missionCard({ title, name, sub }, onDone), ending(), areaWidth(id), difficulty() → id
  */
+const TRANSIENT = ['sceneOn', 'finaleOn', 'spawned', 'stepT', 'timer'];
+/**
+ * 1.5.1 self-heal for a loaded run (stale / blank objective, Save & Quit mid-scene, out-of-range indices):
+ * a run saved inside the closing scene resumes at its checkpoint (the "Take your spot" step, so the scene replays),
+ * any unknown step falls back to the start of its mission. Exported for tests.
+ */
+export function healRun(run) {
+  const r = { ...run };
+  for (const k of TRANSIENT) delete r[k];
+  const last = MISSIONS.length - 1;
+  let mi = Number.isInteger(r.mi) ? r.mi : 0, si = Number.isInteger(r.si) ? r.si : 0;
+  if (mi < 0) { mi = 0; si = 0; }
+  if (mi > last) { mi = last; si = MISSIONS[last].steps.findIndex((s) => s.type === 'finale'); }
+  const steps = MISSIONS[mi].steps;
+  if (si < 0 || si >= steps.length) si = 0;
+  if (steps[si].type === 'finale') si = Math.max(0, si - 1); // checkpoint: the walk to Jefferson Street → the scene replays
+  r.mi = mi; r.si = si;
+  if (r.done && !(mi === last && si >= steps.length - 2)) r.done = false;
+  if (!Array.isArray(r.collected)) r.collected = [];
+  if (!Array.isArray(r.tutorialDone)) r.tutorialDone = [];
+  return r;
+}
+
 export function createDlc(api) {
   let st = null; // run state
   const done = new Set(); // tutorial moves this mission
@@ -267,7 +290,15 @@ export function createDlc(api) {
     if (!st) return false;
     const prev = dlcLoad() || {};
     return dlcWrite({ v: DLC_SAVE_V, savedAt: Date.now(), completed: !!(prev.completed || extra.completed), completedAt: prev.completedAt || extra.completedAt || null,
-      bestDifficulty: extra.bestDifficulty || prev.bestDifficulty || null, run: { ...st } });
+      bestDifficulty: extra.bestDifficulty || prev.bestDifficulty || null, run: snapshot() });
+  }
+  /** 1.5.1: what a save keeps. In-flight flags (a scene/finale playing, a spawned fight) are never saved. */
+  function snapshot() {
+    const r = { ...st };
+    for (const k of TRANSIENT) delete r[k];
+    const s = stepDef(); if (s && s.type === 'finale' && !st.done) r.si = Math.max(0, st.si - 1); // checkpoint: the closing scene replays
+    r.tutorialDone = [...done];
+    return r;
   }
 
   function listen() {
@@ -290,7 +321,7 @@ export function createDlc(api) {
 
   function beginStep() {
     const s = stepDef(); if (!s) return;
-    st.stepT = 0; st.spawned = false; st.timer = s.sec || 0;
+    st.stepT = 0; st.spawned = false; st.timer = s.sec || 0; st.sceneOn = false; st.finaleOn = false;
     if (s.type === 'tutorial') { done.clear(); api.setSpecial(100); }
   }
 
@@ -322,7 +353,15 @@ export function createDlc(api) {
     missions: MISSIONS,
     collectibles: COLLECTIBLES,
     newRun(difficulty) { st = fresh(difficulty); listen(); beginStep(); persist(); return st; },
-    continueRun() { const d = dlcLoad(); if (!d || !d.run) return null; st = { ...fresh(d.run.difficulty), ...d.run }; listen(); beginStep(); return st; },
+    continueRun() {
+      const d = dlcLoad(); if (!d || !d.run) return null;
+      const run = healRun(d.run);
+      st = { ...fresh(run.difficulty), ...run }; listen(); beginStep();
+      const s = stepDef(); if (s && s.type === 'tutorial') for (const k of run.tutorialDone) if (TUTORIAL.some((t) => t[0] === k)) done.add(k);
+      delete st.tutorialDone;
+      persist(); // the healed run replaces a stale one on disk
+      return st;
+    },
     stop() { st = null; },
     persist(snap) { if (!st) return false; if (snap) Object.assign(st, snap); return persist(); },
     isNight() { const m = mission(); return m ? m.night !== false : false; },
@@ -330,10 +369,17 @@ export function createDlc(api) {
     objective() {
       const m = mission(), s = stepDef();
       if (!m) return { title: 'Prequel complete', desc: 'Silas waits on Jefferson Street.' };
-      let desc = s ? s.obj || '' : '';
+      let desc = s ? s.obj || (s.type === 'scene' ? '…' : s.type === 'finale' ? 'Watch Jefferson Street' : '') || m.sub : m.sub;
       if (s && s.type === 'tutorial') desc = TUTORIAL.map(([k, n]) => `${done.has(k) ? '✓' : '○'} ${n}`).join(' · ');
       if (s && s.type === 'survive') desc = `${s.obj}: ${Math.max(0, Math.ceil(st.timer))}s`;
       return { title: `${st.mi + 1}/6 · ${m.title}`, desc };
+    },
+    /** 1.5.1: combat banner wording for the current step. */
+    bannerText() {
+      const s = stepDef(); if (!s) return null;
+      if (s.type === 'survive') return 'HOLD THE YARD!';
+      if (s.type === 'boss') return s.who === 'vera' ? 'BOSS: Vera Lisk' : 'BOSS: The Foreman';
+      return null;
     },
     collectText() { return `Keepsakes ${st.collected.length}/${COLLECTIBLES.length}`; },
     tutorialDone: () => new Set(done),

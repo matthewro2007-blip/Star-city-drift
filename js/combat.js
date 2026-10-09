@@ -228,7 +228,7 @@ export function updatePlayer(p, input, dt, areaWidth, hooks = {}) {
   // Input buffer: attack/special presses made while locked (attack, hurt, get-up) fire within 0.2 s
   p.buf = p.buf || {};
   for (const k of ['punchPressed', 'kickPressed', 'heavyPressed', 'specialPressed']) {
-    if (input[k]) p.buf[k] = 0.2;
+    if (input[k]) p.buf[k] = hooks && hooks.moveset === 'silas' && k === 'punchPressed' ? 0.32 : 0.2; // 1.5.1: a mashed 3rd Jab still lands
     else if (p.buf[k] > 0) p.buf[k] -= dt;
   }
   const locked = !!p.kd || p.attackTimer > 0;
@@ -275,7 +275,8 @@ export function updatePlayer(p, input, dt, areaWidth, hooks = {}) {
   const startAttack = (type, pose, dur) => { p.attackType = type; p.pose = pose; p.attackTimer = dur; p.idleT = 0; p.victoryT = 0; p.kitMove = null; };
   // >>> DLC: Silas prequel — Silas's moveset replaces punch / kick / heavy / special for this player
   if (ms) {
-    if (ms.start(p, input, dt, areaWidth, hooks, wantSprint)) { done(); ms.restartAnim(p); return; }
+    // 1.5.1: Boss Rush fires on sprint + punch even from standing (Shift+Z / RUN+Z); stamina rules unchanged
+    if (ms.start(p, input, dt, areaWidth, hooks, !!input.sprintHeld && !p.staminaLock && p.stamina > 0)) { done(); ms.restartAnim(p); return; }
     input = { ...input, punchPressed: false, kickPressed: false, heavyPressed: false, specialPressed: false };
   }
   // <<< DLC: Silas prequel

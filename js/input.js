@@ -12,22 +12,22 @@ const promptState = { device: 'keyboard', padType: 'xbox', padId: '' };
 const PROMPTS = {
   keyboard: {
     punch: 'Z', kick: 'X', heavy: 'C', interact: 'E', pause: 'Esc',
-    confirm: 'Enter', back: 'Esc', move: 'WASD / Arrows', outfit: '1–9, 0, −, =', nightmare: '= or Shift+2',
+    confirm: 'Enter', back: 'Esc', move: 'WASD / Arrows', outfit: '1–9, 0, −, =, #', nightmare: '= or Shift+2', suit: '# or Shift+3',
     sprint: 'Shift', special: 'V', jumpkick: 'Shift + X'
   },
   touch: {
     punch: 'Z', kick: 'X', heavy: '', interact: 'E', pause: 'II',
-    confirm: 'Tap', back: 'Tap', move: 'Stick', outfit: '', nightmare: 'II ▸ Outfits',
+    confirm: 'Tap', back: 'Tap', move: 'Stick', outfit: '', nightmare: 'II ▸ Outfits', suit: 'II ▸ Outfits',
     sprint: 'RUN', special: '★', jumpkick: 'RUN + X'
   },
   ps: {
     punch: '✕ Cross', kick: '○ Circle', heavy: '△ Triangle', interact: '□ Square',
-    pause: 'Options', confirm: '✕ Cross', back: '○ Circle', move: 'Left stick / D-pad', outfit: 'L1 / R1', nightmare: 'L1 / R1',
+    pause: 'Options', confirm: '✕ Cross', back: '○ Circle', move: 'Left stick / D-pad', outfit: 'L1 / R1', nightmare: 'L1 / R1', suit: 'L1 / R1',
     sprint: 'L3 / L2', special: 'R2', jumpkick: 'L2 + ○'
   },
   xbox: {
     punch: 'A', kick: 'B', heavy: 'Y', interact: 'X', pause: 'Menu',
-    confirm: 'A', back: 'B', move: 'Left stick / D-pad', outfit: 'LB / RB', nightmare: 'LB / RB',
+    confirm: 'A', back: 'B', move: 'Left stick / D-pad', outfit: 'LB / RB', nightmare: 'LB / RB', suit: 'LB / RB',
     sprint: 'LS / LT', special: 'RT', jumpkick: 'LT + B'
   }
 };
