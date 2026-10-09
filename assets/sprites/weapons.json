@@ -1,0 +1,131 @@
+{
+ "_meta": {
+  "file": "assets/sprites/weapons.png",
+  "fw": 48,
+  "fh": 48,
+  "count": 12,
+  "order": [
+   "polo",
+   "photo",
+   "hoodie",
+   "jacket",
+   "street",
+   "varsity",
+   "mechanic",
+   "diner",
+   "gold",
+   "webslinger",
+   "beacon",
+   "ironclad"
+  ],
+  "note": "One icon per outfit, left->right in this order; transparent, hard alpha, rig outline/cel style."
+ },
+ "polo": {
+  "name": "Hardcover Book",
+  "move": "Detention",
+  "index": 0,
+  "x": 0,
+  "y": 0,
+  "w": 48,
+  "h": 48
+ },
+ "photo": {
+  "name": "Strap Camera",
+  "move": "Flash Pop",
+  "index": 1,
+  "x": 48,
+  "y": 0,
+  "w": 48,
+  "h": 48
+ },
+ "hoodie": {
+  "name": "Skateboard",
+  "move": "Kickflip",
+  "index": 2,
+  "x": 96,
+  "y": 0,
+  "w": 48,
+  "h": 48
+ },
+ "jacket": {
+  "name": "Bike Chain",
+  "move": "Whip Crack",
+  "index": 3,
+  "x": 144,
+  "y": 0,
+  "w": 48,
+  "h": 48
+ },
+ "street": {
+  "name": "Baseball Bat",
+  "move": "Line Drive",
+  "index": 4,
+  "x": 192,
+  "y": 0,
+  "w": 48,
+  "h": 48
+ },
+ "varsity": {
+  "name": "Football",
+  "move": "Spiral",
+  "index": 5,
+  "x": 240,
+  "y": 0,
+  "w": 48,
+  "h": 48
+ },
+ "mechanic": {
+  "name": "Pipe Wrench",
+  "move": "Torque",
+  "index": 6,
+  "x": 288,
+  "y": 0,
+  "w": 48,
+  "h": 48
+ },
+ "diner": {
+  "name": "Frying Pan",
+  "move": "Hot Plate",
+  "index": 7,
+  "x": 336,
+  "y": 0,
+  "w": 48,
+  "h": 48
+ },
+ "gold": {
+  "name": "Gold Chain",
+  "move": "Encore",
+  "index": 8,
+  "x": 384,
+  "y": 0,
+  "w": 48,
+  "h": 48
+ },
+ "webslinger": {
+  "name": "Star-Line",
+  "move": "Star Yank",
+  "index": 9,
+  "x": 432,
+  "y": 0,
+  "w": 48,
+  "h": 48
+ },
+ "beacon": {
+  "name": "Hard-Light Star Shard",
+  "move": "Star Flare",
+  "index": 10,
+  "x": 480,
+  "y": 0,
+  "w": 48,
+  "h": 48
+ },
+ "ironclad": {
+  "name": "Breach Gauntlets",
+  "move": "Breach",
+  "index": 11,
+  "x": 528,
+  "y": 0,
+  "w": 48,
+  "h": 48
+ }
+}

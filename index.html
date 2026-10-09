@@ -38,6 +38,9 @@
         <!-- Concept HUD: portrait + hearts top-left -->
         <div id="hud-player">
           <div id="portrait-ring"><img id="portrait" src="assets/sprites/portrait_matthew.png" alt="Matthew" /></div>
+          <!-- >>> 1.4.0 outfit kits (game-logic lane): current outfit's weapon badge (main.js syncWeaponIcon) -->
+          <div id="hud-weapon" aria-hidden="true"><canvas id="hud-weapon-icon" width="48" height="48"></canvas><span id="hud-weapon-move"></span></div>
+          <!-- <<< 1.4.0 outfit kits -->
           <div id="hearts"></div>
           <div class="special-bar"><div id="special-fill"></div></div>
           <div id="combo-label"></div>
