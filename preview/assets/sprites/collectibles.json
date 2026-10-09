@@ -1,0 +1,269 @@
+{
+ "_meta": {
+  "version": 1,
+  "file": "assets/sprites/collectibles.png",
+  "cols": 6,
+  "anchorX": 24,
+  "anchorY": 47,
+  "note": "frame f of item = (f*fw, row*fh); bob +-2px and glint (frames 2-3) are baked in"
+ },
+ "glasses": {
+  "row": 0,
+  "frames": 6,
+  "fw": 48,
+  "fh": 48,
+  "fps": 8,
+  "name": "Glasses",
+  "names": [
+   "Glasses"
+  ]
+ },
+ "bottle": {
+  "row": 1,
+  "frames": 6,
+  "fw": 48,
+  "fh": 48,
+  "fps": 8,
+  "name": "Water Bottle",
+  "names": [
+   "Water Bottle",
+   "Bottle"
+  ]
+ },
+ "hoodie": {
+  "row": 2,
+  "frames": 6,
+  "fw": 48,
+  "fh": 48,
+  "fps": 8,
+  "name": "Star City Hoodie",
+  "names": [
+   "Star City Hoodie",
+   "Hoodie"
+  ]
+ },
+ "jacket": {
+  "row": 3,
+  "frames": 6,
+  "fw": 48,
+  "fh": 48,
+  "fps": 8,
+  "name": "Rail Yard Jacket",
+  "names": [
+   "Rail Yard Jacket"
+  ]
+ },
+ "street": {
+  "row": 4,
+  "frames": 6,
+  "fw": 48,
+  "fh": 48,
+  "fps": 8,
+  "name": "Skate Fit",
+  "names": [
+   "Skate Fit",
+   "Skate Outfit"
+  ]
+ },
+ "notebook": {
+  "row": 5,
+  "frames": 6,
+  "fw": 48,
+  "fh": 48,
+  "fps": 8,
+  "name": "Notebook",
+  "names": [
+   "Notebook"
+  ]
+ },
+ "photo": {
+  "row": 6,
+  "frames": 6,
+  "fw": 48,
+  "fh": 48,
+  "fps": 8,
+  "name": "Classroom Photo",
+  "names": [
+   "Classroom Photo",
+   "Photo"
+  ]
+ },
+ "flyer": {
+  "row": 7,
+  "frames": 6,
+  "fw": 48,
+  "fh": 48,
+  "fps": 8,
+  "name": "Bake-Sale Flyer",
+  "names": [
+   "Bake-Sale Flyer",
+   "Flyer"
+  ]
+ },
+ "token": {
+  "row": 8,
+  "frames": 6,
+  "fw": 48,
+  "fh": 48,
+  "fps": 8,
+  "name": "Old Trolley Token",
+  "names": [
+   "Old Trolley Token",
+   "Trolley Token"
+  ]
+ },
+ "bookmark": {
+  "row": 9,
+  "frames": 6,
+  "fw": 48,
+  "fh": 48,
+  "fps": 8,
+  "name": "Valley Pages Bookmark",
+  "names": [
+   "Valley Pages Bookmark",
+   "Bookmark"
+  ]
+ },
+ "wax": {
+  "row": 10,
+  "frames": 6,
+  "fw": 48,
+  "fh": 48,
+  "fps": 8,
+  "name": "Starboard Board Wax",
+  "names": [
+   "Starboard Board Wax",
+   "Board Wax"
+  ]
+ },
+ "webmask": {
+  "row": 11,
+  "frames": 6,
+  "fw": 48,
+  "fh": 48,
+  "fps": 8,
+  "name": "Web-Slinger Mask (top of the half-pipe)",
+  "names": [
+   "Web-Slinger Mask (top of the half-pipe)",
+   "Web-Slinger Mask",
+   "Webslinger Mask"
+  ]
+ },
+ "coveralls": {
+  "row": 12,
+  "frames": 6,
+  "fw": 48,
+  "fh": 48,
+  "fps": 8,
+  "name": "Rail Yard Coveralls",
+  "names": [
+   "Rail Yard Coveralls",
+   "Coveralls"
+  ]
+ },
+ "ticket": {
+  "row": 13,
+  "frames": 6,
+  "fw": 48,
+  "fh": 48,
+  "fps": 8,
+  "name": "Excursion Train Ticket Stub",
+  "names": [
+   "Excursion Train Ticket Stub",
+   "Ticket Stub",
+   "Train Ticket"
+  ]
+ },
+ "pin": {
+  "row": 14,
+  "frames": 6,
+  "fw": 48,
+  "fh": 48,
+  "fps": 8,
+  "name": "Mill Mountain Star Pin",
+  "names": [
+   "Mill Mountain Star Pin",
+   "Star Pin"
+  ]
+ },
+ "apron": {
+  "row": 15,
+  "frames": 6,
+  "fw": 48,
+  "fh": 48,
+  "fps": 8,
+  "name": "Dee's Spare Apron",
+  "names": [
+   "Dee's Spare Apron",
+   "Apron"
+  ]
+ },
+ "varsity": {
+  "row": 16,
+  "frames": 6,
+  "fw": 48,
+  "fh": 48,
+  "fps": 8,
+  "name": "Valley Gym Varsity Jacket",
+  "names": [
+   "Valley Gym Varsity Jacket",
+   "Varsity Jacket"
+  ]
+ },
+ "lantern": {
+  "row": 17,
+  "frames": 6,
+  "fw": 48,
+  "fh": 48,
+  "fps": 8,
+  "name": "Night Shift Lantern",
+  "names": [
+   "Night Shift Lantern",
+   "Lantern"
+  ]
+ },
+ "beaconring": {
+  "row": 18,
+  "frames": 6,
+  "fw": 48,
+  "fh": 48,
+  "fps": 8,
+  "name": "Beacon Ring (under the Mill Mountain Star)",
+  "names": [
+   "Beacon Ring (under the Mill Mountain Star)",
+   "Beacon Ring"
+  ]
+ },
+ "ironclad": {
+  "row": 19,
+  "frames": 6,
+  "fw": 48,
+  "fh": 48,
+  "fps": 8,
+  "name": "Hell's Nightmare",
+  "names": [
+   "Hell's Nightmare",
+   "ironcrate",
+   "Hell's Nightmare Armor Crate",
+   "Hell's Nightmare Helmet",
+   "Ironclad",
+   "Ironclad Helmet",
+   "Star City Ironclad"
+  ]
+ },
+ "silas": {
+  "row": 20,
+  "frames": 6,
+  "fw": 48,
+  "fh": 48,
+  "fps": 8,
+  "name": "Boone's Overcoat",
+  "names": [
+   "Boone's Overcoat",
+   "Silas Boone's Overcoat",
+   "Silas Outfit",
+   "Silas Coat",
+   "Iron Handshake"
+  ]
+ }
+}

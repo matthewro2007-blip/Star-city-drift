@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <title>Star City Drift — Beat 'Em Up</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <!-- PWA / app install (added for the Star City Drift app packaging; see /workspace/star-city-drift-app/APP.md) -->
+  <link rel="icon" href="icons/favicon.ico" sizes="any" />
+  <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <meta name="theme-color" content="#0a0e18" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Star City Drift" />
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
+  <script>
+    // 1.5.0 PREVIEW build: no service worker, no auto-update, own storage namespace (preview_*) so the real save is never touched.
+    window.__SCD_PREVIEW = true;
+    (function () { var P = 'preview_', S = Storage.prototype, g = S.getItem, s = S.setItem, r = S.removeItem, k = S.key;
+      function f(x) { x = String(x); return x.indexOf(P) === 0 ? x : P + x; }
+      S.getItem = function (x) { return g.call(this, f(x)); }; S.setItem = function (x, v) { return s.call(this, f(x), v); };
+      S.removeItem = function (x) { return r.call(this, f(x)); };
+      S.clear = function () { for (var i = this.length - 1; i >= 0; i--) { var n = k.call(this, i); if (n && n.indexOf(P) === 0) r.call(this, n); } };
+    })();
+  </script>
+</head>
+<body>
+  <div id="game-wrap">
+    <canvas id="game" width="960" height="540"></canvas>
+
+    <div id="ui-layer">
+      <div id="hud" class="hidden">
+        <!-- Concept HUD: portrait + hearts top-left -->
+        <div id="hud-player">
+          <div id="portrait-ring"><img id="portrait" src="assets/sprites/portrait_matthew.png" alt="Matthew" /></div>
+          <!-- >>> 1.4.0 outfit kits (game-logic lane): current outfit's weapon badge (main.js syncWeaponIcon) -->
+          <div id="hud-weapon" aria-hidden="true"><canvas id="hud-weapon-icon" width="48" height="48"></canvas><span id="hud-weapon-move"></span></div>
+          <!-- <<< 1.4.0 outfit kits -->
+          <div id="hearts"></div>
+          <div class="special-bar"><div id="special-fill"></div></div>
+          <div id="combo-label"></div>
+        </div>
+
+        <!-- Location banner top-center -->
+        <div id="location-banner">
+          <div class="plaque-main">
+            <span class="star-icon">★</span>
+            <span id="location-label">DOWNTOWN</span>
+          </div>
+          <div id="location-sub">Main Street</div>
+          <div id="combat-banner" class="hidden">FIGHT! Clear the street</div>
+        </div>
+
+        <!-- Minimap + score top-right -->
+        <div id="hud-right">
+          <div id="score-row"><span id="score-val">x 0</span> <span class="star-icon">★</span></div>
+          <canvas id="minimap" width="140" height="72"></canvas>
+        </div>
+
+        <!-- Objective bottom-left -->
+        <div id="objective-box">
+          <div class="eyebrow">Objective</div>
+          <div id="mission-title">—</div>
+          <div id="mission-desc">—</div>
+          <div id="collect-row">Collectibles <span id="collect-count">0/7</span> · Outfits <span id="outfit-count">1/5</span></div>
+        </div>
+
+        <div id="time-box"><div class="eyebrow">Time</div><div id="time-val">00:00:00</div></div>
+      </div>
+
+      <div id="interact-prompt" class="hidden"><kbd>E</kbd> <span id="interact-text">Talk</span></div>
+      <div id="toast" class="hidden"></div>
+
+      <div id="dialogue" class="hidden">
+        <div class="dialogue-card">
+          <div id="dialogue-name"></div>
+          <div id="dialogue-text"></div>
+          <button id="dialogue-next" type="button">Continue</button>
+        </div>
+      </div>
+
+      <div id="mobile-controls" class="hidden">
+        <div id="joystick-zone">
+          <div id="joystick-base"><div id="joystick-knob"></div></div>
+        </div>
+        <div id="mobile-buttons">
+          <button type="button" id="btn-punch" class="mob-btn">Z</button>
+          <button type="button" id="btn-kick" class="mob-btn">X</button>
+          <button type="button" id="btn-interact" class="mob-btn">E</button>
+          <!-- v3 (game-logic lane): sprint hold + Star Drive special -->
+          <button type="button" id="btn-special" class="mob-btn" aria-label="Star Drive special">★</button>
+          <button type="button" id="btn-sprint" class="mob-btn mob-sprint" aria-label="Sprint (hold)">RUN</button>
+          <!-- /v3 -->
+          <button type="button" id="btn-pause" class="mob-btn" aria-label="Pause">II</button>
+        </div>
+      </div>
+
+      <div id="desktop-hint" class="hidden">
+        WASD / Arrows move · Z/J punch · X/K kick · E interact · Esc pause · 1–9,0,−,= outfits
+      </div>
+    </div>
+  </div>
+
+  <div id="title-screen" class="overlay" data-phase="attract">
+    <div class="title-logo" aria-label="Star City Drift">
+      <div class="logo-star" aria-hidden="true">★</div>
+      <div class="eyebrow">Roanoke, Virginia · Arcade Beat 'Em Up</div>
+      <h1 class="logo"><span class="logo-line l1" data-text="STAR CITY">STAR CITY</span><span class="logo-line l2" data-text="DRIFT">DRIFT</span></h1>
+      <div class="logo-sub">Starring Matthew Rose</div>
+    </div>
+    <div class="title-attract">
+      <div id="title-press" class="press">PRESS START</div>
+      <div id="title-press-sub" class="press-sub"></div>
+    </div>
+    <nav id="title-actions" class="title-actions title-menu" aria-label="Main menu">
+      <button type="button" id="btn-continue" class="btn hidden">Continue</button>
+      <button type="button" id="btn-start" class="btn">New Game</button>
+      <button type="button" id="btn-new-game" class="btn hidden">New Game</button>
+      <button type="button" id="btn-controls" class="btn">Controls</button>
+      <button type="button" id="btn-credits" class="btn">Credits</button>
+      <!-- DLC: Silas prequel (Bob) -->
+      <button type="button" id="btn-prequel" class="btn btn-prequel" aria-label="Prequel: Silas Boone (Free DLC)"><span class="prequel-label">Prequel: Silas Boone</span><span class="dlc-badge" aria-hidden="true">FREE DLC</span></button>
+      <!-- end DLC: Silas prequel (Bob) -->
+      <div id="title-help" class="title-help"></div>
+    </nav>
+    <section id="title-controls" class="title-panel" aria-label="Controls">
+      <h2>Controls</h2>
+      <div class="table-wrap"><table id="controls-table"></table></div>
+      <button type="button" id="btn-controls-back" class="btn">Back</button>
+    </section>
+    <section id="title-difficulty" class="title-panel" aria-label="Choose difficulty">
+      <h2>Difficulty</h2>
+      <button type="button" id="btn-diff-easy" class="btn" data-diff="easy">Easy</button>
+      <button type="button" id="btn-diff-normal" class="btn" data-diff="normal">Normal</button>
+      <button type="button" id="btn-diff-hard" class="btn" data-diff="hard">Hard</button>
+      <button type="button" id="btn-diff-arcade" class="btn" data-diff="arcade">Arcade</button>
+      <div id="diff-desc" class="title-help">Balanced fights. The way Star City was meant to be roamed.</div>
+      <button type="button" id="btn-diff-back" class="btn btn-secondary">Back</button>
+    </section>
+    <section id="title-credits" class="title-panel" aria-label="Credits">
+      <h2>Credits</h2>
+      <div class="credits-star">Starring <strong>Matthew Rose</strong></div>
+      <ul class="cast">
+        <li>Dee Morales</li><li>Hank "Rail" Pettigrew</li><li>Priya Shah</li><li>Cam Ortiz</li>
+        <li>June Whitaker</li><li>Silas Boone</li><li>Tessa Quinn</li><li>Coach Ray Delgado</li>
+      </ul>
+      <div class="made-with">Made with Arlo</div>
+      <button type="button" id="btn-credits-back" class="btn">Back</button>
+    </section>
+    <div class="title-flash" aria-hidden="true"></div>
+  </div>
+
+  <div id="confirm-screen" class="overlay hidden" role="dialog" aria-modal="true" aria-labelledby="confirm-title">
+    <div class="overlay-card">
+      <h2 id="confirm-title">Start a New Game?</h2>
+      <p id="confirm-text">This overwrites your saved progress.</p>
+      <div class="title-actions">
+        <button type="button" id="btn-confirm-no" class="btn btn-secondary">Cancel</button>
+        <button type="button" id="btn-confirm-yes" class="btn">Yes, New Game</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="pause-screen" class="overlay hidden">
+    <div class="overlay-card">
+      <h2>Paused</h2>
+      <p>WASD move · Z punch · X kick · E talk · Esc resume</p>
+      <button type="button" id="btn-resume" class="btn">Resume</button>
+      <button type="button" id="btn-save" class="btn">Save Game</button>
+      <button type="button" id="btn-outfit" class="btn btn-secondary">Outfit: White Polo Tee ▸</button>
+      <button type="button" id="btn-difficulty" class="btn btn-secondary">Difficulty: Normal ▸</button>
+      <button type="button" id="btn-missions" class="btn btn-secondary">Missions ▾</button>
+      <div id="mission-list" class="mission-list hidden"></div>
+    </div>
+  </div>
+
+  <div id="ending-screen" class="overlay hidden">
+    <div class="overlay-card ending">
+      <div class="eyebrow">Good Ending</div>
+      <h1>Matthew's All Right</h1>
+      <p id="ending-text"></p>
+      <div id="sequel-hooks"></div>
+      <button type="button" id="btn-replay" class="btn">Keep Roaming</button>
+    </div>
+  </div>
+
+  <!-- DLC: Silas prequel (Bob) -->
+  <div id="dlc-mission-card" class="overlay dlc-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="dlc-mission-title">
+    <div class="dlc-card">
+      <div id="dlc-mission-eyebrow" class="dlc-eyebrow">Prequel · Silas Boone</div>
+      <h2 id="dlc-mission-title" class="dlc-card-title">Mission Complete</h2>
+      <div class="dlc-rule" aria-hidden="true"><span>★</span></div>
+      <div id="dlc-mission-name" class="dlc-mission-name"></div>
+      <p id="dlc-mission-sub" class="dlc-mission-sub"></p>
+      <button type="button" id="btn-dlc-mission-continue" class="btn dlc-btn">Continue</button>
+      <div id="dlc-mission-hint" class="dlc-hint">Enter · Ⓐ / ✕ · tap to continue</div>
+    </div>
+  </div>
+
+  <div id="dlc-ending-screen" class="overlay dlc-overlay dlc-ending hidden" role="dialog" aria-modal="true" aria-labelledby="dlc-ending-title">
+    <div class="dlc-ending-inner">
+      <div id="dlc-ending-eyebrow" class="dlc-eyebrow">Prequel Ending</div>
+      <h1 id="dlc-ending-title" class="dlc-ending-title">Before the Star</h1>
+      <p id="dlc-ending-text" class="dlc-ending-text"></p>
+      <div id="dlc-unlock-banner" class="dlc-unlock">
+        <div class="dlc-unlock-art"><img id="dlc-unlock-img" src="assets/sprites/silas.png" alt="Silas's Suit" /></div>
+        <div class="dlc-unlock-copy">
+          <div class="dlc-unlock-kicker">Unlocked</div>
+          <div id="dlc-unlock-label" class="dlc-unlock-label">Silas's Suit unlocked for Matthew</div>
+          <div id="dlc-unlock-sub" class="dlc-unlock-sub">Equip it from the Outfits menu in the main game.</div>
+        </div>
+      </div>
+      <button type="button" id="btn-dlc-ending-continue" class="btn dlc-btn">Back to Title</button>
+    </div>
+  </div>
+  <!-- end DLC: Silas prequel (Bob) -->
+
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>
