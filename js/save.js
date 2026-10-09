@@ -154,6 +154,7 @@ export function serializeSave({ player, stateBag, gameState, outfitId, areaId })
     fetchItems: [...(stateBag.fetchItems || [])],
     fetchActive: !!(stateBag.side && stateBag.side.id === 'side_potluck'),
     beatHard: !!stateBag.beatHard,
+    dlcSilas: !!stateBag.dlcSilas, // 1.5.0: finished the Silas prequel (Silas's Suit); read from the DLC's own slot
     spotted: (stateBag.collectibles || []).filter((c) => c.stealth && c.spotted && !c.taken).map((c) => c.id)
   };
 }
@@ -198,6 +199,7 @@ export function applySave(data, { player, stateBag, gameState, areas }) {
     for (const c of stateBag.collectibles) if (c.stealth) c.spotted = c.taken || spotted.has(c.id);
     stateBag.fetchItems = Array.isArray(data.fetchItems) ? data.fetchItems.filter((x) => typeof x === 'string') : [];
     stateBag.beatHard = !!data.beatHard;
+    stateBag.dlcSilas = !!data.dlcSilas;
     // timed / wave missions restart from their giver after a load; the fetch run resumes
     stateBag.side = data.fetchActive && !stateBag.missions.side_potluck?.done ? { id: 'side_potluck' } : null;
     for (const c of stateBag.collectibles) {

@@ -116,7 +116,66 @@ const SONGS = {
     arp: { every: 2, pat: 'down', oct: 4, vol: 0.55 }, pad: 0.8, stab: 'x..x..x.........',
     drums: { k: 'x..x..x.x..x..x.', s: '....x.......x...', h: 'x.x.x.x.x.x.x.x.', c: '............x...' },
     fill: { t: '........x.x.x.xx', s: '....x.........xx' }, crash: [0, 64]
+  },
+  // >>> DLC: Silas prequel — three night-shift variations on Silas's own "Polite Stranger" motif (C minor).
+  // "Second Shift" — free roam after dark: slow swung walk, brushed hats, muted lead, the motif in the low register.
+  dlc_street: {
+    bpm: 92, swing: 0.18, delayBeats: 0.75, chords: ['Cm7', 'Fm7', 'Cm7', 'G7', 'Abmaj7', 'Fm7', 'Dm7', 'G7'],
+    bass: 'R - . . F - . . O - . R b - F .', bassVol: 0.85,
+    lead: [
+      'C4 - - - - - D4 - Eb4 - - - G4 - - -',
+      'F4 - Eb4 - D4 - - - . . . . . . . .',
+      'G4 - - - Bb4 - - - C5 - Bb4 - G4 - - -',
+      'B3 - - - D4 - - - F4 - - - . . . .',
+      'C5 - - - - - Bb4 - Ab4 - - - G4 - Eb4 -',
+      'F4 - - - Ab4 - - - C5 - - - . . . .',
+      'F4 - - - D4 - - - A4 - - - F4 - - -',
+      'G4 - - - - - - - B4 - - - D5 - - -'
+    ],
+    leadWave: 'triangle', leadVol: 0.7,
+    arp: null, pad: 0.75, stab: null,
+    drums: { k: 'x.......x.......', s: '....x.......x...', h: 'x..x..x.x..x..x.' },
+    fill: { s: '....x.......x.xx' }, crash: [0]
+  },
+  // "Foreman's Crew" — the prequel fight theme: the motif doubled, driving minor groove.
+  dlc_fight: {
+    bpm: 136, swing: 0, delayBeats: 0.5, chords: ['Cm', 'Ab', 'Bb', 'G', 'Cm', 'Ab', 'Fm', 'G7'],
+    bass: 'R . R O . R b . R . R O . F P .', bassVol: 1,
+    lead: [
+      'C5 - - - D5 - Eb5 - G5 - - - F5 - Eb5 -',
+      'Eb5 - - - C5 - - - Ab4 - - - C5 - Eb5 -',
+      'D5 - - - F5 - - - Bb5 - - - Ab5 - G5 -',
+      'G5 - - - - - - - B4 - - - D5 - G5 -',
+      'C6 - - - Bb5 - G5 - Eb5 - - - G5 - C6 -',
+      'Ab5 - - - G5 - Eb5 - C5 - - - Eb5 - Ab5 -',
+      'F5 - - - Ab5 - - - C6 - - - Ab5 - F5 -',
+      'G5 - - - F5 - - - D5 - - - B4 - - -'
+    ],
+    leadWave: 'square', leadVol: 0.72,
+    arp: { every: 1, pat: 'up', oct: 4, vol: 0.6 }, pad: 0.2, stab: 'x.......x.......',
+    drums: { k: 'x...x...x..xx...', s: '....X.......X...', h: 'x.x.x.x.x.x.x.x.', o: '..............x.' },
+    fill: { s: '....X...x.x.xxxx' }, crash: [0, 64]
+  },
+  // "The Foreman" — prequel boss: heavier and slower than "Polite Stranger", same Neapolitan turn.
+  dlc_boss: {
+    bpm: 128, swing: 0, delayBeats: 0.5, chords: ['Cm', 'Db', 'Cm', 'G7', 'Fm', 'Db', 'G', 'G7'],
+    bass: 'R . . R O . . R R . . R b . O .', bassVol: 1, bassShort: true,
+    lead: [
+      'G4 - - - Ab4 - - - G4 - - - Eb4 - - -',
+      'Ab4 - - - F4 - - - Db5 - - - C5 - - -',
+      'C5 - - - Eb5 - - - G5 - - - Eb5 - C5 -',
+      'B4 - - - D5 - - - F5 - - - D5 - B4 -',
+      'C5 - - - Ab4 - - - F4 - - - Ab4 - C5 -',
+      'Db5 - - - - - C5 - Bb4 - Ab4 - F4 - - -',
+      'D5 - - - B4 - - - G4 - - - B4 - D5 -',
+      'F5 - - - - - - - G5 - - - B5 - - -'
+    ],
+    leadWave: 'sawtooth', leadVol: 0.7,
+    arp: { every: 2, pat: 'down', oct: 3, vol: 0.5 }, pad: 0.9, stab: 'x...x...........',
+    drums: { k: 'x..x....x..x....', s: '....x.......x...', h: 'x.x.x.x.x.x.x.x.', c: '............x...' },
+    fill: { t: '........x.x.x.xx', s: '....x.........xx' }, crash: [0, 64]
   }
+  // <<< DLC: Silas prequel
 };
 const STINGS = {
   // [time(s), note, len(s)] for the lead, plus a chord hit
@@ -146,15 +205,21 @@ const FIGHTERS = {
   thug_orange: { f0: 120, wave: 'sawtooth', fs: 1.0, grit: 0.15, breath: 0.6 },
   thug_grey: { f0: 68, wave: 'sawtooth', fs: 0.82, grit: 0.4, breath: 0.25 },
   silas_boss: { f0: 96, wave: 'sawtooth', fs: 0.92, grit: 0.06, breath: 0.35 },
-  snatcher: { f0: 178, wave: 'square', fs: 1.14, grit: 0.1, breath: 0.3 }
+  snatcher: { f0: 178, wave: 'square', fs: 1.14, grit: 0.1, breath: 0.3 },
+  // DLC: Silas prequel — playable Silas: the boss voice, a touch smoother (no shouting, more breath)
+  silas: { f0: 100, wave: 'sawtooth', fs: 0.9, grit: 0.03, breath: 0.4 }
 };
 const DEFAULT_TALK = { wave: 'triangle', f0: 220, rate: 0.08, len: 0.06, steps: [1, 1.12, 1.25, 1.5], vowels: ['a', 'e', 'o'], fs: 1 };
-const talkProfile = (id) => (NPC_DEFS.find((n) => n.id === id) || {}).voice || DEFAULT_TALK;
+// DLC: Silas prequel — the prequel cast lives in js/dlc_silas.js; it registers its talk voices here.
+const EXTRA_TALK = {};
+export function registerTalkVoices(map) { Object.assign(EXTRA_TALK, map || {}); }
+const talkProfile = (id) => EXTRA_TALK[id] || (NPC_DEFS.find((n) => n.id === id) || {}).voice || DEFAULT_TALK;
 
 // ------------------------------------------------------------------ engine
 const SFX_COOLDOWN = { punch: 0.03, kick: 0.03, heavy: 0.04, finisher: 0.05, star: 0.08, whiff: 0.05, step: 0.09, block: 0.08, thud: 0.06, getup: 0.1, glass: 0.07, ui_move: 0.04, pickup: 0.08, denied: 0.25, save: 0.3, jump: 0.08, land: 0.08,
   kit_polo: 0.06, kit_photo: 0.06, kit_hoodie: 0.06, kit_jacket: 0.06, kit_street: 0.06, kit_varsity: 0.06, kit_varsity_hit: 0.05, kit_mechanic: 0.06,
-  kit_diner: 0.06, kit_gold: 0.04, kit_webslinger: 0.06, kit_beacon: 0.06, kit_ironclad: 0.06 };
+  kit_diner: 0.06, kit_gold: 0.04, kit_webslinger: 0.06, kit_beacon: 0.06, kit_ironclad: 0.06,
+  silas_grab: 0.06, silas_throw: 0.06, silas_slam: 0.1, silas_rush: 0.1, silas_stance: 0.1, silas_counter: 0.08, silas_stare: 0.3 };
 const MAX_SFX = 18, MAX_VOICES = 3;
 
 class Engine {
@@ -589,6 +654,50 @@ class Engine {
         break;
       }
       // <<< 1.4.0 outfit kits
+      // >>> DLC: Silas prequel — Silas Boone's moveset (also Matthew in Silas's Suit)
+      case 'silas_grab': // gloved hand closing on a collar: leather creak + cloth snap
+        this.burst(t, 'bandpass', 1300 * v, 2.2, 0.07, 0.35, out);
+        this.burst(t + 0.03, 'highpass', 3000, 0.8, 0.05, 0.25, out);
+        this.thump(t + 0.02, 150 * v, 90, 0.06, 0.35, out);
+        break;
+      case 'silas_throw': { // heave + air rush
+        const n = this.noise(t, 0.3), bp = this.filt('bandpass', 400, 1.3, t);
+        this.sweep(bp.frequency, t, 400, 1800, 0.26);
+        n.connect(bp).connect(this.env(t, 0.02, 0.3, 0.28)).connect(out);
+        this.thump(t, 110, 50, 0.12, 0.5, out);
+        break;
+      }
+      case 'silas_slam': { // Iron Handshake: body slam + ground shockwave (low boom, gravel, a cold bell in the tail)
+        this.sfx('finisher', t, { prio: true });
+        this.thump(t, 66, 24, 0.7, 1, out);
+        this.burst(t, 'lowpass', 340, 0.8, 0.55, 0.75, out, 0.45);
+        for (let k = 0; k < 6; k++) this.burst(t + 0.05 + k * 0.04, 'bandpass', rnd(900, 2400), 1.5, 0.05, 0.18, out);
+        this.tone(t + 0.04, 'sine', 523.25, 523.25, 0.9, 0.05, out, 0.6); this.tone(t + 0.04, 'sine', 554.37, 554.37, 0.9, 0.035, out, 0.6); // C / Db: the Neapolitan rub
+        break;
+      }
+      case 'silas_rush': { // Boss Rush: coat flap + heavy footfalls + whoosh
+        const n = this.noise(t, 0.45), bp = this.filt('bandpass', 250, 1.4, t);
+        this.sweep(bp.frequency, t, 250, 1400, 0.4);
+        n.connect(bp).connect(this.env(t, 0.03, 0.32, 0.42)).connect(out);
+        for (let k = 0; k < 3; k++) this.thump(t + 0.1 + k * 0.11, 100, 50, 0.07, 0.45, out);
+        break;
+      }
+      case 'silas_stance': // Last Word: knuckles crack, a low held note
+        for (let k = 0; k < 3; k++) this.burst(t + k * 0.035, 'highpass', 2600 * v, 2, 0.012, 0.3, out);
+        this.tone(t + 0.05, 'triangle', 130.8, 130.8, 0.45, 0.06, out, 0.3);
+        break;
+      case 'silas_counter': // Last Word: parry clack then the answer
+        this.tone(t, 'square', 1480 * v, 1400 * v, 0.1, 0.07, out, 0.4);
+        this.burst(t, 'highpass', 2400, 0.8, 0.05, 0.4, out);
+        this.thump(t + 0.06, 120, 40, 0.2, 0.8, out);
+        break;
+      case 'silas_stare': { // Cold Stare: reverse-swell hush + a glassy dissonant cluster
+        const n = this.noise(t, 0.5), lp = this.filt('lowpass', 900, 0.7, t);
+        n.connect(lp).connect(this.env(t, 0.35, 0.12, 0.5)).connect(out);
+        [987.8, 1046.5, 1479.98].forEach((f, k) => this.tone(t + 0.3 + k * 0.01, 'sine', f, f * 0.995, 0.7, 0.035, out, 0.7));
+        break;
+      }
+      // <<< DLC: Silas prequel
       case 'glint': // hidden collectible spotted (Hell's Nightmare helmet): two soft high sparkles
         [2637, 3520].forEach((f, k) => this.tone(t + k * 0.09, 'sine', f, f * 1.01, 0.22, 0.05, out, 0.5));
         break;
@@ -705,6 +814,8 @@ class Engine {
       case 'taunt': for (let k = 0; k < 3; k++) this.syl(t + k * 0.15, p, 'e', 0.09, f * (1.1 - k * 0.05), f * 0.95, V * 0.8, out, { h: true }); len = 0.45; break;
       case 'defeat': this.syl(t, p, 'u', 0.3, f * 1.1, f * 0.85, V, out, { h: true }); this.syl(t + 0.32, p, 'o', 0.55, f * 0.95, f * 0.55, V * 0.85, out, { vib: 0.025 }); len = 0.9; break;
       case 'caught': this.syl(t, p, 'u', 0.12, f, f * 1.5, V, out, { h: true }); this.syl(t + 0.12, p, 'o', 0.26, f * 1.6, f * 0.9, V, out); len = 0.4; break;
+      case 'stare': this.syl(t, p, 'uh', 0.32, f * 0.92, f * 0.86, V * 0.6, out, { h: true }); len = 0.34; break; // DLC: Silas, a low "hm."
+      case 'chuckle': for (let k = 0; k < 3; k++) this.syl(t + k * 0.12, p, 'uh', 0.07, f * (1.05 - k * 0.04), f * 0.95, V * 0.55, out, { h: true }); len = 0.4; break; // DLC: Silas
       default: return false;
     }
     this.activeVoices.push(t + len);

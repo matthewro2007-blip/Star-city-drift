@@ -17,7 +17,8 @@
 import { OUTFITS, OUTFIT_ORDER, OUTFIT_HOTKEYS } from './npcs.js';
 import * as Sprites from './sprites.js';
 import { sfx } from './audio.js';
-import { getKit } from './kits.js';
+import { getKit, silasMoveRows } from './kits.js';
+import { artOutfitFor, suitAnimMap, suitNeedsTint, tintSuitOnCanvas, suitPortraitSrc } from './silas_outfit.js'; // 1.5.0 DLC: Silas's Suit
 
 const TILE_W = 120, TILE_H = 150, BIG_W = 240, BIG_H = 300;
 const BIG_STATES = ['idle_signature', 'special', 'victory']; // 1.4.0: signature move in the middle
@@ -53,6 +54,7 @@ export function createOutfitsMenu(opts) {
             <canvas id="outfit-picker-weapon-icon" width="48" height="48" aria-hidden="true"></canvas>
             <div class="of-kit-text"><span class="of-move" id="outfit-picker-move"></span><span class="of-weapon-name" id="outfit-picker-weapon"></span><span class="of-ability" id="outfit-picker-ability"></span></div>
           </div>
+          <ul class="of-silas-moves hidden" id="outfit-picker-silas-moves" aria-label="Silas's six moves"></ul>
           <button type="button" class="btn" id="btn-outfit-equip">Equip</button>
         </div>
         <div class="outfit-grid" role="listbox" aria-label="Outfits">
@@ -81,6 +83,7 @@ export function createOutfitsMenu(opts) {
   function hintFor(id) {
     if (id === 'polo') return 'Starter outfit.';
     if (id === 'gold') return 'Unlock: finish 100% (every mission + collectible) or beat Silas on Hard / Arcade.';
+    if (id === 'silas') return 'Unlock: Beat the Silas Boone prequel (free DLC — "Prequel: Silas Boone" on the title screen).';
     const bag = S().stateBag || {};
     const c = (bag.collectibles || []).find((k) => k.outfit === id);
     if (!c) return 'Unlock: keep exploring Star City.';
@@ -102,8 +105,11 @@ export function createOutfitsMenu(opts) {
     ctx.fillStyle = locked ? 'rgba(0,0,0,0.35)' : 'rgba(255,200,90,0.18)';
     ctx.beginPath(); ctx.ellipse(W / 2, feetY, W * 0.28, 6, 0, 0, Math.PI * 2); ctx.fill();
     let f = null, done = false;
-    try { f = Sprites.getAnimFrame && Sprites.getAnimFrame('matthew', state, tMs, id); } catch (_) { f = null; }
-    if (!f && state !== 'idle') { try { f = Sprites.getAnimFrame && Sprites.getAnimFrame('matthew', 'idle', tMs, id); } catch (_) { f = null; } }
+    // 1.5.0 DLC: Silas's Suit draws Joe's art when installed, else the fallback outfit's plain states + a dark-suit tint
+    const artId = artOutfitFor(id), tint = suitNeedsTint(id);
+    if (artId !== id) state = suitAnimMap()[state] || state;
+    try { f = Sprites.getAnimFrame && Sprites.getAnimFrame('matthew', state, tMs, artId); } catch (_) { f = null; }
+    if (!f && state !== 'idle') { try { f = Sprites.getAnimFrame && Sprites.getAnimFrame('matthew', 'idle', tMs, artId); } catch (_) { f = null; } }
     ctx.save();
     if (f) {
       done = !!f.done;
@@ -117,10 +123,11 @@ export function createOutfitsMenu(opts) {
       }
       ctx.drawImage(f.img, f.sx, f.sy, f.sw, f.sh, Math.round(cx - ax * k), Math.round(feetY - feet * k), Math.round(f.sw * k), Math.round(f.sh * k));
     } else {
-      const spr = Sprites.getMatthewSprite && Sprites.getMatthewSprite('idle', id, OUTFITS[id], tMs / 1000);
+      const spr = Sprites.getMatthewSprite && Sprites.getMatthewSprite('idle', artId, OUTFITS[artId], tMs / 1000);
       if (spr) { const dh = H * 0.86, dw = dh * (spr.width / spr.height); ctx.drawImage(spr, Math.round(W / 2 - dw / 2), Math.round(feetY - dh), Math.round(dw), Math.round(dh)); }
     }
-    if (!locked && id !== 'polo' && Sprites.hasAnims && !Sprites.hasAnims('matthew', id) && OUTFITS[id] && OUTFITS[id].shirt) {
+    if (tint && !locked) tintSuitOnCanvas(ctx, W, H, feetY, H * 0.86 * (180 / 192));
+    if (!locked && !tint && id !== 'polo' && id !== 'silas' && Sprites.hasAnims && !Sprites.hasAnims('matthew', id) && OUTFITS[id] && OUTFITS[id].shirt) {
       // outfit art not in yet (polo frames): wash them in the outfit's colours so the card still reads
       ctx.globalCompositeOperation = 'source-atop';
       ctx.globalAlpha = 0.5; ctx.fillStyle = OUTFITS[id].shirt; ctx.fillRect(0, 0, W, H);
@@ -196,6 +203,10 @@ export function createOutfitsMenu(opts) {
     $('outfit-picker-weapon').textContent = kit.weapon;
     $('outfit-picker-ability').textContent = kit.ability;
     $('outfit-picker-kit').setAttribute('aria-label', `${kit.weapon}: ${kit.move} — ${kit.ability}`);
+    // 1.5.0: Silas's Suit lists all six of Silas's moves (same inputs, one shared implementation)
+    const ml = $('outfit-picker-silas-moves');
+    if (id === 'silas') { if (!ml.childElementCount) ml.innerHTML = silasMoveRows().map((r) => `<li><b>${r.move}</b> <span>${r.input}</span></li>`).join(''); ml.classList.remove('hidden'); }
+    else ml.classList.add('hidden');
     drawWeapon(id);
   }
   function drawWeapon(id) {
@@ -214,6 +225,7 @@ export function createOutfitsMenu(opts) {
     try {
       const own = Sprites.getOutfitPortrait && Sprites.getOutfitPortrait(id), base = Sprites.getOutfitPortrait && Sprites.getOutfitPortrait('polo');
       if (!locked && own && own !== base && own.src) src = own.src;
+      if (!locked && !src && id === 'silas') src = suitPortraitSrc() || ''; // tinted bust until Joe's lands
     } catch (_) { src = ''; }
     if (src && el.getAttribute('src') !== src) el.setAttribute('src', src);
     el.classList.toggle('hidden', !src);

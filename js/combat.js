@@ -136,8 +136,22 @@ function tickKnockdown(ent, dt, areaWidth, isPlayer) {
 }
 const KD_ANIM = { fall: 'knockdown_fall', ground: 'knockdown_ground', getup: 'getup' };
 
+// >>> DLC: Silas prequel — pluggable movesets (js/silas_moves.js registers 'silas'). A player whose hooks carry
+// `moveset` routes attack input through it; `animMap` renames logical states for a different character's art
+// (playable Silas uses Joe's silas_boss strips); p.animKey / p.voiceKey pick the art + voice (default Matthew).
+const MOVESETS = {};
+export function registerMoveset(name, impl) { MOVESETS[name] = impl; }
+export function getMoveset(name) { return MOVESETS[name] || null; }
+const pkey = (p) => p.animKey || 'matthew';
+const vkey = (p) => p.voiceKey || 'matthew';
 function pickPlayerAnim(p) {
+  const st = pickPlayerAnimRaw(p);
+  return (p.animMap && p.animMap[st]) || st;
+}
+// <<< DLC: Silas prequel
+function pickPlayerAnimRaw(p) {
   if (!p.alive) return 'ko';
+  if (p.attackType === 'silas' && p.silasAnim && !p.kd) return p.silasAnim;
   if (p.kd) return KD_ANIM[p.kd.phase];
   if (p.pose === 'hurt') return 'hurt';
   if (p.attackType === 'special') return 'special';
@@ -150,6 +164,19 @@ function pickPlayerAnim(p) {
   return 'idle'; // not a Matthew anim state → existing sheet
 }
 
+/**
+ * DLC: Silas moveset hitbox gating. The timer window in silas_moves.js stays the outer bound; when real art
+ * drives the move (identity anim map: silas_player, or Joe's matthew_silas), Gentleman's Jab is live only on the
+ * art's active frames inside that window. Grip / Handshake / Last Word land their hits on their own clock, and
+ * Boss Rush keeps its travel window (a charge must connect along the whole run). Same rule for prequel Silas and the suit.
+ */
+function gateSilas(p) {
+  const hb = p.hitbox, sm = p.silasMove;
+  if (!hb || !hb.live || !sm || sm.kind !== 'jab') return;
+  if (p.animMap && Object.keys(p.animMap).length) return; // fallback art: timer only
+  const f = animFrame(pkey(p), p.animState, animMs(p), p.artOutfit);
+  if (f && typeof f.active === 'boolean') hb.live = f.active;
+}
 function makeHitbox(p, off, y, w, h, extra) {
   const hb = { x: p.x + p.facing * off, y: p.y - y, w, h, hit: new Set(), off, oy: y, ...extra };
   if (p.facing < 0) hb.x -= w;
@@ -169,10 +196,14 @@ function followHitbox(p) {
 export function updatePlayer(p, input, dt, areaWidth, hooks = {}) {
   p.animT += dt;
   p.outfit = hooks.outfit || p.outfit;
+  p.artOutfit = hooks.artOutfit || hooks.outfit || p.outfit; // DLC: the outfit whose art is drawn (Silas's Suit fallback)
+  p.animMap = hooks.animMap || null;
+  p.moveset = hooks.moveset || null;
+  const ms = hooks.moveset ? MOVESETS[hooks.moveset] : null; // DLC: Silas prequel
   const done = () => {
     const st = pickPlayerAnim(p);
     const sec = p.kd ? (p.kd.phase === 'ground' ? 0 : p.kd.t) : p.attackTimer > 0 ? p.attackTimer : 0;
-    setAnim(p, st, { key: 'matthew', sec, outfit: hooks.outfit });
+    setAnim(p, st, { key: pkey(p), sec, outfit: p.artOutfit });
   };
   if (!p.alive) {
     p.koT = Math.max(0, (p.koT || 0) - dt);
@@ -210,6 +241,7 @@ export function updatePlayer(p, input, dt, areaWidth, hooks = {}) {
 
   if (p.attackTimer > 0) {
     p.attackTimer -= dt;
+    if (p.attackType === 'silas' && ms) ms.tick(p, input, dt, areaWidth, hooks); // DLC: Silas prequel
     if (p.attackType === 'special') {
       const km = p.kitMove;
       if (km && km.lunge > 0 && km.el < km.lungeT) p.x = clampX(p.x + p.facing * (km.lunge / km.lungeT) * Math.min(dt, km.lungeT - km.el), areaWidth);
@@ -227,11 +259,12 @@ export function updatePlayer(p, input, dt, areaWidth, hooks = {}) {
       p.hitbox = null;
       p.lift = 0;
       p.kitMove = null;
+      if (ms) ms.end(p, hooks); // DLC: Silas prequel
     }
     p.idleT = 0;
     done();
-    gateHitbox(p, 'matthew', hooks.outfit);
-    kitGate(p, hooks.outfit);
+    if (p.attackType !== 'silas') { gateHitbox(p, 'matthew', p.artOutfit); kitGate(p, hooks.outfit); }
+    else gateSilas(p); // DLC: Silas's Jab also waits for the art's active frames (real art only)
     return; // lock movement during attack (SoR style)
   }
 
@@ -240,6 +273,12 @@ export function updatePlayer(p, input, dt, areaWidth, hooks = {}) {
   const moving = Math.abs(ax) > 0.1 || Math.abs(ay) > 0.1;
   const wantSprint = !!input.sprintHeld && moving && !p.staminaLock && p.stamina > 0;
   const startAttack = (type, pose, dur) => { p.attackType = type; p.pose = pose; p.attackTimer = dur; p.idleT = 0; p.victoryT = 0; p.kitMove = null; };
+  // >>> DLC: Silas prequel — Silas's moveset replaces punch / kick / heavy / special for this player
+  if (ms) {
+    if (ms.start(p, input, dt, areaWidth, hooks, wantSprint)) { done(); ms.restartAnim(p); return; }
+    input = { ...input, punchPressed: false, kickPressed: false, heavyPressed: false, specialPressed: false };
+  }
+  // <<< DLC: Silas prequel
 
   // Special: the Star Drive slot (V / R2 / RT / touch ★) — 1.4.0: each outfit's signature move (kits.js).
   // Costs meter, has a cooldown; startup / effect / reach come from the kit + the outfit's special art.
@@ -256,7 +295,7 @@ export function updatePlayer(p, input, dt, areaWidth, hooks = {}) {
       p.kitMove = { id: kitId(hooks.outfit), kind: 'special', el: 0, lunge: ks.lunge || 0, lungeT: Math.max(0.05, tm.lastActiveEnd), fired: {}, rate: tm.rate };
       p.hitbox = makeHitbox(p, 0, 70, 50, 60, { dmg: ks.dmg, knock: ks.knock || 0, knockdown: !!ks.knockdown, special: true, kit: p.kitMove.id, kitKind: 'special',
         sfx: iron ? 'star_iron' : 'star', live: false });
-      sfx('stardrive', { iron }); voice('matthew', 'special');
+      sfx('stardrive', { iron }); voice(vkey(p), 'special');
       hooks.onSpecial && hooks.onSpecial(ks.cost);
       pushFx({ type: 'callout', text: kit.move.toUpperCase() + '!', follow: true, dur: 0.8, kit: p.kitMove.id });
       done();
@@ -271,7 +310,7 @@ export function updatePlayer(p, input, dt, areaWidth, hooks = {}) {
     startAttack('heavy', 'punch', 0.42);
     p.combo = 0; p.comboStep = 0; p.comboTimer = 0;
     p.hitbox = makeHitbox(p, 22, 34, 50, 32, { dmg: 26, knock: 40, sfx: 'heavy' });
-    sfx('whiff', { heavy: true }); voice('matthew', 'attack', { chance: 0.6 });
+    sfx('whiff', { heavy: true }); voice(vkey(p), 'attack', { chance: 0.6 });
     done(); gateHitbox(p, 'matthew', hooks.outfit);
     return;
   }
@@ -280,7 +319,7 @@ export function updatePlayer(p, input, dt, areaWidth, hooks = {}) {
     startAttack('jumpkick', 'kick', JUMPKICK_DUR);
     p.combo = 0; p.comboStep = 0; p.comboTimer = 0;
     p.hitbox = makeHitbox(p, -4, 46, 56, 34, { dmg: 20, knock: 30, knockdown: true, sfx: 'finisher' });
-    sfx('jump'); voice('matthew', 'big');
+    sfx('jump'); voice(vkey(p), 'big');
     done(); gateHitbox(p, 'matthew', hooks.outfit);
     return;
   }
@@ -297,7 +336,7 @@ export function updatePlayer(p, input, dt, areaWidth, hooks = {}) {
       startAttack('combo', kick ? 'kick' : 'punch', COMBO3_KIT_DUR);
       p.kitMove = { id, kind: 'combo3', el: 0, lunge: 0, lungeT: 0, fired: {} };
       p.hitbox = makeHitbox(p, 10, 60, 44, 50, { dmg: c3.dmg, knock: c3.knock, knockdown: !!c3.knockdown, armor: c3.armor, kit: id, kitKind: 'combo3', sfx: 'finisher', live: false });
-      sfx('whiff', { heavy: true }); voice('matthew', 'big');
+      sfx('whiff', { heavy: true }); voice(vkey(p), 'big');
       p.comboTimer = 0.25;
       done(); gateHitbox(p, 'matthew', hooks.outfit); kitGate(p, hooks.outfit);
       return;
@@ -309,7 +348,7 @@ export function updatePlayer(p, input, dt, areaWidth, hooks = {}) {
       startAttack('combo', 'punch', fin ? 0.3 : 0.22);
       p.hitbox = makeHitbox(p, 10, 34, 36, 28, { dmg: 12 + p.comboStep * 2, knock: fin ? 30 : undefined, knockdown: fin, sfx: fin ? 'finisher' : 'punch' });
     }
-    sfx('whiff', { heavy: kick }); voice('matthew', fin ? 'big' : 'attack', { chance: fin ? 1 : 0.3 });
+    sfx('whiff', { heavy: kick }); voice(vkey(p), fin ? 'big' : 'attack', { chance: fin ? 1 : 0.3 });
     if (fin) p.comboTimer = 0.25;
     done(); gateHitbox(p, 'matthew', hooks.outfit);
     return;
@@ -340,7 +379,7 @@ const projectiles = [];    // Spiral footballs in flight
 export function getKitFx() { return kitFx; }
 export function getProjectiles() { return projectiles; }
 export function clearKitFx() { kitFx.length = 0; projectiles.length = 0; }
-function pushFx(fx) { fx.t = 0; fx.dur = fx.dur || 0.4; kitFx.push(fx); if (kitFx.length > 40) kitFx.shift(); return fx; }
+export function pushFx(fx) { fx.t = 0; fx.dur = fx.dur || 0.4; kitFx.push(fx); if (kitFx.length > 40) kitFx.shift(); return fx; }
 
 /** Special timing for an outfit: art active frames (or the kits.js table) → strip rate + window. */
 const timingCache = new Map();
@@ -430,7 +469,7 @@ function kitGate(p, outfit) {
 }
 
 /** Foe effect strengths for the current difficulty (boss resists part of it). */
-function effStun(e, t) { return t * (KIT_DIFF[diff.id] || KIT_DIFF.normal).stun * (e.isBoss ? BOSS_RESIST.stun : 1); }
+export function effStun(e, t) { return t * (KIT_DIFF[diff.id] || KIT_DIFF.normal).stun * (e.isBoss ? BOSS_RESIST.stun : 1); }
 /** Movement / attack-clock multiplier while slowed (Hot Plate). */
 export function slowMul(e) { return e && e.slowT > 0 ? e.slowMul || 1 : 1; }
 
@@ -438,7 +477,7 @@ export function slowMul(e) { return e && e.slowT > 0 ? e.slowMul || 1 : 1; }
  * One player hit on one foe: damage (kit armor bonus), knockdown / stun / slow / knockback, audio,
  * KO, then onHitEnemy. Shared by melee hitboxes, the Spiral and Star Yank.
  */
-function applyHit(player, e, hb, areaWidth, onHitEnemy, dir = player.facing) {
+export function applyHit(player, e, hb, areaWidth, onHitEnemy, dir = player.facing) {
   const kit = hb.kit ? getKit(hb.kit) : null;
   const ks = kit ? (hb.kitKind === 'special' ? kit.special : kit.combo3) : null;
   let dmg = hb.dmg;
@@ -448,9 +487,10 @@ function applyHit(player, e, hb, areaWidth, onHitEnemy, dir = player.facing) {
   if (hb.knockdown) {
     knockDown(e, dir);
     if (e.kd && ks && ks.kdPush) e.kd.push = ks.kdPush;
+    if (e.kd && hb.kdPush) e.kd.push = hb.kdPush; // DLC: Silas moves
   } else {
     const kitStun = ks && hb.kitKind === 'special' && ks.stun ? effStun(e, ks.stun) : 0;
-    e.stun = Math.max(hb.knock ? 0.4 : 0.25, kitStun);
+    e.stun = Math.max(hb.knock ? 0.4 : 0.25, kitStun, hb.stun ? effStun(e, hb.stun) : 0); // hb.stun: DLC Silas moves
     if (kitStun >= 0.3) { e.dazed = true; e.attackTimer = 0; e.hitbox = null; e.tauntT = 0; }
     if (!hb.noPush) e.x = Math.max(30, Math.min(areaWidth - 30, e.x + dir * (hb.knock != null && hb.knock !== 0 ? hb.knock : (kit ? 6 : 18))));
   }
@@ -627,6 +667,14 @@ export function updateEnemy(e, player, dt, areaWidth = Infinity) {
         e.altAtk = !e.altAtk;
         e.nextAnim = e.altAtk ? 'attackA' : 'attackB';
         if (!e.altAtk) e.attackTimer = 0.32;
+        if (e.miniBoss) { // DLC: Silas prequel bosses (thug art, boss rules): every 3rd swing is a heavy knockdown
+          e.patIdx = (e.patIdx || 0) + 1;
+          if (e.patIdx % 3 === 0) {
+            e.attackTimer = 0.42;
+            e.hitbox = { x: e.x + e.facing * 6, y: e.y - 38, w: 44, h: 34, dmg: Math.round(dmg * 1.3), knockdown: true, hit: new Set() };
+            e.aiCooldown = Math.max(e.aiCooldown, 0.6);
+          }
+        }
       }
       if (e.facing < 0) e.hitbox.x -= e.hitbox.w;
       setAnim(e, e.nextAnim, { key, sec: e.attackTimer }, true); // restart even when the same attack repeats
@@ -684,6 +732,9 @@ export function resolveHits(player, enemies, onHitEnemy, onHitPlayer, areaWidth 
     if (e.hitbox.hit.has(player)) continue;
     if (overlap(e.hitbox, player.x - 14, player.y - 60, 28, 56) && Math.abs(player.y - e.y) < 22) {
       e.hitbox.hit.add(player);
+      // DLC: Silas prequel — Last Word counter stance: no damage, the moveset answers the blow
+      const msx = player.moveset ? MOVESETS[player.moveset] : null;
+      if (msx && msx.intercept && msx.intercept(player, e)) continue;
       player.hp -= e.hitbox.dmg;
       player.victoryT = 0; player.idleT = 0; player.lift = 0;
       if (e.hitbox.knockdown) {
@@ -697,16 +748,17 @@ export function resolveHits(player, enemies, onHitEnemy, onHitPlayer, areaWidth 
         player.kitMove = null;
         player.x = Math.max(30, Math.min(areaWidth - 30, player.x + e.facing * 20));
       }
-      setAnim(player, player.kd ? 'knockdown_fall' : 'hurt', { key: 'matthew', sec: player.kd ? KD_FALL : 0.2, outfit: player.outfit });
+      if (player.attackType === null && player.silasMove) { const m = MOVESETS[player.moveset]; if (m) m.cancel(player); } // DLC: hit out of a Silas move
+      { const st = player.kd ? 'knockdown_fall' : 'hurt'; setAnim(player, (player.animMap && player.animMap[st]) || st, { key: pkey(player), sec: player.kd ? KD_FALL : 0.2, outfit: player.artOutfit || player.outfit }); }
       sfx(e.isBoss ? 'heavy' : 'punch', { taken: true });
-      if (player.hp > 0) voice('matthew', 'hurt', { cd: 0.35 });
+      if (player.hp > 0) voice(vkey(player), 'hurt', { cd: 0.35 });
       onHitPlayer && onHitPlayer(e.hitbox.dmg, !!e.hitbox.knockdown);
       if (player.hp <= 0) {
         player.hp = 0;
         player.alive = false;
         player.koT = 1.2; // main.js waits for the KO pose before respawning
-        setAnim(player, 'ko', { key: 'matthew', sec: 1.2, outfit: player.outfit });
-        voice('matthew', 'ko');
+        setAnim(player, (player.animMap && player.animMap.ko) || 'ko', { key: pkey(player), sec: 1.2, outfit: player.artOutfit || player.outfit });
+        voice(vkey(player), 'ko');
       }
       if (player.kd || !player.alive) return;
     }

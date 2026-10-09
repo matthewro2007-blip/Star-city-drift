@@ -3,7 +3,7 @@
   "file": "assets/sprites/weapons.png",
   "fw": 48,
   "fh": 48,
-  "count": 12,
+  "count": 13,
   "order": [
    "polo",
    "photo",
@@ -16,7 +16,8 @@
    "gold",
    "webslinger",
    "beacon",
-   "ironclad"
+   "ironclad",
+   "silas"
   ],
   "note": "One icon per outfit, left->right in this order; transparent, hard alpha, rig outline/cel style."
  },
@@ -124,6 +125,15 @@
   "move": "Breach",
   "index": 11,
   "x": 528,
+  "y": 0,
+  "w": 48,
+  "h": 48
+ },
+ "silas": {
+  "name": "Iron Gauntlet",
+  "move": "Iron Handshake",
+  "index": 12,
+  "x": 576,
   "y": 0,
   "w": 48,
   "h": 48

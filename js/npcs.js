@@ -151,10 +151,14 @@ export const OUTFITS = {
   // v3: original Star City design (Joe's matthew_beacon.png + anim set) — unlocked by the Beacon Ring
   beacon: { name: 'Star City Beacon', shirt: '#1e8f5a', pants: '#14202e', accent: '#7dffb2', desc: "Emerald glow from the ring hidden under the Mill Mountain Star." },
   // 1.3.2: original heavy-armor design (Joe's matthew_ironclad anim set; key stays `ironclad`) — hidden helmet in the Rail Yards
-  ironclad: { name: "Hell's Nightmare", shirt: '#5b6b2e', pants: '#3b4422', accent: '#ffb020', desc: "Bulky olive demon-hunter armor and an amber-visored helmet — the things that go bump in the night check under their beds for him." }
+  ironclad: { name: "Hell's Nightmare", shirt: '#5b6b2e', pants: '#3b4422', accent: '#ffb020', desc: "Bulky olive demon-hunter armor and an amber-visored helmet — the things that go bump in the night check under their beds for him." },
+  // 1.5.0 (DLC: Silas prequel reward): unlocked by finishing the free prequel. Fights with Silas Boone's moveset
+  // (js/silas_moves.js). Art: Joe's matthew_silas set when installed; until then main.js / outfits_menu.js draw a
+  // dark-suit tint over the Skate Fit's plain strips (silas_outfit.js).
+  silas: { name: "Silas's Suit", shirt: '#1f2a3a', pants: '#1a2230', accent: '#a8202a', desc: "A long navy double-breasted coat, crimson tie and black gloves. Polite, pressed, and very hard to say no to." }
 };
 
 /** Outfit order for keys 1-9, 0, - (or Shift+1) and = (or Shift+2), L1/R1 (LB/RB) cycling and the pause-menu outfit picker. */
-export const OUTFIT_ORDER = ['polo', 'hoodie', 'jacket', 'street', 'photo', 'varsity', 'mechanic', 'diner', 'gold', 'webslinger', 'beacon', 'ironclad'];
+export const OUTFIT_ORDER = ['polo', 'hoodie', 'jacket', 'street', 'photo', 'varsity', 'mechanic', 'diner', 'gold', 'webslinger', 'beacon', 'ironclad', 'silas'];
 /** Hotkey → outfit index for the keys past 1-9 / 0. */
-export const OUTFIT_HOTKEYS = { '0': 9, '-': 10, '=': 11 };
+export const OUTFIT_HOTKEYS = { '0': 9, '-': 10, '=': 11, '#': 12 }; // '#' = Shift+3 (Silas's Suit, 1.5.0)
