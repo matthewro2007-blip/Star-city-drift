@@ -27,6 +27,7 @@ import { silasWorld, coldStare, silasAnimMap, silasCooldowns } from './silas_mov
 import { artOutfitFor, suitAnimMap, suitNeedsTint, tintedFrame, tintedCanvas, suitPortraitSrc } from './silas_outfit.js';
 import { createDlc, dlcHasRun, dlcCompleted, silasPortraitSrc, silasPlayerKey, drawNightGrade, MISSIONS as DLC_MISSIONS } from './dlc_silas.js';
 import { SILAS_MOVES, silasMoveRows } from './kits.js';
+import { GAME_VERSION } from './version.js';
 // <<< DLC: Silas prequel
 
 /** true: player + title Matthew use the high-res procedural hero (hero.js); false: Joe's matthew_sheet.png. */
@@ -340,7 +341,7 @@ function startGame(fromSave) {
     toast("Find Dee Morales at Dee's Diner");
     maybeSpawnEncounter(true);
   }
-  if (suitNew) toast("Silas's Suit unlocked — Pause → Outfits (Shift+3)", true);
+  if (suitNew) toast(`Silas's Suit unlocked — ${suitHowTo()}`, true);
   persist();
   followCam.cut();
 }
@@ -813,16 +814,15 @@ function tryInteract() {
     const npcNear = nearestNPC();
     const fighting = gameState.combatLock && hostilesAlive();
     if (!npcNear && isDlc() && !fighting && dlc.usable(gameState.areaId, player.x)) { dlc.use(); return; }
-    if (!npcNear && (fighting || gameState.enemies.some((e) => e.alive))) {
+    // 1.5.1: mid-fight, talking is blocked anyway, so Cold Stare wins even next to an NPC
+    if (fighting || (!npcNear && gameState.enemies.some((e) => e.alive))) {
       const r = coldStare(player, gameState.enemies);
       if (!r.ok && r.reason === 'cooldown') toast(`Cold Stare ready in ${Math.ceil(r.left)}s`);
       return;
     }
-    if (!npcNear) {
+    if (!npcNear) { // 1.5.1: nobody to stare down → just pick up / deliver (no pose, no cooldown toast)
       collectHere();
       if (!isDlc()) missions.checkDelivery(gameState.areaId, toast, onProgress);
-      const r = coldStare(player, gameState.enemies); // nobody to stare down: still a pose (cooldown applies)
-      if (!r.ok && r.reason === 'cooldown') toast(`Cold Stare ready in ${Math.ceil(r.left)}s`);
       return;
     }
   }
@@ -903,7 +903,7 @@ function setOutfit(id, quiet = false) {
   if (!OUTFITS[id] || isDlc()) return;
   if (!stateBag.unlockedOutfits.has(id)) {
     sfx('denied');
-    toast('Outfit locked — find collectibles');
+    toast(id === 'silas' ? "Silas's Suit is locked — beat the Silas Boone prequel (Title → Prequel)" : 'Outfit locked — find collectibles');
     return;
   }
   if (!quiet && id !== gameState.outfitId) sfx('outfit');
@@ -1288,8 +1288,13 @@ function leaveDlcUi() {
 function quitDlcToTitle() {
   setPaused(false);
   $('pause-screen').classList.add('hidden');
+  showTitle();                               // leaveDlcUi() → persist() while `player` is still Silas (1.5.1)
   player = createPlayer(200, PLAYER_START_Y);
-  showTitle();
+}
+/** How to wear the suit, worded for the current device. */
+function suitHowTo() {
+  const dev = getPromptDevice();
+  return dev === 'touch' ? 'Pause → Outfits' : dev === 'keyboard' ? 'press # (Shift+3) or Pause → Outfits' : `${getPromptLabel('outfit')} or Pause → Outfits`;
 }
 /** Knocked out in the prequel: Arcade reloads the prequel save, otherwise restart the step at full health. */
 function dlcKnockout() {
@@ -1369,10 +1374,13 @@ function startFinale(onDone) {
   const band = getDepthBand();
   player.x = 700; player.y = clampDepth(Math.round((band.min + band.max) / 2)); player.facing = -1; player.vx = 0;
   player.attackType = null; player.attackTimer = 0; player.hitbox = null;
+  // 1.5.1: frame the shot from the camera Silas will have (facing left at x 700), so Matthew walks INTO view
+  followCam.cut();
+  const fr = syncCamera(0), L = fr.x, V = fr.viewW;
   gameState.finaleActors = [
-    { kind: 'matthew', area: 'downtown', x: -30, y: band.max - 6, facing: 1, walking: true, t: 0, stopAt: 200 },
-    { kind: 'thug', color: 'grey', area: 'downtown', x: 1180, y: band.min + 10, facing: -1, t: 0 },
-    { kind: 'thug', color: 'red', area: 'downtown', x: 1240, y: band.min + 26, facing: -1, t: 0.4 }
+    { kind: 'matthew', area: 'downtown', x: L - 40, y: band.max - 6, facing: 1, walking: true, t: 0, stopAt: Math.round(L + V * 0.2) },
+    { kind: 'thug', color: 'grey', area: 'downtown', x: Math.round(L + V - 70), y: band.min + 10, facing: -1, t: 0 },
+    { kind: 'thug', color: 'red', area: 'downtown', x: Math.round(L + V - 30), y: band.min + 26, facing: -1, t: 0.4 }
   ];
   gameState.cutscene = { t: 0, phase: 'walk', onDone };
   toast('Golden hour, Jefferson Street.', true);
@@ -1390,7 +1398,7 @@ function updateCutscene(dt) {
   if (cs.phase === 'walk' && ((mat && !mat.walking) || cs.t > 6)) {
     cs.phase = 'talk';
     dlcApi.say([
-      { id: 'silas', name: 'Silas Boone', text: 'An everyday guy in a white polo. Walking home with somebody else\'s leftovers.' },
+      { id: 'silas', name: 'Silas Boone', text: 'An everyday guy in a white polo, walking home with somebody else\'s leftovers. Parcel and all.' },
       { id: 'silas', name: 'Silas Boone', text: 'Matthew Rose… curious coincidence.' },
       { id: 'silas', name: 'Silas Boone', text: 'Let him do his homework. We\'ll talk properly after.' }
     ], () => { cs.phase = 'done'; cs.doneT = cs.t; });
@@ -1442,12 +1450,12 @@ function showDlcEnding() {
   $('dlc-ending-eyebrow').textContent = 'Prequel Ending · Second Shift';
   $('dlc-ending-title').textContent = 'Before the Star';
   $('dlc-ending-text').textContent = 'A crate rolled out of the Rail Yards after hours. Priya\'s maps never reached her shelf.\n' +
-    'A lantern stencilled "S.B. — 2nd shift" waits under the River Bridge rail.\n' +
-    'And a bag marked "M. Rose — to go" is on its way home with the wrong man.\n\n' +
+    'A lantern stenciled "S.B. — 2nd shift" waits under the River Bridge rail.\n' +
+    'And Matthew Rose is carrying home a bag of leftovers that isn\'t his.\n\n' +
     'Silas Boone straightens his gloves on Jefferson Street. Lovely evening.';
   const src = suitStillSrc(); if (src) $('dlc-unlock-img').src = src;
   $('dlc-unlock-label').textContent = "Silas's Suit unlocked for Matthew";
-  $('dlc-unlock-sub').textContent = 'Main game: Pause → Outfits (Shift+3). Fights with all six of Silas\'s moves.';
+  $('dlc-unlock-sub').textContent = `Main game: ${suitHowTo()}. Fights with all six of Silas's moves.`;
   const mainBtn = $('btn-dlc-ending-main');
   if (mainBtn) mainBtn.textContent = hasSave() ? 'Continue the Main Story ▸' : 'Start the Main Story ▸';
   $('interact-prompt').classList.add('hidden');
@@ -1507,7 +1515,7 @@ function syncSilasControls() {
   if (!host || $('title-prequel')) return;
   const sec = document.createElement('section');
   sec.id = 'title-prequel'; sec.className = 'title-panel'; sec.setAttribute('aria-label', 'Prequel: Silas Boone');
-  sec.innerHTML = '<h2>Prequel: Silas Boone</h2><div class="title-help prequel-blurb">Second Shift: one long night in Star City, before Matthew Rose picked up the wrong bag.</div>' +
+  sec.innerHTML = '<h2>Prequel: Silas Boone</h2><div class="title-help prequel-blurb">Second Shift: one long night in Star City and the evening after, before Matthew Rose picked up the wrong bag.</div>' +
     '<button type="button" id="btn-prequel-continue" class="btn">Continue Prequel</button>' +
     '<button type="button" id="btn-prequel-new" class="btn">New Prequel</button>' +
     '<button type="button" id="btn-prequel-back" class="btn btn-secondary">Back</button>';
@@ -1546,6 +1554,24 @@ bindTap('btn-dlc-ending-main', () => {
   });
 });
 bindTap('btn-dlc-quit', () => { if (gameState.mode === 'pause') quitDlcToTitle(); });
+// 1.5.1: version tag (title corner + Credits) and the prequel cast in Credits
+(() => {
+  const host = $('title-screen');
+  if (host && !$('game-version')) {
+    const v = document.createElement('div');
+    v.id = 'game-version'; v.textContent = 'v' + GAME_VERSION; v.setAttribute('aria-label', 'Version ' + GAME_VERSION);
+    host.appendChild(v);
+  }
+  const cred = $('title-credits');
+  if (cred && !$('credits-prequel')) {
+    const d = document.createElement('div');
+    d.id = 'credits-prequel'; d.className = 'credits-prequel';
+    d.innerHTML = '<strong>Prequel: Silas Boone</strong><br>Lou Badger · Ivy Marsh · Gus Pell · Pip · Vera Lisk · Mort "The Foreman" Kessler';
+    const made = cred.querySelector('.made-with');
+    cred.insertBefore(d, made || cred.querySelector('#btn-credits-back'));
+    if (made && !/v\d/.test(made.textContent)) made.textContent += ' · v' + GAME_VERSION;
+  }
+})();
 // ============================================================ <<< DLC: Silas prequel
 
 // New Game -> (overwrite confirm) -> difficulty selector -> start
@@ -1607,11 +1633,11 @@ function refreshPrompts(force) {
   const sig = getPromptDevice();
   if (!force && sig === promptSig) return;
   promptSig = sig;
-  const L = getPromptLabel;
+  const L = (a) => (a === 'heavy' && sig === 'touch' && silasSet() ? 'GRIP' : getPromptLabel(a)); // 1.5.1: touch Velvet Grip
   const kbd = document.querySelector('#interact-prompt kbd');
   if (kbd) kbd.textContent = L('interact');
   const parts = silasSet()
-    ? [['move', 'move'], ['sprint', 'sprint (+punch: Boss Rush)'], ['punch', 'Jab'], ['heavy', 'Velvet Grip'], ['special', 'Iron Handshake'], ['kick', 'hold: Last Word'],
+    ? [['move', 'move'], ['sprint', 'sprint (+punch: Boss Rush)'], ['punch', 'Jab'], ['heavy', 'Velvet Grip'], ['special', 'Iron Handshake'], ['kick', 'Last Word (counter stance)'],
       ['interact', 'talk / Cold Stare'], ...(isDlc() ? [] : [['outfit', 'outfits']]), ['pause', 'pause']]
     : [['move', 'move'], ['sprint', 'sprint'], ['punch', 'punch'], ['kick', 'kick'], ['special', 'Star Drive'], ['heavy', 'heavy'],
     ['interact', 'talk'], ['outfit', 'outfits'], ['pause', 'pause']];
@@ -1821,7 +1847,7 @@ function step(dt) {
   } else if (useSpot && !gameState.cutscene) {
     $('interact-prompt').classList.remove('hidden');
     $('interact-text').textContent = useSpot.label;
-  } else if (silasSet() && !npc && hostilesAlive() && !gameState.cutscene) {
+  } else if (silasSet() && hostilesAlive() && (!npc || gameState.combatLock) && !gameState.cutscene && getPromptDevice() !== 'touch') { // 1.5.1: touch has the E button; the prompt hid the objective
     const cd = silasCooldowns(player).stare;
     $('interact-prompt').classList.remove('hidden');
     $('interact-text').textContent = cd > 0 ? `Cold Stare ${Math.ceil(cd)}s` : 'Cold Stare';
@@ -2249,7 +2275,7 @@ function syncCamera(dt) {
     screenH: H,
     dt
   });
-  gameState.cameraX = frame.x;
+  gameState.cameraX = frame.x; gameState.cameraViewW = frame.viewW; // 1.5.1: closing-scene framing + tests
   return frame;
 }
 
@@ -2374,7 +2400,11 @@ function drawWorld(dt) {
   // Combat banner — DOM element sits under the location plaque (no overlap)
   const fighting = gameState.combatLock && hostilesAlive();
   const banner = $('combat-banner');
-  if (banner) banner.classList.toggle('hidden', !fighting);
+  if (banner) {
+    banner.classList.toggle('hidden', !fighting);
+    const bt = (fighting && isDlc() && dlc.bannerText()) || 'FIGHT! Clear the street'; // 1.5.1: survive / boss wording
+    if (banner.textContent !== bt) banner.textContent = bt;
+  }
 
   presenter.present({
     mode: 'world',

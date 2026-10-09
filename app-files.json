@@ -1,7 +1,7 @@
 {
-  "version": "c11057d2e0ad",
-  "generated": "2026-10-09T03:46:27.892Z",
-  "bytes": 25768792,
+  "version": "95d825c79d16",
+  "generated": "2026-10-09T04:28:47.535Z",
+  "bytes": 25775484,
   "files": [
     "assets/bg/community.png",
     "assets/bg/diner.png",
@@ -187,6 +187,7 @@
     "js/silas_outfit.js",
     "js/sprites.js",
     "js/title.js",
+    "js/version.js",
     "js/world.js",
     "manifest.webmanifest",
     "sw.js"
@@ -347,7 +348,7 @@
     "assets/sprites/wren.png": "b1eacda6e42f231e",
     "assets/sprites/wren_anim.png": "5af8a6a733516d6b",
     "assets/sprites/wren_sheet.png": "75f9f244319f93cf",
-    "css/style.css": "8b2b6c55903148c1",
+    "css/style.css": "1ab98598dc190cfc",
     "icons/apple-touch-icon.png": "cd36c5291515737d",
     "icons/favicon-32.png": "b42a1478f9bcbb51",
     "icons/favicon.ico": "bd47916f00123663",
@@ -360,12 +361,12 @@
     "js/anim.js": "9b67c88fe73934d8",
     "js/audio.js": "0141a9d80b94a6d7",
     "js/camera.js": "31db2f212326e7c2",
-    "js/combat.js": "c8a0117e98835520",
-    "js/dlc_silas.js": "e796261712f2365a",
+    "js/combat.js": "8444450f615df67a",
+    "js/dlc_silas.js": "dbdbf21f8c58e27e",
     "js/hero.js": "88fa1b6a4acd1104",
-    "js/input.js": "b5384c603a06aa41",
-    "js/kits.js": "cc24c00852d4d4ee",
-    "js/main.js": "6922c66bd23cb84c",
+    "js/input.js": "8d214d94bc112b0e",
+    "js/kits.js": "0fa43f2ad113dab9",
+    "js/main.js": "034c535a6cbdee26",
     "js/missions.js": "ce1cee4666133c79",
     "js/npcs.js": "d88953dbf33d4539",
     "js/outfits_menu.js": "71555fd9a4c49b1e",
@@ -375,9 +376,10 @@
     "js/silas_moves.js": "1119b34d41b6b565",
     "js/silas_outfit.js": "9826ecbadb8dd2ff",
     "js/sprites.js": "6e4f6a59cee45621",
-    "js/title.js": "a7eadb9c5381e127",
+    "js/title.js": "ec0b02cb29c4b501",
+    "js/version.js": "8e1117eaf6c1d1c1",
     "js/world.js": "8f3aabaff30da45f",
     "manifest.webmanifest": "8329dfbc4e169e94",
-    "sw.js": "ac6e9405a9e0490f"
+    "sw.js": "0a0519bc39878f3a"
   }
 }
