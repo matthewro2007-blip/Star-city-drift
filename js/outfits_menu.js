@@ -11,13 +11,16 @@
  * Outfits with their own bust (Sprites.getOutfitPortrait, e.g. Hell's Nightmare's helmet) show it as a
  * badge on the large preview once unlocked.
  * The preview animation runs on its own requestAnimationFrame only while the picker is open.
+ * 1.4.0: the large preview also plays the outfit's signature move (special) and shows its kit — weapon
+ * icon (Sprites.getWeaponIcon), move name and a one-line ability (kits.js).
  */
 import { OUTFITS, OUTFIT_ORDER, OUTFIT_HOTKEYS } from './npcs.js';
 import * as Sprites from './sprites.js';
 import { sfx } from './audio.js';
+import { getKit } from './kits.js';
 
 const TILE_W = 120, TILE_H = 150, BIG_W = 240, BIG_H = 300;
-const BIG_STATES = ['idle_signature', 'victory'];
+const BIG_STATES = ['idle_signature', 'special', 'victory']; // 1.4.0: signature move in the middle
 const HOLD_MS = 650; // pause on the last frame of a one-shot before looping
 const LOOP_SHOW_MS = 2600; // big preview: how long a looping state plays before moving on
 
@@ -46,6 +49,10 @@ export function createOutfitsMenu(opts) {
           <img class="of-portrait hidden" id="outfit-picker-portrait" alt="" aria-hidden="true" />
           <div class="of-name" id="outfit-picker-name"></div>
           <div class="of-desc" id="outfit-picker-desc"></div>
+          <div class="of-kit" id="outfit-picker-kit">
+            <canvas id="outfit-picker-weapon-icon" width="48" height="48" aria-hidden="true"></canvas>
+            <div class="of-kit-text"><span class="of-move" id="outfit-picker-move"></span><span class="of-weapon-name" id="outfit-picker-weapon"></span><span class="of-ability" id="outfit-picker-ability"></span></div>
+          </div>
           <button type="button" class="btn" id="btn-outfit-equip">Equip</button>
         </div>
         <div class="outfit-grid" role="listbox" aria-label="Outfits">
@@ -100,9 +107,15 @@ export function createOutfitsMenu(opts) {
     ctx.save();
     if (f) {
       done = !!f.done;
-      const k = (H * 0.86) / 192;
+      let k = (H * 0.86) / 192;
       const ax = f.anchorX != null ? f.anchorX : f.sw / 2, feet = f.feetRow != null ? f.feetRow : f.sh - 3;
-      ctx.drawImage(f.img, f.sx, f.sy, f.sw, f.sh, Math.round(W / 2 - ax * k), Math.round(feetY - feet * k), Math.round(f.sw * k), Math.round(f.sh * k));
+      let cx = W / 2;
+      if (f.sw > 144) { // wide kit cell (240 px, 48 px empty on the left): fit the reach inside the canvas
+        const padL = Math.max(0, ax - 72);
+        k = Math.min(k, W / (f.sw - padL));
+        cx = (ax - padL) * k;
+      }
+      ctx.drawImage(f.img, f.sx, f.sy, f.sw, f.sh, Math.round(cx - ax * k), Math.round(feetY - feet * k), Math.round(f.sw * k), Math.round(f.sh * k));
     } else {
       const spr = Sprites.getMatthewSprite && Sprites.getMatthewSprite('idle', id, OUTFITS[id], tMs / 1000);
       if (spr) { const dh = H * 0.86, dw = dh * (spr.width / spr.height); ctx.drawImage(spr, Math.round(W / 2 - dw / 2), Math.round(feetY - dh), Math.round(dw), Math.round(dh)); }
@@ -144,6 +157,7 @@ export function createOutfitsMenu(opts) {
       step(c, drawOutfit(tileCtx[i], TILE_W, TILE_H, id, 'idle_signature', now - c.start + i * 37, false), now);
     });
     const id = OUTFIT_ORDER[idx], locked = !isUnlocked(id);
+    if (kitDrawn !== id) drawWeapon(id); // icons can finish loading after the picker opened
     const st = locked ? 'idle_signature' : BIG_STATES[bigClock.state];
     const done = drawOutfit(bigCtx, BIG_W, BIG_H, id, st, locked ? 0 : now - bigClock.start, locked);
     const elapsed = now - bigClock.start;
@@ -168,10 +182,30 @@ export function createOutfitsMenu(opts) {
     $('outfit-picker-desc').textContent = locked ? hintFor(id) : OUTFITS[id].desc || '';
     root.querySelector('.outfit-feature').classList.toggle('locked', locked);
     syncPortrait(id, locked);
+    syncKit(id);
     const eb = $('btn-outfit-equip');
     eb.textContent = locked ? 'Locked' : id === current ? 'Equipped ✓' : 'Equip';
     eb.classList.toggle('disabled', locked || id === current);
     eb.setAttribute('aria-disabled', String(locked));
+  }
+  /** 1.4.0: kit row under the description — weapon icon, move name, weapon name, one-line ability. */
+  let kitDrawn = '';
+  function syncKit(id) {
+    const kit = getKit(id);
+    $('outfit-picker-move').textContent = kit.move;
+    $('outfit-picker-weapon').textContent = kit.weapon;
+    $('outfit-picker-ability').textContent = kit.ability;
+    $('outfit-picker-kit').setAttribute('aria-label', `${kit.weapon}: ${kit.move} — ${kit.ability}`);
+    drawWeapon(id);
+  }
+  function drawWeapon(id) {
+    if (kitDrawn === id) return;
+    const c = $('outfit-picker-weapon-icon'), g = c.getContext('2d');
+    g.clearRect(0, 0, c.width, c.height); g.imageSmoothingEnabled = false;
+    let icon = null;
+    try { icon = Sprites.getWeaponIcon && Sprites.getWeaponIcon(id); } catch (_) { icon = null; }
+    if (icon) { g.drawImage(icon.img, icon.sx, icon.sy, icon.sw, icon.sh, 0, 0, c.width, c.height); kitDrawn = id; }
+    else { g.fillStyle = '#ffd24a'; g.font = 'bold 30px sans-serif'; g.textAlign = 'center'; g.fillText('★', 24, 35); kitDrawn = ''; }
   }
   /** Outfit bust badge (only for outfits that have their own portrait, e.g. Hell's Nightmare). */
   function syncPortrait(id, locked) {

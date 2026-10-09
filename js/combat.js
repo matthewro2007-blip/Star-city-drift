@@ -1,7 +1,8 @@
 import { DEPTH, getDepth } from './world.js';
 import { getEnemySprite, drawSprite } from './sprites.js';
-import { setAnim, gateHitbox, enemyCharKey } from './anim.js';
+import { setAnim, gateHitbox, enemyCharKey, animFrame, animMs } from './anim.js';
 import { sfx, voice } from './audio.js'; // audio: hits, whooshes, knockdowns, fighter voices
+import { KITS, getKit, isArmored, artBoxToWorld, KIT_DIFF, BOSS_RESIST, SPECIAL_ACTIVE, COMBO3_ACTIVE, SPECIAL_FRAMES, KIT_FPS, PULL_FRAME } from './kits.js'; // 1.4.0 outfit kits
 
 /**
  * Difficulty tuning. hp/dmg scale thugs, cool scales the gap between enemy attacks (lower = more
@@ -99,9 +100,9 @@ export function createSilasFighter(x, y) {
 
 // ---------------- v3: knockdown / sprint / special tuning ----------------
 export const SPRINT_MULT = 1.6;
-export const SPECIAL_COST = 25;      // special-meter cost of Star Drive
-export const SPECIAL_COOLDOWN = 3;   // seconds
-const SPECIAL_DUR = 0.45, SPECIAL_SPEED = 470, SPECIAL_DMG = 22;
+export const SPECIAL_COST = 25;      // default special-meter cost of the Star Drive slot (1.4.0: per-kit cost in kits.js)
+export const SPECIAL_COOLDOWN = 3;   // default seconds (per-kit cooldown in kits.js)
+const COMBO3_KIT_DUR = 0.34;         // weapon finisher window (4 frames @ 12 fps = 0.333 s of art)
 const JUMPKICK_DUR = 0.5;
 const KD_FALL = 0.35, KD_GETUP = 0.4, KD_IFRAMES = 0.5;
 const STAMINA_DRAIN = 32, STAMINA_REGEN = 28, STAMINA_UNLOCK = 25;
@@ -112,6 +113,7 @@ export function knockDown(ent, dir) {
   if (ent.kd) return;
   ent.kd = { phase: 'fall', t: KD_FALL, dir: dir || -ent.facing || 1 };
   ent.attackTimer = 0; ent.attackType = null; ent.hitbox = null; ent.stun = 0; ent.tauntT = 0; ent.lift = 0;
+  ent.dazed = false; ent.pull = null;
   ent.pose = 'hurt';
 }
 const groundTime = (ent, isPlayer) => (isPlayer ? diff.kdPlayer : diff.kdEnemy * (ent.isBoss ? 0.75 : 1)) || 0.8;
@@ -121,7 +123,7 @@ function tickKnockdown(ent, dt, areaWidth, isPlayer) {
   k.t -= dt;
   ent.pose = 'hurt';
   if (k.phase === 'fall') {
-    ent.x = clampX(ent.x + k.dir * 150 * dt * Math.max(0, k.t / KD_FALL), areaWidth);
+    ent.x = clampX(ent.x + k.dir * 150 * (k.push || 1) * dt * Math.max(0, k.t / KD_FALL), areaWidth);
     if (k.t <= 0) { k.phase = 'ground'; k.t = groundTime(ent, isPlayer); sfx('thud', { heavy: !!ent.isBoss }); }
   } else if (k.phase === 'ground') {
     if (k.t <= 0 && ent.alive) { k.phase = 'getup'; k.t = KD_GETUP; sfx('getup'); }
@@ -209,9 +211,10 @@ export function updatePlayer(p, input, dt, areaWidth, hooks = {}) {
   if (p.attackTimer > 0) {
     p.attackTimer -= dt;
     if (p.attackType === 'special') {
-      p.x = clampX(p.x + p.facing * SPECIAL_SPEED * dt, areaWidth);
-      p.invuln = Math.max(p.invuln, 0.06); // dash goes through attacks
-      followHitbox(p);
+      const km = p.kitMove;
+      if (km && km.lunge > 0 && km.el < km.lungeT) p.x = clampX(p.x + p.facing * (km.lunge / km.lungeT) * Math.min(dt, km.lungeT - km.el), areaWidth);
+      if (km) km.el += dt;
+      p.invuln = Math.max(p.invuln, 0.06); // the Star Drive slot still goes through attacks
     } else if (p.attackType === 'jumpkick') {
       p.x = clampX(p.x + p.facing * p.speed * 1.35 * dt, areaWidth);
       p.lift = Math.sin(Math.PI * Math.min(1, 1 - p.attackTimer / JUMPKICK_DUR)) * 30;
@@ -223,10 +226,12 @@ export function updatePlayer(p, input, dt, areaWidth, hooks = {}) {
       p.attackType = null;
       p.hitbox = null;
       p.lift = 0;
+      p.kitMove = null;
     }
     p.idleT = 0;
     done();
     gateHitbox(p, 'matthew', hooks.outfit);
+    kitGate(p, hooks.outfit);
     return; // lock movement during attack (SoR style)
   }
 
@@ -234,24 +239,32 @@ export function updatePlayer(p, input, dt, areaWidth, hooks = {}) {
   const ay = input.ay;
   const moving = Math.abs(ax) > 0.1 || Math.abs(ay) > 0.1;
   const wantSprint = !!input.sprintHeld && moving && !p.staminaLock && p.stamina > 0;
-  const startAttack = (type, pose, dur) => { p.attackType = type; p.pose = pose; p.attackTimer = dur; p.idleT = 0; p.victoryT = 0; };
+  const startAttack = (type, pose, dur) => { p.attackType = type; p.pose = pose; p.attackTimer = dur; p.idleT = 0; p.victoryT = 0; p.kitMove = null; };
 
-  // Special: 'Star Drive' dash (V / R2 / RT / touch ★) — costs meter, has a cooldown, knocks down
+  // Special: the Star Drive slot (V / R2 / RT / touch ★) — 1.4.0: each outfit's signature move (kits.js).
+  // Costs meter, has a cooldown; startup / effect / reach come from the kit + the outfit's special art.
   if (input.specialPressed) {
-    const can = p.specialCd <= 0 && (!hooks.canSpecial || hooks.canSpecial());
+    const kit = getKit(hooks.outfit), ks = kit.special;
+    const can = p.specialCd <= 0 && (!hooks.canSpecial || hooks.canSpecial(ks.cost));
     if (can) {
       if (Math.abs(ax) > 0.15) p.facing = ax > 0 ? 1 : -1;
-      startAttack('special', 'kick', SPECIAL_DUR);
-      p.specialCd = SPECIAL_COOLDOWN;
+      const tm = specialTiming(hooks.outfit);
+      startAttack('special', 'kick', tm.dur);
+      p.specialCd = ks.cooldown;
       p.combo = 0; p.comboStep = 0; p.comboTimer = 0;
-      const iron = hooks.outfit === 'ironclad'; // Hell's Nightmare armor: heavier Star Drive launch + impact (audio.js)
-      p.hitbox = makeHitbox(p, -6, 44, 56, 40, { dmg: SPECIAL_DMG, knock: 30, knockdown: true, special: true, sfx: iron ? 'star_iron' : 'star' });
+      const iron = hooks.outfit === 'ironclad'; // Hell's Nightmare armor: heavier launch + impact (audio.js)
+      p.kitMove = { id: kitId(hooks.outfit), kind: 'special', el: 0, lunge: ks.lunge || 0, lungeT: Math.max(0.05, tm.lastActiveEnd), fired: {}, rate: tm.rate };
+      p.hitbox = makeHitbox(p, 0, 70, 50, 60, { dmg: ks.dmg, knock: ks.knock || 0, knockdown: !!ks.knockdown, special: true, kit: p.kitMove.id, kitKind: 'special',
+        sfx: iron ? 'star_iron' : 'star', live: false });
       sfx('stardrive', { iron }); voice('matthew', 'special');
-      hooks.onSpecial && hooks.onSpecial();
-      done(); gateHitbox(p, 'matthew', hooks.outfit);
+      hooks.onSpecial && hooks.onSpecial(ks.cost);
+      pushFx({ type: 'callout', text: kit.move.toUpperCase() + '!', follow: true, dur: 0.8, kit: p.kitMove.id });
+      done();
+      setAnim(p, 'special', null, true); p.animRate = tm.rate; // re-time the 8-frame strip to the kit's startup
+      gateHitbox(p, 'matthew', hooks.outfit); kitGate(p, hooks.outfit);
       return;
     }
-    hooks.onSpecialDenied && hooks.onSpecialDenied(p.specialCd > 0 ? 'cooldown' : 'meter');
+    hooks.onSpecialDenied && hooks.onSpecialDenied(p.specialCd > 0 ? 'cooldown' : 'meter', ks.cost);
   }
   if (input.heavyPressed) {
     // Triangle / Y / C: slower haymaker with a wide hitbox and big knockback
@@ -278,6 +291,17 @@ export function updatePlayer(p, input, dt, areaWidth, hooks = {}) {
     p.combo = p.comboStep;
     p.comboTimer = 0.8;
     const fin = p.comboStep === 3;
+    if (fin) {
+      // 1.4.0: the 3rd hit is the outfit's weapon finisher (combo3 art; hitbox from the art, kits.js numbers)
+      const id = kitId(hooks.outfit), c3 = getKit(id).combo3;
+      startAttack('combo', kick ? 'kick' : 'punch', COMBO3_KIT_DUR);
+      p.kitMove = { id, kind: 'combo3', el: 0, lunge: 0, lungeT: 0, fired: {} };
+      p.hitbox = makeHitbox(p, 10, 60, 44, 50, { dmg: c3.dmg, knock: c3.knock, knockdown: !!c3.knockdown, armor: c3.armor, kit: id, kitKind: 'combo3', sfx: 'finisher', live: false });
+      sfx('whiff', { heavy: true }); voice('matthew', 'big');
+      p.comboTimer = 0.25;
+      done(); gateHitbox(p, 'matthew', hooks.outfit); kitGate(p, hooks.outfit);
+      return;
+    }
     if (kick) {
       startAttack('combo', 'kick', fin ? 0.36 : 0.32);
       p.hitbox = makeHitbox(p, 10, 28, 44, 24, { dmg: fin ? 20 : 18, knock: 26, knockdown: fin, sfx: fin ? 'finisher' : 'kick' });
@@ -308,10 +332,233 @@ export function updatePlayer(p, input, dt, areaWidth, hooks = {}) {
   done();
 }
 
+
+// ---------------------------------------------------------------- 1.4.0 outfit kits (kits.js data)
+const kitId = (o) => { const id = o && typeof o === 'object' ? o.id : o; return KITS[id] ? id : 'polo'; };
+const kitFx = [];          // short-lived visual effects for main.js (callouts, flashes, rings, sparks, cords)
+const projectiles = [];    // Spiral footballs in flight
+export function getKitFx() { return kitFx; }
+export function getProjectiles() { return projectiles; }
+export function clearKitFx() { kitFx.length = 0; projectiles.length = 0; }
+function pushFx(fx) { fx.t = 0; fx.dur = fx.dur || 0.4; kitFx.push(fx); if (kitFx.length > 40) kitFx.shift(); return fx; }
+
+/** Special timing for an outfit: art active frames (or the kits.js table) → strip rate + window. */
+const timingCache = new Map();
+export function specialTiming(outfit) {
+  const id = kitId(outfit), ks = getKit(id).special;
+  let act = null;
+  if (animFrame('matthew', 'special', 0, id)) {
+    act = [];
+    for (let i = 0; i < SPECIAL_FRAMES; i++) { const f = animFrame('matthew', 'special', (i + 0.5) * 1000 / KIT_FPS, id); if (f && f.active) act.push(f.index != null ? f.index : i); }
+    if (!act.length) act = null;
+  }
+  const cached = timingCache.get(id);
+  if (!act && cached) return cached;
+  const a = act || SPECIAL_ACTIVE[id] || [3, 4];
+  const first = Math.min(...a), last = Math.max(...a);
+  const rate = (first / KIT_FPS) / ks.startup;               // >1 = faster than the art's 12 fps
+  const t = { id, first, last, active: a, rate, startup: ks.startup, dur: (SPECIAL_FRAMES / KIT_FPS) / rate, lastActiveEnd: ((last + 1) / KIT_FPS) / rate, fromArt: !!act };
+  if (act) timingCache.set(id, t);
+  return t;
+}
+
+/** Where a kit hit can land on a foe: the drawn body (thugs ~96 px tall, Silas ~112), not just the legs. */
+function kitHurt(e) { return [e.x - 16, e.y - (e.isBoss ? 112 : 96), 32, e.isBoss ? 112 : 96]; }
+
+/**
+ * Per-frame kit attack update (after gateHitbox): hitbox geometry from the art frame's own hitbox,
+ * live only on active frames, hit-once reset between separate active runs (Encore: frames 3 and 5),
+ * one-shot events (kit sound, Spiral throw, Star Yank pull on frame 4, FX).
+ */
+function kitGate(p, outfit) {
+  const hb = p.hitbox, km = p.kitMove;
+  if (!hb || !hb.kit || !km) return;
+  const kit = getKit(hb.kit), spec = hb.kitKind === 'special', ks = spec ? kit.special : kit.combo3;
+  const f = animFrame('matthew', p.animState, animMs(p), hb.kit);
+  let idx, active, box = null;
+  if (f) {
+    idx = f.index != null ? f.index : 0; active = !!f.active;
+    if (f.hitbox) box = artBoxToWorld(f, f.hitbox);
+  } else { // no art: same timeline from the kits.js frame table
+    idx = Math.min((spec ? SPECIAL_FRAMES : 4) - 1, Math.floor(animMs(p) * KIT_FPS / 1000));
+    const a = spec ? (SPECIAL_ACTIVE[hb.kit] || [3, 4]) : COMBO3_ACTIVE;
+    active = spec && hb.kit === 'gold' ? a.includes(idx) : idx >= a[0] && idx <= a[a.length - 1];
+  }
+  if (!box) box = hb.lastBox || { x0: 6, x1: 56, y0: -84, y1: -12 };
+  hb.lastBox = box;
+  let { x0, x1, y0, y1 } = box;
+  const pad = ks.pad || null;
+  if (pad) {
+    if (pad.reach) x1 = Math.max(x1, pad.reach);
+    if (pad.back != null) x0 = Math.min(x0, -pad.back);
+    if (pad.reach) { y0 = Math.min(y0, -96); y1 = Math.max(y1, 0); } // area moves cover the whole body height
+  }
+  hb.depth = (pad && pad.depth) || ks.depth || 22;
+  hb.w = Math.max(4, x1 - x0); hb.h = Math.max(4, y1 - y0);
+  hb.x = p.facing > 0 ? p.x + x0 : p.x - x1;
+  hb.y = p.y + y0;
+  // separate active runs (gold frames 3 and 5) each hit once
+  if (active) {
+    if (hb.lastActive == null || idx - hb.lastActive > 1) { hb.seg = (hb.seg || 0) + 1; if (hb.seg > 1) hb.hit.clear(); }
+    hb.lastActive = idx;
+  }
+  hb.live = active && !(spec && ks.effect === 'projectile');   // Spiral hits with the ball, not the hand
+  if (spec && ks.effect === 'double' && hb.seg >= 2) { hb.dmg = ks.dmg2 || ks.dmg; hb.knockdown = !!ks.knockdown2; }
+  const id = hb.kit, fwd = p.facing;
+  if (active && !km.fired.sound) {
+    km.fired.sound = true;
+    sfx(kit.sfx, { lite: !spec });
+    if (spec) {
+      const hx = p.x + fwd * (x0 + x1) / 2, hy = p.y + (y0 + y1) / 2;
+      if (ks.effect === 'area_stun') pushFx({ type: 'flash', x: p.x + fwd * 20, y: p.y, facing: fwd, reach: x1, dur: 0.35 });
+      else if (ks.effect === 'cone') pushFx({ type: 'cone', x: p.x + fwd * 14, y: p.y, facing: fwd, reach: x1, dur: 0.35 });
+      else if (id === 'ironclad') pushFx({ type: 'ring', x: p.x + fwd * 26, y: p.y, facing: fwd, reach: x1, dur: 0.45 });
+      else if (id === 'mechanic' || id === 'polo') pushFx({ type: 'crack', x: p.x + fwd * x1 * 0.8, y: p.y, facing: fwd, dur: 0.5 });
+      else if (ks.effect === 'sweep') pushFx({ type: 'arc', x: p.x, y: p.y + y0, facing: fwd, reach: x1, dur: 0.25, color: '#ffb36b' });
+      else if (id === 'hoodie') pushFx({ type: 'dust', x: p.x + fwd * 30, y: p.y, facing: fwd, dur: 0.4 });
+      else pushFx({ type: 'arc', x: p.x, y: hy, facing: fwd, reach: x1, dur: 0.22, color: id === 'gold' ? '#ffd24a' : '#fff4dc' });
+      if (ks.effect === 'projectile' && !km.fired.proj) {
+        km.fired.proj = true;
+        const pr = ks.projectile;
+        projectiles.push({ kit: id, x: hx, y: p.y, hy: (y0 + y1) / 2, vx: fwd * pr.speed, dist: 0, range: pr.range, depth: pr.depth, t: 0,
+          dmg: ks.dmg, stun: ks.stun, facing: fwd, hit: new Set() });
+      }
+    }
+  }
+  if (spec && id === 'gold' && hb.seg >= 2 && !km.fired.second) { km.fired.second = true; sfx(kit.sfx, { second: true }); pushFx({ type: 'arc', x: p.x, y: p.y - 30, facing: fwd, reach: x1, dur: 0.22, color: '#ffd24a' }); }
+  if (spec && ks.effect === 'pull' && idx >= PULL_FRAME && !km.fired.pull) { km.fired.pull = true; km.pullPending = true; }
+}
+
+/** Foe effect strengths for the current difficulty (boss resists part of it). */
+function effStun(e, t) { return t * (KIT_DIFF[diff.id] || KIT_DIFF.normal).stun * (e.isBoss ? BOSS_RESIST.stun : 1); }
+/** Movement / attack-clock multiplier while slowed (Hot Plate). */
+export function slowMul(e) { return e && e.slowT > 0 ? e.slowMul || 1 : 1; }
+
+/**
+ * One player hit on one foe: damage (kit armor bonus), knockdown / stun / slow / knockback, audio,
+ * KO, then onHitEnemy. Shared by melee hitboxes, the Spiral and Star Yank.
+ */
+function applyHit(player, e, hb, areaWidth, onHitEnemy, dir = player.facing) {
+  const kit = hb.kit ? getKit(hb.kit) : null;
+  const ks = kit ? (hb.kitKind === 'special' ? kit.special : kit.combo3) : null;
+  let dmg = hb.dmg;
+  const armor = hb.armor || (ks && ks.armor);
+  if (armor && isArmored(e)) { dmg = Math.round(dmg * armor); pushFx({ type: 'text', text: 'ARMOR BREAK', x: e.x, y: e.y - (e.isBoss ? 120 : 104), dur: 0.7, color: '#ffb020' }); }
+  e.hp -= dmg;
+  if (hb.knockdown) {
+    knockDown(e, dir);
+    if (e.kd && ks && ks.kdPush) e.kd.push = ks.kdPush;
+  } else {
+    const kitStun = ks && hb.kitKind === 'special' && ks.stun ? effStun(e, ks.stun) : 0;
+    e.stun = Math.max(hb.knock ? 0.4 : 0.25, kitStun);
+    if (kitStun >= 0.3) { e.dazed = true; e.attackTimer = 0; e.hitbox = null; e.tauntT = 0; }
+    if (!hb.noPush) e.x = Math.max(30, Math.min(areaWidth - 30, e.x + dir * (hb.knock != null && hb.knock !== 0 ? hb.knock : (kit ? 6 : 18))));
+  }
+  if (ks && hb.kitKind === 'special' && ks.slow) {
+    const d = (KIT_DIFF[diff.id] || KIT_DIFF.normal).slow;
+    e.slowT = ks.slow.t * d;
+    e.slowMul = e.isBoss ? 1 - (1 - ks.slow.mul) * BOSS_RESIST.slow : ks.slow.mul;
+  }
+  if (kit) pushFx({ type: 'spark', x: e.x, y: e.y - 52, dur: 0.22, big: hb.kitKind === 'special', color: hb.kit === 'beacon' ? '#7dffb2' : hb.kit === 'ironclad' ? '#ffb020' : '#fff4a8', seg: hb.seg || 1 });
+  if (e.hp <= 0) {
+    e.alive = false;
+    e.pose = 'hurt';
+    e.koT = e.kd ? 1.3 : 0.7; // body stays briefly for the ko / defeat / caught anim
+    e.pull = null;
+  }
+  { // audio: impact by attack type, then the foe's own voice (hurt / ko / defeat / caught)
+    const pan = Math.max(-0.6, Math.min(0.6, (e.x - player.x) / 300)), vk = enemyCharKey(e);
+    sfx(hb.sfx || 'punch', { pan });
+    if (e.alive) voice(vk, 'hurt', { chance: 0.6, id: e, pan });
+    else {
+      voice(vk, deadAnim(e) === 'caught' ? 'caught' : deadAnim(e), { pan });
+      if (e.runner) sfx('caught');
+      else if (!e.kd) sfx('thud', { delay: 0.4, pan }); // KO'd body hits the pavement (knockdowns thud on landing)
+    }
+  }
+  onHitEnemy && onHitEnemy(e, dmg); // after the KO flag so score sees it
+}
+
+/** Star Yank in progress: slide the foe to Matthew; true while it's being reeled in. */
+export function tickPull(e, dt) {
+  const pl = e.pull;
+  if (!pl) return false;
+  pl.t += dt;
+  const k = Math.min(1, pl.t / pl.dur), ease = 1 - (1 - k) * (1 - k);
+  e.x = pl.x0 + (pl.x1 - pl.x0) * ease;
+  e.y = pl.y0 + (pl.y1 - pl.y0) * ease;
+  e.pose = 'hurt';
+  if (k >= 1) e.pull = null;
+  return !!e.pull;
+}
+
+/**
+ * Kit systems that need the foe list + dt (call after resolveHits): Spiral flight / impact,
+ * Star Yank target pick + pull, FX clocks. onHitEnemy = the same callback resolveHits gets.
+ */
+export function updateKits(player, enemies, dt, areaWidth = Infinity, onHitEnemy) {
+  for (const fx of kitFx) fx.t += dt;
+  for (let i = kitFx.length - 1; i >= 0; i--) if (kitFx[i].t >= kitFx[i].dur) kitFx.splice(i, 1);
+  // Spiral
+  for (let i = projectiles.length - 1; i >= 0; i--) {
+    const pr = projectiles[i];
+    const step = pr.vx * dt;
+    pr.x += step; pr.dist += Math.abs(step); pr.t += dt;
+    let done = pr.dist >= pr.range || pr.x < 0 || pr.x > areaWidth;
+    if (!done) {
+      for (const e of enemies) {
+        if (!e.alive || e.kd || pr.hit.has(e) || Math.abs(pr.y - e.y) >= pr.depth) continue;
+        const [hx, hy, hw, hh] = kitHurt(e);
+        const by = pr.y + pr.hy;
+        if (pr.x + 8 > hx && pr.x - 8 < hx + hw && by + 6 > hy && by - 6 < hy + hh) {
+          pr.hit.add(e);
+          if (e.invuln > 0) { sfx('block'); done = true; break; }
+          applyHit(player, e, { dmg: pr.dmg, knock: 8, kit: pr.kit, kitKind: 'special', sfx: 'kit_varsity_hit', hit: pr.hit }, areaWidth, onHitEnemy, pr.facing);
+          pushFx({ type: 'pop', x: pr.x, y: by, dur: 0.3 });
+          done = true; break;   // stuns one target
+        }
+      }
+    }
+    if (done) { if (pr.dist >= pr.range) pushFx({ type: 'pop', x: pr.x, y: pr.y + pr.hy, dur: 0.2, small: true }); projectiles.splice(i, 1); }
+  }
+  // Star Yank (frame 4): nearest foe in front within the line's range is reeled in
+  const km = player.kitMove;
+  if (km && km.pullPending) {
+    km.pullPending = false;
+    const ks = getKit(km.id).special, pl = ks.pull;
+    let best = null, bd = Infinity;
+    for (const e of enemies) {
+      if (!e.alive || e.kd || e.pull || e.invuln > 0) continue;
+      const along = (e.x - player.x) * player.facing, dy = Math.abs(e.y - player.y);
+      if (along < -10 || along > pl.range || dy > pl.depth) continue;
+      const d = Math.hypot(along, dy);
+      if (d < bd) { bd = d; best = e; }
+    }
+    const hand = { x: player.x + player.facing * 30, y: player.y - 62 };
+    if (best) {
+      const e = best;
+      let x1 = player.x + player.facing * pl.to;
+      if (e.isBoss) x1 = e.x + (x1 - e.x) * BOSS_RESIST.pull;   // Silas only gets dragged halfway
+      if ((x1 - e.x) * player.facing > 0) x1 = e.x;             // never push a foe that's already close
+      e.pull = { t: 0, dur: pl.time, x0: e.x, y0: e.y, x1: Math.max(30, Math.min(areaWidth - 30, x1)), y1: e.isBoss ? e.y : e.y + (player.y - e.y) * 0.7 };
+      const hb = player.hitbox && player.hitbox.kit === km.id ? player.hitbox : null;
+      if (!hb || !hb.hit.has(e)) {
+        if (hb) hb.hit.add(e);
+        applyHit(player, e, { dmg: ks.dmg, knock: 0, noPush: true, kit: km.id, kitKind: 'special', sfx: 'star' }, areaWidth, onHitEnemy, -player.facing);
+      } else { e.stun = Math.max(e.stun || 0, effStun(e, ks.stun)); e.dazed = true; }
+      e.stun = Math.max(e.stun || 0, pl.time + 0.05);
+      pushFx({ type: 'cord', target: e, x: hand.x, y: hand.y, dur: pl.time + 0.12 });
+      km.pullTarget = e;
+    } else pushFx({ type: 'cord', x: hand.x, y: hand.y, tx: hand.x + player.facing * pl.range * 0.75, ty: hand.y + 6, dur: 0.2 });
+  }
+}
+
 function deadAnim(e) { return e.isBoss ? 'defeat' : e.runner ? 'caught' : 'ko'; }
 
 export function updateEnemy(e, player, dt, areaWidth = Infinity) {
-  e.animT += dt;
+  if (e.slowT > 0) e.slowT -= dt;
+  const slow = slowMul(e);  // Hot Plate: everything (walk, swing, anim) runs at slowMul
+  e.animT += dt * slow;
   const key = enemyCharKey(e);
   if (!e.alive) {
     if (e.koT > 0) e.koT -= dt;
@@ -321,14 +568,16 @@ export function updateEnemy(e, player, dt, areaWidth = Infinity) {
   }
   if (e.invuln > 0) e.invuln -= dt;
   if (e.kd) { tickKnockdown(e, dt, areaWidth, false); setAnim(e, e.kd ? KD_ANIM[e.kd.phase] : 'idle', e.kd && e.kd.phase !== 'ground' ? { key, sec: e.kd.t } : null); return; }
+  if (e.pull) { tickPull(e, dt); setAnim(e, 'hurt'); return; } // Star Yank
   if (e.stun > 0) {
     e.stun -= dt;
     e.pose = 'hurt';
     setAnim(e, 'hurt', { key, sec: e.stun });
+    if (e.stun <= 0) e.dazed = false;
     return;
   }
   if (e.attackTimer > 0) {
-    e.attackTimer -= dt;
+    e.attackTimer -= dt * slow;
     if (e.attackTimer <= 0) {
       e.pose = 'idle';
       e.hitbox = null;
@@ -345,7 +594,7 @@ export function updateEnemy(e, player, dt, areaWidth = Infinity) {
     return;
   }
 
-  e.aiCooldown -= dt;
+  e.aiCooldown -= dt * slow;
   const dx = player.x - e.x;
   const dy = player.y - e.y;
   const dist = Math.hypot(dx, dy);
@@ -391,7 +640,7 @@ export function updateEnemy(e, player, dt, areaWidth = Infinity) {
   } else {
     e.pose = 'chase';
     setAnim(e, 'walk'); // thugs/Silas walk in; the snatcher's 'run' is set in main.js updateRunner
-    const sp = e.speed * dt;
+    const sp = e.speed * dt * slow;
     if (dist > 1) {
       e.x += (dx / dist) * sp;
       e.y += (dy / dist) * sp * 0.7;
@@ -406,36 +655,18 @@ export function resolveHits(player, enemies, onHitEnemy, onHitPlayer, areaWidth 
   const hb = player.hitbox;
   if (hb && hb.live !== false) {
     for (const e of enemies) {
-      if (!e.alive || hb.hit.has(e) || e.kd) continue;
+      if (!e.alive || hb.hit.has(e) || e.kd || e.pull) continue;
+      // kit weapons hit the drawn body (kitHurt) within their own depth band; fists keep the old box
+      const [bx, by, bw, bh] = hb.kit ? kitHurt(e) : [e.x - 14, e.y - 60, 28, 56];
+      const near = overlap(hb, bx, by, bw, bh) && Math.abs(player.y - e.y) < (hb.depth || 22);
       if (e.invuln > 0) {
         // getting-up i-frames: the blow glances off (once per swing)
-        if (overlap(hb, e.x - 14, e.y - 60, 28, 56) && Math.abs(player.y - e.y) < 22) { hb.hit.add(e); sfx('block'); }
+        if (near) { hb.hit.add(e); sfx('block'); }
         continue;
       }
-      if (overlap(hb, e.x - 14, e.y - 60, 28, 56) && Math.abs(player.y - e.y) < 22) {
+      if (near) {
         hb.hit.add(e);
-        e.hp -= hb.dmg;
-        if (hb.knockdown) knockDown(e, player.facing);
-        else {
-          e.stun = hb.knock ? 0.4 : 0.25;
-          e.x = Math.max(30, Math.min(areaWidth - 30, e.x + player.facing * (hb.knock || 18)));
-        }
-        if (e.hp <= 0) {
-          e.alive = false;
-          e.pose = 'hurt';
-          e.koT = e.kd ? 1.3 : 0.7; // body stays briefly for the ko / defeat / caught anim
-        }
-        { // audio: impact by attack type, then the foe's own voice (hurt / ko / defeat / caught)
-          const pan = Math.max(-0.6, Math.min(0.6, (e.x - player.x) / 300)), vk = enemyCharKey(e);
-          sfx(hb.sfx || 'punch', { pan });
-          if (e.alive) voice(vk, 'hurt', { chance: 0.6, id: e, pan });
-          else {
-            voice(vk, deadAnim(e) === 'caught' ? 'caught' : deadAnim(e), { pan });
-            if (e.runner) sfx('caught');
-            else if (!e.kd) sfx('thud', { delay: 0.4, pan }); // KO'd body hits the pavement (knockdowns thud on landing)
-          }
-        }
-        onHitEnemy && onHitEnemy(e, hb.dmg); // after the KO flag so score sees it
+        applyHit(player, e, hb, areaWidth, onHitEnemy);
       }
     }
   }
@@ -463,6 +694,7 @@ export function resolveHits(player, enemies, onHitEnemy, onHitPlayer, areaWidth 
         player.attackTimer = 0.2;
         player.attackType = null;
         player.hitbox = null;
+        player.kitMove = null;
         player.x = Math.max(30, Math.min(areaWidth - 30, player.x + e.facing * 20));
       }
       setAnim(player, player.kd ? 'knockdown_fall' : 'hurt', { key: 'matthew', sec: player.kd ? KD_FALL : 0.2, outfit: player.outfit });

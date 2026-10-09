@@ -8,7 +8,7 @@
    "file": "assets/sprites/matthew_polo_anim.png",
    "states": {
     "idle_signature": {
-     "file": "assets/sprites/matthew_polo_anim.png",
+     "file": "assets/sprites/matthew_polo_kit.png",
      "frames": [
       0,
       1,
@@ -22,6 +22,7 @@
      "fw": 144,
      "fh": 192,
      "anchorX": 72,
+     "wide": false,
      "sx": [
       0,
       144,
@@ -396,23 +397,24 @@
      ]
     },
     "combo3": {
-     "file": "assets/sprites/matthew_polo_anim.png",
+     "file": "assets/sprites/matthew_polo_kit.png",
      "frames": [
-      27,
-      28,
-      29,
-      30
+      6,
+      7,
+      8,
+      9
      ],
      "fps": 12,
      "loop": false,
      "fw": 144,
      "fh": 192,
      "anchorX": 72,
+     "wide": false,
      "sx": [
-      3888,
-      4032,
-      4176,
-      4320
+      864,
+      1008,
+      1152,
+      1296
      ],
      "sw": [
       144,
@@ -453,16 +455,16 @@
      "hitbox": [
       null,
       {
-       "x": 77,
-       "y": 42,
-       "w": 28,
-       "h": 24
+       "x": 82,
+       "y": 55,
+       "w": 44,
+       "h": 42
       },
       {
-       "x": 68,
-       "y": 11,
-       "w": 28,
-       "h": 24
+       "x": 79,
+       "y": 25,
+       "w": 31,
+       "h": 37
       },
       null
      ]
@@ -549,7 +551,7 @@
      ]
     },
     "special": {
-     "file": "assets/sprites/matthew_polo_anim_wide.png",
+     "file": "assets/sprites/matthew_polo_kit_wide.png",
      "frames": [
       0,
       1,
@@ -563,8 +565,9 @@
      "fps": 12,
      "loop": false,
      "fw": 240,
-     "fh": 192,
+     "fh": 197,
      "anchorX": 120,
+     "wide": true,
      "sx": [
       0,
       240,
@@ -596,14 +599,14 @@
       0
      ],
      "sh": [
-      192,
-      192,
-      192,
-      192,
-      192,
-      192,
-      192,
-      192
+      197,
+      197,
+      197,
+      197,
+      197,
+      197,
+      197,
+      197
      ],
      "grounded": [
       true,
@@ -640,16 +643,16 @@
       null,
       null,
       {
-       "x": 144,
-       "y": 50,
-       "w": 46,
-       "h": 50
+       "x": 140,
+       "y": 90,
+       "w": 43,
+       "h": 56
       },
       {
-       "x": 144,
-       "y": 50,
-       "w": 46,
-       "h": 50
+       "x": 140,
+       "y": 90,
+       "w": 48,
+       "h": 58
       },
       null,
       null,
@@ -1029,7 +1032,11 @@
      ]
     }
    },
-   "wideFile": "assets/sprites/matthew_polo_anim_wide.png"
+   "wideFile": "assets/sprites/matthew_polo_anim_wide.png",
+   "kit": {
+    "weapon": "Hardcover Book",
+    "move": "Detention"
+   }
   },
   "tessa": {
    "file": "assets/sprites/tessa_anim.png",
@@ -1200,7 +1207,7 @@
    "file": "assets/sprites/matthew_photo_anim.png",
    "states": {
     "idle_signature": {
-     "file": "assets/sprites/matthew_photo_anim.png",
+     "file": "assets/sprites/matthew_photo_kit.png",
      "frames": [
       0,
       1,
@@ -1214,6 +1221,7 @@
      "fw": 144,
      "fh": 192,
      "anchorX": 72,
+     "wide": false,
      "sx": [
       0,
       144,
@@ -1588,29 +1596,30 @@
      ]
     },
     "combo3": {
-     "file": "assets/sprites/matthew_photo_anim.png",
+     "file": "assets/sprites/matthew_photo_kit_wide.png",
      "frames": [
-      27,
-      28,
-      29,
-      30
+      0,
+      1,
+      2,
+      3
      ],
      "fps": 12,
      "loop": false,
-     "fw": 144,
+     "fw": 240,
      "fh": 192,
-     "anchorX": 72,
+     "anchorX": 120,
+     "wide": true,
      "sx": [
-      3888,
-      4032,
-      4176,
-      4320
+      0,
+      240,
+      480,
+      720
      ],
      "sw": [
-      144,
-      144,
-      144,
-      144
+      240,
+      240,
+      240,
+      240
      ],
      "sy": [
       0,
@@ -1645,16 +1654,16 @@
      "hitbox": [
       null,
       {
-       "x": 77,
-       "y": 42,
-       "w": 28,
-       "h": 24
+       "x": 142,
+       "y": 85,
+       "w": 37,
+       "h": 29
       },
       {
-       "x": 68,
-       "y": 11,
-       "w": 28,
-       "h": 24
+       "x": 157,
+       "y": 46,
+       "w": 40,
+       "h": 36
       },
       null
      ]
@@ -1741,31 +1750,32 @@
      ]
     },
     "special": {
-     "file": "assets/sprites/matthew_photo_anim_wide.png",
+     "file": "assets/sprites/matthew_photo_kit_wide.png",
      "frames": [
-      0,
-      1,
-      2,
-      3,
       4,
       5,
       6,
-      7
+      7,
+      8,
+      9,
+      10,
+      11
      ],
      "fps": 12,
      "loop": false,
      "fw": 240,
      "fh": 192,
      "anchorX": 120,
+     "wide": true,
      "sx": [
-      0,
-      240,
-      480,
-      720,
       960,
       1200,
       1440,
-      1680
+      1680,
+      1920,
+      2160,
+      2400,
+      2640
      ],
      "sw": [
       240,
@@ -1820,9 +1830,9 @@
      "active": [
       false,
       false,
+      true,
+      true,
       false,
-      true,
-      true,
       false,
       false,
       false
@@ -1830,19 +1840,19 @@
      "hitbox": [
       null,
       null,
+      {
+       "x": 150,
+       "y": 31,
+       "w": 35,
+       "h": 33
+      },
+      {
+       "x": 157,
+       "y": 47,
+       "w": 53,
+       "h": 50
+      },
       null,
-      {
-       "x": 144,
-       "y": 50,
-       "w": 46,
-       "h": 50
-      },
-      {
-       "x": 144,
-       "y": 50,
-       "w": 46,
-       "h": 50
-      },
       null,
       null,
       null
@@ -2221,13 +2231,17 @@
      ]
     }
    },
-   "wideFile": "assets/sprites/matthew_photo_anim_wide.png"
+   "wideFile": "assets/sprites/matthew_photo_anim_wide.png",
+   "kit": {
+    "weapon": "Strap Camera",
+    "move": "Flash Pop"
+   }
   },
   "matthew_hoodie": {
    "file": "assets/sprites/matthew_hoodie_anim.png",
    "states": {
     "idle_signature": {
-     "file": "assets/sprites/matthew_hoodie_anim.png",
+     "file": "assets/sprites/matthew_hoodie_kit.png",
      "frames": [
       0,
       1,
@@ -2241,6 +2255,7 @@
      "fw": 144,
      "fh": 192,
      "anchorX": 72,
+     "wide": false,
      "sx": [
       0,
       144,
@@ -2615,29 +2630,30 @@
      ]
     },
     "combo3": {
-     "file": "assets/sprites/matthew_hoodie_anim.png",
+     "file": "assets/sprites/matthew_hoodie_kit_wide.png",
      "frames": [
-      27,
-      28,
-      29,
-      30
+      0,
+      1,
+      2,
+      3
      ],
      "fps": 12,
      "loop": false,
-     "fw": 144,
+     "fw": 240,
      "fh": 192,
-     "anchorX": 72,
+     "anchorX": 120,
+     "wide": true,
      "sx": [
-      3888,
-      4032,
-      4176,
-      4320
+      0,
+      240,
+      480,
+      720
      ],
      "sw": [
-      144,
-      144,
-      144,
-      144
+      240,
+      240,
+      240,
+      240
      ],
      "sy": [
       0,
@@ -2672,16 +2688,16 @@
      "hitbox": [
       null,
       {
-       "x": 77,
-       "y": 42,
-       "w": 28,
-       "h": 24
+       "x": 137,
+       "y": 74,
+       "w": 70,
+       "h": 22
       },
       {
-       "x": 68,
-       "y": 11,
-       "w": 28,
-       "h": 24
+       "x": 139,
+       "y": 75,
+       "w": 70,
+       "h": 22
       },
       null
      ]
@@ -2768,31 +2784,32 @@
      ]
     },
     "special": {
-     "file": "assets/sprites/matthew_hoodie_anim_wide.png",
+     "file": "assets/sprites/matthew_hoodie_kit_wide.png",
      "frames": [
-      0,
-      1,
-      2,
-      3,
       4,
       5,
       6,
-      7
+      7,
+      8,
+      9,
+      10,
+      11
      ],
      "fps": 12,
      "loop": false,
      "fw": 240,
      "fh": 192,
      "anchorX": 120,
+     "wide": true,
      "sx": [
-      0,
-      240,
-      480,
-      720,
       960,
       1200,
       1440,
-      1680
+      1680,
+      1920,
+      2160,
+      2400,
+      2640
      ],
      "sw": [
       240,
@@ -2847,9 +2864,9 @@
      "active": [
       false,
       false,
+      true,
+      true,
       false,
-      true,
-      true,
       false,
       false,
       false
@@ -2857,19 +2874,19 @@
      "hitbox": [
       null,
       null,
+      {
+       "x": 155,
+       "y": 141,
+       "w": 61,
+       "h": 35
+      },
+      {
+       "x": 164,
+       "y": 117,
+       "w": 63,
+       "h": 56
+      },
       null,
-      {
-       "x": 144,
-       "y": 50,
-       "w": 46,
-       "h": 50
-      },
-      {
-       "x": 144,
-       "y": 50,
-       "w": 46,
-       "h": 50
-      },
       null,
       null,
       null
@@ -3248,13 +3265,17 @@
      ]
     }
    },
-   "wideFile": "assets/sprites/matthew_hoodie_anim_wide.png"
+   "wideFile": "assets/sprites/matthew_hoodie_anim_wide.png",
+   "kit": {
+    "weapon": "Skateboard",
+    "move": "Kickflip"
+   }
   },
   "matthew_jacket": {
    "file": "assets/sprites/matthew_jacket_anim.png",
    "states": {
     "idle_signature": {
-     "file": "assets/sprites/matthew_jacket_anim.png",
+     "file": "assets/sprites/matthew_jacket_kit.png",
      "frames": [
       0,
       1,
@@ -3268,6 +3289,7 @@
      "fw": 144,
      "fh": 192,
      "anchorX": 72,
+     "wide": false,
      "sx": [
       0,
       144,
@@ -3642,29 +3664,30 @@
      ]
     },
     "combo3": {
-     "file": "assets/sprites/matthew_jacket_anim.png",
+     "file": "assets/sprites/matthew_jacket_kit_wide.png",
      "frames": [
-      27,
-      28,
-      29,
-      30
+      0,
+      1,
+      2,
+      3
      ],
      "fps": 12,
      "loop": false,
-     "fw": 144,
+     "fw": 240,
      "fh": 192,
-     "anchorX": 72,
+     "anchorX": 120,
+     "wide": true,
      "sx": [
-      3888,
-      4032,
-      4176,
-      4320
+      0,
+      240,
+      480,
+      720
      ],
      "sw": [
-      144,
-      144,
-      144,
-      144
+      240,
+      240,
+      240,
+      240
      ],
      "sy": [
       0,
@@ -3699,16 +3722,16 @@
      "hitbox": [
       null,
       {
-       "x": 77,
-       "y": 42,
-       "w": 28,
-       "h": 24
+       "x": 139,
+       "y": 39,
+       "w": 45,
+       "h": 20
       },
       {
-       "x": 68,
-       "y": 11,
-       "w": 28,
-       "h": 24
+       "x": 149,
+       "y": 88,
+       "w": 41,
+       "h": 64
       },
       null
      ]
@@ -3795,31 +3818,32 @@
      ]
     },
     "special": {
-     "file": "assets/sprites/matthew_jacket_anim_wide.png",
+     "file": "assets/sprites/matthew_jacket_kit_wide.png",
      "frames": [
-      0,
-      1,
-      2,
-      3,
       4,
       5,
       6,
-      7
+      7,
+      8,
+      9,
+      10,
+      11
      ],
      "fps": 12,
      "loop": false,
      "fw": 240,
      "fh": 192,
      "anchorX": 120,
+     "wide": true,
      "sx": [
-      0,
-      240,
-      480,
-      720,
       960,
       1200,
       1440,
-      1680
+      1680,
+      1920,
+      2160,
+      2400,
+      2640
      ],
      "sw": [
       240,
@@ -3874,9 +3898,9 @@
      "active": [
       false,
       false,
+      true,
+      true,
       false,
-      true,
-      true,
       false,
       false,
       false
@@ -3884,19 +3908,19 @@
      "hitbox": [
       null,
       null,
+      {
+       "x": 151,
+       "y": 71,
+       "w": 69,
+       "h": 20
+      },
+      {
+       "x": 153,
+       "y": 66,
+       "w": 77,
+       "h": 20
+      },
       null,
-      {
-       "x": 144,
-       "y": 50,
-       "w": 46,
-       "h": 50
-      },
-      {
-       "x": 144,
-       "y": 50,
-       "w": 46,
-       "h": 50
-      },
       null,
       null,
       null
@@ -4275,13 +4299,17 @@
      ]
     }
    },
-   "wideFile": "assets/sprites/matthew_jacket_anim_wide.png"
+   "wideFile": "assets/sprites/matthew_jacket_anim_wide.png",
+   "kit": {
+    "weapon": "Bike Chain",
+    "move": "Whip Crack"
+   }
   },
   "matthew_street": {
    "file": "assets/sprites/matthew_street_anim.png",
    "states": {
     "idle_signature": {
-     "file": "assets/sprites/matthew_street_anim.png",
+     "file": "assets/sprites/matthew_street_kit.png",
      "frames": [
       0,
       1,
@@ -4295,6 +4323,7 @@
      "fw": 144,
      "fh": 192,
      "anchorX": 72,
+     "wide": false,
      "sx": [
       0,
       144,
@@ -4669,29 +4698,30 @@
      ]
     },
     "combo3": {
-     "file": "assets/sprites/matthew_street_anim.png",
+     "file": "assets/sprites/matthew_street_kit_wide.png",
      "frames": [
-      27,
-      28,
-      29,
-      30
+      0,
+      1,
+      2,
+      3
      ],
      "fps": 12,
      "loop": false,
-     "fw": 144,
+     "fw": 240,
      "fh": 192,
-     "anchorX": 72,
+     "anchorX": 120,
+     "wide": true,
      "sx": [
-      3888,
-      4032,
-      4176,
-      4320
+      0,
+      240,
+      480,
+      720
      ],
      "sw": [
-      144,
-      144,
-      144,
-      144
+      240,
+      240,
+      240,
+      240
      ],
      "sy": [
       0,
@@ -4726,16 +4756,16 @@
      "hitbox": [
       null,
       {
-       "x": 77,
-       "y": 42,
-       "w": 28,
-       "h": 24
+       "x": 166,
+       "y": 47,
+       "w": 33,
+       "h": 25
       },
       {
-       "x": 68,
-       "y": 11,
-       "w": 28,
-       "h": 24
+       "x": 173,
+       "y": 88,
+       "w": 32,
+       "h": 22
       },
       null
      ]
@@ -4822,31 +4852,32 @@
      ]
     },
     "special": {
-     "file": "assets/sprites/matthew_street_anim_wide.png",
+     "file": "assets/sprites/matthew_street_kit_wide.png",
      "frames": [
-      0,
-      1,
-      2,
-      3,
       4,
       5,
       6,
-      7
+      7,
+      8,
+      9,
+      10,
+      11
      ],
      "fps": 12,
      "loop": false,
      "fw": 240,
      "fh": 192,
      "anchorX": 120,
+     "wide": true,
      "sx": [
-      0,
-      240,
-      480,
-      720,
       960,
       1200,
       1440,
-      1680
+      1680,
+      1920,
+      2160,
+      2400,
+      2640
      ],
      "sw": [
       240,
@@ -4913,16 +4944,16 @@
       null,
       null,
       {
-       "x": 144,
-       "y": 50,
-       "w": 46,
-       "h": 50
+       "x": 172,
+       "y": 84,
+       "w": 38,
+       "h": 24
       },
       {
-       "x": 144,
-       "y": 50,
-       "w": 46,
-       "h": 50
+       "x": 170,
+       "y": 57,
+       "w": 50,
+       "h": 41
       },
       null,
       null,
@@ -5302,13 +5333,17 @@
      ]
     }
    },
-   "wideFile": "assets/sprites/matthew_street_anim_wide.png"
+   "wideFile": "assets/sprites/matthew_street_anim_wide.png",
+   "kit": {
+    "weapon": "Baseball Bat",
+    "move": "Line Drive"
+   }
   },
   "matthew_varsity": {
    "file": "assets/sprites/matthew_varsity_anim.png",
    "states": {
     "idle_signature": {
-     "file": "assets/sprites/matthew_varsity_anim.png",
+     "file": "assets/sprites/matthew_varsity_kit.png",
      "frames": [
       0,
       1,
@@ -5322,6 +5357,7 @@
      "fw": 144,
      "fh": 192,
      "anchorX": 72,
+     "wide": false,
      "sx": [
       0,
       144,
@@ -5696,29 +5732,30 @@
      ]
     },
     "combo3": {
-     "file": "assets/sprites/matthew_varsity_anim.png",
+     "file": "assets/sprites/matthew_varsity_kit_wide.png",
      "frames": [
-      27,
-      28,
-      29,
-      30
+      0,
+      1,
+      2,
+      3
      ],
      "fps": 12,
      "loop": false,
-     "fw": 144,
+     "fw": 240,
      "fh": 192,
-     "anchorX": 72,
+     "anchorX": 120,
+     "wide": true,
      "sx": [
-      3888,
-      4032,
-      4176,
-      4320
+      0,
+      240,
+      480,
+      720
      ],
      "sw": [
-      144,
-      144,
-      144,
-      144
+      240,
+      240,
+      240,
+      240
      ],
      "sy": [
       0,
@@ -5753,16 +5790,16 @@
      "hitbox": [
       null,
       {
-       "x": 77,
-       "y": 42,
+       "x": 165,
+       "y": 57,
        "w": 28,
-       "h": 24
+       "h": 28
       },
       {
-       "x": 68,
-       "y": 11,
+       "x": 171,
+       "y": 55,
        "w": 28,
-       "h": 24
+       "h": 28
       },
       null
      ]
@@ -5849,31 +5886,32 @@
      ]
     },
     "special": {
-     "file": "assets/sprites/matthew_varsity_anim_wide.png",
+     "file": "assets/sprites/matthew_varsity_kit_wide.png",
      "frames": [
-      0,
-      1,
-      2,
-      3,
       4,
       5,
       6,
-      7
+      7,
+      8,
+      9,
+      10,
+      11
      ],
      "fps": 12,
      "loop": false,
      "fw": 240,
      "fh": 192,
      "anchorX": 120,
+     "wide": true,
      "sx": [
-      0,
-      240,
-      480,
-      720,
       960,
       1200,
       1440,
-      1680
+      1680,
+      1920,
+      2160,
+      2400,
+      2640
      ],
      "sw": [
       240,
@@ -5940,16 +5978,16 @@
       null,
       null,
       {
-       "x": 144,
-       "y": 50,
-       "w": 46,
-       "h": 50
+       "x": 179,
+       "y": 41,
+       "w": 29,
+       "h": 22
       },
       {
-       "x": 144,
-       "y": 50,
-       "w": 46,
-       "h": 50
+       "x": 200,
+       "y": 43,
+       "w": 29,
+       "h": 21
       },
       null,
       null,
@@ -6329,13 +6367,17 @@
      ]
     }
    },
-   "wideFile": "assets/sprites/matthew_varsity_anim_wide.png"
+   "wideFile": "assets/sprites/matthew_varsity_anim_wide.png",
+   "kit": {
+    "weapon": "Football",
+    "move": "Spiral"
+   }
   },
   "matthew_mechanic": {
    "file": "assets/sprites/matthew_mechanic_anim.png",
    "states": {
     "idle_signature": {
-     "file": "assets/sprites/matthew_mechanic_anim.png",
+     "file": "assets/sprites/matthew_mechanic_kit.png",
      "frames": [
       0,
       1,
@@ -6349,6 +6391,7 @@
      "fw": 144,
      "fh": 192,
      "anchorX": 72,
+     "wide": false,
      "sx": [
       0,
       144,
@@ -6723,29 +6766,30 @@
      ]
     },
     "combo3": {
-     "file": "assets/sprites/matthew_mechanic_anim.png",
+     "file": "assets/sprites/matthew_mechanic_kit_wide.png",
      "frames": [
-      27,
-      28,
-      29,
-      30
+      0,
+      1,
+      2,
+      3
      ],
      "fps": 12,
      "loop": false,
-     "fw": 144,
+     "fw": 240,
      "fh": 192,
-     "anchorX": 72,
+     "anchorX": 120,
+     "wide": true,
      "sx": [
-      3888,
-      4032,
-      4176,
-      4320
+      0,
+      240,
+      480,
+      720
      ],
      "sw": [
-      144,
-      144,
-      144,
-      144
+      240,
+      240,
+      240,
+      240
      ],
      "sy": [
       0,
@@ -6780,16 +6824,16 @@
      "hitbox": [
       null,
       {
-       "x": 77,
-       "y": 42,
-       "w": 28,
-       "h": 24
+       "x": 164,
+       "y": 26,
+       "w": 36,
+       "h": 38
       },
       {
-       "x": 68,
-       "y": 11,
-       "w": 28,
-       "h": 24
+       "x": 162,
+       "y": 101,
+       "w": 41,
+       "h": 40
       },
       null
      ]
@@ -6876,31 +6920,32 @@
      ]
     },
     "special": {
-     "file": "assets/sprites/matthew_mechanic_anim_wide.png",
+     "file": "assets/sprites/matthew_mechanic_kit_wide.png",
      "frames": [
-      0,
-      1,
-      2,
-      3,
       4,
       5,
       6,
-      7
+      7,
+      8,
+      9,
+      10,
+      11
      ],
      "fps": 12,
      "loop": false,
      "fw": 240,
-     "fh": 192,
+     "fh": 217,
      "anchorX": 120,
+     "wide": true,
      "sx": [
-      0,
-      240,
-      480,
-      720,
       960,
       1200,
       1440,
-      1680
+      1680,
+      1920,
+      2160,
+      2400,
+      2640
      ],
      "sw": [
       240,
@@ -6923,14 +6968,14 @@
       0
      ],
      "sh": [
-      192,
-      192,
-      192,
-      192,
-      192,
-      192,
-      192,
-      192
+      217,
+      217,
+      217,
+      217,
+      217,
+      217,
+      217,
+      217
      ],
      "grounded": [
       true,
@@ -6967,16 +7012,16 @@
       null,
       null,
       {
-       "x": 144,
-       "y": 50,
-       "w": 46,
-       "h": 50
+       "x": 146,
+       "y": 147,
+       "w": 58,
+       "h": 65
       },
       {
-       "x": 144,
-       "y": 50,
-       "w": 46,
-       "h": 50
+       "x": 146,
+       "y": 146,
+       "w": 58,
+       "h": 65
       },
       null,
       null,
@@ -7356,13 +7401,17 @@
      ]
     }
    },
-   "wideFile": "assets/sprites/matthew_mechanic_anim_wide.png"
+   "wideFile": "assets/sprites/matthew_mechanic_anim_wide.png",
+   "kit": {
+    "weapon": "Pipe Wrench",
+    "move": "Torque"
+   }
   },
   "matthew_diner": {
    "file": "assets/sprites/matthew_diner_anim.png",
    "states": {
     "idle_signature": {
-     "file": "assets/sprites/matthew_diner_anim.png",
+     "file": "assets/sprites/matthew_diner_kit.png",
      "frames": [
       0,
       1,
@@ -7376,6 +7425,7 @@
      "fw": 144,
      "fh": 192,
      "anchorX": 72,
+     "wide": false,
      "sx": [
       0,
       144,
@@ -7750,23 +7800,24 @@
      ]
     },
     "combo3": {
-     "file": "assets/sprites/matthew_diner_anim.png",
+     "file": "assets/sprites/matthew_diner_kit.png",
      "frames": [
-      27,
-      28,
-      29,
-      30
+      6,
+      7,
+      8,
+      9
      ],
      "fps": 12,
      "loop": false,
      "fw": 144,
      "fh": 192,
      "anchorX": 72,
+     "wide": false,
      "sx": [
-      3888,
-      4032,
-      4176,
-      4320
+      864,
+      1008,
+      1152,
+      1296
      ],
      "sw": [
       144,
@@ -7807,16 +7858,16 @@
      "hitbox": [
       null,
       {
-       "x": 77,
-       "y": 42,
-       "w": 28,
-       "h": 24
+       "x": 97,
+       "y": 57,
+       "w": 37,
+       "h": 39
       },
       {
-       "x": 68,
-       "y": 11,
-       "w": 28,
-       "h": 24
+       "x": 83,
+       "y": 16,
+       "w": 36,
+       "h": 36
       },
       null
      ]
@@ -7903,7 +7954,7 @@
      ]
     },
     "special": {
-     "file": "assets/sprites/matthew_diner_anim_wide.png",
+     "file": "assets/sprites/matthew_diner_kit_wide.png",
      "frames": [
       0,
       1,
@@ -7919,6 +7970,7 @@
      "fw": 240,
      "fh": 192,
      "anchorX": 120,
+     "wide": true,
      "sx": [
       0,
       240,
@@ -7982,9 +8034,9 @@
      "active": [
       false,
       false,
+      true,
+      true,
       false,
-      true,
-      true,
       false,
       false,
       false
@@ -7992,19 +8044,19 @@
      "hitbox": [
       null,
       null,
+      {
+       "x": 161,
+       "y": 46,
+       "w": 37,
+       "h": 36
+      },
+      {
+       "x": 165,
+       "y": 38,
+       "w": 52,
+       "h": 48
+      },
       null,
-      {
-       "x": 144,
-       "y": 50,
-       "w": 46,
-       "h": 50
-      },
-      {
-       "x": 144,
-       "y": 50,
-       "w": 46,
-       "h": 50
-      },
       null,
       null,
       null
@@ -8383,13 +8435,17 @@
      ]
     }
    },
-   "wideFile": "assets/sprites/matthew_diner_anim_wide.png"
+   "wideFile": "assets/sprites/matthew_diner_anim_wide.png",
+   "kit": {
+    "weapon": "Frying Pan",
+    "move": "Hot Plate"
+   }
   },
   "matthew_gold": {
    "file": "assets/sprites/matthew_gold_anim.png",
    "states": {
     "idle_signature": {
-     "file": "assets/sprites/matthew_gold_anim.png",
+     "file": "assets/sprites/matthew_gold_kit.png",
      "frames": [
       0,
       1,
@@ -8403,6 +8459,7 @@
      "fw": 144,
      "fh": 192,
      "anchorX": 72,
+     "wide": false,
      "sx": [
       0,
       144,
@@ -8777,23 +8834,24 @@
      ]
     },
     "combo3": {
-     "file": "assets/sprites/matthew_gold_anim.png",
+     "file": "assets/sprites/matthew_gold_kit.png",
      "frames": [
-      27,
-      28,
-      29,
-      30
+      6,
+      7,
+      8,
+      9
      ],
      "fps": 12,
      "loop": false,
      "fw": 144,
      "fh": 192,
      "anchorX": 72,
+     "wide": false,
      "sx": [
-      3888,
-      4032,
-      4176,
-      4320
+      864,
+      1008,
+      1152,
+      1296
      ],
      "sw": [
       144,
@@ -8834,16 +8892,16 @@
      "hitbox": [
       null,
       {
-       "x": 77,
-       "y": 42,
-       "w": 28,
-       "h": 24
+       "x": 83,
+       "y": 37,
+       "w": 25,
+       "h": 20
       },
       {
-       "x": 68,
-       "y": 11,
-       "w": 28,
-       "h": 24
+       "x": 75,
+       "y": 17,
+       "w": 21,
+       "h": 20
       },
       null
      ]
@@ -8930,7 +8988,7 @@
      ]
     },
     "special": {
-     "file": "assets/sprites/matthew_gold_anim_wide.png",
+     "file": "assets/sprites/matthew_gold_kit_wide.png",
      "frames": [
       0,
       1,
@@ -8946,6 +9004,7 @@
      "fw": 240,
      "fh": 192,
      "anchorX": 120,
+     "wide": true,
      "sx": [
       0,
       240,
@@ -9011,8 +9070,8 @@
       false,
       false,
       true,
-      true,
       false,
+      true,
       false,
       false
      ],
@@ -9021,18 +9080,18 @@
       null,
       null,
       {
-       "x": 144,
-       "y": 50,
-       "w": 46,
-       "h": 50
-      },
-      {
-       "x": 144,
-       "y": 50,
-       "w": 46,
-       "h": 50
+       "x": 143,
+       "y": 32,
+       "w": 85,
+       "h": 24
       },
       null,
+      {
+       "x": 144,
+       "y": 99,
+       "w": 88,
+       "h": 41
+      },
       null,
       null
      ]
@@ -9410,13 +9469,17 @@
      ]
     }
    },
-   "wideFile": "assets/sprites/matthew_gold_anim_wide.png"
+   "wideFile": "assets/sprites/matthew_gold_anim_wide.png",
+   "kit": {
+    "weapon": "Gold Chain",
+    "move": "Encore"
+   }
   },
   "matthew_webslinger": {
    "file": "assets/sprites/matthew_webslinger_anim.png",
    "states": {
     "idle_signature": {
-     "file": "assets/sprites/matthew_webslinger_anim.png",
+     "file": "assets/sprites/matthew_webslinger_kit.png",
      "frames": [
       0,
       1,
@@ -9430,6 +9493,7 @@
      "fw": 144,
      "fh": 192,
      "anchorX": 72,
+     "wide": false,
      "sx": [
       0,
       144,
@@ -9804,23 +9868,24 @@
      ]
     },
     "combo3": {
-     "file": "assets/sprites/matthew_webslinger_anim.png",
+     "file": "assets/sprites/matthew_webslinger_kit.png",
      "frames": [
-      27,
-      28,
-      29,
-      30
+      6,
+      7,
+      8,
+      9
      ],
      "fps": 12,
      "loop": false,
      "fw": 144,
      "fh": 192,
      "anchorX": 72,
+     "wide": false,
      "sx": [
-      3888,
-      4032,
-      4176,
-      4320
+      864,
+      1008,
+      1152,
+      1296
      ],
      "sw": [
       144,
@@ -9861,16 +9926,16 @@
      "hitbox": [
       null,
       {
-       "x": 77,
-       "y": 42,
-       "w": 28,
-       "h": 24
+       "x": 104,
+       "y": 72,
+       "w": 22,
+       "h": 22
       },
       {
-       "x": 68,
-       "y": 11,
-       "w": 28,
-       "h": 24
+       "x": 93,
+       "y": 40,
+       "w": 22,
+       "h": 22
       },
       null
      ]
@@ -9957,7 +10022,7 @@
      ]
     },
     "special": {
-     "file": "assets/sprites/matthew_webslinger_anim_wide.png",
+     "file": "assets/sprites/matthew_webslinger_kit_wide.png",
      "frames": [
       0,
       1,
@@ -9973,6 +10038,7 @@
      "fw": 240,
      "fh": 192,
      "anchorX": 120,
+     "wide": true,
      "sx": [
       0,
       240,
@@ -10048,16 +10114,16 @@
       null,
       null,
       {
-       "x": 144,
-       "y": 50,
-       "w": 46,
-       "h": 50
+       "x": 207,
+       "y": 59,
+       "w": 22,
+       "h": 22
       },
       {
-       "x": 144,
-       "y": 50,
-       "w": 46,
-       "h": 50
+       "x": 195,
+       "y": 65,
+       "w": 22,
+       "h": 22
       },
       null,
       null,
@@ -10437,7 +10503,11 @@
      ]
     }
    },
-   "wideFile": "assets/sprites/matthew_webslinger_anim_wide.png"
+   "wideFile": "assets/sprites/matthew_webslinger_anim_wide.png",
+   "kit": {
+    "weapon": "Star-Line",
+    "move": "Star Yank"
+   }
   },
   "dee": {
    "file": "assets/sprites/dee_anim.png",
@@ -11620,7 +11690,7 @@
    "file": "assets/sprites/matthew_beacon_anim.png",
    "states": {
     "idle_signature": {
-     "file": "assets/sprites/matthew_beacon_anim.png",
+     "file": "assets/sprites/matthew_beacon_kit.png",
      "frames": [
       0,
       1,
@@ -11634,6 +11704,7 @@
      "fw": 144,
      "fh": 192,
      "anchorX": 72,
+     "wide": false,
      "sx": [
       0,
       144,
@@ -12008,29 +12079,30 @@
      ]
     },
     "combo3": {
-     "file": "assets/sprites/matthew_beacon_anim.png",
+     "file": "assets/sprites/matthew_beacon_kit_wide.png",
      "frames": [
-      27,
-      28,
-      29,
-      30
+      0,
+      1,
+      2,
+      3
      ],
      "fps": 12,
      "loop": false,
-     "fw": 144,
+     "fw": 240,
      "fh": 192,
-     "anchorX": 72,
+     "anchorX": 120,
+     "wide": true,
      "sx": [
-      3888,
-      4032,
-      4176,
-      4320
+      0,
+      240,
+      480,
+      720
      ],
      "sw": [
-      144,
-      144,
-      144,
-      144
+      240,
+      240,
+      240,
+      240
      ],
      "sy": [
       0,
@@ -12065,16 +12137,16 @@
      "hitbox": [
       null,
       {
-       "x": 77,
-       "y": 42,
-       "w": 28,
-       "h": 24
+       "x": 158,
+       "y": 59,
+       "w": 20,
+       "h": 20
       },
       {
-       "x": 68,
-       "y": 11,
-       "w": 28,
-       "h": 24
+       "x": 180,
+       "y": 58,
+       "w": 20,
+       "h": 20
       },
       null
      ]
@@ -12161,31 +12233,32 @@
      ]
     },
     "special": {
-     "file": "assets/sprites/matthew_beacon_anim_wide.png",
+     "file": "assets/sprites/matthew_beacon_kit_wide.png",
      "frames": [
-      0,
-      1,
-      2,
-      3,
       4,
       5,
       6,
-      7
+      7,
+      8,
+      9,
+      10,
+      11
      ],
      "fps": 12,
      "loop": false,
      "fw": 240,
      "fh": 192,
      "anchorX": 120,
+     "wide": true,
      "sx": [
-      0,
-      240,
-      480,
-      720,
       960,
       1200,
       1440,
-      1680
+      1680,
+      1920,
+      2160,
+      2400,
+      2640
      ],
      "sw": [
       240,
@@ -12240,9 +12313,9 @@
      "active": [
       false,
       false,
+      true,
+      true,
       false,
-      true,
-      true,
       false,
       false,
       false
@@ -12250,19 +12323,19 @@
      "hitbox": [
       null,
       null,
+      {
+       "x": 160,
+       "y": 56,
+       "w": 44,
+       "h": 40
+      },
+      {
+       "x": 159,
+       "y": 49,
+       "w": 71,
+       "h": 56
+      },
       null,
-      {
-       "x": 144,
-       "y": 50,
-       "w": 46,
-       "h": 50
-      },
-      {
-       "x": 144,
-       "y": 50,
-       "w": 46,
-       "h": 50
-      },
       null,
       null,
       null
@@ -12641,13 +12714,17 @@
      ]
     }
    },
-   "wideFile": "assets/sprites/matthew_beacon_anim_wide.png"
+   "wideFile": "assets/sprites/matthew_beacon_anim_wide.png",
+   "kit": {
+    "weapon": "Hard-Light Star Shard",
+    "move": "Star Flare"
+   }
   },
   "matthew_ironclad": {
    "file": "assets/sprites/matthew_ironclad_anim.png",
    "states": {
     "idle_signature": {
-     "file": "assets/sprites/matthew_ironclad_anim.png",
+     "file": "assets/sprites/matthew_ironclad_kit.png",
      "frames": [
       0,
       1,
@@ -12661,6 +12738,7 @@
      "fw": 144,
      "fh": 192,
      "anchorX": 72,
+     "wide": false,
      "sx": [
       0,
       144,
@@ -13035,23 +13113,24 @@
      ]
     },
     "combo3": {
-     "file": "assets/sprites/matthew_ironclad_anim.png",
+     "file": "assets/sprites/matthew_ironclad_kit.png",
      "frames": [
-      27,
-      28,
-      29,
-      30
+      6,
+      7,
+      8,
+      9
      ],
      "fps": 12,
      "loop": false,
      "fw": 144,
      "fh": 192,
      "anchorX": 72,
+     "wide": false,
      "sx": [
-      3888,
-      4032,
-      4176,
-      4320
+      864,
+      1008,
+      1152,
+      1296
      ],
      "sw": [
       144,
@@ -13092,16 +13171,16 @@
      "hitbox": [
       null,
       {
-       "x": 77,
-       "y": 42,
-       "w": 28,
-       "h": 24
+       "x": 110,
+       "y": 59,
+       "w": 20,
+       "h": 29
       },
       {
-       "x": 68,
-       "y": 11,
-       "w": 28,
-       "h": 24
+       "x": 118,
+       "y": 54,
+       "w": 20,
+       "h": 39
       },
       null
      ]
@@ -13188,7 +13267,7 @@
      ]
     },
     "special": {
-     "file": "assets/sprites/matthew_ironclad_anim_wide.png",
+     "file": "assets/sprites/matthew_ironclad_kit_wide.png",
      "frames": [
       0,
       1,
@@ -13204,6 +13283,7 @@
      "fw": 240,
      "fh": 192,
      "anchorX": 120,
+     "wide": true,
      "sx": [
       0,
       240,
@@ -13279,16 +13359,16 @@
       null,
       null,
       {
-       "x": 144,
-       "y": 50,
-       "w": 46,
-       "h": 50
+       "x": 174,
+       "y": 46,
+       "w": 25,
+       "h": 69
       },
       {
-       "x": 144,
-       "y": 50,
-       "w": 46,
-       "h": 50
+       "x": 195,
+       "y": 37,
+       "w": 26,
+       "h": 84
       },
       null,
       null,
@@ -13668,7 +13748,11 @@
      ]
     }
    },
-   "wideFile": "assets/sprites/matthew_ironclad_anim_wide.png"
+   "wideFile": "assets/sprites/matthew_ironclad_anim_wide.png",
+   "kit": {
+    "weapon": "Breach Gauntlets",
+    "move": "Breach"
+   }
   }
  },
  "aliases": {
@@ -13688,5 +13772,6 @@
   "beacon",
   "ironclad"
  ],
- "rev": "1791477697"
+ "rev": "1791477697",
+ "kitRev": "1.3.1-kits"
 }

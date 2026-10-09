@@ -152,7 +152,9 @@ const DEFAULT_TALK = { wave: 'triangle', f0: 220, rate: 0.08, len: 0.06, steps: 
 const talkProfile = (id) => (NPC_DEFS.find((n) => n.id === id) || {}).voice || DEFAULT_TALK;
 
 // ------------------------------------------------------------------ engine
-const SFX_COOLDOWN = { punch: 0.03, kick: 0.03, heavy: 0.04, finisher: 0.05, star: 0.08, whiff: 0.05, step: 0.09, block: 0.08, thud: 0.06, getup: 0.1, glass: 0.07, ui_move: 0.04, pickup: 0.08, denied: 0.25, save: 0.3, jump: 0.08, land: 0.08 };
+const SFX_COOLDOWN = { punch: 0.03, kick: 0.03, heavy: 0.04, finisher: 0.05, star: 0.08, whiff: 0.05, step: 0.09, block: 0.08, thud: 0.06, getup: 0.1, glass: 0.07, ui_move: 0.04, pickup: 0.08, denied: 0.25, save: 0.3, jump: 0.08, land: 0.08,
+  kit_polo: 0.06, kit_photo: 0.06, kit_hoodie: 0.06, kit_jacket: 0.06, kit_street: 0.06, kit_varsity: 0.06, kit_varsity_hit: 0.05, kit_mechanic: 0.06,
+  kit_diner: 0.06, kit_gold: 0.04, kit_webslinger: 0.06, kit_beacon: 0.06, kit_ironclad: 0.06 };
 const MAX_SFX = 18, MAX_VOICES = 3;
 
 class Engine {
@@ -390,6 +392,8 @@ class Engine {
     if (o && o.pan && this.ac.createStereoPanner) { const p = this.ac.createStereoPanner(); p.pan.setValueAtTime(clamp(o.pan, -0.8, 0.8), t); p.connect(this.sfxIn); return p; }
     return this.sfxIn;
   }
+  /** 1.4.0 kits: combo3 finishers play the weapon sound quieter (o.lite). */
+  kitOut(out, o) { if (!o || !o.lite) return out; const g = this.ac.createGain(); g.gain.value = 0.5; g.connect(out); return g; }
   thump(t, f0, f1, dur, peak, out) { const o = this.osc('sine', f0, t, dur); this.sweep(o.frequency, t, f0, f1, dur * 0.7); o.connect(this.env(t, 0.002, peak, dur)).connect(out); }
   burst(t, type, f, q, dur, peak, out, verb = 0) {
     const n = this.noise(t, dur), g = this.env(t, 0.002, peak, dur);
@@ -489,6 +493,102 @@ class Engine {
         }
         break;
       }
+      // >>> 1.4.0 outfit kits: one signature sound per weapon (special = full, combo3 finisher = o.lite)
+      case 'kit_polo': { // Hardcover Book "Detention": page flutter + flat cover slap
+        const q = this.kitOut(out, o);
+        for (let k = 0; k < 3; k++) this.burst(t + k * 0.025, 'highpass', 3500 * v, 0.8, 0.02, 0.12, q);
+        this.thump(t + 0.06, 190 * v, 70, 0.14, 0.8, q);
+        this.burst(t + 0.06, 'bandpass', 1100 * v, 1.2, 0.07, 0.6, q);
+        this.burst(t + 0.06, 'lowpass', 600, 0.7, 0.12, 0.3, q, 0.2);
+        break;
+      }
+      case 'kit_photo': { // Strap Camera "Flash Pop": shutter clack + flash whine + pop
+        const q = this.kitOut(out, o);
+        this.burst(t, 'highpass', 4200, 2, 0.012, 0.35, q); this.burst(t + 0.035, 'highpass', 3000, 2, 0.015, 0.3, q);
+        this.tone(t + 0.02, 'sine', 1800, 7200, 0.22, 0.06, q, 0.4);
+        this.burst(t + 0.2, 'bandpass', 2500, 0.7, 0.08, 0.35, q, 0.3);
+        break;
+      }
+      case 'kit_hoodie': { // Skateboard "Kickflip": wheel roll + double deck clack
+        const q = this.kitOut(out, o);
+        this.burst(t, 'lowpass', 380 * v, 1.5, 0.3, 0.32, q);
+        this.tone(t + 0.04, 'square', 820 * v, 760 * v, 0.03, 0.12, q);
+        this.tone(t + 0.14, 'square', 640 * v, 600 * v, 0.04, 0.14, q);
+        this.thump(t + 0.14, 160, 80, 0.08, 0.4, q);
+        break;
+      }
+      case 'kit_jacket': { // Bike Chain "Whip Crack": rattle + sharp crack at the tip
+        const q = this.kitOut(out, o);
+        for (let k = 0; k < 8; k++) this.tone(t + k * 0.012, 'sine', rnd(3200, 6400), 0, 0.05, 0.03, q);
+        this.burst(t + 0.1, 'highpass', 2600, 0.9, 0.025, 0.75, q, 0.35);
+        this.burst(t + 0.1, 'bandpass', 900, 1.5, 0.05, 0.3, q);
+        break;
+      }
+      case 'kit_street': { // Baseball Bat "Line Drive": wooden crack
+        const q = this.kitOut(out, o);
+        this.tone(t, 'triangle', 640 * v, 520 * v, 0.07, 0.3, q);
+        this.burst(t, 'bandpass', 1500 * v, 1.6, 0.05, 0.7, q, 0.3);
+        this.thump(t, 140, 60, 0.12, 0.6, q);
+        this.burst(t + 0.005, 'highpass', 3500, 0.7, 0.03, 0.3, q);
+        break;
+      }
+      case 'kit_varsity': { // Football "Spiral": throw grunt-thump + spinning whistle
+        const q = this.kitOut(out, o);
+        this.thump(t, 120, 60, 0.08, 0.45, q);
+        const w = this.osc('sine', 1500 * v, t + 0.03, 0.35); this.sweep(w.frequency, t + 0.03, 1500 * v, 900 * v, 0.33);
+        const l = this.osc('sine', 22, t + 0.03, 0.35), lg = this.ac.createGain(); lg.gain.value = 120; l.connect(lg).connect(w.frequency);
+        w.connect(this.env(t + 0.03, 0.02, 0.05, 0.32)).connect(q);
+        break;
+      }
+      case 'kit_varsity_hit': // leather ball hitting a body
+        this.thump(t, 210 * v, 90, 0.1, 0.7, out);
+        this.burst(t, 'bandpass', 700, 1.1, 0.06, 0.5, out);
+        break;
+      case 'kit_mechanic': { // Pipe Wrench "Torque": steel clang (inharmonic) + heavy hit
+        const q = this.kitOut(out, o);
+        [523, 1187, 1813, 2650].forEach((f, k) => this.tone(t, 'square', f * v, f * v * 0.99, 0.45 - k * 0.08, 0.05, q, 0.4));
+        this.thump(t, 110, 40, 0.25, 0.8, q);
+        this.burst(t, 'highpass', 2400, 0.7, 0.05, 0.4, q);
+        break;
+      }
+      case 'kit_diner': { // Frying Pan "Hot Plate": pan BONG + grease sizzle
+        const q = this.kitOut(out, o);
+        [410, 1120, 1890].forEach((f, k) => this.tone(t, 'sine', f * v, f * v, 0.6 - k * 0.15, 0.12 - k * 0.03, q, 0.4));
+        this.thump(t, 150, 70, 0.1, 0.5, q);
+        const n = this.noise(t + 0.05, 0.7); n.connect(this.filt('highpass', 5200, 0.7)).connect(this.env(t + 0.05, 0.03, o.lite ? 0.06 : 0.14, 0.65)).connect(q);
+        break;
+      }
+      case 'kit_gold': { // Gold Chain "Encore": bright chain shimmer (second hit pitched up)
+        const q = this.kitOut(out, o), up = o.second ? 1.26 : 1;
+        [2637, 3136, 3951, 4699].forEach((f, k) => this.tone(t + k * 0.02, 'triangle', f * up, f * up, 0.25, 0.05, q, 0.5));
+        this.burst(t, 'bandpass', 1800 * up, 1.2, 0.08, 0.4, q);
+        this.thump(t, 150 * up, 60, 0.1, 0.5, q);
+        break;
+      }
+      case 'kit_webslinger': { // Star-Line "Star Yank": line zip out + taut twang + star ping
+        const q = this.kitOut(out, o);
+        const n = this.noise(t, 0.2), bp = this.filt('bandpass', 3200, 3, t); this.sweep(bp.frequency, t, 3200, 700, 0.18);
+        n.connect(bp).connect(this.env(t, 0.01, 0.3, 0.2)).connect(q);
+        this.tone(t + 0.12, 'sawtooth', 230 * v, 110 * v, 0.18, 0.06, q);
+        this.tone(t + 0.12, 'sine', 2349, 2349, 0.3, 0.05, q, 0.5);
+        break;
+      }
+      case 'kit_beacon': { // The Ring "Star Flare": rising emerald chime + air burst
+        const q = this.kitOut(out, o);
+        [784, 988, 1175, 1568, 1976].forEach((f, k) => this.tone(t + k * 0.03, 'sine', f, f * 1.01, 0.4, 0.06, q, 0.6));
+        const n = this.noise(t, 0.3), bp = this.filt('bandpass', 600, 1.2, t); this.sweep(bp.frequency, t, 600, 3200, 0.25);
+        n.connect(bp).connect(this.env(t, 0.02, 0.25, 0.28)).connect(q);
+        break;
+      }
+      case 'kit_ironclad': { // Breach Gauntlets "Breach": servo hiss + concussive sub boom + plate clank
+        const q = this.kitOut(out, o);
+        this.burst(t, 'highpass', 3800, 0.7, 0.12, 0.2, q);
+        this.thump(t + 0.04, 62, 24, 0.55, 1, q);
+        this.burst(t + 0.04, 'lowpass', 260, 0.8, 0.4, 0.6, q, 0.4);
+        [277, 415, 659].forEach((f) => this.tone(t + 0.05, 'square', f * v, f * v * 0.96, 0.3, 0.045, q, 0.3));
+        break;
+      }
+      // <<< 1.4.0 outfit kits
       case 'glint': // hidden collectible spotted (Hell's Nightmare helmet): two soft high sparkles
         [2637, 3520].forEach((f, k) => this.tone(t + k * 0.09, 'sine', f, f * 1.01, 0.22, 0.05, out, 0.5));
         break;

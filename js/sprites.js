@@ -33,7 +33,7 @@ const OUTFIT_SHEETS = {
   ironclad: 'assets/sprites/matthew_ironclad.png'      // display name "Hell's Nightmare"
 };
 /** Cache-bust for outfit sheets / outfit portraits (bump when sheets are regenerated). */
-const SPRITE_REV = '1.3.1-ironclad2';
+const SPRITE_REV = '1.3.1-kits';
 const vb = (src) => src + (src.includes('?') ? '&' : '?') + 'v=' + SPRITE_REV;
 /** Optional per-outfit HUD/picker busts (112x112); outfits without one use portrait_matthew.png. */
 const OUTFIT_PORTRAITS = { ironclad: 'assets/sprites/portrait_matthew_ironclad.png' };
@@ -99,7 +99,8 @@ export function loadSprites() {
         ...Object.entries(NPC_SRC).map(async ([k, src]) => { const img = await opt(src); if (img) images[k] = img; }),
         ...Object.entries(ENEMY_SHEET_SRC).map(async ([k, src]) => { const img = await opt(src); if (img) enemySheets[k] = img; }),
         loadAnimManifests(),
-        loadCollectibles()
+        loadCollectibles(),
+        loadWeapons()
       ]);
       loaded = true;
     } catch (e) {
@@ -479,6 +480,27 @@ export function getCollectibleSprite(idOrName, tMs = 0) {
   const fw = it.fw || 48, fh = it.fh || 48, n = it.frames || 6;
   const f = Math.floor(Math.max(0, tMs || 0) * (it.fps || 8) / 1000) % n;
   return { img: COLLECT.img, sx: f * fw, sy: it.row * fh, sw: fw, sh: fh, anchorX: 24, anchorY: 47, id, name: it.name };
+}
+
+// ---------------------------------------------------------------- outfit weapon icons (tools/gen_weapon_icons.py)
+// weapons.png: one row of 48x48 icons (outfit order); weapons.json: outfit -> {name, move, index, x, y, w, h}
+const WEAPONS = { img: null, items: {} };
+async function loadWeapons() {
+  const m = await fetchManifest('assets/sprites/weapons.json', false);
+  if (!m) return;
+  const meta = m._meta || {};
+  for (const [id, it] of Object.entries(m)) if (!id.startsWith('_') && id !== '__hash') WEAPONS.items[id] = it;
+  try { WEAPONS.img = await loadImage((meta.file || 'assets/sprites/weapons.png') + '?v=' + m.__hash); }
+  catch (_) { console.warn('Sprite missing: assets/sprites/weapons.png'); }
+}
+/** Outfit weapon icon {img, sx, sy, sw, sh, id, name, move} or null (unknown outfit / not loaded yet).
+ *  Accepts an outfit id ('street', 'matthew_street', 'Street') or an outfit object {id}. Draw with
+ *  ctx.drawImage(icon.img, icon.sx, icon.sy, icon.sw, icon.sh, x, y, icon.sw, icon.sh). */
+export function getWeaponIcon(outfitId) {
+  const id = outfitKey(outfitId);
+  const it = WEAPONS.items[id];
+  if (!it || !WEAPONS.img) return null;
+  return { img: WEAPONS.img, sx: it.x, sy: it.y, sw: it.w || 48, sh: it.h || 48, id, name: it.name, move: it.move };
 }
 
 export function drawCollectible(ctx, x, y, name, pulse) {

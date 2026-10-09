@@ -9,8 +9,10 @@ import { createInput, getPromptLabel, getPromptDevice, rumble } from './input.js
 import {
   createPlayer, updatePlayer, updateEnemy, resolveHits,
   drawEnemy, spawnWave, createSilasFighter, clampDepth, setDepthBand, getDepthBand,
-  createThug, setDifficulty, getDifficulty, DIFFICULTIES, DIFFICULTY_ORDER, SPECIAL_COST, knockDown
+  createThug, setDifficulty, getDifficulty, DIFFICULTIES, DIFFICULTY_ORDER, SPECIAL_COST, knockDown,
+  updateKits, getKitFx, getProjectiles, clearKitFx, slowMul, tickPull, specialTiming
 } from './combat.js';
+import { KITS, getKit, kitRow, PLAYER_DRAW_SCALE } from './kits.js'; // 1.4.0 outfit kits
 import { animFrame, animMs, setAnim, enemyCharKey, animApiReady } from './anim.js';
 import * as SpriteLib from './sprites.js'; // optional newer helpers (getCollectibleSprite) without a hard import
 import { getMatthewSprite, getNpcSprite, getEnemySprite, drawSprite, drawCollectible, clearSpriteCache, loadSprites, getHeartImages } from './sprites.js';
@@ -23,7 +25,7 @@ import { setMusic, sting, setPaused, setDialogueDuck, sfx, voice, talk, stopTalk
 
 /** true: player + title Matthew use the high-res procedural hero (hero.js); false: Joe's matthew_sheet.png. */
 const USE_HERO_RENDER = false; // Joe's approved v3 sheet ships; hero.js kept as an alternate renderer
-const PLAYER_SCALE = 1.3; // heroic presentation scale for Matthew vs 64x84 NPCs (draw only; hitboxes unchanged)
+const PLAYER_SCALE = PLAYER_DRAW_SCALE; // 1.3 (kits.js converts art hitboxes with it) — heroic presentation scale for Matthew vs 64x84 NPCs (draw only; hitboxes unchanged)
 
 const canvas = document.getElementById('game');
 const W = canvas.width;
@@ -93,6 +95,7 @@ const collectY = () => getDepthBand().min + 24;  // collectible orbs float just 
 
 /** Switch the walkable band to the current area and keep the player inside it. */
 function syncDepthBand() {
+  clearKitFx(); // area change: no footballs / flashes carried over
   setDepthBand(getDepth(AREAS[gameState.areaId]));
   if (player) player.y = clampDepth(player.y);
 }
@@ -153,8 +156,32 @@ function syncPortrait() {
   const src = img && img.src;
   if (src && el.src !== src) el.src = src;
 }
+/** 1.4.0: HUD weapon badge for the current outfit (Sprites.getWeaponIcon) + Star Drive readiness. */
+let weaponSig = '';
+function syncWeaponIcon() {
+  const c = $('hud-weapon-icon'), wrap = $('hud-weapon');
+  if (!c || !wrap) return;
+  const kit = getKit(gameState.outfitId);
+  const ready = player.specialCd <= 0 && gameState.special >= kit.special.cost;
+  const sig = gameState.outfitId + '|' + ready;
+  if (sig === weaponSig && c.dataset.drawn === '1') return;
+  let icon = null;
+  try { icon = typeof SpriteLib.getWeaponIcon === 'function' ? SpriteLib.getWeaponIcon(gameState.outfitId) : null; } catch (_) { icon = null; }
+  const g = c.getContext('2d');
+  g.clearRect(0, 0, c.width, c.height);
+  g.imageSmoothingEnabled = false;
+  if (icon) { g.drawImage(icon.img, icon.sx, icon.sy, icon.sw, icon.sh, 0, 0, c.width, c.height); c.dataset.drawn = '1'; }
+  else { g.fillStyle = '#ffd24a'; g.font = 'bold 28px sans-serif'; g.textAlign = 'center'; g.fillText('★', c.width / 2, c.height * 0.72); c.dataset.drawn = '0'; }
+  weaponSig = sig;
+  wrap.classList.toggle('ready', ready);
+  wrap.dataset.outfit = gameState.outfitId;
+  wrap.title = `${kit.weapon} — ${kit.move}: ${kit.ability}`;
+  const mv = $('hud-weapon-move');
+  if (mv) mv.textContent = kit.move;
+}
 function updateHUD() {
   syncPortrait();
+  syncWeaponIcon();
   const m = missions.getActive();
   const sm = sideMission();
   $('mission-title').textContent = sm ? sm.title : m ? m.title : 'Free Roam';
@@ -621,7 +648,9 @@ function sideTarget(e) {
 function updateRunner(e, dt, area) {
   if (!e.alive || e.kd) { updateEnemy(e, player, dt, area.width); return; } // caught / knockdown states
   e.animT += dt;
-  if (e.stun > 0) { e.stun -= dt; e.pose = 'hurt'; setAnim(e, 'hurt', { key: 'snatcher', sec: e.stun + dt }); return; }
+  if (e.slowT > 0) e.slowT -= dt;
+  if (e.pull) { tickPull(e, dt); setAnim(e, 'hurt'); return; } // 1.4.0 Star Yank
+  if (e.stun > 0) { e.stun -= dt; e.pose = 'hurt'; setAnim(e, 'hurt', { key: 'snatcher', sec: e.stun + dt }); if (e.stun <= 0) e.dazed = false; return; }
   if (e.restT > 0) {
     e.restT -= dt; e.pose = 'idle'; e.facing = player.x > e.x ? 1 : -1; setAnim(e, 'idle');
     if (e.restT <= 0) e.runT = 2 + Math.random();
@@ -630,7 +659,7 @@ function updateRunner(e, dt, area) {
   e.runT -= dt;
   if (e.runT <= 0) { e.restT = 0.9; return; } // winded
   e.facing = 1; e.pose = 'chase'; setAnim(e, 'run');
-  e.x += getDifficulty().runner * dt;
+  e.x += getDifficulty().runner * dt * slowMul(e); // Hot Plate slows the snatcher too
   const s = stateBag.side;
   if (e.x >= area.width - 40) {
     if (!area.rightTo || gameState.areaId === 'pages') { failSide('The snatcher got away past Valley Pages.'); return; }
@@ -1201,22 +1230,23 @@ function step(dt) {
     for (const k of BUFFERED) if (pressBuffer[k]) { inp[k] = true; pressBuffer[k] = false; }
     updatePlayer(player, inp, dt, area.width, {
       outfit: gameState.outfitId,
-      canSpecial: () => gameState.special >= SPECIAL_COST,
-      onSpecial: () => { gameState.special = Math.max(0, gameState.special - SPECIAL_COST); gameState.hitStop = 0; rumble(0.6, 0.6, 160); followCam.kick(3); },
-      onSpecialDenied: (why) => { sfx('denied'); if (why === 'meter') toast(`Star Drive needs ${SPECIAL_COST}% special meter`); }
+      canSpecial: (cost = SPECIAL_COST) => gameState.special >= cost,
+      onSpecial: (cost = SPECIAL_COST) => { gameState.special = Math.max(0, gameState.special - cost); gameState.hitStop = 0; rumble(0.6, 0.6, 160); followCam.kick(3); },
+      onSpecialDenied: (why, cost = SPECIAL_COST) => { sfx('denied'); if (why === 'meter') toast(`${getKit(gameState.outfitId).move} (Star Drive) needs ${cost}% special meter`); }
     });
     for (const e of gameState.enemies) {
       if (e.runner) updateRunner(e, dt, area);
       else updateEnemy(e, e.target ? sideTarget(e) : player, dt, area.width);
     }
+    const onHitEnemy = (e) => {
+      gameState.hitStop = e.kd ? 0.07 : 0.04;
+      gameState.special = Math.min(100, gameState.special + 4);
+      if (!e.alive) gameState.score += e.scoreValue || 100;
+      rumble(0.25, 0.45, 60);
+      followCam.kick(e.kd ? 3.5 : 2);
+    };
     resolveHits(player, gameState.enemies,
-      (e) => {
-        gameState.hitStop = e.kd ? 0.07 : 0.04;
-        gameState.special = Math.min(100, gameState.special + 4);
-        if (!e.alive) gameState.score += e.scoreValue || 100;
-        rumble(0.25, 0.45, 60);
-        followCam.kick(e.kd ? 3.5 : 2);
-      },
+      onHitEnemy,
       (dmg, knocked) => {
         if (stateBag.side && stateBag.side.id === 'side_spar') stateBag.side.hits++;
         rumble(knocked ? 1 : 0.8, 0.5, knocked ? 260 : 140); updateHUD();
@@ -1224,6 +1254,7 @@ function step(dt) {
       },
       area.width
     );
+    updateKits(player, gameState.enemies, dt, area.width, onHitEnemy); // 1.4.0: Spiral flight, Star Yank, kit FX
     if (stateBag.side && stateBag.side.id === 'side_spar') {
       for (const e of gameState.enemies) if (e.sparring && !e.alive && !e.counted) { e.counted = true; stateBag.side.kos++; }
     }
@@ -1377,6 +1408,7 @@ function drawEnemyCast(e, cam) {
   else withLie(e, sx, e.y, () => { h = drawCastSprite(spr, sx, e.y, e.facing, castScaleEnemy(e)); });
   // <<< v3
   ctx.globalAlpha = 1;
+  drawFoeStatus(e, sx, h); // 1.4.0 kit effects: stun stars, Hot Plate slow
   if (e.hp < e.maxHp && e.alive) {
     const pw = e.isBoss ? 44 : 32, py = Math.round(e.y - h * 0.92) - 6;
     ctx.fillStyle = '#2a2a30';
@@ -1460,6 +1492,153 @@ function drawStaminaPip(x, feetY) {
   ctx.fillStyle = player.staminaLock ? '#e67e22' : '#4fd1ff';
   ctx.fillRect(Math.round(x - w / 2), y, Math.round(w * player.stamina / 100), 3);
 }
+// >>> 1.4.0 outfit kits (game-logic lane; draw-only)
+const KIT_FX_COLOR = { polo: '#fff4dc', photo: '#fffbe0', hoodie: '#ffd24a', jacket: '#ffb36b', street: '#ffffff', varsity: '#f2e6c8', mechanic: '#ffd27a',
+  diner: '#ff9a4a', gold: '#ffd24a', webslinger: '#ff5a6a', beacon: '#7dffb2', ironclad: '#ffb020' };
+function star(x, y, r, color, rot = 0) {
+  ctx.beginPath();
+  for (let i = 0; i < 10; i++) { const a = rot + i * Math.PI / 5 - Math.PI / 2, rr = i % 2 ? r * 0.45 : r; ctx.lineTo(x + Math.cos(a) * rr, y + Math.sin(a) * rr); }
+  ctx.closePath(); ctx.fillStyle = color; ctx.fill();
+}
+/** Stun stars over a dazed foe; steam + an orange ring for a Hot Plate slow. */
+function drawFoeStatus(e, sx, h) {
+  if (!e.alive) return;
+  const now = performance.now() / 1000, top = Math.round(e.y - (h || 84) - 4);
+  if (e.stun > 0 && e.dazed && !e.kd) {
+    for (let i = 0; i < 3; i++) {
+      const a = now * 6 + i * (Math.PI * 2 / 3);
+      const x = sx + Math.cos(a) * 15, y = top + Math.sin(a) * 4;
+      ctx.globalAlpha = Math.sin(a) > 0 ? 1 : 0.6;
+      star(x, y, 5, i === 1 ? '#fff4a8' : '#ffd24a', a);
+    }
+    ctx.globalAlpha = 1;
+  }
+  if (e.slowT > 0) {
+    ctx.save();
+    ctx.strokeStyle = 'rgba(255,140,50,0.75)'; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.ellipse(sx, e.y, 20 + Math.sin(now * 8) * 2, 5, 0, 0, Math.PI * 2); ctx.stroke();
+    for (let i = 0; i < 3; i++) {
+      const k = (now * 0.9 + i / 3) % 1;
+      ctx.globalAlpha = 0.55 * (1 - k);
+      ctx.fillStyle = '#f4efe6';
+      ctx.beginPath(); ctx.arc(sx - 10 + i * 10 + Math.sin(now * 3 + i) * 3, top + 18 - k * 22, 3 + k * 4, 0, Math.PI * 2); ctx.fill();
+    }
+    ctx.globalAlpha = 1;
+    ctx.font = 'bold 9px sans-serif'; ctx.textAlign = 'center'; ctx.fillStyle = '#ff9a4a';
+    ctx.fillText('SLOW', sx, e.y + 14); ctx.textAlign = 'left';
+    ctx.restore();
+  }
+}
+/** Spiral footballs, Star Yank line, kit flashes / rings / cones / cracks / sparks / callouts. */
+function drawKitFx(cam) {
+  const now = performance.now() / 1000;
+  ctx.save();
+  for (const pr of getProjectiles()) {
+    const x = pr.x - cam, y = pr.y + pr.hy;
+    ctx.globalAlpha = 0.35; ctx.fillStyle = '#f2e6c8';
+    ctx.fillRect(Math.min(x, x - pr.facing * 34), y - 1, 34, 2);
+    ctx.globalAlpha = 1;
+    ctx.save(); ctx.translate(x, y); ctx.rotate(pr.facing * 0.15); ctx.scale(1, 0.75 + 0.25 * Math.cos(pr.t * 40));
+    ctx.fillStyle = '#7a3e1a'; ctx.beginPath(); ctx.ellipse(0, 0, 10, 6, 0, 0, Math.PI * 2); ctx.fill();
+    ctx.strokeStyle = '#2a1206'; ctx.lineWidth = 1.5; ctx.stroke();
+    ctx.strokeStyle = '#fff'; ctx.lineWidth = 1.2; ctx.beginPath(); ctx.moveTo(-4, 0); ctx.lineTo(4, 0); ctx.stroke();
+    for (let i = -3; i <= 3; i += 2) { ctx.beginPath(); ctx.moveTo(i, -2); ctx.lineTo(i, 2); ctx.stroke(); }
+    ctx.restore();
+    ctx.fillStyle = 'rgba(0,0,0,0.25)'; ctx.beginPath(); ctx.ellipse(x, pr.y, 8, 2.5, 0, 0, Math.PI * 2); ctx.fill();
+  }
+  for (const fx of getKitFx()) {
+    const k = Math.min(1, fx.t / fx.dur), a = 1 - k;
+    const x = (fx.follow ? player.x : fx.x) - cam;
+    ctx.globalAlpha = 1;
+    switch (fx.type) {
+      case 'callout': {
+        const y = player.y - 128 - k * 14;
+        ctx.globalAlpha = Math.min(1, a * 2);
+        ctx.font = 'bold 15px sans-serif'; ctx.textAlign = 'center';
+        ctx.lineWidth = 4; ctx.strokeStyle = 'rgba(20,10,4,0.9)'; ctx.strokeText(fx.text, x, y);
+        ctx.fillStyle = KIT_FX_COLOR[fx.kit] || '#ffd24a'; ctx.fillText(fx.text, x, y);
+        ctx.textAlign = 'left';
+        break;
+      }
+      case 'text': {
+        ctx.globalAlpha = Math.min(1, a * 2);
+        ctx.font = 'bold 10px sans-serif'; ctx.textAlign = 'center';
+        ctx.lineWidth = 3; ctx.strokeStyle = 'rgba(20,10,4,0.9)'; ctx.strokeText(fx.text, x, fx.y - k * 12);
+        ctx.fillStyle = fx.color || '#fff'; ctx.fillText(fx.text, x, fx.y - k * 12); ctx.textAlign = 'left';
+        break;
+      }
+      case 'flash': { // Flash Pop: white-gold burst in front of the lens
+        const r = 30 + (fx.reach || 100) * (0.6 + 0.6 * k);
+        const g = ctx.createRadialGradient(x, fx.y - 58, 2, x, fx.y - 58, r);
+        g.addColorStop(0, `rgba(255,255,255,${0.95 * a})`); g.addColorStop(0.45, `rgba(255,240,170,${0.55 * a})`); g.addColorStop(1, 'rgba(255,240,170,0)');
+        ctx.fillStyle = g;
+        ctx.beginPath(); ctx.moveTo(x, fx.y - 58);
+        ctx.arc(x, fx.y - 58, r, fx.facing > 0 ? -0.75 : Math.PI - 0.75, fx.facing > 0 ? 0.75 : Math.PI + 0.75); ctx.closePath(); ctx.fill();
+        break;
+      }
+      case 'cone': { // Star Flare: emerald cone
+        const r = (fx.reach || 96) * (0.5 + 0.6 * k), cy = fx.y - 56;
+        const g = ctx.createRadialGradient(x, cy, 2, x, cy, r);
+        g.addColorStop(0, `rgba(220,255,235,${0.9 * a})`); g.addColorStop(0.5, `rgba(125,255,178,${0.6 * a})`); g.addColorStop(1, 'rgba(30,143,90,0)');
+        ctx.fillStyle = g;
+        ctx.beginPath(); ctx.moveTo(x, cy);
+        ctx.arc(x, cy, r, fx.facing > 0 ? -0.5 : Math.PI - 0.5, fx.facing > 0 ? 0.5 : Math.PI + 0.5); ctx.closePath(); ctx.fill();
+        for (let i = 0; i < 4; i++) star(x + fx.facing * r * (0.4 + i * 0.15), cy + Math.sin(i * 2.1) * r * 0.25, 4 * a + 1, '#c8ffe0', now * 4 + i);
+        break;
+      }
+      case 'ring': { // Breach: planted-palm shockwave
+        const r = 12 + (fx.reach || 84) * k;
+        ctx.strokeStyle = `rgba(255,176,32,${0.9 * a})`; ctx.lineWidth = 4 * a + 1;
+        ctx.beginPath(); ctx.ellipse(x + fx.facing * r * 0.4, fx.y - 2, r, r * 0.28, 0, 0, Math.PI * 2); ctx.stroke();
+        ctx.strokeStyle = `rgba(255,236,170,${0.7 * a})`; ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.arc(x, fx.y - 56, 10 + r * 0.6, fx.facing > 0 ? -1 : Math.PI - 1, fx.facing > 0 ? 1 : Math.PI + 1); ctx.stroke();
+        break;
+      }
+      case 'crack': { // Torque / Detention: ground crack + chips
+        ctx.strokeStyle = `rgba(40,30,20,${0.85 * a})`; ctx.lineWidth = 2;
+        for (let i = -2; i <= 2; i++) { ctx.beginPath(); ctx.moveTo(x, fx.y); ctx.lineTo(x + i * 9, fx.y + 3 + Math.abs(i) * 1.5); ctx.lineTo(x + i * 16, fx.y + 2 - (i % 2) * 2); ctx.stroke(); }
+        ctx.fillStyle = `rgba(255,220,150,${a})`;
+        for (let i = 0; i < 5; i++) ctx.fillRect(x - 12 + i * 6, fx.y - 6 - Math.sin(i * 1.7 + 1) * 14 * k - 4 * k, 2, 2);
+        break;
+      }
+      case 'arc': { // weapon swoosh
+        ctx.strokeStyle = fx.color || '#fff4dc'; ctx.globalAlpha = 0.8 * a; ctx.lineWidth = 3;
+        const r = Math.max(30, (fx.reach || 60) * 0.85);
+        ctx.beginPath(); ctx.arc(x, fx.y, r, fx.facing > 0 ? -0.9 + k * 0.3 : Math.PI - 0.6 + k * 0.3, fx.facing > 0 ? 0.6 + k * 0.3 : Math.PI + 0.9 + k * 0.3); ctx.stroke();
+        break;
+      }
+      case 'dust': {
+        ctx.fillStyle = `rgba(200,180,150,${0.6 * a})`;
+        for (let i = 0; i < 4; i++) { ctx.beginPath(); ctx.arc(x - fx.facing * i * 10, fx.y - 3 - k * 6, 4 + k * 6 - i, 0, Math.PI * 2); ctx.fill(); }
+        break;
+      }
+      case 'spark': {
+        const r = (fx.big ? 14 : 9) * (0.6 + k);
+        ctx.globalAlpha = a; star(x, fx.y, r, fx.color || '#fff4a8', k * 2);
+        if (fx.seg >= 2) { ctx.font = 'bold 11px sans-serif'; ctx.textAlign = 'center'; ctx.fillStyle = '#ffd24a'; ctx.fillText('x2', x + 14, fx.y - 14); ctx.textAlign = 'left'; }
+        break;
+      }
+      case 'pop': {
+        ctx.globalAlpha = a; ctx.strokeStyle = '#f2e6c8'; ctx.lineWidth = 2;
+        for (let i = 0; i < 6; i++) { const ang = i * Math.PI / 3; ctx.beginPath(); ctx.moveTo(x + Math.cos(ang) * 4, fx.y + Math.sin(ang) * 4); ctx.lineTo(x + Math.cos(ang) * (8 + k * (fx.small ? 4 : 10)), fx.y + Math.sin(ang) * (8 + k * (fx.small ? 4 : 10))); ctx.stroke(); }
+        break;
+      }
+      case 'cord': { // Star Yank: line from Matthew's hand to the foe (or out to full length on a miss)
+        const hx = player.x + player.facing * 30 - cam, hy = player.y - 62;
+        const tx = fx.target ? fx.target.x - cam : fx.tx - cam, ty = fx.target ? fx.target.y - 58 : fx.ty;
+        ctx.globalAlpha = Math.min(1, a * 3);
+        ctx.strokeStyle = '#f4f0ff'; ctx.lineWidth = 1.5;
+        ctx.beginPath(); ctx.moveTo(hx, hy); ctx.quadraticCurveTo((hx + tx) / 2, Math.max(hy, ty) + 8 * a, tx, ty); ctx.stroke();
+        star(tx, ty, 6, '#ffd24a', now * 10);
+        break;
+      }
+      default: break;
+    }
+  }
+  ctx.restore();
+}
+// <<< 1.4.0 outfit kits
+
 /**
  * Collectible as the actual item: Joe's getCollectibleSprite(id, tMs) → {img,sx,sy,sw,sh,anchorX,anchorY}
  * drawn 1:1 at its anchor (the frames carry their own bob), over a soft pulsing glow + ground shadow.
@@ -1574,13 +1753,14 @@ function drawWorld(dt) {
     } else if (item.type === 'player') {
       const outfit = OUTFITS[gameState.outfitId] || OUTFITS.polo;
       let pose = player.pose;
-      if (player.invuln > 0 && Math.floor(performance.now() / 80) % 2) ctx.globalAlpha = 0.4;
+      if (player.invuln > 0 && player.attackType !== 'special' && Math.floor(performance.now() / 80) % 2) ctx.globalAlpha = 0.4; // 1.4.0: no blink through a signature move
       const t = USE_HERO_RENDER ? heroPoseTime(player) : player.animT;
       // >>> v3 anim states (game-logic lane): getAnimFrame('matthew', state) when the art exists, else the
       // old sheet with fallbacks: jump-kick lift, Star Drive afterimages, faster sprint cycle, lie-down tilt
       const px = player.x - cam;
       const maf = USE_HERO_RENDER ? null : animFrame('matthew', player.animState, animMs(player), gameState.outfitId);
-      if (player.attackType === 'special') {
+      if (player.attackType === 'special' && player.kitMove && player.kitMove.lunge >= 60 && player.kitMove.el < player.kitMove.lungeT) {
+        // 1.4.0: afterimages only for the moves that travel (Kickflip); planted moves stay crisp
         const a0 = ctx.globalAlpha;
         for (let i = 3; i >= 1; i--) {
           ctx.globalAlpha = 0.16 * (4 - i);
@@ -1602,6 +1782,7 @@ function drawWorld(dt) {
       // <<< v3
     }
   }
+  drawKitFx(cam); // 1.4.0: Spiral footballs, Star Yank line, flashes / rings / sparks / callouts (over the cast)
 
   // Shared golden-hour light over characters too (lens width, full plate height)
   drawSceneGrade(ctx, area, viewW, H);
@@ -1805,6 +1986,8 @@ if (DEBUG) {
     knockDown(which = 0) { const t = which === 'player' ? player : gameState.enemies[which]; if (t) knockDown(t, t === player ? -player.facing : player.facing); return !!t; },
     animApiReady,
     setSpecial(v) { gameState.special = v; },
+    /** 1.4.0 outfit kits: table, art timing, live FX / projectiles (tests). */
+    kits: { KITS, getKit, kitRow, specialTiming, fx: () => getKitFx(), projectiles: () => getProjectiles() },
     audio: audioDebug,
     persist
   };

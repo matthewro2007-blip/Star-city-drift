@@ -686,3 +686,25 @@ kbd {
 }
 @media (prefers-reduced-motion: reduce) { #outfit-screen.shake .outfit-panel { animation: none; } .outfit-tile { transition: none; } }
 /* <<< outfit picker */
+
+/* >>> 1.4.0 outfit kits (game-logic lane): HUD weapon badge on the portrait ring + picker kit row */
+#hud-weapon {
+  position: absolute; left: 46px; top: 46px; width: 34px; height: 34px; border-radius: 50%;
+  background: radial-gradient(circle at 50% 40%, #3a2a12, #120c06 75%); border: 2px solid #b8862a;
+  box-shadow: 0 0 0 1px rgba(40,24,6,0.9), 0 2px 6px rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center;
+  opacity: 0.72; filter: saturate(0.6); transition: opacity 0.15s, filter 0.15s;
+}
+#hud-weapon.ready { opacity: 1; filter: none; border-color: #ffd24a; box-shadow: 0 0 0 1px rgba(40,24,6,0.9), 0 0 9px rgba(255,210,74,0.8); }
+#hud-weapon canvas { width: 30px; height: 30px; image-rendering: pixelated; }
+#hud-weapon-move { display: none; }
+@media (max-width: 700px), (max-height: 420px) { #hud-weapon { left: 32px; top: 32px; width: 22px; height: 22px; } #hud-weapon canvas { width: 19px; height: 19px; } }
+.of-kit { display: flex; align-items: center; gap: 8px; width: 100%; background: rgba(0,0,0,0.28); border: 1px solid rgba(255,210,74,0.3); border-radius: 8px; padding: 4px 8px; }
+.of-kit canvas { flex: 0 0 auto; width: 40px; height: 40px; image-rendering: pixelated; }
+.of-kit-text { display: flex; flex-direction: column; min-width: 0; text-align: left; }
+.of-move { font-size: 14px; font-weight: 800; color: #ffd24a; letter-spacing: 0.02em; }
+.of-weapon-name { font-size: 11px; color: #c8b080; }
+.of-ability { font-size: 12px; line-height: 1.25; color: #e8dcc4; }
+.outfit-feature.locked .of-kit { opacity: 0.55; filter: grayscale(0.7); }
+@media (max-height: 520px) { .of-kit { padding: 2px 6px; gap: 6px; } .of-kit canvas { width: 28px; height: 28px; } .of-move { font-size: 12px; } .of-ability, .of-weapon-name { font-size: 10.5px; } }
+@media (max-width: 640px) and (orientation: portrait) { .of-kit { grid-column: 2; } }
+/* <<< 1.4.0 outfit kits */
