@@ -973,9 +973,31 @@ body.dlc-silas #joystick-knob { background: rgba(194,164,103,0.5); }
 @media (max-height: 520px) { .of-silas-moves { font-size: 9.5px; padding: 2px 6px; } }
 #mobile-buttons #btn-grip { font-size: 12px; letter-spacing: .04em; color: #e6d3a2; border-color: #a8202a; }
 @media (orientation: portrait) and (max-width: 700px) {
-  #mobile-buttons #btn-grip { left: -64px; bottom: 116px; width: 48px; height: 48px; }
+  /* 1.5.1: right of the OBJECTIVE box (it ends at x≈206), above E / ★, clear of the TIME box */
+  #mobile-buttons #btn-grip { left: 0; bottom: 116px; width: 48px; height: 48px; }
 }
 @media (orientation: landscape) and (max-height: 500px) {
   #mobile-buttons #btn-grip { position: absolute; right: calc(100% + 6px); bottom: 0; width: 48px; height: 48px; }
+}
+/* 1.5.1: version tag on the title screen corner + prequel cast line in Credits */
+#game-version { position: absolute; right: max(10px, env(safe-area-inset-right)); bottom: max(8px, env(safe-area-inset-bottom)); z-index: 5;
+  font: 600 11px/1 system-ui, sans-serif; letter-spacing: .06em; color: var(--gold, #f0c870); opacity: .7; pointer-events: none; }
+.credits-prequel { margin: 8px auto 4px; font-size: 12px; line-height: 1.45; text-align: center; opacity: .85; max-width: 420px; }
+/* 1.5.1: prequel objective shows the whole six-move checklist (wraps instead of clipping) */
+body.dlc-silas #mission-desc { -webkit-line-clamp: 4; }
+@media (orientation: portrait) and (max-width: 700px) {
+  body.dlc-silas #mission-desc { font-size: 10px; }
+  body.dlc-silas #collect-row { font-size: 9px; }
+  /* ending card: keep the eyebrow and the buttons clear of the 5vh letterbox bars */
+  #dlc-ending-screen.dlc-ending { padding-top: calc(5vh + 8px); padding-bottom: calc(5vh + 12px); }
+  #dlc-ending-screen .dlc-ending-inner { gap: 4px; }
+  #dlc-ending-screen .dlc-ending-text { font-size: 12px; line-height: 1.4; }
+}
+@media (orientation: landscape) and (max-height: 500px) {
+  body.dlc-silas #objective-box { max-width: 230px; }
+  body.dlc-silas #mission-desc { font-size: 10px; }
+  /* p-9 (also main game): score/minimap and TIME sit left of the II / RUN / ★ button column */
+  #hud-right { right: calc(max(8px, env(safe-area-inset-right)) + 60px); }
+  #time-box { right: calc(max(8px, env(safe-area-inset-right)) + 60px); }
 }
 /* end DLC: Silas prequel */
