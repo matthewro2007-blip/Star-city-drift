@@ -244,8 +244,9 @@ export function updatePlayer(p, input, dt, areaWidth, hooks = {}) {
       startAttack('special', 'kick', SPECIAL_DUR);
       p.specialCd = SPECIAL_COOLDOWN;
       p.combo = 0; p.comboStep = 0; p.comboTimer = 0;
-      p.hitbox = makeHitbox(p, -6, 44, 56, 40, { dmg: SPECIAL_DMG, knock: 30, knockdown: true, special: true, sfx: 'star' });
-      sfx('stardrive'); voice('matthew', 'special');
+      const iron = hooks.outfit === 'ironclad'; // Hell's Nightmare armor: heavier Star Drive launch + impact (audio.js)
+      p.hitbox = makeHitbox(p, -6, 44, 56, 40, { dmg: SPECIAL_DMG, knock: 30, knockdown: true, special: true, sfx: iron ? 'star_iron' : 'star' });
+      sfx('stardrive', { iron }); voice('matthew', 'special');
       hooks.onSpecial && hooks.onSpecial();
       done(); gateHitbox(p, 'matthew', hooks.outfit);
       return;

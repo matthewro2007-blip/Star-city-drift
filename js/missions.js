@@ -159,7 +159,11 @@ export function createMissionSystem(state) {
     { id: 'varsity', name: 'Valley Gym Varsity Jacket', area: 'gym', x: 800, outfit: 'varsity', reveal: 'side_spar' },
     { id: 'lantern', name: 'Night Shift Lantern', area: 'river', x: 300, outfit: null, score: 500, reveal: 'side_night' },
     // v3: glows at the foot of the Mill Mountain Star once main mission 2 (Missing Shipment) is done
-    { id: 'beaconring', name: 'Beacon Ring (under the Mill Mountain Star)', area: 'star', x: 720, outfit: 'beacon', reveal: 'main2' }
+    { id: 'beaconring', name: 'Beacon Ring (under the Mill Mountain Star)', area: 'star', x: 720, outfit: 'beacon', reveal: 'main2' },
+    // 1.3.2: Hell's Nightmare helmet (outfit `ironclad`), hidden by the last boxcar at the far end of the Rail Yards.
+    // `stealth`: drawn faint with no label until Matthew is close (main.js); once spotted it stays visible (save v4 `spotted`).
+    { id: 'ironcrate', name: "Hell's Nightmare Helmet", area: 'rails', x: 1070, outfit: 'ironclad', stealth: true,
+      hint: "Unlock: a helmet is hidden somewhere in the Rail Yards. Look along the last boxcar at the far end of the yard." }
   ];
 
   state.missions = missions;

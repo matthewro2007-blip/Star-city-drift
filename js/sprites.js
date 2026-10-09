@@ -29,8 +29,15 @@ const OUTFIT_SHEETS = {
   diner: 'assets/sprites/matthew_diner.png',
   gold: 'assets/sprites/matthew_gold.png',
   webslinger: 'assets/sprites/matthew_webslinger.png',
-  beacon: 'assets/sprites/matthew_beacon.png'
+  beacon: 'assets/sprites/matthew_beacon.png',
+  ironclad: 'assets/sprites/matthew_ironclad.png'      // display name "Hell's Nightmare"
 };
+/** Cache-bust for outfit sheets / outfit portraits (bump when sheets are regenerated). */
+const SPRITE_REV = '1.3.1-ironclad2';
+const vb = (src) => src + (src.includes('?') ? '&' : '?') + 'v=' + SPRITE_REV;
+/** Optional per-outfit HUD/picker busts (112x112); outfits without one use portrait_matthew.png. */
+const OUTFIT_PORTRAITS = { ironclad: 'assets/sprites/portrait_matthew_ironclad.png' };
+const outfitPortraits = {};
 const outfitSheets = {};      // outfitId -> Image (loaded)
 const outfitPending = {};     // outfitId -> true while lazily loading / after failure
 
@@ -86,8 +93,9 @@ export function loadSprites() {
       const opt = async (src) => { try { return await loadImage(src); } catch (_) { console.warn('Sprite missing:', src); return null; } };
       await Promise.all([
         ...Object.entries(OUTFIT_SHEETS).filter(([id]) => id !== 'polo').map(async ([id, src]) => {
-          const img = await opt(src); if (img) outfitSheets[id] = img; else outfitPending[id] = true;
+          const img = await opt(vb(src)); if (img) outfitSheets[id] = img; else outfitPending[id] = true;
         }),
+        ...Object.entries(OUTFIT_PORTRAITS).map(async ([id, src]) => { const img = await opt(vb(src)); if (img) outfitPortraits[id] = img; }),
         ...Object.entries(NPC_SRC).map(async ([k, src]) => { const img = await opt(src); if (img) images[k] = img; }),
         ...Object.entries(ENEMY_SHEET_SRC).map(async ([k, src]) => { const img = await opt(src); if (img) enemySheets[k] = img; }),
         loadAnimManifests(),
@@ -358,13 +366,19 @@ function sliceFrame(img, idx, key) {
   return c;
 }
 
+/** 112x112 bust for an outfit (e.g. 'ironclad' = helmet on), else the default HUD portrait (or null before load). */
+export function getOutfitPortrait(outfitId) {
+  const id = outfitId && typeof outfitId === 'object' ? outfitId.id : outfitId;
+  return outfitPortraits[id] || images.portrait || null;
+}
+
 /** Sheet for an outfit; lazily tries matthew_<id>.png for ids not in OUTFIT_SHEETS. Falls back to the default sheet. */
 function outfitSheet(outfitId) {
   const id = outfitId || 'polo';
   if (outfitSheets[id]) return { img: outfitSheets[id], id };
   if (!outfitPending[id] && /^[a-z0-9_-]+$/i.test(id)) {
     outfitPending[id] = true;
-    loadImage(OUTFIT_SHEETS[id] || `assets/sprites/matthew_${id}.png`)
+    loadImage(vb(OUTFIT_SHEETS[id] || `assets/sprites/matthew_${id}.png`))
       .then((img) => { outfitSheets[id] = img; })
       .catch(() => {});
   }

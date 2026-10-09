@@ -1,13 +1,15 @@
 /**
- * localStorage save — versioned. Current key/format: `starCityDrift_v1`, data.v = 3.
+ * localStorage save — versioned. Current key/format: `starCityDrift_v1`, data.v = 4.
+ * v3 -> v4 (1.3.2): adds `spotted` (hidden collectibles Matthew has already found but not picked up,
+ * e.g. the Hell's Nightmare helmet in the Rail Yards); everything else carries over unchanged.
  * Older saves are migrated on read: `starCityDrift2d_v1` (v1) -> v2 -> v3, and v2 under the
- * current key -> v3 (adds difficulty 'normal', fetchItems, beatHard; all progress kept).
+ * current key -> v3 (adds difficulty 'normal', fetchItems, beatHard; all progress kept), then v3 -> v4.
  * A corrupt/unknown save never throws: it is moved aside and reported as 'corrupt'.
  */
 import { getDepth } from './world.js';
 
 export const SAVE_KEY = 'starCityDrift_v1';
-export const SAVE_VERSION = 3;
+export const SAVE_VERSION = 4;
 const DIFF_IDS = ['easy', 'normal', 'hard', 'arcade'];
 const LEGACY_KEYS = ['starCityDrift2d_v1'];
 const BAD_KEY = SAVE_KEY + '_corrupt';
@@ -23,6 +25,12 @@ function num(v, d) { return typeof v === 'number' && Number.isFinite(v) ? v : d;
 function migrateV2(d) {
   if (!isObj(d)) return d;
   return { ...d, v: 3, difficulty: 'normal', fetchItems: [], fetchActive: false, beatHard: false };
+}
+
+/** v3 -> v4: keep everything, add `spotted` (none yet: the 1.3.2 helmet didn't exist in a v3 world). */
+function migrateV3(d) {
+  if (!isObj(d)) return d;
+  return { ...d, v: 4, spotted: Array.isArray(d.spotted) ? d.spotted.filter((x) => typeof x === 'string') : [] };
 }
 
 /** Convert a legacy v1 payload into the v2 shape (then migrateV2). */
@@ -71,8 +79,8 @@ export function inspectSave({ write = true } = {}) {
   if (raw) {
     try {
       const parsed = JSON.parse(raw);
-      if (isObj(parsed) && parsed.v === 2) {
-        const data = validate(migrateV2(parsed));
+      if (isObj(parsed) && (parsed.v === 2 || parsed.v === 3)) {
+        const data = validate(parsed.v === 2 ? migrateV3(migrateV2(parsed)) : migrateV3(parsed));
         if (write) try { store.setItem(SAVE_KEY, JSON.stringify(data)); } catch (_) {}
         return { status: 'migrated', data };
       }
@@ -92,7 +100,7 @@ export function inspectSave({ write = true } = {}) {
     try {
       const d = JSON.parse(old);
       if (!isObj(d) || d.v !== 1) throw new Error('unknown legacy format');
-      const data = validate(migrateV1(d));
+      const data = validate(migrateV3(migrateV1(d)));
       if (write) try { store.setItem(SAVE_KEY, JSON.stringify(data)); store.removeItem(key); } catch (_) {}
       return { status: 'migrated', data };
     } catch (e) {
@@ -145,7 +153,8 @@ export function serializeSave({ player, stateBag, gameState, outfitId, areaId })
     difficulty: gameState.difficulty || 'normal',
     fetchItems: [...(stateBag.fetchItems || [])],
     fetchActive: !!(stateBag.side && stateBag.side.id === 'side_potluck'),
-    beatHard: !!stateBag.beatHard
+    beatHard: !!stateBag.beatHard,
+    spotted: (stateBag.collectibles || []).filter((c) => c.stealth && c.spotted && !c.taken).map((c) => c.id)
   };
 }
 
@@ -185,6 +194,8 @@ export function applySave(data, { player, stateBag, gameState, areas }) {
     stateBag.unlockedOutfits = new Set(['polo', ...(data.unlockedOutfits || []).filter((o) => typeof o === 'string')]);
     const taken = new Set(data.collectTaken || []);
     for (const c of stateBag.collectibles) c.taken = taken.has(c.id);
+    const spotted = new Set(Array.isArray(data.spotted) ? data.spotted : []);
+    for (const c of stateBag.collectibles) if (c.stealth) c.spotted = c.taken || spotted.has(c.id);
     stateBag.fetchItems = Array.isArray(data.fetchItems) ? data.fetchItems.filter((x) => typeof x === 'string') : [];
     stateBag.beatHard = !!data.beatHard;
     // timed / wave missions restart from their giver after a load; the fetch run resumes

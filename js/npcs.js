@@ -149,8 +149,12 @@ export const OUTFITS = {
   webslinger: { name: 'Star City Web-Slinger', shirt: '#b0182a', pants: '#1f3fa8', accent: '#ffd24a', desc: "An original Star City hero suit: red, blue and a lot of attitude." }, // original design
   gold: { name: 'Gold Star Suit', shirt: '#d4a52a', pants: '#3a2a10', accent: '#fff3b0', desc: "Pure gold, head to toe — proof you've truly conquered Star City." },
   // v3: original Star City design (Joe's matthew_beacon.png + anim set) — unlocked by the Beacon Ring
-  beacon: { name: 'Star City Beacon', shirt: '#1e8f5a', pants: '#14202e', accent: '#7dffb2', desc: "Emerald glow from the ring hidden under the Mill Mountain Star." }
+  beacon: { name: 'Star City Beacon', shirt: '#1e8f5a', pants: '#14202e', accent: '#7dffb2', desc: "Emerald glow from the ring hidden under the Mill Mountain Star." },
+  // 1.3.2: original heavy-armor design (Joe's matthew_ironclad anim set; key stays `ironclad`) — hidden helmet in the Rail Yards
+  ironclad: { name: "Hell's Nightmare", shirt: '#5b6b2e', pants: '#3b4422', accent: '#ffb020', desc: "Bulky olive demon-hunter armor and an amber-visored helmet — the things that go bump in the night check under their beds for him." }
 };
 
-/** Outfit order for keys 1-9, 0 and - (or Shift+1), L1/R1 (LB/RB) cycling and the pause-menu outfit button. */
-export const OUTFIT_ORDER = ['polo', 'hoodie', 'jacket', 'street', 'photo', 'varsity', 'mechanic', 'diner', 'gold', 'webslinger', 'beacon'];
+/** Outfit order for keys 1-9, 0, - (or Shift+1) and = (or Shift+2), L1/R1 (LB/RB) cycling and the pause-menu outfit picker. */
+export const OUTFIT_ORDER = ['polo', 'hoodie', 'jacket', 'street', 'photo', 'varsity', 'mechanic', 'diner', 'gold', 'webslinger', 'beacon', 'ironclad'];
+/** Hotkey → outfit index for the keys past 1-9 / 0. */
+export const OUTFIT_HOTKEYS = { '0': 9, '-': 10, '=': 11 };
