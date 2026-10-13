@@ -34,7 +34,7 @@ const OUTFIT_SHEETS = {
   silas: 'assets/sprites/matthew_silas.png'             // 1.5.1: Silas's Suit (prequel DLC reward)
 };
 /** Cache-bust for outfit sheets / outfit portraits (bump when sheets are regenerated). */
-const SPRITE_REV = '1.5.1-silas-outfit';
+const SPRITE_REV = '1.5.2-wren';
 const vb = (src) => src + (src.includes('?') ? '&' : '?') + 'v=' + SPRITE_REV;
 /** Optional per-outfit HUD/picker busts (112x112); outfits without one use portrait_matthew.png. */
 const OUTFIT_PORTRAITS = { ironclad: 'assets/sprites/portrait_matthew_ironclad.png', silas: 'assets/sprites/portrait_matthew_silas.png' };
@@ -68,6 +68,12 @@ const NPC_SRC = {
   tessa: 'assets/sprites/tessa.png',
   coach: 'assets/sprites/coach.png',
   cam: 'assets/sprites/cam.png',
+  wren: 'assets/sprites/wren.png',
+  // 1.5.2: prequel (DLC "Second Shift") NPCs, ids from js/dlc_silas.js CAST — never the rectangle fallback
+  lou: 'assets/sprites/lou.png',
+  gus: 'assets/sprites/gus.png',
+  ivy: 'assets/sprites/ivy.png',
+  pip: 'assets/sprites/pip.png',
   silas: 'assets/sprites/silas.png',
   thug_purple: 'assets/sprites/thug_purple.png',
   thug_red: 'assets/sprites/thug_red.png',
@@ -125,7 +131,7 @@ const animImages = {};
 let ANIM_REV = '';
 const CHAR_ALIASES = { coachray: 'coach', ray: 'coach', raydelgado: 'coach', deemorales: 'dee', priyashah: 'priya',
   hankrail: 'hank', hankpettigrew: 'hank', rail: 'hank', junewhitaker: 'june', tessaquinn: 'tessa', camortiz: 'cam',
-  wrencalloway: 'wren', silasboone: 'silas', silasnpc: 'silas', stranger: 'silas', boss: 'silas_boss', silasboss: 'silas_boss',
+  wrencalloway: 'wren', loubadger: 'lou', guspell: 'gus', ivymarsh: 'ivy', silasboone: 'silas', silasnpc: 'silas', stranger: 'silas', boss: 'silas_boss', silasboss: 'silas_boss',
   matthewrose: 'matthew', player: 'matthew', hero: 'matthew', runner: 'snatcher', pursesnatcher: 'snatcher' };
 export const ANIM_STATES = {
   matthew: ['idle_signature', 'run', 'sprint', 'combo1', 'combo2', 'combo3', 'jump_kick', 'special',
@@ -140,7 +146,13 @@ export const ANIM_STATES = {
     'gentlemans_jab', 'jab1', 'jab2', 'jab3', 'iron_handshake', 'velvet_grip', 'last_word', 'grab', 'whiff', 'throw', 'stance', 'counter', 'stare', 'rush'],
   /** 1.5.1: extra states of matthew_silas (Silas's Suit) on top of ANIM_STATES.matthew; same names/aliases as silas_player. */
   matthew_silas: ['jab1', 'jab2', 'jab3', 'gentlemans_jab', 'velvet_grip_grab', 'velvet_grip_throw', 'velvet_grip', 'hs_grab', 'hs_slam', 'iron_handshake',
-    'last_word_stance', 'last_word_strike', 'last_word', 'cold_stare', 'boss_rush', 'grab', 'whiff', 'throw', 'stance', 'counter', 'stare', 'rush']
+    'last_word_stance', 'last_word_strike', 'last_word', 'cold_stare', 'boss_rush', 'grab', 'whiff', 'throw', 'stance', 'counter', 'stare', 'rush'],
+  /** 1.5.2: prequel bosses (own art, anims_enemies.json): boss set + attackA/attackB aliases for the createThug() miniBoss path. */
+  vera: ['boss_attack1', 'boss_attack2', 'boss_attack3', 'taunt', 'defeat', 'ko', 'knockdown_fall', 'knockdown_ground', 'getup',
+    'idle', 'walk', 'run', 'hurt', 'attackA', 'attackB'],
+  foreman: ['boss_attack1', 'boss_attack2', 'boss_attack3', 'taunt', 'defeat', 'ko', 'knockdown_fall', 'knockdown_ground', 'getup',
+    'idle', 'walk', 'run', 'hurt', 'attackA', 'attackB'],
+  foreman_crew: ['attackA', 'attackB', 'ko', 'knockdown_fall', 'knockdown_ground', 'getup', 'idle', 'walk', 'run', 'hurt']
 };
 
 async function fetchManifest(src, quiet) {

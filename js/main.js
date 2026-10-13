@@ -1154,8 +1154,7 @@ function silasHooks() {
 }
 
 // ---------- prequel controller + the api it drives ----------
-const DLC_CREW = { tint: 'rgba(38,30,22,0.42)' }; // the Foreman's crew: dark work coats over the thug art
-function crewify(e) { e.tint = DLC_CREW.tint; e.tintFrac = 0.55; e.crew = true; return e; }
+function crewify(e) { e.charKey = 'foreman_crew'; e.crew = true; return e; } // 1.5.2: Jack's Foreman's-crew art
 const dlcApi = {
   toast, sfx, sting, voice,
   player: () => player,
@@ -1182,9 +1181,9 @@ const dlcApi = {
     const D = getDifficulty();
     const bx = player.x + 180 < area.width - 60 ? player.x + 180 : player.x - 180;
     const b = createThug(bx, player.y, 2);
-    if (who === 'vera') Object.assign(b, { color: '#16a085', charKey: 'thug_teal', nameTag: 'Vera Lisk', drawScale: 1.32, hp: Math.round(130 * D.bossHp), dmg: Math.round(13 * D.bossDmg), speed: 105 * Math.min(1.1, D.speed), scoreValue: 1500 });
-    else Object.assign(b, { color: '#7f8c8d', charKey: 'thug_grey', nameTag: 'Mort "The Foreman" Kessler', drawScale: 1.5, hp: Math.round(200 * D.bossHp), dmg: Math.round(17 * D.bossDmg), speed: 90 * Math.min(1.1, D.speed), scoreValue: 3000 });
-    b.maxHp = b.hp; b.miniBoss = true; b.tint = who === 'vera' ? 'rgba(20,40,60,0.35)' : 'rgba(30,22,14,0.5)'; b.tintFrac = 0.6; b.boss = who;
+    if (who === 'vera') Object.assign(b, { color: '#16a085', charKey: 'vera', nameTag: 'Vera Lisk', drawScale: 1.3, hp: Math.round(130 * D.bossHp), dmg: Math.round(13 * D.bossDmg), speed: 105 * Math.min(1.1, D.speed), scoreValue: 1500 });
+    else Object.assign(b, { color: '#7f8c8d', charKey: 'foreman', nameTag: 'Mort "The Foreman" Kessler', drawScale: 1.45, hp: Math.round(200 * D.bossHp), dmg: Math.round(17 * D.bossDmg), speed: 90 * Math.min(1.1, D.speed), scoreValue: 3000 });
+    b.maxHp = b.hp; b.miniBoss = true; b.boss = who; // 1.5.2: Jack's real boss art (no tint)
     gameState.enemies = [b, ...this.spawnCrew(adds, { color: who === 'vera' ? '#16a085' : '#c0392b', wave: 2 })];
     gameState.combatLock = true; gameState.bossActive = true;
     sfx('fight_start');
@@ -1363,8 +1362,8 @@ function drawFinaleActor(a, cam) {
     if (f && a.walking) drawAnimFrame(f, x, a.y, a.facing, PLAYER_SCALE);
     else drawMatthew(a.walking ? 'walk' : 'idle', 'polo', OUTFITS.polo, a.t, x, a.y, a.facing);
   } else {
-    let f = animFrame('thug_' + (a.color || 'grey'), 'idle', a.t * 1000);
-    if (f) { f = tintedFrame(f, DLC_CREW.tint, 0.55); drawAnimFrame(f, x, a.y, a.facing, THUG_SCALE); }
+    const f = animFrame('foreman_crew', 'idle', a.t * 1000); // 1.5.2: the Foreman's crew art
+    if (f) drawAnimFrame(f, x, a.y, a.facing, THUG_SCALE);
     else drawCastSprite(getEnemySprite('idle', '#7f8c8d', a.t, false), x, a.y, a.facing, THUG_SCALE);
   }
 }

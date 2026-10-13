@@ -207,7 +207,11 @@ const FIGHTERS = {
   silas_boss: { f0: 96, wave: 'sawtooth', fs: 0.92, grit: 0.06, breath: 0.35 },
   snatcher: { f0: 178, wave: 'square', fs: 1.14, grit: 0.1, breath: 0.3 },
   // DLC: Silas prequel — playable Silas: the boss voice, a touch smoother (no shouting, more breath)
-  silas: { f0: 100, wave: 'sawtooth', fs: 0.9, grit: 0.03, breath: 0.4 }
+  silas: { f0: 100, wave: 'sawtooth', fs: 0.9, grit: 0.03, breath: 0.4 },
+  // 1.5.2: prequel bosses + crew have their own art keys now (vera, foreman, foreman_crew)
+  vera: { f0: 196, wave: 'square', fs: 1.22, grit: 0.04, breath: 0.22, nasal: true },
+  foreman: { f0: 62, wave: 'sawtooth', fs: 0.8, grit: 0.5, breath: 0.3 },
+  foreman_crew: { f0: 92, wave: 'sawtooth', fs: 0.9, grit: 0.35, breath: 0.2 }
 };
 const DEFAULT_TALK = { wave: 'triangle', f0: 220, rate: 0.08, len: 0.06, steps: [1, 1.12, 1.25, 1.5], vowels: ['a', 'e', 'o'], fs: 1 };
 // DLC: Silas prequel — the prequel cast lives in js/dlc_silas.js; it registers its talk voices here.

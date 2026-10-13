@@ -670,6 +670,8 @@ export function updateEnemy(e, player, dt, areaWidth = Infinity) {
         if (!e.altAtk) e.attackTimer = 0.32;
         if (e.miniBoss) { // DLC: Silas prequel bosses (thug art, boss rules): every 3rd swing is a heavy knockdown
           e.patIdx = (e.patIdx || 0) + 1;
+          const ba = 'boss_attack' + (((e.patIdx - 1) % 3) + 1); // 1.5.2: Vera / the Foreman have real boss swings
+          if (animFrame(key, ba, 0)) e.nextAnim = ba;
           if (e.patIdx % 3 === 0) {
             e.attackTimer = 0.42;
             e.hitbox = { x: e.x + e.facing * 6, y: e.y - 38, w: 44, h: 34, dmg: Math.round(dmg * 1.3), knockdown: true, hit: new Set() };
