@@ -32,10 +32,11 @@ const OUTFIT_SHEETS = {
   beacon: 'assets/sprites/matthew_beacon.png',
   ironclad: 'assets/sprites/matthew_ironclad.png',     // display name "Hell's Nightmare"
   silas: 'assets/sprites/matthew_silas.png',            // 1.5.1: Silas's Suit (prequel DLC reward)
-  darkstar: 'assets/sprites/matthew_darkstar.png'       // 1.6.0: Dark Star Suit (beat the main campaign)
+  darkstar: 'assets/sprites/matthew_darkstar.png',
+  cinder: 'assets/sprites/matthew_cinder.png'          // 1.7.0: Cinder Hollow Orange (first visit to Silas's cell)       // 1.6.0: Dark Star Suit (beat the main campaign)
 };
 /** Cache-bust for outfit sheets / outfit portraits (bump when sheets are regenerated). */
-const SPRITE_REV = '1.6.0-dark';
+const SPRITE_REV = '1.7.0-locked';
 const vb = (src) => src + (src.includes('?') ? '&' : '?') + 'v=' + SPRITE_REV;
 /** Optional per-outfit HUD/picker busts (112x112); outfits without one use portrait_matthew.png. */
 const OUTFIT_PORTRAITS = { ironclad: 'assets/sprites/portrait_matthew_ironclad.png', silas: 'assets/sprites/portrait_matthew_silas.png' };
@@ -63,6 +64,19 @@ const enemySheets = {};
 
 const NPC_SRC = {
   dee: 'assets/sprites/dee.png',
+  // 1.7.0 "Locked Up": Cinder Hollow cast + the arrest
+  ellis: 'assets/sprites/ellis.png',
+  ramos: 'assets/sprites/ramos.png',
+  quay: 'assets/sprites/quay.png',
+  reed: 'assets/sprites/reed.png',
+  mina: 'assets/sprites/mina.png',
+  dora: 'assets/sprites/dora.png',
+  otto: 'assets/sprites/otto.png',
+  bart: 'assets/sprites/bart.png',
+  silas_prison: 'assets/sprites/silas_prison.png',
+  reyes: 'assets/sprites/reyes.png',
+  okafor: 'assets/sprites/okafor.png',
+  silas_cuffed: 'assets/sprites/silas_cuffed.png',
   priya: 'assets/sprites/priya.png',
   hank: 'assets/sprites/hank.png',
   june: 'assets/sprites/june.png',

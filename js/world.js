@@ -15,7 +15,14 @@ let bgsReady = false;
  */
 const PLATE_FILES = {
   rails: ['railyard', 'rails'],
-  star: ['millmountain', 'star']
+  star: ['millmountain', 'star'],
+  // 1.7.0: Cinder Hollow Correctional (tools/gen_prison_plates.py)
+  pr_lobby: ['prison_lobby'],
+  pr_block: ['prison_block'],
+  pr_mess: ['prison_mess'],
+  pr_library: ['prison_library'],
+  pr_shop: ['prison_shop'],
+  pr_yard: ['prison_yard']
 };
 
 /**
@@ -157,7 +164,12 @@ const PAINTED_SIGNS = {
   gym: [[120, 128, 610, 170]],
   pages: [[215, 222, 626, 252], [654, 60, 678, 260]],
   river: [[375, 135, 552, 162]],
-  skate: [[170, 168, 740, 226]]
+  skate: [[170, 168, 740, 226]],
+  prison_lobby: [[240, 92, 720, 124], [420, 202, 540, 228]],
+  prison_yard: [[350, 102, 500, 130]],
+  prison_mess: [[80, 142, 250, 166]],
+  prison_library: [[470, 112, 600, 140]],
+  prison_shop: [[350, 112, 500, 140]]
 };
 
 /** Ambient sedan on the far lane (cosmetic, no collision). laneY = tyre line just past the far curb. */
@@ -172,7 +184,9 @@ const NEON_AREAS = { diner: 1.4, pages: 0.8, skate: 0.8, downtown: 0.55, gym: 0.
 export function loadBackgrounds() {
   const ids = [
     'downtown', 'diner', 'railyard', 'millmountain',
-    'pages', 'skate', 'gym', 'rails', 'river', 'star', 'community', 'downtown_golden'
+    'pages', 'skate', 'gym', 'rails', 'river', 'star', 'community', 'downtown_golden',
+    // 1.7.0: Cinder Hollow Correctional
+    'prison_lobby', 'prison_block', 'prison_mess', 'prison_library', 'prison_shop', 'prison_yard'
   ];
   return Promise.all([loadProps(), ...ids.map((id) => new Promise((resolve) => {
     const img = new Image();
@@ -360,8 +374,61 @@ export const AREAS = {
       { type: 'lamp', x: 200 }, { type: 'sign', x: 350, text: 'WELCOME' }
     ],
     spawnCombat: false, combatChance: 0.15
-  }
+  },
+  // ---------- 1.7.0: Cinder Hollow Correctional (after the campaign; Route 9 bus from the Community Center) ----------
+  pr_lobby: {
+    id: 'pr_lobby', name: 'Cinder Hollow: Visitor Lobby', prison: true, indoor: true,
+    width: 1100, leftTo: null, rightTo: 'pr_block',
+    sky: ['#3a4256', '#4a5470', '#2a3040'], ground: '#4a4e58', sidewalk: '#5c606a', accent: '#c8b450',
+    buildings: [{ x: 120, w: 260, h: 170, color: '#4a5262', label: 'VISITORS' }],
+    props: [{ type: 'lamp', x: 160 }, { type: 'sign', x: 520, text: 'SIGN IN' }],
+    spawnCombat: false, combatChance: 0
+  },
+  pr_block: {
+    id: 'pr_block', name: 'Cinder Hollow: Cell Block C', prison: true, indoor: true,
+    width: 1500, leftTo: 'pr_lobby', rightTo: 'pr_mess',
+    sky: ['#2a3040', '#363e50', '#22262f'], ground: '#40444e', sidewalk: '#565a64', accent: '#c8b450',
+    buildings: [{ x: 80, w: 900, h: 220, color: '#3e4656', label: 'CELL BLOCK C' }],
+    props: [{ type: 'lamp', x: 300 }, { type: 'lamp', x: 900 }],
+    spawnCombat: false, combatChance: 0
+  },
+  pr_mess: {
+    id: 'pr_mess', name: 'Cinder Hollow: Mess Hall', prison: true, indoor: true,
+    width: 1200, leftTo: 'pr_block', rightTo: 'pr_library',
+    sky: ['#323848', '#454c5e', '#262a34'], ground: '#50545e', sidewalk: '#62666e', accent: '#d89040',
+    buildings: [{ x: 60, w: 280, h: 160, color: '#5a5e6a', label: 'SERVING LINE' }],
+    props: [{ type: 'table', x: 500 }, { type: 'table', x: 800 }],
+    spawnCombat: false, combatChance: 0
+  },
+  pr_library: {
+    id: 'pr_library', name: 'Cinder Hollow: Library', prison: true, indoor: true,
+    width: 1100, leftTo: 'pr_mess', rightTo: 'pr_shop',
+    sky: ['#3a342c', '#4a4236', '#2a2620'], ground: '#5a5040', sidewalk: '#6a604e', accent: '#e0c890',
+    buildings: [{ x: 60, w: 320, h: 200, color: '#5a3c28', label: 'LIBRARY' }],
+    props: [{ type: 'lamp', x: 250 }],
+    spawnCombat: false, combatChance: 0
+  },
+  pr_shop: {
+    id: 'pr_shop', name: 'Cinder Hollow: Workshop', prison: true, indoor: true,
+    width: 1100, leftTo: 'pr_library', rightTo: 'pr_yard',
+    sky: ['#2e323c', '#40444e', '#24272e'], ground: '#484c56', sidewalk: '#5a5e68', accent: '#c8a050',
+    buildings: [{ x: 60, w: 260, h: 160, color: '#3a3e48', label: 'WORKSHOP' }],
+    props: [{ type: 'lamp', x: 200 }],
+    spawnCombat: false, combatChance: 0
+  },
+  pr_yard: {
+    id: 'pr_yard', name: 'Cinder Hollow: The Yard', prison: true, indoor: false,
+    width: 1400, leftTo: 'pr_shop', rightTo: null,
+    sky: ['#4a5a78', '#647896', '#2a3446'], ground: '#4a5a40', sidewalk: '#5e6a56', accent: '#c8b450',
+    buildings: [{ x: 40, w: 60, h: 220, color: '#464c5a', label: 'TOWER' }],
+    props: [{ type: 'lamp', x: 200 }, { type: 'lamp', x: 700 }],
+    spawnCombat: false, combatChance: 0
+  },
 };
+
+/** 1.7.0: the prison is its own little map (minimap strip + no city traffic). */
+export const PRISON_ORDER = ['pr_lobby', 'pr_block', 'pr_mess', 'pr_library', 'pr_shop', 'pr_yard'];
+export const isPrisonArea = (id) => !!(AREAS[id] && AREAS[id].prison);
 
 export const AREA_ORDER = [
   'community', 'downtown', 'diner', 'pages', 'skate', 'gym', 'rails', 'river', 'star'
@@ -473,12 +540,14 @@ export function drawBackground(ctx, area, cameraX, W, H, dt) {
     if (sp) glow.stars.push({ x: sp.x - cameraX, y: band.min - 140, r: 1.15, drawShape: true });
   }
 
-  // 1) Sunny keeps the golden-hour grade. Night / Rainy skip the warm wash so their
-  //    overlay (js/weather.js) is the light. Sun shafts are daylight only.
-  sceneLights = glow;
-  drawGoldenGrade(ctx, area, W, H, glow.stars[0], band);
-  if (!starDark && getWeather() === 'sunny') drawSunShafts(ctx, W, H, glow.stars[0], band);
-  drawStreetMaterial(ctx, W, H, band);
+  // 1) Golden-hour grade over the plate, then sun shafts, contact, and street sheen
+  sceneLights = glow; // weather: night grade reads the lamps / neon / star anchors
+  if (area.indoor) drawIndoorGrade(ctx, area, W, H, band, t);  // 1.7.0: cool fluorescent institutional light
+  else {
+    drawGoldenGrade(ctx, area, W, H, glow.stars[0], band);
+    if (!starDark && !area.prison && getWeather() === 'sunny') drawSunShafts(ctx, W, H, glow.stars[0], band);
+    drawStreetMaterial(ctx, W, H, band);
+  }
 
   // 2) Additive glows (after grade so they stay punchy)
   ctx.save();
@@ -507,7 +576,7 @@ export function drawBackground(ctx, area, cameraX, W, H, dt) {
 
   // 3) Sidewalk depth lanes (gameplay readability) + sunlit dust in the air
   drawDepthLanes(ctx, W, H, band);
-  if (getWeather() === 'sunny') drawDust(ctx, W, H, stepDt, band);
+  if (!area.indoor && getWeather() === 'sunny') drawDust(ctx, W, H, stepDt, band);
 
   // Lens vignette is applied after the camera crop (present.js) so it frames the
   // visible picture instead of the cropped sky.
@@ -645,6 +714,39 @@ function drawGoldenGrade(ctx, area, W, H, star, band = DEPTH) {
   g.addColorStop(1, 'rgba(255,170,90,0)');
   ctx.fillStyle = g;
   ctx.fillRect(0, band.min - 40, W, band.max - band.min + 40);
+  ctx.restore();
+}
+
+/**
+ * 1.7.0 indoor grade (Cinder Hollow): cool fluorescent wash, ceiling light pools that hum a little,
+ * and a soft floor reflection. Keeps the plate detail (soft-light / screen), no sun.
+ */
+function drawIndoorGrade(ctx, area, W, H, band, t) {
+  ctx.save();
+  ctx.globalCompositeOperation = 'soft-light';
+  let g = ctx.createLinearGradient(0, 0, 0, H);
+  const warm = area.id === 'pr_library';
+  g.addColorStop(0, warm ? 'rgba(255,200,130,0.30)' : 'rgba(150,190,230,0.32)');
+  g.addColorStop(0.6, warm ? 'rgba(200,150,100,0.12)' : 'rgba(120,150,190,0.14)');
+  g.addColorStop(1, 'rgba(20,26,40,0.45)');
+  ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+  ctx.globalCompositeOperation = 'screen';
+  const n = Math.max(3, Math.round(W / 300));
+  for (let i = 0; i < n; i++) {
+    const x = (i + 0.5) * W / n;
+    const flick = 0.92 + 0.08 * Math.sin(t * 7.3 + i * 2.1) * (i === 1 && Math.sin(t * 0.7) > 0.95 ? 3 : 0.3);
+    const r = ctx.createRadialGradient(x, band.min - 150, 6, x, band.min - 40, W * 0.28);
+    r.addColorStop(0, `rgba(${warm ? '255,220,160' : '210,230,255'},${0.16 * flick})`);
+    r.addColorStop(1, 'rgba(200,220,255,0)');
+    ctx.fillStyle = r; ctx.fillRect(x - W * 0.3, 0, W * 0.6, band.max);
+  }
+  g = ctx.createLinearGradient(0, band.min, 0, band.max);
+  g.addColorStop(0, 'rgba(200,215,240,0.10)'); g.addColorStop(1, 'rgba(200,215,240,0)');
+  ctx.fillStyle = g; ctx.fillRect(0, band.min, W, band.max - band.min);
+  ctx.globalCompositeOperation = 'source-over';
+  const ao = ctx.createLinearGradient(0, band.min - 20, 0, band.min + 24);
+  ao.addColorStop(0, 'rgba(10,12,20,0)'); ao.addColorStop(0.55, 'rgba(10,12,20,0.4)'); ao.addColorStop(1, 'rgba(10,12,20,0)');
+  ctx.fillStyle = ao; ctx.fillRect(0, band.min - 20, W, 44);
   ctx.restore();
 }
 
@@ -1062,7 +1164,7 @@ export function drawMinimap(canvas, opts) {
   const { areaId, playerX, areaWidth, facing = 1, dest = null } = opts;
   const mw = canvas.width, mh = canvas.height;
   const t = performance.now() / 1000;
-  const order = AREA_ORDER;
+  const order = AREAS[areaId]?.prison ? PRISON_ORDER : AREA_ORDER; // 1.7.0: the prison has its own strip
 
   // Dark plate
   mctx.clearRect(0, 0, mw, mh);

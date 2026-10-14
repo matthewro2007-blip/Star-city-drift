@@ -3,7 +3,7 @@
   "file": "assets/sprites/weapons.png",
   "fw": 48,
   "fh": 48,
-  "count": 14,
+  "count": 15,
   "order": [
    "polo",
    "photo",
@@ -18,7 +18,8 @@
    "beacon",
    "ironclad",
    "silas",
-   "darkstar"
+   "darkstar",
+   "cinder"
   ],
   "note": "One icon per outfit, left->right in this order; transparent, hard alpha, rig outline/cel style."
  },
@@ -144,6 +145,15 @@
   "move": "Lights Out",
   "index": 13,
   "x": 624,
+  "y": 0,
+  "w": 48,
+  "h": 48
+ },
+ "cinder": {
+  "name": "Mess Hall Tray",
+  "move": "Chow Line",
+  "index": 14,
+  "x": 672,
   "y": 0,
   "w": 48,
   "h": 48

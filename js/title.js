@@ -1,5 +1,5 @@
 /**
- * Star City Drift — arcade attract / title menu (title screen lane).
+ * Streets of Roanoke — arcade attract / title menu (title screen lane).
  * Attract ("PRESS START") -> intro flash -> vertical menu (Continue / New Game / Controls / Credits).
  * Draws the animated golden-hour Roanoke backdrop; main.js draws Matthew on top via its hook.
  * The menu buttons themselves stay the original #btn-continue / #btn-start / #btn-new-game,
@@ -287,7 +287,7 @@ export function createTitle({ focusMenu }) {
   function closePanel() {
     const from = phase;
     setPhase('menu');
-    const ids = ['btn-continue', 'btn-start', 'btn-new-game', 'btn-controls', 'btn-credits', 'btn-prequel'].filter((id) => $(id) && !$(id).classList.contains('hidden'));
+    const ids = ['btn-continue', 'btn-start', 'btn-new-game', 'btn-ngplus', 'btn-controls', 'btn-credits', 'btn-prequel'].filter((id) => $(id) && !$(id).classList.contains('hidden'));
     const back = from === 'controls' ? 'btn-controls' : from === 'credits' ? 'btn-credits'
       : (from === 'prequel' || prequelFlow) ? 'btn-prequel' // DLC: back to the prequel entry
       : (!$('btn-new-game').classList.contains('hidden') ? 'btn-new-game' : 'btn-start');

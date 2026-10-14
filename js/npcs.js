@@ -132,7 +132,94 @@ export const NPC_DEFS = [
     doneLines: [
       "The lights always come back on, Matthew. So do I."
     ]
-  }
+  },
+  // ===================== 1.7.0: Cinder Hollow Correctional (after the campaign; peaceful, no fights inside) =====================
+  {
+    id: 'ellis', name: 'Officer Dwayne Ellis', role: 'Visitor desk, Cinder Hollow', prison: true,
+    voice: { wave: 'triangle', f0: 140, rate: 0.09, len: 0.08, steps: [1, 0.94, 1.06], vowels: ['o', 'uh', 'a'], fs: 0.9, greet: ['uh', 'o'], greetFall: true },
+    area: 'pr_lobby', x: 300, color: '#34465e',
+    lines: [
+      "Visitor badge, please. Matthew Rose? Huh. Half this building knows your name. The other half wishes they didn't.",
+      "Visiting hours run till the lights flicker twice. Cell Block C is through the right door. Mess hall, library, workshop and the yard after that.",
+      "No contraband, no fighting, no feeding the yard pigeons. And if you're here for Boone: C-14. He's been expecting you."
+    ]
+  },
+  {
+    id: 'ramos', name: 'Officer Luis Ramos', role: 'Cell Block C', prison: true,
+    voice: { wave: 'square', f0: 150, rate: 0.075, len: 0.06, steps: [1, 1.12, 0.94], vowels: ['a', 'o', 'e'], fs: 0.95, greet: ['a', 'o'] },
+    area: 'pr_block', x: 260, color: '#34465e',
+    lines: [
+      "Cell Block C. Two tiers, ninety-six bunks and one man who still irons his blues.",
+      "I worked the Rail Yards beat before this job. Didn't take a dime from Boone trucks. Got moved out here for it. Funny how it worked out.",
+      "Boone's at the far end, C-14. Keep your hands where I can see them and you'll be fine."
+    ]
+  },
+  {
+    id: 'quay', name: 'Quay "Quiet" Dunn', role: 'Inmate 0904 · Cell Block C', prison: true,
+    voice: { wave: 'sine', f0: 112, rate: 0.13, len: 0.1, steps: [1, 0.9, 1.0], vowels: ['o', 'u', 'uh'], fs: 0.85, greet: ['o', 'uh'], greetFall: true },
+    area: 'pr_block', x: 760, color: '#d67828',
+    lines: [
+      "Twenty-two years in Block C. Long enough to tell a man's footsteps from the end of the hall. Yours are new.",
+      "Boone came in like he owned the place. Asked the guards to call him Mister. They didn't.",
+      "He reads every night. Same old newspaper, folded soft as cloth. Library's got the rest of that stack, if you're curious."
+    ]
+  },
+  {
+    id: 'reed', name: 'Reed "Tags" Malloy', role: 'Inmate 4821 · Mess Hall', prison: true,
+    voice: { wave: 'square', f0: 240, rate: 0.055, len: 0.045, steps: [1, 1.19, 1.33, 1.5], vowels: ['e', 'a', 'i'], fs: 1.1, greet: ['e', 'o'] },
+    area: 'pr_mess', x: 360, color: '#d67828',
+    lines: [
+      "Painted a star on the River Bridge pier. Wrong wall, wrong night. Eight months.",
+      "You know Wren? Flower lady? She used to slip me zinnias to sketch. Tell her the drawings are getting good.",
+      "Boone's guys tried to recruit me to tag 'final notice' on shop doors. I said no. Best bad decision I ever made."
+    ]
+  },
+  {
+    id: 'mina', name: 'Mina Solis', role: 'Inmate 6214 · Mess Hall', prison: true,
+    voice: { wave: 'sine', f0: 360, rate: 0.07, len: 0.055, steps: [1, 1.12, 1.33, 1.26], vowels: ['i', 'a', 'e'], fs: 1.2, slide: 1.06, greet: ['a', 'i'] },
+    area: 'pr_mess', x: 820, color: '#d67828',
+    lines: [
+      "I carried envelopes for Vera Lisk. Never opened one. Turns out that doesn't count for much in court.",
+      "Cam Ortiz testified. Brave guy. He looked at me like he was sorry I got caught in it. I'm sorry too.",
+      "Vera's files? Never found. She said once that paper burns but people remember. I think she meant it as a warning."
+    ]
+  },
+  {
+    id: 'dora', name: 'Dora Keene', role: 'Inmate 5107 · Library trustee', prison: true,
+    voice: { wave: 'triangle', f0: 300, rate: 0.08, len: 0.06, steps: [1, 1.12, 1.26], vowels: ['e', 'a', 'o'], fs: 1.12, greet: ['e', 'a'] },
+    area: 'pr_library', x: 360, color: '#d67828',
+    lines: [
+      "Shh. Library voice. I kept the books for Boone Holdings for six years. Now I keep these. Better company.",
+      "The Foreman's ledger, the one with Wren's name? I'm the one who told the prosecutors where to look. I sleep a little better now.",
+      "Someone donated a box of old Roanoke papers. Early nineties. Check the return cart in the back. Silas keeps asking for one issue."
+    ]
+  },
+  {
+    id: 'otto', name: 'Otto "Wrench" Pike', role: 'Inmate 3390 · Workshop', prison: true,
+    voice: { wave: 'sawtooth', f0: 98, rate: 0.11, len: 0.09, steps: [1, 0.94, 1.06], vowels: ['uh', 'o', 'a'], fs: 0.82, grit: 0.4, greet: ['uh', 'a'], greetFall: true },
+    area: 'pr_shop', x: 520, color: '#d67828',
+    lines: [
+      "I ran the Foreman's tool truck. Gas cans, crowbars, all of it. I'm not proud. Just honest now.",
+      "Building birdhouses for the Community Center. June Whitaker sent the plans. Said every block needs somewhere soft to land.",
+      "Mort Kessler, the Foreman, he's in the other wing. Won't come to shop class. Says hammers are beneath him. Ha."
+    ]
+  },
+  {
+    id: 'bart', name: 'Bart Holley', role: 'Inmate 1188 · The Yard', prison: true,
+    voice: { wave: 'sawtooth', f0: 130, rate: 0.095, len: 0.075, steps: [1, 0.89, 1.0], vowels: ['o', 'a', 'uh'], fs: 0.9, grit: 0.15, greet: ['o', 'a'], greetFall: true },
+    area: 'pr_yard', x: 640, color: '#d67828',
+    lines: [
+      "I wore a badge in the Rail Yards. I waved the Boone trucks through. Took the envelope every Friday.",
+      "Hank Pettigrew's notes put me here. Old man wrote down every plate number for two years. I'd shake his hand if he'd let me.",
+      "Sergeant Reyes cuffed Boone on the mountain. She's the real thing. The city's lucky some of us never took the money."
+    ]
+  },
+  {
+    id: 'silas_prison', name: 'Silas Boone', role: 'Inmate C-14 · Cell Block C', prison: true,
+    voice: { wave: 'sawtooth', f0: 118, rate: 0.105, len: 0.08, steps: [1, 0.89, 1.06], vowels: ['o', 'e', 'uh'], fs: 0.92, slide: 0.95, greet: ['e', 'o'], greetFall: true },
+    area: 'pr_block', x: 1260, color: '#30486e',
+    lines: ["Matthew Rose. Visiting hours. How thoughtful."]   // the real conversation is the branching tree in js/prison.js
+  },
 ];
 
 export const OUTFITS = {
@@ -157,10 +244,12 @@ export const OUTFITS = {
   // dark-suit tint over the Skate Fit's plain strips (silas_outfit.js).
   // 1.6.0: unlocked by beating "The Star Goes Dark" (the main campaign). Art: tools/gen_darkstar_outfit.py (matthew_darkstar).
   darkstar: { name: 'Dark Star Suit', shirt: '#161a2c', pants: '#10121c', accent: '#96ace6', desc: "Black and midnight-blue suit with a cracked Mill Mountain star on the chest. It still glows, just barely. Worn by the guy who turned the lights back on." },
+  // 1.7.0: unlocked by visiting Silas Boone in cell C-14 at Cinder Hollow. Art: tools/gen_cinder_outfit.py (matthew_cinder).
+  cinder: { name: 'Cinder Hollow Orange', shirt: '#de7422', pants: '#de7422', accent: '#303038', desc: "A classic orange jumpsuit, inmate number 0417 stenciled on the chest. A souvenir from visiting hours. Matthew swears it's surprisingly comfy." },
   silas: { name: "Silas's Suit", shirt: '#1f2a3a', pants: '#1a2230', accent: '#a8202a', desc: "A long navy double-breasted coat, crimson tie and black gloves. Polite, pressed, and very hard to say no to." }
 };
 
 /** Outfit order for keys 1-9, 0, - (or Shift+1) and = (or Shift+2), L1/R1 (LB/RB) cycling and the pause-menu outfit picker. */
-export const OUTFIT_ORDER = ['polo', 'hoodie', 'jacket', 'street', 'photo', 'varsity', 'mechanic', 'diner', 'gold', 'webslinger', 'beacon', 'ironclad', 'silas', 'darkstar'];
+export const OUTFIT_ORDER = ['polo', 'hoodie', 'jacket', 'street', 'photo', 'varsity', 'mechanic', 'diner', 'gold', 'webslinger', 'beacon', 'ironclad', 'silas', 'darkstar', 'cinder'];
 /** Hotkey → outfit index for the keys past 1-9 / 0. */
-export const OUTFIT_HOTKEYS = { '0': 9, '-': 10, '=': 11, '#': 12, '$': 13 }; // '$' = Shift+4 (Dark Star Suit, 1.6.0) // '#' = Shift+3 (Silas's Suit, 1.5.0)
+export const OUTFIT_HOTKEYS = { '0': 9, '-': 10, '=': 11, '#': 12, '$': 13, '%': 14 }; // '%' = Shift+5 (Cinder Hollow Orange, 1.7.0) // '$' = Shift+4 (Dark Star Suit, 1.6.0) // '#' = Shift+3 (Silas's Suit, 1.5.0)

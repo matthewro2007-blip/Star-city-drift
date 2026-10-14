@@ -1,12 +1,14 @@
 import {
   AREAS, AREA_ORDER, drawBackground, drawMinimap, DEPTH, getDepth, loadBackgrounds,
-  drawSceneGrade, drawGroundShadow, getSignRects, setStarDark, getSceneLights
+  drawSceneGrade, drawGroundShadow, getSignRects, setStarDark, isPrisonArea, getSceneLights
 } from './world.js';
+import { drawWeather, cycleWeather, setWeather, weatherName, weatherShort, getWeather } from './weather.js'; // 1.7.0: Kody's Sunny / Night / Rainy (PR #20)
+import { ARREST_COPS, ARREST_LINES, SENTENCING_CARD, PRISON_CARD, prisonOpen, prisonSpot, KEEPSAKE, SILAS_TREE, silasChoices } from './prison.js'; // 1.7.0 "Locked Up"
 import { NPC_DEFS, OUTFITS, OUTFIT_ORDER, OUTFIT_HOTKEYS } from './npcs.js';
 import { createMissionSystem, SEQUEL_HOOKS, ENDING_TEXT, STORY_INTRO } from './missions.js';
-import { drawLetterbox } from './rain.js'; // letterbox for Silas dialogue
-import { drawWeather, cycleWeather, setWeather, weatherName, weatherShort, getWeather } from './weather.js';
-import { hasSave, clearSave, serializeSave, saveGame, inspectSave, applySave } from './save.js';
+import { drawRainNight, drawLetterbox } from './rain.js'; // 1.6.0: rainy-night campaign
+import { hasSave, clearSave, serializeSave, saveGame, inspectSave, applySave, saveSummary, makeNgPlusSave } from './save.js';
+import { setNgPlus } from './combat.js'; // NG+ enemy scaling
 import { createInput, getPromptLabel, getPromptDevice, rumble } from './input.js';
 import {
   createPlayer, updatePlayer, updateEnemy, resolveHits,
@@ -27,7 +29,7 @@ import { setMusic, sting, setPaused, setDialogueDuck, sfx, voice, talk, stopTalk
 // >>> DLC: Silas prequel (1.5.0) — shared Silas moveset, Silas's Suit art glue, prequel content + own save slot
 import { silasWorld, coldStare, silasAnimMap, silasCooldowns } from './silas_moves.js';
 import { artOutfitFor, suitAnimMap, suitNeedsTint, tintedFrame, tintedCanvas, suitPortraitSrc } from './silas_outfit.js';
-import { createDlc, dlcHasRun, dlcCompleted, silasPortraitSrc, silasPlayerKey, MISSIONS as DLC_MISSIONS } from './dlc_silas.js';
+import { createDlc, dlcHasRun, dlcCompleted, silasPortraitSrc, silasPlayerKey, drawNightGrade, MISSIONS as DLC_MISSIONS } from './dlc_silas.js';
 import { SILAS_MOVES, silasMoveRows } from './kits.js';
 import { GAME_VERSION } from './version.js';
 // <<< DLC: Silas prequel
@@ -91,6 +93,8 @@ const gameState = {
   special: 40,
   difficulty: 'normal',      // easy | normal | hard | arcade (saved; old saves default to normal)
   pendingDifficulty: null,   // picked on the title difficulty selector for a New Game
+  ngPlus: 0,                 // NG+ cycle (saved); 0 = first playthrough
+  storyBeaten: false,        // NG+: main story beaten at least once (sticky, saved)
   fetchGive: null,           // Potluck Run item being handed over in the current dialogue
   dlc: false,                // DLC: Silas prequel running (own save slot; main save untouched)
   pendingDlc: false,         // title difficulty picker opened for the prequel
@@ -160,7 +164,9 @@ const HUD_LOCATION = {
   rails: ['RAIL YARDS', 'Freight Line'],
   river: ['RIVER BRIDGE', 'Roanoke River'],
   star: ['MILL MOUNTAIN', 'The Star'],
-  community: ['COMMUNITY CENTER', 'Neighborhood']
+  community: ['COMMUNITY CENTER', 'Neighborhood'],
+  pr_lobby: ['CINDER HOLLOW', 'Visitor Lobby'], pr_block: ['CINDER HOLLOW', 'Cell Block C'], pr_mess: ['CINDER HOLLOW', 'Mess Hall'],
+  pr_library: ['CINDER HOLLOW', 'Library'], pr_shop: ['CINDER HOLLOW', 'Workshop'], pr_yard: ['CINDER HOLLOW', 'The Yard']
 };
 
 /** 1.3.2: HUD portrait follows the outfit (Sprites.getOutfitPortrait: helmet bust for Hell's Nightmare, else default). */
@@ -213,9 +219,16 @@ function updateHUD() {
   if ($('collect-row').dataset.dlc) { delete $('collect-row').dataset.dlc; $('collect-row').innerHTML = 'Collectibles <span id="collect-count">0/7</span> · Outfits <span id="outfit-count">1/5</span>'; }
   const m = missions.getActive();
   const sm = sideMission();
-  $('mission-title').textContent = sm ? sm.title : m ? m.title : 'Free Roam';
-  $('mission-desc').textContent = sm ? sideObjective(sm) : m ? m.desc : (stateBag.deliveryActive ? 'Deliver to River Bridge' : 'Explore Star City');
+  const inPrison = isPrisonArea(gameState.areaId);
+  if (gameState.arrest) { $('mission-title').textContent = 'The Star Goes Dark'; $('mission-desc').textContent = 'Sirens on the mountain road'; } else {
+  $('mission-title').textContent = inPrison ? 'Cinder Hollow' : sm ? sm.title : m ? m.title : 'Free Roam';
+  $('mission-desc').textContent = inPrison ? (stateBag.silasVisited ? 'Look around. The Route 9 bus home waits in the lobby.' : 'Visit Silas Boone: Cell Block C, cell C-14')
+    : sm ? sideObjective(sm) : m ? m.desc : (stateBag.deliveryActive ? 'Deliver to River Bridge' : prisonOpen(stateBag) && !stateBag.silasVisited ? 'Route 9 bus at the Community Center: visit Cinder Hollow' : 'Explore Star City');
+  }
   $('outfit-count').textContent = `${stateBag.unlockedOutfits.size}/${OUTFIT_ORDER.length}`;
+  let ngTag = $('hud-ngplus'); // NG+ cycle tag on the collectibles row
+  if (!ngTag) { ngTag = document.createElement('span'); ngTag.id = 'hud-ngplus'; $('collect-row').appendChild(ngTag); }
+  ngTag.textContent = gameState.ngPlus > 0 ? ` · NG+${gameState.ngPlus}` : '';
   $('collect-count').textContent = `${missions.collectCount()}/${missions.collectTotal()}`;
   }
   const area = AREAS[gameState.areaId];
@@ -274,6 +287,10 @@ function refreshTitleButtons() {
   $('btn-continue').classList.toggle('hidden', !has);
   $('btn-new-game').classList.toggle('hidden', !has);
   $('btn-start').classList.toggle('hidden', has);
+  // NG+: only once the main story has been beaten; Continue shows the save's cycle
+  const ng = saveSummary();
+  if ($('btn-ngplus')) $('btn-ngplus').classList.toggle('hidden', !(has && ng.storyBeaten));
+  $('btn-continue').textContent = ng.ngPlus > 0 ? `Continue · NG+${ng.ngPlus}` : 'Continue';
 }
 
 function startGame(fromSave) {
@@ -295,6 +312,8 @@ function startGame(fromSave) {
   gameState.difficulty = (!fromSave && gameState.pendingDifficulty) || 'normal';
   gameState.pendingDifficulty = null;
   gameState.fetchGive = null;
+  gameState.ngPlus = 0; gameState.storyBeaten = false; // applySave restores them
+  const ngStart = !!gameState.ngPlusStart; gameState.ngPlusStart = false;
   let restored = false;
   if (fromSave) {
     const r = inspectSave();
@@ -311,6 +330,7 @@ function startGame(fromSave) {
       toast("Couldn't read that save — starting a new game");
     }
   }
+  setNgPlus(gameState.ngPlus); // NG+ enemy scaling (0 = none)
   setDifficulty(gameState.difficulty);
   // >>> DLC: Silas prequel — finishing the prequel (its own save slot) unlocks Silas's Suit; the main save keeps a flag
   let suitNew = false;
@@ -319,6 +339,8 @@ function startGame(fromSave) {
     if (!stateBag.unlockedOutfits.has('silas')) { stateBag.unlockedOutfits.add('silas'); suitNew = true; }
   }
   // <<< DLC
+  stateBag.storyBeaten = !!gameState.storyBeaten; // NG+: Cinder Hollow stays open in later cycles
+  const cinderNew = checkCinder(); // 1.7.0: saves that already visited Silas's cell get Cinder Hollow Orange
   const darkNew = checkDarkStar(); // 1.6.0: existing saves that already beat the campaign get the Dark Star Suit
   gameState.darkStarNew = false;
   gameState.enemies = [];
@@ -339,16 +361,19 @@ function startGame(fromSave) {
   input.focusGame();
   refreshPrompts(true);
   updateHUD();
-  if (restored) {
+  if (restored && !ngStart) {
     toast('Welcome back to Star City');
     gameState.areaVisitCombat[gameState.areaId] = 1; // no instant ambush on load
   } else {
+    if (ngStart) toast(`New Game+ ${gameState.ngPlus}: the story starts over. Your outfits and finds came with you.`, true);
     toast("Wren is missing. Find Dee Morales at Dee's Diner");
     showStoryIntro(); // 1.6.0: "The Star Goes Dark" opening card (non-blocking)
     maybeSpawnEncounter(true);
   }
   if (suitNew) toast(`Silas's Suit unlocked — ${suitHowTo()}`, true);
   if (darkNew) toast(`Dark Star Suit unlocked! ${darkStarHowTo()}`, true);
+  if (cinderNew) toast(`Cinder Hollow Orange unlocked! ${cinderHowTo()}`, true);
+  if (prisonOpen(stateBag) && !stateBag.silasVisited && restored && !ngStart) toast('New: the Route 9 bus at the Community Center goes to Cinder Hollow.');
   persist();
   followCam.cut();
 }
@@ -460,6 +485,7 @@ function linesFor(npc) {
 }
 
 function startDialogue(npc) {
+  if (npc.id === 'silas_prison') { startSilasTalk(npc); return; } // 1.7.0: branching talk in cell C-14
   let lines = linesFor(npc);
   gameState.fetchGive = null;
   const fm = sideMission();
@@ -483,7 +509,7 @@ function startDialogue(npc) {
 function showLine(npc, line, greet) {
   const obj = line && typeof line === 'object';
   const text = obj ? line.text : line, id = obj ? line.id : npc.id;
-  const castRole = obj && line.id === npc.id ? npc.role : obj && line.id === 'silas' ? (isDlc() ? 'Second shift' : 'Boone Holdings') : null;
+  const castRole = obj && ARREST_COPS[line.id] ? ARREST_COPS[line.id].role : obj && line.id === npc.id ? npc.role : obj && line.id === 'silas' ? (isDlc() ? 'Second shift' : 'Boone Holdings') : null;
   $('dialogue-name').textContent = obj ? (castRole ? `${line.name} — ${castRole}` : line.name) : `${npc.name} — ${npc.role}`;
   $('dialogue-text').textContent = text;
   talk(id, text, greet); // audio: greeting + this character's talk blips
@@ -499,6 +525,7 @@ function updateDialogueButton() {
 
 function advanceDialogue() {
   if (gameState.mode !== 'dialogue' || !gameState.dialogue) return;
+  if (gameState.choice) { pickChoice(gameState.choice.focus); return; } // 1.7.0: Silas's cell talk
   gameState.dialogueIdx++;
   if (gameState.dialogueIdx >= gameState.dialogue.length) {
     finishDialogue();
@@ -682,6 +709,13 @@ function heal(base, announce = true) {
   return amt;
 }
 
+/** 1.7.0 Cinder Hollow Orange: unlocked by the first finished visit to Silas's cell (silasVisited). True when newly added. */
+function checkCinder() {
+  if (!stateBag.silasVisited || !stateBag.unlockedOutfits || stateBag.unlockedOutfits.has('cinder')) return false;
+  stateBag.unlockedOutfits.add('cinder');
+  return true;
+}
+function cinderHowTo() { return input.isMobile() ? 'Pick it in Pause → Outfits.' : 'Wear it with Shift+5 or Pause → Outfits (L1/R1 to cycle).'; }
 /** 1.6.0 Dark Star Suit: unlocked by beating the main campaign (mainComplete). Returns true when newly added. */
 function checkDarkStar() {
   if (!stateBag.mainComplete || !stateBag.unlockedOutfits || stateBag.unlockedOutfits.has('darkstar')) return false;
@@ -874,6 +908,7 @@ function tryInteract() {
     startDialogue(npc);
     return;
   }
+  if (!isDlc()) { const sp = prisonSpot(stateBag, gameState.areaId, player.x); if (sp) { usePrisonSpot(sp); return; } } // 1.7.0
   // collectibles
   collectHere();
   missions.checkDelivery(gameState.areaId, toast, onProgress);
@@ -930,6 +965,7 @@ function showEnding() {
   hideStoryIntro();
   gameState.mode = 'ending';
   gameState.ended = true;
+  gameState.storyBeaten = true; // NG+ unlocks on the title
   $('ending-screen').classList.remove('hidden');
   $('ending-text').textContent = ENDING_TEXT;
   $('sequel-hooks').innerHTML = SEQUEL_HOOKS;
@@ -942,7 +978,7 @@ function setOutfit(id, quiet = false) {
   if (!OUTFITS[id] || isDlc()) return;
   if (!stateBag.unlockedOutfits.has(id)) {
     sfx('denied');
-    toast(id === 'silas' ? "Silas's Suit is locked — beat the Silas Boone prequel (Title → Prequel)" : id === 'darkstar' ? 'Dark Star Suit is locked: beat the main campaign, "The Star Goes Dark"' : 'Outfit locked — find collectibles');
+    toast(id === 'silas' ? "Silas's Suit is locked — beat the Silas Boone prequel (Title → Prequel)" : id === 'darkstar' ? 'Dark Star Suit is locked: beat the main campaign, "The Star Goes Dark"' : id === 'cinder' ? "Cinder Hollow Orange is locked: visit Silas Boone's cell at Cinder Hollow" : 'Outfit locked — find collectibles');
     return;
   }
   if (!quiet && id !== gameState.outfitId) sfx('outfit');
@@ -1270,6 +1306,7 @@ function startDlc(cont) {
   gameState.pendingDifficulty = null;
   gameState.dlc = true;
   gameState.difficulty = run.difficulty || 'normal';
+  setNgPlus(0); // the prequel never uses NG+ scaling
   setDifficulty(gameState.difficulty);
   gameState.areaId = AREAS[run.areaId] ? run.areaId : 'downtown';
   gameState.outfitId = 'polo';
@@ -1396,6 +1433,13 @@ function drawDlcSilas(cam) {
 /** Closing scene extras: Matthew far off (polo, no interaction) and the crew gathering at the far end. */
 function drawFinaleActor(a, cam) {
   const x = a.x - cam;
+  if (a.kind === 'cast') { // 1.7.0 arrest: cast anim actors (cops, Silas, Wren)
+    const st = a.walking ? 'walk' : (gameState.mode === 'dialogue' && gameState.dialogue && gameState.dialogue[gameState.dialogueIdx]?.id === a.id ? 'talk' : 'idle_personality');
+    const f = animFrame(a.key, st, performance.now() + (a.phase || 0)) || animFrame(a.key, 'idle_personality', performance.now());
+    if (f) drawAnimFrame(f, x, a.y, a.facing, castScaleNpc(a.key));
+    else drawCastSprite(getNpcSprite(a.key, '#2c3e50', performance.now() / 1000), x, a.y, a.facing, castScaleNpc(a.key));
+    return;
+  }
   if (a.kind === 'matthew') {
     const st = a.walking ? 'run' : 'idle_signature';
     const f = animFrame('matthew', st, a.t * 1000, 'polo');
@@ -1450,6 +1494,250 @@ function updateCutscene(dt) {
 
 // ---------- Bob's cards (#dlc-mission-card, #dlc-ending-screen) ----------
 let dlcCardDone = null;
+// ===================== 1.7.0 "Locked Up": the arrest, Cinder Hollow use-spots, Silas in cell C-14 =====================
+/** Boss down → honest police arrive in the rain, cuff Silas, walk him off; then the court + prison cards → ending. */
+function startArrest(bossX, bossY) {
+  const band = getDepthBand(), areaId = gameState.areaId;
+  gameState.enemies = []; gameState.combatLock = false;
+  player.vx = 0; player.attackType = null; player.attackTimer = 0; player.hitbox = null;
+  followCam.cut();
+  const fr = syncCamera(0), L = fr.x, V = fr.viewW;
+  const sx = Math.round(Math.max(L + 260, Math.min(L + V - 90, bossX ?? player.x + 110)));
+  const sy = clampDepth(Math.round(bossY ?? player.y));
+  player.facing = sx >= player.x ? 1 : -1;
+  if (Math.abs(player.x - sx) < 70) player.x = sx + 90 < L + V - 30 ? sx + 90 : sx - 90;
+  const wy = band.min + 4;
+  gameState.finaleActors = [
+    { kind: 'cast', id: 'silas', key: 'silas', area: areaId, x: sx, y: sy, facing: player.x > sx ? 1 : -1 },
+    { kind: 'cast', id: 'reyes', key: 'reyes', area: areaId, x: L - 50, y: Math.max(band.min + 10, sy - 14), facing: 1, walking: true, stopAt: sx - 150, phase: 300 },
+    { kind: 'cast', id: 'okafor', key: 'okafor', area: areaId, x: L - 120, y: Math.min(band.max - 4, sy + 12), facing: 1, walking: true, stopAt: sx - 80, phase: 700 },
+    { kind: 'cast', id: 'wren', key: 'wren', area: areaId, x: Math.round(Math.min(L + V - 40, Math.max(player.x, sx) + 120)), y: wy, facing: -1, phase: 200 }
+  ];
+  gameState.arrest = { t: 0, phase: 'arrive', sx, sy };
+  toast('Sirens on the mountain road. Blue and red through the rain.', true);
+  sfx('denied');
+}
+function arrestActor(id) { return gameState.finaleActors.find((a) => a.id === id); }
+function walkActor(a, dt, speed) {
+  if (!a || !a.walking || a.stopAt == null) return true;
+  const d = a.stopAt - a.x;
+  if (Math.abs(d) <= speed * dt) { a.x = a.stopAt; a.walking = false; return true; }
+  a.facing = d > 0 ? 1 : -1; a.x += Math.sign(d) * speed * dt; return false;
+}
+function updateArrest(dt) {
+  const A = gameState.arrest; if (!A) return;
+  A.t += dt;
+  const reyes = arrestActor('reyes'), okafor = arrestActor('okafor'), silas = arrestActor('silas');
+  if (A.phase === 'arrive') {
+    const r = walkActor(reyes, dt, 110), o = walkActor(okafor, dt, 110);
+    if ((r && o) || A.t > 5) {
+      if (reyes) { reyes.walking = false; reyes.x = reyes.stopAt; reyes.facing = 1; }
+      if (okafor) { okafor.walking = false; okafor.x = okafor.stopAt; okafor.facing = 1; }
+      A.phase = 'talk1';
+      dlcApi.say(ARREST_LINES.slice(0, 3), () => { A.phase = 'cuff'; A.ct = A.t; if (okafor) { okafor.walking = true; okafor.stopAt = A.sx - 40; } });
+    }
+  } else if (A.phase === 'cuff') {
+    walkActor(okafor, dt, 90);
+    if (!A.cuffed && A.t - A.ct > 0.6) {
+      A.cuffed = true;
+      if (silas) { silas.key = 'silas_cuffed'; silas.facing = -1; }
+      sfx('block'); sfx('pickup', { delay: 0.12 }); // metal click of the cuffs
+      rumble(0.3, 0.3, 120);
+    }
+    if (A.t - A.ct > 1.6) {
+      A.phase = 'talk2';
+      dlcApi.say(ARREST_LINES.slice(3), () => {
+        A.phase = 'leave'; A.lt = A.t;
+        for (const a of [okafor, silas]) if (a) { a.walking = true; a.stopAt = a.x - 900; a.facing = -1; }
+        if (reyes) reyes.facing = -1;
+      });
+    }
+  } else if (A.phase === 'leave') {
+    walkActor(okafor, dt, 70); walkActor(silas, dt, 70);
+    if (A.t - A.lt > 3.4) {
+      A.phase = 'court';
+      gameState.finaleActors = [];
+      showDlcCard(SENTENCING_CARD, () => showDlcCard(PRISON_CARD, () => endArrest()));
+    }
+  }
+}
+function endArrest() {
+  gameState.arrest = null;
+  gameState.finaleActors = [];
+  if (!gameState.ended) showEnding();
+}
+/** Debug / tests: jump straight past the arrest to the ending (same end state). */
+function skipArrest() {
+  if (!gameState.arrest) return false;
+  gameState.arrest.phase = 'court';
+  if (gameState.mode === 'dialogue') { stopTalk(); $('dialogue').classList.add('hidden'); gameState.mode = 'play'; gameState.dialogue = null; gameState.dialogueNpc = null; }
+  if (gameState.mode === 'card') { $('dlc-mission-card').classList.add('hidden'); clearMenuFocus(); dlcCardDone = null; gameState.mode = 'play'; }
+  endArrest();
+  return true;
+}
+function drawPoliceLights(w, h) {
+  const t = performance.now() / 1000, A = gameState.arrest;
+  const k = Math.min(1, (A ? A.t : 1) / 1.5);
+  const red = Math.floor(t * 3) % 2 === 0;
+  ctx.save();
+  ctx.globalCompositeOperation = 'lighter';
+  const g = ctx.createRadialGradient(0, h * 0.55, 10, 0, h * 0.55, w * 0.55);
+  g.addColorStop(0, red ? `rgba(255,40,40,${0.32 * k})` : `rgba(40,90,255,${0.32 * k})`);
+  g.addColorStop(1, 'rgba(0,0,0,0)');
+  ctx.fillStyle = g; ctx.fillRect(0, 0, w, h);
+  ctx.restore();
+}
+
+/** Bus stop signs + the library return cart. */
+function drawPrisonMarkers(cam) {
+  if (!prisonOpen(stateBag)) return;
+  const y = npcFeetY() - 4, now = performance.now() / 1000;
+  if (gameState.areaId === 'pr_block') { // Silas's cell C-14 (world space, behind him)
+    const cx = 1260 - cam, top = y - 168;
+    ctx.save();
+    ctx.fillStyle = 'rgba(20,24,32,0.55)'; ctx.fillRect(cx - 62, top, 124, 164);          // cell interior shade
+    ctx.fillStyle = '#6d7480'; ctx.fillRect(cx - 68, top - 6, 136, 8); ctx.fillRect(cx - 68, top, 7, 166); ctx.fillRect(cx + 61, top, 7, 166);
+    ctx.fillStyle = '#8a919c'; for (let i = 0; i < 6; i++) ctx.fillRect(cx - 58 + i * 9, top + 2, 3, 160); // slid-open door bars (left)
+    ctx.fillStyle = '#4b4f57'; ctx.fillRect(cx - 60, top + 60, 54, 4);
+    ctx.fillStyle = '#7b6a4e'; ctx.fillRect(cx + 14, y - 46, 44, 10); ctx.fillStyle = '#c9c2b0'; ctx.fillRect(cx + 16, y - 52, 40, 6); // cot
+    ctx.fillStyle = '#2a2d33'; ctx.fillRect(cx - 26, top - 30, 52, 20); ctx.strokeStyle = '#f0dc64'; ctx.lineWidth = 2; ctx.strokeRect(cx - 26, top - 30, 52, 20);
+    ctx.fillStyle = '#f0dc64'; ctx.font = 'bold 13px sans-serif'; ctx.textAlign = 'center'; ctx.fillText('C-14', cx, top - 15); ctx.textAlign = 'left';
+    ctx.restore();
+  }
+  for (const sId of ['bus_out', 'bus_home', 'keepsake']) {
+    const sp = prisonSpot(stateBag, gameState.areaId, ({ bus_out: 820, bus_home: 110, keepsake: 930 })[sId]);
+    if (!sp || sp.id !== sId) continue;
+    const x = sp.x - cam;
+    if (x < -60 || x > ctx.canvas.width + 60) continue;
+    ctx.save();
+    ctx.fillStyle = `rgba(255,220,140,${0.22 + 0.14 * Math.sin(now * 4)})`;
+    ctx.beginPath(); ctx.ellipse(x, y, 26, 7, 0, 0, Math.PI * 2); ctx.fill();
+    if (sId === 'keepsake') {
+      ctx.fillStyle = '#6b4a2e'; ctx.fillRect(x - 16, y - 26, 32, 20);    // return cart
+      ctx.fillStyle = '#2b2b2b'; ctx.fillRect(x - 14, y - 6, 4, 4); ctx.fillRect(x + 10, y - 6, 4, 4);
+      ctx.fillStyle = '#d9cfb4'; ctx.fillRect(x - 12, y - 32, 10, 8); ctx.fillStyle = '#b44a3a'; ctx.fillRect(x, y - 33, 6, 9); ctx.fillStyle = '#3c6b8f'; ctx.fillRect(x + 7, y - 31, 6, 7);
+      ctx.font = 'bold 9px sans-serif'; ctx.textAlign = 'center'; ctx.fillStyle = '#e6d3a2'; ctx.fillText('RETURNS', x, y - 38);
+    } else {
+      ctx.fillStyle = '#5a5f66'; ctx.fillRect(x - 2, y - 74, 4, 72);       // pole
+      ctx.fillStyle = '#1f5fa8'; ctx.fillRect(x - 18, y - 92, 36, 22);    // sign
+      ctx.fillStyle = '#fff'; ctx.font = 'bold 9px sans-serif'; ctx.textAlign = 'center';
+      ctx.fillText('BUS', x, y - 83); ctx.fillText('ROUTE 9', x, y - 73);
+    }
+    ctx.textAlign = 'left';
+    ctx.restore();
+  }
+}
+function travelTo(areaId, x, facing = 1) {
+  if (!AREAS[areaId]) return false;
+  gameState.areaId = areaId;
+  player.x = x; player.facing = facing; player.vx = 0;
+  syncDepthBand();
+  gameState.enemies = []; gameState.combatLock = false; gameState.spawnChecked = false;
+  gameState.areaVisitCombat[areaId] = 1; // no ambush right off the bus
+  updateHUD();
+  persist();
+  followCam.cut();
+  return true;
+}
+function usePrisonSpot(sp) {
+  if (sp.id === 'bus_out') {
+    sfx('ui_move');
+    showDlcCard(PRISON_CARD, () => { travelTo('pr_lobby', 220, 1); toast(stateBag.silasVisited ? 'Cinder Hollow Correctional. Visiting hours.' : 'Cinder Hollow Correctional. Silas Boone is in Cell Block C, cell C-14.', true); });
+  } else if (sp.id === 'bus_home') {
+    sfx('ui_move');
+    travelTo('community', 780, -1);
+    toast('Back in Roanoke. The Route 9 bus goes back to Cinder Hollow any time.');
+  } else if (sp.id === 'keepsake') {
+    stateBag.prisonKeepsake = true;
+    gameState.score += KEEPSAKE.score;
+    sfx('pickup');
+    toast(`Found: ${KEEPSAKE.name} (+${KEEPSAKE.score})`, true);
+    startDialogueRaw({ id: 'matthew', name: KEEPSAKE.name, role: '', onDone: () => persist() }, [{ id: 'matthew', name: KEEPSAKE.name, text: KEEPSAKE.text }]);
+    updateHUD();
+    persist();
+  }
+}
+
+/** Silas in cell C-14: node lines play as dialogue, then up to 5 choices (click, 1-5, arrows + E/Enter). */
+function startSilasTalk(npc) {
+  gameState.silasTalk = { npc, node: 'start' };
+  playSilasNode('start');
+}
+function playSilasNode(id) {
+  const T = gameState.silasTalk; if (!T) return;
+  const node = SILAS_TREE[id]; T.node = id;
+  const npc = { ...T.npc, onDone: () => {
+    if (!gameState.silasTalk) return;
+    if (node.end) { endSilasTalk(); return; }
+    const list = silasChoices(node, { keepsake: !!stateBag.prisonKeepsake, visited: !!stateBag.silasVisited });
+    if (!list || !list.length) { endSilasTalk(); return; }
+    showChoices(T.npc, node.lines[node.lines.length - 1], list);
+  } };
+  startDialogueRaw(npc, node.lines.slice());
+}
+function showChoices(npc, lastLine, list) {
+  hideStoryIntro();
+  gameState.mode = 'dialogue';
+  gameState.dialogueNpc = { ...npc, onDone: null };
+  gameState.dialogue = [lastLine];
+  gameState.dialogueIdx = 0;
+  gameState.choice = { list, focus: 0 };
+  $('dialogue').classList.remove('hidden');
+  $('dialogue-name').textContent = `${npc.name} — ${npc.role}`;
+  $('dialogue-text').textContent = lastLine;
+  const box = $('dialogue-choices');
+  box.innerHTML = '';
+  list.forEach((c, i) => {
+    const b = document.createElement('button');
+    b.type = 'button'; b.className = 'choice'; b.dataset.i = String(i);
+    b.textContent = `${i + 1}. ${c.label}`;
+    b.addEventListener('click', (e) => { e.preventDefault(); pickChoice(i); });
+    box.appendChild(b);
+  });
+  box.classList.remove('hidden');
+  $('dialogue-next').classList.add('hidden');
+  focusChoice(0);
+  input.flush();
+}
+function focusChoice(i) {
+  const C = gameState.choice; if (!C) return;
+  C.focus = (i + C.list.length) % C.list.length;
+  [...$('dialogue-choices').children].forEach((b, j) => b.classList.toggle('pad-focus', j === C.focus));
+}
+function hideChoices() {
+  gameState.choice = null;
+  $('dialogue-choices').classList.add('hidden');
+  $('dialogue-choices').innerHTML = '';
+  $('dialogue-next').classList.remove('hidden');
+}
+function pickChoice(i) {
+  const C = gameState.choice; if (!C || !C.list[i]) return;
+  const c = C.list[i];
+  hideChoices();
+  sfx('ui_move');
+  gameState.mode = 'play';
+  playSilasNode(c.to);
+}
+function endSilasTalk() {
+  hideChoices();
+  gameState.silasTalk = null;
+  if (gameState.mode === 'dialogue') { stopTalk(); $('dialogue').classList.add('hidden'); gameState.mode = 'play'; gameState.dialogue = null; gameState.dialogueNpc = null; input.flush(); input.focusGame(); }
+  const first = !stateBag.silasVisited;
+  stateBag.silasVisited = true;
+  if (checkCinder()) toast(`Cinder Hollow Orange unlocked! ${cinderHowTo()}`, true);
+  else if (first) toast('You visited Silas Boone.');
+  updateHUD();
+  persist();
+}
+window.addEventListener('keydown', (e) => {
+  const C = gameState.choice;
+  if (!C || gameState.mode !== 'dialogue') return;
+  if (e.key >= '1' && e.key <= '9') { const i = Number(e.key) - 1; if (C.list[i]) { e.preventDefault(); e.stopImmediatePropagation(); pickChoice(i); } return; }
+  if (e.key === 'ArrowDown' || e.key === 's' || e.key === 'S') { e.preventDefault(); focusChoice(C.focus + 1); }
+  else if (e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W') { e.preventDefault(); focusChoice(C.focus - 1); }
+}, true);
+// ===================== <<< 1.7.0 =====================
+
 function showDlcCard({ eyebrow = 'Prequel · Silas Boone', title: t = 'Mission Complete', name = '', sub = '' }, onDone) {
   $('dlc-mission-eyebrow').textContent = eyebrow;
   $('dlc-mission-title').textContent = t;
@@ -1564,7 +1852,7 @@ function syncSilasControls() {
 let confirmTextSaved = null;
 function restoreConfirmText() {
   if (confirmTextSaved) { $('confirm-title').textContent = confirmTextSaved[0]; $('confirm-text').textContent = confirmTextSaved[1]; $('btn-confirm-yes').textContent = confirmTextSaved[2]; }
-  confirmTextSaved = null; gameState.confirmDlc = false;
+  confirmTextSaved = null; gameState.confirmDlc = false; gameState.confirmNg = false;
 }
 function openPrequel() {
   if (dlcHasRun()) title.openPrequel();
@@ -1621,7 +1909,26 @@ bindTap('btn-new-game', () => {
   if (hasSave()) openConfirm();
   else whenReady(() => title.openDifficulty());
 });
+// New Game+ -> confirm -> story reset, unlocks kept, ngPlus + 1 (difficulty carries over)
+bindTap('btn-ngplus', () => {
+  if (gameState.mode !== 'title' || !saveSummary().storyBeaten) return;
+  confirmTextSaved = [$('confirm-title').textContent, $('confirm-text').textContent, $('btn-confirm-yes').textContent];
+  gameState.confirmNg = true;
+  $('confirm-title').textContent = `Start New Game+ ${saveSummary().ngPlus + 1}?`;
+  $('confirm-text').textContent = 'The story starts over from the beginning and overwrites your current save. Outfits, collectibles, score and unlocks are kept. Enemies hit a little harder.';
+  $('btn-confirm-yes').textContent = 'Yes, New Game+';
+  openConfirm();
+});
+function startNgPlus() {
+  if (gameState.mode !== 'title') return;
+  const r = inspectSave();
+  const d = r.data && makeNgPlusSave(r.data);
+  if (!d || !saveGame(d)) { toast("Couldn't start New Game+ — save unavailable"); return; }
+  gameState.ngPlusStart = true;
+  startGame(true);
+}
 bindTap('btn-confirm-yes', () => {
+  if (gameState.confirmNg) { $('confirm-screen').classList.add('hidden'); restoreConfirmText(); whenReady(startNgPlus); return; }
   $('confirm-screen').classList.add('hidden');
   if (gameState.confirmDlc) restoreConfirmText(); // DLC: "start the prequel over" used the same dialog
   whenReady(() => title.openDifficulty(gameState.pendingDlc));
@@ -1644,12 +1951,13 @@ for (const id of DIFFICULTY_ORDER) {
 }
 bindTap('btn-difficulty', () => cycleDifficulty());
 bindTap('btn-missions', () => toggleMissionList());
-bindTap('btn-confirm-no', () => { if (gameState.confirmDlc) { restoreConfirmText(); gameState.pendingDlc = false; } closeConfirm(); });
+bindTap('btn-confirm-no', () => { if (gameState.confirmNg) restoreConfirmText(); if (gameState.confirmDlc) { restoreConfirmText(); gameState.pendingDlc = false; } closeConfirm(); });
 bindTap('btn-resume', () => resumeGame());
 bindTap('btn-save', () => manualSave());
 bindTap('btn-outfit', () => openOutfitPicker()); // opens the visual picker (L1/R1 + 1-9/0/-/= still cycle in play)
 bindTap('btn-pause', () => pauseGame()); // phone pause button (Save Game / outfits live there)
 
+// >>> 1.7.0 weather (Kody, PR #20): Sunny / Night / Rainy on the title, pause menu, T / View-Create, touch button
 function refreshWeatherUi() {
   const id = getWeather();
   document.querySelectorAll('.weather-opt').forEach((b) => {
@@ -1681,6 +1989,7 @@ document.querySelectorAll('.weather-opt').forEach((b) => {
 });
 bindTap('btn-weather-touch', () => cycleWeatherChoice());
 refreshWeatherUi();
+// <<< 1.7.0 weather
 bindTap('btn-replay', () => {
   $('ending-screen').classList.add('hidden');
   clearMenuFocus();
@@ -1740,7 +2049,7 @@ function frame(now) {
 let fightHold = 0;
 function syncMusic(dt) {
   const m = gameState.mode;
-  setRainAmbience(getWeather() === 'rainy');
+  setRainAmbience(getWeather() === 'rainy' && !AREAS[gameState.areaId]?.indoor); // weather: rain bed (not indoors)
   setDialogueDuck(m === 'dialogue');
   if (m === 'title' || m === 'ending') { setMusic('title'); return; }
   if (isDlc()) { // DLC: night-shift variations on Silas's motif
@@ -1760,7 +2069,7 @@ function step(dt) {
   const inp = input.poll();
   refreshPrompts();
   syncMusic(dt);
-  if (inp.weatherPressed) cycleWeatherChoice();
+  if (inp.weatherPressed) cycleWeatherChoice(); // 1.7.0 weather: T / View / Create
 
   if (gameState.mode === 'title') {
     if (!title.update(inp, dt)) handleMenu(inp);
@@ -1791,7 +2100,7 @@ function step(dt) {
   if (inp.outfitCycle && gameState.mode === 'play' && !isDlc()) cycleOutfit(inp.outfitCycle);
 
   if (gameState.mode === 'dialogue') {
-    if (inp.backPressed) finishDialogue();                       // Circle/B/Esc: close
+    if (inp.backPressed) { if (gameState.silasTalk) endSilasTalk(); else finishDialogue(); } // Circle/B/Esc: close
     else if (inp.interactPressed || inp.confirmPressed) advanceDialogue(); // E/Enter/Cross/A/Square
     drawWorld(dt);
     return;
@@ -1834,7 +2143,7 @@ function step(dt) {
   }
 
   const area = AREAS[gameState.areaId];
-  if (gameState.cutscene) Object.assign(inp, NEUTRAL_INPUT); // DLC closing scene: hands off
+  if (gameState.cutscene || gameState.arrest) Object.assign(inp, NEUTRAL_INPUT); // DLC closing scene / 1.7.0 arrest: hands off
 
   // v3: attack presses made during a hit-stop freeze are buffered, not dropped
   const BUFFERED = ['punchPressed', 'kickPressed', 'heavyPressed', 'specialPressed'];
@@ -1868,6 +2177,7 @@ function step(dt) {
     if (stateBag.side && stateBag.side.id === 'side_spar') {
       for (const e of gameState.enemies) if (e.sparring && !e.alive && !e.counted) { e.counted = true; stateBag.side.kos++; }
     }
+    { const b = gameState.enemies.find((e) => e.isBoss); if (b) gameState.lastBoss = { x: b.x, y: b.y }; }
     gameState.enemies = gameState.enemies.filter((e) => e.alive || e.stun > 0 || e.koT > 0 || (e.runner && sideMission()));
     if (gameState.combatLock && !hostilesAlive()) {
       gameState.combatLock = false;
@@ -1882,9 +2192,10 @@ function step(dt) {
         if (gameState.difficulty === 'hard' || gameState.difficulty === 'arcade') stateBag.beatHard = true;
         sting('victory_big');
         toast('Silas Boone goes down. Matthew throws the breaker. The Star comes back on.');
+        const bossE = gameState.enemies.find((e) => e.isBoss) || gameState.lastBoss;
         missions.completeMission('main4', toast, onProgress);
         if (checkDarkStar()) { gameState.darkStarNew = true; persist(); } // toast waits until the ending / credits close
-        if (!gameState.ended) showEnding();
+        if (!gameState.ended) startArrest(bossE ? bossE.x : null, bossE ? bossE.y : null); // 1.7.0: honest cops make the arrest, then court, then the ending
       } else if (!stateBag.side) {
         toast('Street clear!');
         heal(15);
@@ -1902,8 +2213,9 @@ function step(dt) {
     else if (player.x >= area.width - 35 && area.rightTo) transitionArea('right');
   }
 
-  if (inp.interactPressed && !gameState.cutscene) tryInteract();
+  if (inp.interactPressed && !gameState.cutscene && !gameState.arrest) tryInteract();
   if (gameState.mode !== 'play') { drawWorld(dt); return; }
+  if (gameState.arrest) { updateArrest(dt); if (gameState.mode !== 'play') { drawWorld(dt); return; } }
   if (isDlc()) { dlc.update(dt); updateCutscene(dt); if (gameState.mode !== 'play') { drawWorld(dt); return; } }
 
   // Auto pickup nearby collectibles (autosaves; outfit pickups are worn right away)
@@ -1915,8 +2227,10 @@ function step(dt) {
 
   // Interact prompt
   const npc = nearestNPC();
-  const useSpot = isDlc() && !npc && !hostilesAlive() ? dlc.usable(gameState.areaId, player.x) : null;
-  if (npc && !(gameState.combatLock && hostilesAlive()) && !gameState.cutscene) {
+  const useSpot = isDlc() && !npc && !hostilesAlive() ? dlc.usable(gameState.areaId, player.x) : (!isDlc() && !npc && !hostilesAlive() && !gameState.arrest ? prisonSpot(stateBag, gameState.areaId, player.x) : null);
+  if (gameState.arrest) {
+    $('interact-prompt').classList.add('hidden');
+  } else if (npc && !(gameState.combatLock && hostilesAlive()) && !gameState.cutscene) {
     $('interact-prompt').classList.remove('hidden');
     $('interact-text').textContent = `Talk to ${npc.name}`;
   } else if (useSpot && !gameState.cutscene) {
@@ -1979,7 +2293,7 @@ const CHAR_DRAW_W = USE_HERO_RENDER ? HERO_SHADOW_W : Math.round(NPC_DRAW_W * PL
 const THUG_SCALE = 1.2;
 const NPC_SCALE = 1.2;
 const BOSS_SCALE = 1.4; // Silas as the boss and as the pre-fight NPC (same person, same size)
-const castScaleNpc = (id) => (id === 'silas' ? BOSS_SCALE : NPC_SCALE);
+const castScaleNpc = (id) => (id === 'silas' || id === 'silas_cuffed' ? BOSS_SCALE : NPC_SCALE);
 const castScaleEnemy = (e) => (e.drawScale || (e.isBoss ? BOSS_SCALE : THUG_SCALE)); // DLC bosses carry drawScale
 
 /** Any cast frame at `scale`, feet on feetY (same footPad rule as drawMatthew). Returns draw height. */
@@ -2383,6 +2697,7 @@ function drawWorld(dt) {
     drawCollectibleItem(c, c.x - cam, collectY()); // v3: Joe's item art with bob + glow, dot fallback
   }
   if (isDlc()) drawUseMarker(cam);
+  else drawPrisonMarkers(cam); // 1.7.0
 
   // Sort draw by depth (y)
   const drawList = [];
@@ -2472,18 +2787,21 @@ function drawWorld(dt) {
   }
   drawKitFx(cam); // 1.4.0: Spiral footballs, Star Yank line, flashes / rings / sparks / callouts (over the cast)
 
-  // Shared light over characters, then the player's weather grade (Sunny / Night / Rainy).
-  // Story blackout still kills the Star and the streetlamps; it does not override the chosen weather.
-  if (getWeather() === 'sunny') drawSceneGrade(ctx, area, viewW, H);
-  const nowS = performance.now() / 1000;
-  drawWeather(ctx, viewW, H, nowS, {
-    groundY: getDepthBand().min,
-    blackout: !isDlc() && storyBlackout(),
-    frozen: !dt,
-    lights: getSceneLights(),
-    cheap: cheapPresentation()
-  });
-  if (!isDlc() && gameState.mode === 'dialogue' && gameState.dialogueNpc?.id === 'silas') drawLetterbox(ctx, viewW, H);
+  // Shared golden-hour light over characters too (lens width, full plate height)
+  // 1.7.0 weather: Sunny keeps the golden-hour grade; Night / Rainy are Kody's grades (js/weather.js).
+  // Rainy in the main campaign is the 1.6.0 story rain (lightning, the blackout after the twist).
+  // The story blackout applies in every weather. Indoor areas (Cinder Hollow) keep their own light.
+  const wx = getWeather(), nowS = performance.now() / 1000;
+  if (wx === 'sunny') drawSceneGrade(ctx, area, viewW, H);
+  if (isDlc() && dlc.isNight()) drawNightGrade(ctx, viewW, H, nowS); // DLC: night shift (story)
+  if (!area.indoor) {
+    if (!isDlc() && wx === 'rainy' && !area.prison) drawRainNight(ctx, viewW, H, nowS, { blackout: storyBlackout(), groundY: getDepthBand().min, heavy: stateBag.mainComplete ? 0.45 : 1, after: !!stateBag.mainComplete, frozen: !dt });
+    else drawWeather(ctx, viewW, H, nowS, { groundY: getDepthBand().min, blackout: !isDlc() && storyBlackout(), frozen: !dt, lights: getSceneLights(), cheap: cheapPresentation() });
+  }
+  if (!isDlc()) {
+    if ((gameState.mode === 'dialogue' && gameState.dialogueNpc?.id === 'silas') || gameState.arrest) drawLetterbox(ctx, viewW, H);
+    if (gameState.arrest && gameState.arrest.phase !== 'court') drawPoliceLights(viewW, H);
+  }
 
   // HUD minimap (DOM canvas, not the game canvas)
   drawMinimap($('minimap'), {
@@ -2538,7 +2856,7 @@ function drawTitleBg(dt) {
   drawMatthew('idle', 'polo', OUTFITS.polo, t, mx, feetY, 1);
   ctx.restore();
   title.drawGrade(ctx, W, H);
-  drawWeather(ctx, W, H, t, { groundY: feetY, title: true, cheap: cheapPresentation() });
+  drawWeather(ctx, W, H, t, { groundY: feetY, title: true, cheap: cheapPresentation() }); // 1.7.0 weather over the title
   presenter.present({ mode: 'full', grade: getWeather() });
 }
 
@@ -2618,7 +2936,7 @@ async function boot() {
   // Pre-fill hearts
   updateHUD();
   requestAnimationFrame(frame);
-  console.log("Star City Drift 2D — Beat'em Up ready (assets loaded)");
+  console.log("Streets of Roanoke — Beat'em Up ready (assets loaded)");
 }
 
 if (DEBUG) {
@@ -2709,6 +3027,16 @@ if (DEBUG) {
     silasMoves: { SILAS_MOVES, rows: silasMoveRows },
     dlcCard: () => ({ mission: !$('dlc-mission-card').classList.contains('hidden'), ending: !$('dlc-ending-screen').classList.contains('hidden') }),
     closeCard: () => closeDlcCard(),
+    // 1.7.0 "Locked Up"
+    arrest: () => gameState.arrest ? { phase: gameState.arrest.phase, actors: gameState.finaleActors.map((x) => ({ id: x.id, key: x.key, x: Math.round(x.x), walking: !!x.walking })) } : null,
+    skipArrest: () => skipArrest(),
+    startArrest: (x, y) => startArrest(x, y),
+    travel: (areaId, x = 200) => travelTo(areaId, x, 1),
+    prison: () => ({ open: prisonOpen(stateBag), visited: !!stateBag.silasVisited, keepsake: !!stateBag.prisonKeepsake, inPrison: isPrisonArea(gameState.areaId) }),
+    useSpot: () => { const sp = prisonSpot(stateBag, gameState.areaId, player.x); if (sp) usePrisonSpot(sp); return sp ? sp.id : null; },
+    choices: () => gameState.choice ? gameState.choice.list.map((c) => c.label) : null,
+    pick: (i) => pickChoice(i),
+    silasNode: () => gameState.silasTalk ? gameState.silasTalk.node : null,
     finishFinale: () => { if (gameState.cutscene) { const fn = gameState.cutscene.onDone; gameState.cutscene = null; if (gameState.mode === 'dialogue') finishDialogue(); fn && fn(); } }
     // <<< DLC
   };

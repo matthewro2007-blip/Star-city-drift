@@ -46,6 +46,8 @@ function migrateV1(d) {
     activeMissionId: d.activeMissionId ?? 'main1',
     collectTaken: Array.isArray(d.collectTaken) ? d.collectTaken.filter((c) => c && c.taken).map((c) => c.id) : [],
     mainComplete: !!d.mainComplete,
+    silasVisited: !!d.silasVisited, // 1.7.0 (absent in older saves -> false)
+    prisonKeepsake: !!d.prisonKeepsake,
     ended: !!d.ended,
     deliveryActive: !!d.deliveryActive,
     score: 0,
@@ -145,6 +147,8 @@ export function serializeSave({ player, stateBag, gameState, outfitId, areaId })
     activeMissionId: stateBag.activeMissionId ?? null,
     collectTaken: (stateBag.collectibles || []).filter((c) => c.taken).map((c) => c.id),
     mainComplete: !!stateBag.mainComplete,
+    silasVisited: !!stateBag.silasVisited, // 1.7.0 "Locked Up"
+    prisonKeepsake: !!stateBag.prisonKeepsake,
     ended: !!gameState.ended,
     deliveryActive: !!stateBag.deliveryActive,
     score: gameState.score || 0,
@@ -155,7 +159,43 @@ export function serializeSave({ player, stateBag, gameState, outfitId, areaId })
     fetchActive: !!(stateBag.side && stateBag.side.id === 'side_potluck'),
     beatHard: !!stateBag.beatHard,
     dlcSilas: !!stateBag.dlcSilas, // 1.5.0: finished the Silas prequel (Silas's Suit); read from the DLC's own slot
-    spotted: (stateBag.collectibles || []).filter((c) => c.stealth && c.spotted && !c.taken).map((c) => c.id)
+    spotted: (stateBag.collectibles || []).filter((c) => c.stealth && c.spotted && !c.taken).map((c) => c.id),
+    storyBeaten: !!(gameState.storyBeaten || stateBag.mainComplete), // NG+: sticky "main story beaten at least once"
+    ngPlus: Math.max(0, gameState.ngPlus | 0)                        // NG+: cycle counter (0 = first playthrough)
+  };
+}
+
+/** NG+ title info from the stored save (pure read). */
+export function saveSummary() {
+  const r = inspectSave({ write: false });
+  const d = r.data;
+  if (!d) return { has: false, storyBeaten: false, ngPlus: 0 };
+  return { has: true, storyBeaten: !!d.storyBeaten || !!d.mainComplete, ngPlus: Math.max(0, Math.floor(num(d.ngPlus, 0))) };
+}
+
+/**
+ * New Game+: STORY fields back to fresh-game defaults, every UNLOCK kept, ngPlus + 1.
+ * Kept: unlockedOutfits, outfitId, collectTaken, spotted, score, playTime, difficulty, beatHard, dlcSilas, player.maxHp.
+ */
+export function makeNgPlusSave(d) {
+  if (!isObj(d)) return null;
+  const maxHp = num(d.player && d.player.maxHp, undefined);
+  return {
+    ...d,
+    v: SAVE_VERSION,
+    savedAt: Date.now(),
+    areaId: 'downtown',
+    player: maxHp ? { x: 200, hp: maxHp, maxHp, facing: 1 } : { x: 200, facing: 1 },
+    missionFlags: {},
+    activeMissionId: 'main1',
+    mainComplete: false,
+    ended: false,
+    deliveryActive: false,
+    fetchItems: [],
+    fetchActive: false,
+    special: 40,
+    storyBeaten: true,
+    ngPlus: Math.max(0, Math.floor(num(d.ngPlus, 0))) + 1
   };
 }
 
@@ -190,6 +230,8 @@ export function applySave(data, { player, stateBag, gameState, areas }) {
     const act = data.activeMissionId;
     stateBag.activeMissionId = act === null ? null : (stateBag.missions[act] ? act : 'main1');
     stateBag.mainComplete = !!data.mainComplete;
+    stateBag.silasVisited = !!data.silasVisited; // 1.7.0
+    stateBag.prisonKeepsake = !!data.prisonKeepsake;
     stateBag.deliveryActive = !!data.deliveryActive && !stateBag.missions.side_coach?.done;
     stateBag.deliveryTarget = stateBag.deliveryActive ? (stateBag.missions.side_coach?.deliver || null) : null;
     stateBag.unlockedOutfits = new Set(['polo', ...(data.unlockedOutfits || []).filter((o) => typeof o === 'string')]);
@@ -206,6 +248,9 @@ export function applySave(data, { player, stateBag, gameState, areas }) {
       if (c.reveal) c.area = stateBag.missions[c.reveal]?.done ? c.home : 'hidden:' + c.home;
     }
     gameState.difficulty = DIFF_IDS.includes(data.difficulty) ? data.difficulty : 'normal';
+    // NG+ (old saves: no fields -> ngPlus 0, storyBeaten derived from mainComplete)
+    gameState.ngPlus = Math.max(0, Math.min(99, Math.floor(num(data.ngPlus, 0))));
+    gameState.storyBeaten = !!data.storyBeaten || !!data.mainComplete;
 
     const areaId = areas && areas[data.areaId] ? data.areaId : 'downtown';
     const areaW = areas && areas[areaId] ? areas[areaId].width : 1000;

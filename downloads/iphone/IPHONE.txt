@@ -1,0 +1,40 @@
+STREETS OF ROANOKE 1.7.0 ON AN IPHONE
+=====================================
+
+There are two ways to play on an iPhone or iPad. Option A is the easiest and is what
+we recommend.
+
+OPTION A (EASIEST, RECOMMENDED): ADD IT TO YOUR HOME SCREEN FROM SAFARI
+  1. Open Safari and go to  https://matthewro2007-blip.github.io/Star-city-drift/
+  2. Tap the Share button (the square with an arrow pointing up).
+  3. Scroll down and tap "Add to Home Screen", then tap Add.
+  Streets of Roanoke now opens full screen from its own icon, like any app. It works
+  offline after the first load, updates itself when you're online and keeps your saves.
+  No Apple ID, no computer, nothing to re-sign. Works on every iPhone and iPad.
+
+OPTION B: SIDELOAD THE .IPA (FOR PEOPLE WHO WANT A "REAL" APP)
+  Streets-of-Roanoke-1.7.0.ipa is NOT signed and is not on the App Store. You sign it
+  yourself with your own Apple ID, using a free tool on a Mac or Windows PC:
+    - AltStore   https://altstore.io        (installs AltServer on your computer)
+    - Sideloadly https://sideloadly.io      (drag the .ipa in, enter your Apple ID)
+  1. Download Streets-of-Roanoke-1.7.0.ipa.
+  2. Connect your iPhone to the computer with a cable and trust the computer.
+  3. In AltStore or Sideloadly, pick the .ipa and sign in with your Apple ID.
+  4. On the iPhone: Settings > General > VPN & Device Management > your Apple ID > Trust.
+     On iOS 16 and later also turn on Settings > Privacy & Security > Developer Mode.
+  5. Open Streets of Roanoke from the Home Screen.
+  WITH A FREE APPLE ID the app stops opening after 7 days. Re-sign it (AltStore can
+  refresh it for you over Wi-Fi) every 7 days. A free Apple ID can have 3 sideloaded
+  apps at a time. Your saves stay on the phone when you re-sign.
+  The .ipa plays the copy of the game built into it. For a newer game version, download
+  the newer .ipa and sideload it over the old one (your saves are kept). Option A always
+  has the latest version.
+
+PAID APPLE DEVELOPER ACCOUNT ($99/year)
+  If you have one, sign the .ipa with it instead and the app lasts a year before it
+  needs re-signing. With a paid account the game could also be sent to testers through
+  TestFlight (that needs a signed build uploaded to App Store Connect, which this
+  unsigned .ipa is not).
+
+WHICH ONE?
+  Most people: Option A. It's the same game, it's free and it never expires.

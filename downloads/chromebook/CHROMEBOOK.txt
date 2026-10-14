@@ -1,5 +1,6 @@
-STAR CITY DRIFT 1.6.0 ON A CHROMEBOOK
-=====================================
+STREETS OF ROANOKE 1.7.0 ON A CHROMEBOOK
+(formerly Star City Drift)
+======================================
 
 There are three ways to play on a Chromebook. Option A is the easiest and works on
 every Chromebook.
@@ -8,9 +9,10 @@ OPTION A (EASIEST, RECOMMENDED): INSTALL THE WEB APP FROM CHROME
   1. Open Chrome and go to  https://matthewro2007-blip.github.io/Star-city-drift/
   2. Click the Install icon at the right end of the address bar (a screen with a down
      arrow), or open the three-dot menu > Cast, save, and share > Install page as app.
-  3. Click Install. Star City Drift appears in your Launcher like any other app.
+  3. Click Install. Streets of Roanoke appears in your Launcher like any other app.
   It works offline after the first load, updates itself when you're online, and keeps
   your saves. Nothing else to download. Works on Intel, AMD and ARM Chromebooks.
+  (Already installed it as Star City Drift? It updates itself to the new name.)
 
 OPTION B: THE ANDROID APK
   Only for Chromebooks with Google Play / Android apps turned on
@@ -27,25 +29,27 @@ OPTION C: THE LINUX APP (.deb) - INTEL/AMD CHROMEBOOKS
      Turn on, and follow the steps. (On some versions: Settings > About ChromeOS >
      Developers.) This does NOT need developer mode.
   2. Download all 7 parts into the same folder:
-       Star-City-Drift-1.6.0-chromebook-linux-x64.7z.001   (23.1 MB)
-       Star-City-Drift-1.6.0-chromebook-linux-x64.7z.002   (23.1 MB)
-       Star-City-Drift-1.6.0-chromebook-linux-x64.7z.003   (23.1 MB)
-       Star-City-Drift-1.6.0-chromebook-linux-x64.7z.004   (23.1 MB)
-       Star-City-Drift-1.6.0-chromebook-linux-x64.7z.005   (23.1 MB)
-       Star-City-Drift-1.6.0-chromebook-linux-x64.7z.006   (23.1 MB)
-       Star-City-Drift-1.6.0-chromebook-linux-x64.7z.007   (11.4 MB)
-     Together they're one 7-Zip archive holding Star-City-Drift-1.6.0-chromebook-amd64.deb.
+       Streets-of-Roanoke-1.7.0-chromebook-linux-x64.7z.001   (23.1 MB)
+       Streets-of-Roanoke-1.7.0-chromebook-linux-x64.7z.002   (23.1 MB)
+       Streets-of-Roanoke-1.7.0-chromebook-linux-x64.7z.003   (23.1 MB)
+       Streets-of-Roanoke-1.7.0-chromebook-linux-x64.7z.004   (23.1 MB)
+       Streets-of-Roanoke-1.7.0-chromebook-linux-x64.7z.005   (23.1 MB)
+       Streets-of-Roanoke-1.7.0-chromebook-linux-x64.7z.006   (23.1 MB)
+       Streets-of-Roanoke-1.7.0-chromebook-linux-x64.7z.007   (12.6 MB)
+     Together they're one 7-Zip archive holding Streets-of-Roanoke-1.7.0-chromebook-amd64.deb.
   3. In the Files app, move all the parts into "Linux files".
   4. Open the Terminal app (Launcher > Linux apps > Terminal) and run these two lines:
        sudo apt install -y p7zip-full
-       7z x Star-City-Drift-1.6.0-chromebook-linux-x64.7z.001
-     This makes Star-City-Drift-1.6.0-chromebook-amd64.deb in Linux files.
+       7z x Streets-of-Roanoke-1.7.0-chromebook-linux-x64.7z.001
+     This makes Streets-of-Roanoke-1.7.0-chromebook-amd64.deb in Linux files.
      (You can delete the .7z parts afterwards.)
-  5. In the Files app, double-click Star-City-Drift-1.6.0-chromebook-amd64.deb, then click
+  5. In the Files app, double-click Streets-of-Roanoke-1.7.0-chromebook-amd64.deb, then click
      Install. Wait for the "Installation complete" notice.
-  6. Open Star City Drift from Launcher > Linux apps.
+  6. Open Streets of Roanoke from Launcher > Linux apps.
   Or install from the Terminal instead of step 5:
-       sudo apt install -y ./Star-City-Drift-1.6.0-chromebook-amd64.deb
+       sudo apt install -y ./Streets-of-Roanoke-1.7.0-chromebook-amd64.deb
+  Already have Star City Drift 1.6.0 from the .deb? Install this over it: it is the same
+  package (star-city-drift), it replaces the old one and keeps your saves.
   It plays the copy that came with it offline, and updates itself from the website when
   you're online, so you don't need to reinstall for new versions. F11 toggles fullscreen.
   To uninstall: right-click it in Launcher > Uninstall, or  sudo apt remove star-city-drift
@@ -54,11 +58,11 @@ WHICH ONE?
   Most people: Option A. Want the desktop app on an Intel/AMD Chromebook: Option C.
 
 SHA-256 checksums (optional check):
-a66e12fa64d0baf293dba0355721d9e9bfe5da8e5dfde365af86f2bb232a19e2  Star-City-Drift-1.6.0-chromebook-linux-x64.7z.001
-c7e090b89f09457baa27aa5ae631b0bf8ae6ed80cf2f60197931be652f8ec1dc  Star-City-Drift-1.6.0-chromebook-linux-x64.7z.002
-70cee4cf81761b970c18dc433e64142cbc3f3a8f6f44f0e7a1a95b2b7b76a17b  Star-City-Drift-1.6.0-chromebook-linux-x64.7z.003
-d2ceef8d32ce50f49f452d19c502b016936e83405ea6a5469fbcced67fda09c8  Star-City-Drift-1.6.0-chromebook-linux-x64.7z.004
-52aedeaa3a6567132f6c81148ada9511206c87b3bdd0ed2573afd4d8a077d2b5  Star-City-Drift-1.6.0-chromebook-linux-x64.7z.005
-e8331bf0c803e8f109ac5befd13a7bea7d0b884653efa5e2cc5cea129d956643  Star-City-Drift-1.6.0-chromebook-linux-x64.7z.006
-3ac12aeea5fa5592731c2735ab7963d322edcd94543b78501516e8bf88d64ff4  Star-City-Drift-1.6.0-chromebook-linux-x64.7z.007
-2927e74a1305331f159f5b06a2287857efdac4dd12afd06494b1158a56414610  Star-City-Drift-1.6.0-chromebook-amd64.deb
+d2b2a53de1dbe2b5c7861d9e0365625ae04a82b1bfcb1dc9293c734da5286211  Streets-of-Roanoke-1.7.0-chromebook-linux-x64.7z.001
+b85317787054498a716514cb22778367d756449743162ba9101a35a7f77884a8  Streets-of-Roanoke-1.7.0-chromebook-linux-x64.7z.002
+41e10bf57569a092fb0bb6ca17b5146c91c81627a9f99fd234abcda20b582628  Streets-of-Roanoke-1.7.0-chromebook-linux-x64.7z.003
+c32b86bec39ef1597172aa360efa6aa85aa3a944f5ab95895f316a2cfb9eca24  Streets-of-Roanoke-1.7.0-chromebook-linux-x64.7z.004
+0ba054475e9bd3de0b39a8371a1424ef56c5c0e0bf510bad05106d14708665a9  Streets-of-Roanoke-1.7.0-chromebook-linux-x64.7z.005
+37687e9ac11bcf5704acca459b2b0810145e452fdeec4d82c5a5a5d3afbd3627  Streets-of-Roanoke-1.7.0-chromebook-linux-x64.7z.006
+c54b47fdc8c5b38bc93f575f0a4c79103bcccd658520fc9f6521574ec39eb7ed  Streets-of-Roanoke-1.7.0-chromebook-linux-x64.7z.007
+bb0e974b9a3d0958420bd69ff859b91df4b1e9787817d8ddbfeaab8234288098  Streets-of-Roanoke-1.7.0-chromebook-amd64.deb
