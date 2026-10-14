@@ -21204,6 +21204,3031 @@
     "weapon": "Dead Star Emblem",
     "move": "Lights Out"
    }
+  },
+  "reed": {
+   "file": "assets/sprites/reed_anim.png",
+   "states": {
+    "idle_personality": {
+     "file": "assets/sprites/reed_anim.png",
+     "frames": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+     ],
+     "fps": 6,
+     "loop": true,
+     "fw": 144,
+     "fh": 192,
+     "anchorX": 72,
+     "sx": [
+      0,
+      144,
+      288,
+      432,
+      576,
+      720
+     ],
+     "sw": [
+      144,
+      144,
+      144,
+      144,
+      144,
+      144
+     ],
+     "sy": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     "sh": [
+      192,
+      192,
+      192,
+      192,
+      192,
+      192
+     ],
+     "grounded": [
+      true,
+      true,
+      true,
+      true,
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    "talk": {
+     "file": "assets/sprites/reed_anim.png",
+     "frames": [
+      6,
+      7,
+      8,
+      9
+     ],
+     "fps": 6,
+     "loop": true,
+     "fw": 144,
+     "fh": 192,
+     "anchorX": 72,
+     "sx": [
+      864,
+      1008,
+      1152,
+      1296
+     ],
+     "sw": [
+      144,
+      144,
+      144,
+      144
+     ],
+     "sy": [
+      0,
+      0,
+      0,
+      0
+     ],
+     "sh": [
+      192,
+      192,
+      192,
+      192
+     ],
+     "grounded": [
+      true,
+      true,
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false,
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false,
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null,
+      null,
+      null
+     ]
+    }
+   }
+  },
+  "dora": {
+   "file": "assets/sprites/dora_anim.png",
+   "states": {
+    "idle_personality": {
+     "file": "assets/sprites/dora_anim.png",
+     "frames": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+     ],
+     "fps": 6,
+     "loop": true,
+     "fw": 144,
+     "fh": 192,
+     "anchorX": 72,
+     "sx": [
+      0,
+      144,
+      288,
+      432,
+      576,
+      720
+     ],
+     "sw": [
+      144,
+      144,
+      144,
+      144,
+      144,
+      144
+     ],
+     "sy": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     "sh": [
+      192,
+      192,
+      192,
+      192,
+      192,
+      192
+     ],
+     "grounded": [
+      true,
+      true,
+      true,
+      true,
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    "talk": {
+     "file": "assets/sprites/dora_anim.png",
+     "frames": [
+      6,
+      7,
+      8,
+      9
+     ],
+     "fps": 6,
+     "loop": true,
+     "fw": 144,
+     "fh": 192,
+     "anchorX": 72,
+     "sx": [
+      864,
+      1008,
+      1152,
+      1296
+     ],
+     "sw": [
+      144,
+      144,
+      144,
+      144
+     ],
+     "sy": [
+      0,
+      0,
+      0,
+      0
+     ],
+     "sh": [
+      192,
+      192,
+      192,
+      192
+     ],
+     "grounded": [
+      true,
+      true,
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false,
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false,
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null,
+      null,
+      null
+     ]
+    }
+   }
+  },
+  "otto": {
+   "file": "assets/sprites/otto_anim.png",
+   "states": {
+    "idle_personality": {
+     "file": "assets/sprites/otto_anim.png",
+     "frames": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+     ],
+     "fps": 6,
+     "loop": true,
+     "fw": 144,
+     "fh": 192,
+     "anchorX": 72,
+     "sx": [
+      0,
+      144,
+      288,
+      432,
+      576,
+      720
+     ],
+     "sw": [
+      144,
+      144,
+      144,
+      144,
+      144,
+      144
+     ],
+     "sy": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     "sh": [
+      192,
+      192,
+      192,
+      192,
+      192,
+      192
+     ],
+     "grounded": [
+      true,
+      true,
+      true,
+      true,
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    "talk": {
+     "file": "assets/sprites/otto_anim.png",
+     "frames": [
+      6,
+      7,
+      8,
+      9
+     ],
+     "fps": 6,
+     "loop": true,
+     "fw": 144,
+     "fh": 192,
+     "anchorX": 72,
+     "sx": [
+      864,
+      1008,
+      1152,
+      1296
+     ],
+     "sw": [
+      144,
+      144,
+      144,
+      144
+     ],
+     "sy": [
+      0,
+      0,
+      0,
+      0
+     ],
+     "sh": [
+      192,
+      192,
+      192,
+      192
+     ],
+     "grounded": [
+      true,
+      true,
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false,
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false,
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null,
+      null,
+      null
+     ]
+    }
+   }
+  },
+  "mina": {
+   "file": "assets/sprites/mina_anim.png",
+   "states": {
+    "idle_personality": {
+     "file": "assets/sprites/mina_anim.png",
+     "frames": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+     ],
+     "fps": 6,
+     "loop": true,
+     "fw": 144,
+     "fh": 192,
+     "anchorX": 72,
+     "sx": [
+      0,
+      144,
+      288,
+      432,
+      576,
+      720
+     ],
+     "sw": [
+      144,
+      144,
+      144,
+      144,
+      144,
+      144
+     ],
+     "sy": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     "sh": [
+      192,
+      192,
+      192,
+      192,
+      192,
+      192
+     ],
+     "grounded": [
+      true,
+      true,
+      true,
+      true,
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    "talk": {
+     "file": "assets/sprites/mina_anim.png",
+     "frames": [
+      6,
+      7,
+      8,
+      9
+     ],
+     "fps": 6,
+     "loop": true,
+     "fw": 144,
+     "fh": 192,
+     "anchorX": 72,
+     "sx": [
+      864,
+      1008,
+      1152,
+      1296
+     ],
+     "sw": [
+      144,
+      144,
+      144,
+      144
+     ],
+     "sy": [
+      0,
+      0,
+      0,
+      0
+     ],
+     "sh": [
+      192,
+      192,
+      192,
+      192
+     ],
+     "grounded": [
+      true,
+      true,
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false,
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false,
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null,
+      null,
+      null
+     ]
+    }
+   }
+  },
+  "bart": {
+   "file": "assets/sprites/bart_anim.png",
+   "states": {
+    "idle_personality": {
+     "file": "assets/sprites/bart_anim.png",
+     "frames": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+     ],
+     "fps": 6,
+     "loop": true,
+     "fw": 144,
+     "fh": 192,
+     "anchorX": 72,
+     "sx": [
+      0,
+      144,
+      288,
+      432,
+      576,
+      720
+     ],
+     "sw": [
+      144,
+      144,
+      144,
+      144,
+      144,
+      144
+     ],
+     "sy": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     "sh": [
+      192,
+      192,
+      192,
+      192,
+      192,
+      192
+     ],
+     "grounded": [
+      true,
+      true,
+      true,
+      true,
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    "talk": {
+     "file": "assets/sprites/bart_anim.png",
+     "frames": [
+      6,
+      7,
+      8,
+      9
+     ],
+     "fps": 6,
+     "loop": true,
+     "fw": 144,
+     "fh": 192,
+     "anchorX": 72,
+     "sx": [
+      864,
+      1008,
+      1152,
+      1296
+     ],
+     "sw": [
+      144,
+      144,
+      144,
+      144
+     ],
+     "sy": [
+      0,
+      0,
+      0,
+      0
+     ],
+     "sh": [
+      192,
+      192,
+      192,
+      192
+     ],
+     "grounded": [
+      true,
+      true,
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false,
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false,
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null,
+      null,
+      null
+     ]
+    }
+   }
+  },
+  "quay": {
+   "file": "assets/sprites/quay_anim.png",
+   "states": {
+    "idle_personality": {
+     "file": "assets/sprites/quay_anim.png",
+     "frames": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+     ],
+     "fps": 6,
+     "loop": true,
+     "fw": 144,
+     "fh": 192,
+     "anchorX": 72,
+     "sx": [
+      0,
+      144,
+      288,
+      432,
+      576,
+      720
+     ],
+     "sw": [
+      144,
+      144,
+      144,
+      144,
+      144,
+      144
+     ],
+     "sy": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     "sh": [
+      192,
+      192,
+      192,
+      192,
+      192,
+      192
+     ],
+     "grounded": [
+      true,
+      true,
+      true,
+      true,
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    "talk": {
+     "file": "assets/sprites/quay_anim.png",
+     "frames": [
+      6,
+      7,
+      8,
+      9
+     ],
+     "fps": 6,
+     "loop": true,
+     "fw": 144,
+     "fh": 192,
+     "anchorX": 72,
+     "sx": [
+      864,
+      1008,
+      1152,
+      1296
+     ],
+     "sw": [
+      144,
+      144,
+      144,
+      144
+     ],
+     "sy": [
+      0,
+      0,
+      0,
+      0
+     ],
+     "sh": [
+      192,
+      192,
+      192,
+      192
+     ],
+     "grounded": [
+      true,
+      true,
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false,
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false,
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null,
+      null,
+      null
+     ]
+    }
+   }
+  },
+  "ellis": {
+   "file": "assets/sprites/ellis_anim.png",
+   "states": {
+    "idle_personality": {
+     "file": "assets/sprites/ellis_anim.png",
+     "frames": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+     ],
+     "fps": 6,
+     "loop": true,
+     "fw": 144,
+     "fh": 192,
+     "anchorX": 72,
+     "sx": [
+      0,
+      144,
+      288,
+      432,
+      576,
+      720
+     ],
+     "sw": [
+      144,
+      144,
+      144,
+      144,
+      144,
+      144
+     ],
+     "sy": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     "sh": [
+      192,
+      192,
+      192,
+      192,
+      192,
+      192
+     ],
+     "grounded": [
+      true,
+      true,
+      true,
+      true,
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    "talk": {
+     "file": "assets/sprites/ellis_anim.png",
+     "frames": [
+      6,
+      7,
+      8,
+      9
+     ],
+     "fps": 6,
+     "loop": true,
+     "fw": 144,
+     "fh": 192,
+     "anchorX": 72,
+     "sx": [
+      864,
+      1008,
+      1152,
+      1296
+     ],
+     "sw": [
+      144,
+      144,
+      144,
+      144
+     ],
+     "sy": [
+      0,
+      0,
+      0,
+      0
+     ],
+     "sh": [
+      192,
+      192,
+      192,
+      192
+     ],
+     "grounded": [
+      true,
+      true,
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false,
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false,
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null,
+      null,
+      null
+     ]
+    }
+   }
+  },
+  "ramos": {
+   "file": "assets/sprites/ramos_anim.png",
+   "states": {
+    "idle_personality": {
+     "file": "assets/sprites/ramos_anim.png",
+     "frames": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+     ],
+     "fps": 6,
+     "loop": true,
+     "fw": 144,
+     "fh": 192,
+     "anchorX": 72,
+     "sx": [
+      0,
+      144,
+      288,
+      432,
+      576,
+      720
+     ],
+     "sw": [
+      144,
+      144,
+      144,
+      144,
+      144,
+      144
+     ],
+     "sy": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     "sh": [
+      192,
+      192,
+      192,
+      192,
+      192,
+      192
+     ],
+     "grounded": [
+      true,
+      true,
+      true,
+      true,
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    "talk": {
+     "file": "assets/sprites/ramos_anim.png",
+     "frames": [
+      6,
+      7,
+      8,
+      9
+     ],
+     "fps": 6,
+     "loop": true,
+     "fw": 144,
+     "fh": 192,
+     "anchorX": 72,
+     "sx": [
+      864,
+      1008,
+      1152,
+      1296
+     ],
+     "sw": [
+      144,
+      144,
+      144,
+      144
+     ],
+     "sy": [
+      0,
+      0,
+      0,
+      0
+     ],
+     "sh": [
+      192,
+      192,
+      192,
+      192
+     ],
+     "grounded": [
+      true,
+      true,
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false,
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false,
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null,
+      null,
+      null
+     ]
+    }
+   }
+  },
+  "silas_prison": {
+   "file": "assets/sprites/silas_prison_anim.png",
+   "states": {
+    "idle_personality": {
+     "file": "assets/sprites/silas_prison_anim.png",
+     "frames": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+     ],
+     "fps": 6,
+     "loop": true,
+     "fw": 144,
+     "fh": 192,
+     "anchorX": 72,
+     "sx": [
+      0,
+      144,
+      288,
+      432,
+      576,
+      720
+     ],
+     "sw": [
+      144,
+      144,
+      144,
+      144,
+      144,
+      144
+     ],
+     "sy": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     "sh": [
+      192,
+      192,
+      192,
+      192,
+      192,
+      192
+     ],
+     "grounded": [
+      true,
+      true,
+      true,
+      true,
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    "talk": {
+     "file": "assets/sprites/silas_prison_anim.png",
+     "frames": [
+      6,
+      7,
+      8,
+      9
+     ],
+     "fps": 6,
+     "loop": true,
+     "fw": 144,
+     "fh": 192,
+     "anchorX": 72,
+     "sx": [
+      864,
+      1008,
+      1152,
+      1296
+     ],
+     "sw": [
+      144,
+      144,
+      144,
+      144
+     ],
+     "sy": [
+      0,
+      0,
+      0,
+      0
+     ],
+     "sh": [
+      192,
+      192,
+      192,
+      192
+     ],
+     "grounded": [
+      true,
+      true,
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false,
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false,
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null,
+      null,
+      null
+     ]
+    }
+   }
+  },
+  "matthew_cinder": {
+   "file": "assets/sprites/matthew_cinder_anim.png",
+   "states": {
+    "idle_signature": {
+     "file": "assets/sprites/matthew_cinder_kit.png",
+     "frames": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+     ],
+     "fps": 8,
+     "loop": true,
+     "fw": 144,
+     "fh": 192,
+     "anchorX": 72,
+     "wide": false,
+     "sx": [
+      0,
+      144,
+      288,
+      432,
+      576,
+      720
+     ],
+     "sw": [
+      144,
+      144,
+      144,
+      144,
+      144,
+      144
+     ],
+     "sy": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     "sh": [
+      192,
+      192,
+      192,
+      192,
+      192,
+      192
+     ],
+     "grounded": [
+      true,
+      true,
+      true,
+      true,
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    "run": {
+     "file": "assets/sprites/matthew_cinder_anim.png",
+     "frames": [
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13
+     ],
+     "fps": 12,
+     "loop": true,
+     "fw": 144,
+     "fh": 192,
+     "anchorX": 72,
+     "sx": [
+      864,
+      1008,
+      1152,
+      1296,
+      1440,
+      1584,
+      1728,
+      1872
+     ],
+     "sw": [
+      144,
+      144,
+      144,
+      144,
+      144,
+      144,
+      144,
+      144
+     ],
+     "sy": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     "sh": [
+      192,
+      192,
+      192,
+      192,
+      192,
+      192,
+      192,
+      192
+     ],
+     "grounded": [
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    "sprint": {
+     "file": "assets/sprites/matthew_cinder_anim.png",
+     "frames": [
+      14,
+      15,
+      16,
+      17,
+      18,
+      19
+     ],
+     "fps": 16,
+     "loop": true,
+     "fw": 144,
+     "fh": 192,
+     "anchorX": 72,
+     "sx": [
+      2016,
+      2160,
+      2304,
+      2448,
+      2592,
+      2736
+     ],
+     "sw": [
+      144,
+      144,
+      144,
+      144,
+      144,
+      144
+     ],
+     "sy": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     "sh": [
+      192,
+      192,
+      192,
+      192,
+      192,
+      192
+     ],
+     "grounded": [
+      true,
+      true,
+      true,
+      true,
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    "combo1": {
+     "file": "assets/sprites/matthew_cinder_anim.png",
+     "frames": [
+      20,
+      21,
+      22
+     ],
+     "fps": 14,
+     "loop": false,
+     "fw": 144,
+     "fh": 192,
+     "anchorX": 72,
+     "sx": [
+      2880,
+      3024,
+      3168
+     ],
+     "sw": [
+      144,
+      144,
+      144
+     ],
+     "sy": [
+      0,
+      0,
+      0
+     ],
+     "sh": [
+      192,
+      192,
+      192
+     ],
+     "grounded": [
+      true,
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false,
+      false
+     ],
+     "active": [
+      false,
+      true,
+      false
+     ],
+     "hitbox": [
+      null,
+      {
+       "x": 113,
+       "y": 56,
+       "w": 28,
+       "h": 24
+      },
+      null
+     ]
+    },
+    "combo2": {
+     "file": "assets/sprites/matthew_cinder_anim.png",
+     "frames": [
+      23,
+      24,
+      25,
+      26
+     ],
+     "fps": 14,
+     "loop": false,
+     "fw": 144,
+     "fh": 192,
+     "anchorX": 72,
+     "sx": [
+      3312,
+      3456,
+      3600,
+      3744
+     ],
+     "sw": [
+      144,
+      144,
+      144,
+      144
+     ],
+     "sy": [
+      0,
+      0,
+      0,
+      0
+     ],
+     "sh": [
+      192,
+      192,
+      192,
+      192
+     ],
+     "grounded": [
+      true,
+      true,
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false,
+      false,
+      false
+     ],
+     "active": [
+      false,
+      true,
+      true,
+      false
+     ],
+     "hitbox": [
+      null,
+      {
+       "x": 105,
+       "y": 56,
+       "w": 28,
+       "h": 24
+      },
+      {
+       "x": 111,
+       "y": 58,
+       "w": 28,
+       "h": 24
+      },
+      null
+     ]
+    },
+    "combo3": {
+     "file": "assets/sprites/matthew_cinder_kit_wide.png",
+     "frames": [
+      0,
+      1,
+      2,
+      3
+     ],
+     "fps": 12,
+     "loop": false,
+     "fw": 240,
+     "fh": 192,
+     "anchorX": 120,
+     "wide": true,
+     "sx": [
+      0,
+      240,
+      480,
+      720
+     ],
+     "sw": [
+      240,
+      240,
+      240,
+      240
+     ],
+     "sy": [
+      0,
+      0,
+      0,
+      0
+     ],
+     "sh": [
+      192,
+      192,
+      192,
+      192
+     ],
+     "grounded": [
+      true,
+      true,
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false,
+      false,
+      false
+     ],
+     "active": [
+      false,
+      true,
+      true,
+      false
+     ],
+     "hitbox": [
+      null,
+      {
+       "x": 151,
+       "y": 49,
+       "w": 32,
+       "h": 28
+      },
+      {
+       "x": 156,
+       "y": 58,
+       "w": 28,
+       "h": 26
+      },
+      null
+     ]
+    },
+    "jump_kick": {
+     "file": "assets/sprites/matthew_cinder_anim.png",
+     "frames": [
+      31,
+      32,
+      33,
+      34,
+      35
+     ],
+     "fps": 12,
+     "loop": false,
+     "fw": 144,
+     "fh": 192,
+     "anchorX": 72,
+     "sx": [
+      4464,
+      4608,
+      4752,
+      4896,
+      5040
+     ],
+     "sw": [
+      144,
+      144,
+      144,
+      144,
+      144
+     ],
+     "sy": [
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     "sh": [
+      192,
+      192,
+      192,
+      192,
+      192
+     ],
+     "grounded": [
+      true,
+      false,
+      false,
+      false,
+      true
+     ],
+     "lying": [
+      false,
+      false,
+      false,
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false,
+      true,
+      true,
+      false
+     ],
+     "hitbox": [
+      null,
+      null,
+      {
+       "x": 100,
+       "y": 68,
+       "w": 28,
+       "h": 24
+      },
+      {
+       "x": 100,
+       "y": 82,
+       "w": 28,
+       "h": 24
+      },
+      null
+     ]
+    },
+    "special": {
+     "file": "assets/sprites/matthew_cinder_kit_wide.png",
+     "frames": [
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11
+     ],
+     "fps": 12,
+     "loop": false,
+     "fw": 240,
+     "fh": 192,
+     "anchorX": 120,
+     "wide": true,
+     "sx": [
+      960,
+      1200,
+      1440,
+      1680,
+      1920,
+      2160,
+      2400,
+      2640
+     ],
+     "sw": [
+      240,
+      240,
+      240,
+      240,
+      240,
+      240,
+      240,
+      240
+     ],
+     "sy": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     "sh": [
+      192,
+      192,
+      192,
+      192,
+      192,
+      192,
+      192,
+      192
+     ],
+     "grounded": [
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+     ],
+     "active": [
+      false,
+      true,
+      true,
+      true,
+      false,
+      false,
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      {
+       "x": 146,
+       "y": 43,
+       "w": 24,
+       "h": 29
+      },
+      {
+       "x": 160,
+       "y": 43,
+       "w": 24,
+       "h": 29
+      },
+      {
+       "x": 170,
+       "y": 43,
+       "w": 24,
+       "h": 29
+      },
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    "hurt": {
+     "file": "assets/sprites/matthew_cinder_anim.png",
+     "frames": [
+      36,
+      37,
+      38
+     ],
+     "fps": 10,
+     "loop": false,
+     "fw": 144,
+     "fh": 192,
+     "anchorX": 72,
+     "sx": [
+      5184,
+      5328,
+      5472
+     ],
+     "sw": [
+      144,
+      144,
+      144
+     ],
+     "sy": [
+      0,
+      0,
+      0
+     ],
+     "sh": [
+      192,
+      192,
+      192
+     ],
+     "grounded": [
+      true,
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null,
+      null
+     ]
+    },
+    "ko": {
+     "file": "assets/sprites/matthew_cinder_anim.png",
+     "frames": [
+      39,
+      40,
+      41,
+      42,
+      43
+     ],
+     "fps": 8,
+     "loop": false,
+     "fw": 144,
+     "fh": 192,
+     "anchorX": 72,
+     "sx": [
+      5616,
+      5760,
+      5904,
+      6048,
+      6192
+     ],
+     "sw": [
+      144,
+      144,
+      144,
+      144,
+      144
+     ],
+     "sy": [
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     "sh": [
+      192,
+      192,
+      192,
+      192,
+      192
+     ],
+     "grounded": [
+      true,
+      true,
+      true,
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false,
+      false,
+      true,
+      true
+     ],
+     "active": [
+      false,
+      false,
+      false,
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    "victory": {
+     "file": "assets/sprites/matthew_cinder_anim.png",
+     "frames": [
+      44,
+      45,
+      46,
+      47,
+      48,
+      49
+     ],
+     "fps": 8,
+     "loop": false,
+     "fw": 144,
+     "fh": 192,
+     "anchorX": 72,
+     "sx": [
+      6336,
+      6480,
+      6624,
+      6768,
+      6912,
+      7056
+     ],
+     "sw": [
+      144,
+      144,
+      144,
+      144,
+      144,
+      144
+     ],
+     "sy": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     "sh": [
+      192,
+      192,
+      192,
+      192,
+      192,
+      192
+     ],
+     "grounded": [
+      true,
+      true,
+      true,
+      true,
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    "knockdown_fall": {
+     "file": "assets/sprites/matthew_cinder_anim_wide.png",
+     "frames": [
+      8,
+      9,
+      10,
+      11
+     ],
+     "fps": 10,
+     "loop": false,
+     "fw": 240,
+     "fh": 192,
+     "anchorX": 120,
+     "sx": [
+      1920,
+      2160,
+      2400,
+      2640
+     ],
+     "sw": [
+      240,
+      240,
+      240,
+      240
+     ],
+     "sy": [
+      0,
+      0,
+      0,
+      0
+     ],
+     "sh": [
+      192,
+      192,
+      192,
+      192
+     ],
+     "grounded": [
+      true,
+      false,
+      false,
+      true
+     ],
+     "lying": [
+      false,
+      false,
+      false,
+      true
+     ],
+     "active": [
+      false,
+      false,
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    "knockdown_ground": {
+     "file": "assets/sprites/matthew_cinder_anim.png",
+     "frames": [
+      50,
+      51
+     ],
+     "fps": 3,
+     "loop": true,
+     "fw": 144,
+     "fh": 192,
+     "anchorX": 72,
+     "sx": [
+      7200,
+      7344
+     ],
+     "sw": [
+      144,
+      144
+     ],
+     "sy": [
+      0,
+      0
+     ],
+     "sh": [
+      192,
+      192
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      true,
+      true
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ]
+    },
+    "getup": {
+     "file": "assets/sprites/matthew_cinder_anim.png",
+     "frames": [
+      52,
+      53,
+      54,
+      55
+     ],
+     "fps": 8,
+     "loop": false,
+     "fw": 144,
+     "fh": 192,
+     "anchorX": 72,
+     "sx": [
+      7488,
+      7632,
+      7776,
+      7920
+     ],
+     "sw": [
+      144,
+      144,
+      144,
+      144
+     ],
+     "sy": [
+      0,
+      0,
+      0,
+      0
+     ],
+     "sh": [
+      192,
+      192,
+      192,
+      192
+     ],
+     "grounded": [
+      true,
+      true,
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false,
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false,
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null,
+      null,
+      null
+     ]
+    }
+   },
+   "wideFile": "assets/sprites/matthew_cinder_anim_wide.png",
+   "kit": {
+    "weapon": "Mess Hall Tray",
+    "move": "Chow Line"
+   }
+  },
+  "reyes": {
+   "file": "assets/sprites/reyes_anim.png",
+   "states": {
+    "idle_personality": {
+     "file": "assets/sprites/reyes_anim.png",
+     "frames": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+     ],
+     "fps": 6,
+     "loop": true,
+     "fw": 144,
+     "fh": 192,
+     "anchorX": 72,
+     "sx": [
+      0,
+      144,
+      288,
+      432,
+      576,
+      720
+     ],
+     "sw": [
+      144,
+      144,
+      144,
+      144,
+      144,
+      144
+     ],
+     "sy": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     "sh": [
+      192,
+      192,
+      192,
+      192,
+      192,
+      192
+     ],
+     "grounded": [
+      true,
+      true,
+      true,
+      true,
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    "talk": {
+     "file": "assets/sprites/reyes_anim.png",
+     "frames": [
+      6,
+      7,
+      8,
+      9
+     ],
+     "fps": 6,
+     "loop": true,
+     "fw": 144,
+     "fh": 192,
+     "anchorX": 72,
+     "sx": [
+      864,
+      1008,
+      1152,
+      1296
+     ],
+     "sw": [
+      144,
+      144,
+      144,
+      144
+     ],
+     "sy": [
+      0,
+      0,
+      0,
+      0
+     ],
+     "sh": [
+      192,
+      192,
+      192,
+      192
+     ],
+     "grounded": [
+      true,
+      true,
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false,
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false,
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    "walk": {
+     "file": "assets/sprites/reyes_anim.png",
+     "frames": [
+      10,
+      11,
+      12,
+      13,
+      14,
+      15
+     ],
+     "fps": 9,
+     "loop": true,
+     "fw": 144,
+     "fh": 192,
+     "anchorX": 72,
+     "sx": [
+      1440,
+      1584,
+      1728,
+      1872,
+      2016,
+      2160
+     ],
+     "sw": [
+      144,
+      144,
+      144,
+      144,
+      144,
+      144
+     ],
+     "sy": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     "sh": [
+      192,
+      192,
+      192,
+      192,
+      192,
+      192
+     ],
+     "grounded": [
+      true,
+      true,
+      true,
+      true,
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+     ]
+    }
+   }
+  },
+  "okafor": {
+   "file": "assets/sprites/okafor_anim.png",
+   "states": {
+    "idle_personality": {
+     "file": "assets/sprites/okafor_anim.png",
+     "frames": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+     ],
+     "fps": 6,
+     "loop": true,
+     "fw": 144,
+     "fh": 192,
+     "anchorX": 72,
+     "sx": [
+      0,
+      144,
+      288,
+      432,
+      576,
+      720
+     ],
+     "sw": [
+      144,
+      144,
+      144,
+      144,
+      144,
+      144
+     ],
+     "sy": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     "sh": [
+      192,
+      192,
+      192,
+      192,
+      192,
+      192
+     ],
+     "grounded": [
+      true,
+      true,
+      true,
+      true,
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    "talk": {
+     "file": "assets/sprites/okafor_anim.png",
+     "frames": [
+      6,
+      7,
+      8,
+      9
+     ],
+     "fps": 6,
+     "loop": true,
+     "fw": 144,
+     "fh": 192,
+     "anchorX": 72,
+     "sx": [
+      864,
+      1008,
+      1152,
+      1296
+     ],
+     "sw": [
+      144,
+      144,
+      144,
+      144
+     ],
+     "sy": [
+      0,
+      0,
+      0,
+      0
+     ],
+     "sh": [
+      192,
+      192,
+      192,
+      192
+     ],
+     "grounded": [
+      true,
+      true,
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false,
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false,
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    "walk": {
+     "file": "assets/sprites/okafor_anim.png",
+     "frames": [
+      10,
+      11,
+      12,
+      13,
+      14,
+      15
+     ],
+     "fps": 9,
+     "loop": true,
+     "fw": 144,
+     "fh": 192,
+     "anchorX": 72,
+     "sx": [
+      1440,
+      1584,
+      1728,
+      1872,
+      2016,
+      2160
+     ],
+     "sw": [
+      144,
+      144,
+      144,
+      144,
+      144,
+      144
+     ],
+     "sy": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     "sh": [
+      192,
+      192,
+      192,
+      192,
+      192,
+      192
+     ],
+     "grounded": [
+      true,
+      true,
+      true,
+      true,
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+     ]
+    }
+   }
+  },
+  "silas_cuffed": {
+   "file": "assets/sprites/silas_cuffed_anim.png",
+   "states": {
+    "idle_personality": {
+     "file": "assets/sprites/silas_cuffed_anim.png",
+     "frames": [
+      0,
+      1,
+      2,
+      3
+     ],
+     "fps": 4,
+     "loop": true,
+     "fw": 144,
+     "fh": 192,
+     "anchorX": 72,
+     "sx": [
+      0,
+      144,
+      288,
+      432
+     ],
+     "sw": [
+      144,
+      144,
+      144,
+      144
+     ],
+     "sy": [
+      0,
+      0,
+      0,
+      0
+     ],
+     "sh": [
+      192,
+      192,
+      192,
+      192
+     ],
+     "grounded": [
+      true,
+      true,
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false,
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false,
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    "talk": {
+     "file": "assets/sprites/silas_cuffed_anim.png",
+     "frames": [
+      4,
+      5,
+      6,
+      7
+     ],
+     "fps": 6,
+     "loop": true,
+     "fw": 144,
+     "fh": 192,
+     "anchorX": 72,
+     "sx": [
+      576,
+      720,
+      864,
+      1008
+     ],
+     "sw": [
+      144,
+      144,
+      144,
+      144
+     ],
+     "sy": [
+      0,
+      0,
+      0,
+      0
+     ],
+     "sh": [
+      192,
+      192,
+      192,
+      192
+     ],
+     "grounded": [
+      true,
+      true,
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false,
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false,
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    "walk": {
+     "file": "assets/sprites/silas_cuffed_anim.png",
+     "frames": [
+      8,
+      9,
+      10,
+      11,
+      12,
+      13
+     ],
+     "fps": 8,
+     "loop": true,
+     "fw": 144,
+     "fh": 192,
+     "anchorX": 72,
+     "sx": [
+      1152,
+      1296,
+      1440,
+      1584,
+      1728,
+      1872
+     ],
+     "sw": [
+      144,
+      144,
+      144,
+      144,
+      144,
+      144
+     ],
+     "sy": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     "sh": [
+      192,
+      192,
+      192,
+      192,
+      192,
+      192
+     ],
+     "grounded": [
+      true,
+      true,
+      true,
+      true,
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+     ]
+    }
+   }
   }
  },
  "aliases": {
@@ -21223,8 +24248,9 @@
   "beacon",
   "ironclad",
   "silas",
-  "darkstar"
+  "darkstar",
+  "cinder"
  ],
- "rev": "1791548605",
+ "rev": "1791991525",
  "kitRev": "1.3.1-kits"
 }

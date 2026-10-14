@@ -1,5 +1,5 @@
 /**
- * Star City Drift — audio (game-logic lane).
+ * Streets of Roanoke — audio (game-logic lane).
  *
  * Everything is synthesised live in WebAudio: four original looping themes (title, street, fight,
  * Silas boss), stings, every SFX and every character voice. There are no audio files, so the

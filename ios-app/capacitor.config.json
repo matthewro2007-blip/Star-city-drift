@@ -1,0 +1,6 @@
+{
+  "appId": "io.github.matthewro2007blip.streetsofroanoke",
+  "appName": "Streets of Roanoke",
+  "webDir": "www",
+  "ios": { "contentInset": "never", "backgroundColor": "#0a0e18", "preferredContentMode": "mobile" }
+}

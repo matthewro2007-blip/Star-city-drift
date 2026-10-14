@@ -1,5 +1,5 @@
 /**
- * Star City Drift — visual outfit picker (pause menu → Outfits). Game-logic lane.
+ * Streets of Roanoke — visual outfit picker (pause menu → Outfits). Game-logic lane.
  *
  * A grid of cards, one per outfit, each with a live animated Matthew in that outfit
  * (Sprites.getAnimFrame('matthew', 'idle_signature', t, outfit) → static sheet fallback), plus a
@@ -83,6 +83,7 @@ export function createOutfitsMenu(opts) {
   function hintFor(id) {
     if (id === 'polo') return 'Starter outfit.';
     if (id === 'gold') return 'Unlock: finish 100% (every mission + collectible) or beat Silas on Hard / Arcade.';
+    if (id === 'cinder') return 'Unlock: Visit Silas Boone in his cell at Cinder Hollow Correctional (take the Route 9 bus from the Community Center after the campaign).';
     if (id === 'darkstar') return 'Unlock: Beat the main campaign, "The Star Goes Dark". Climb Mill Mountain and turn the Star back on.';
     if (id === 'silas') return 'Unlock: Beat the Silas Boone prequel (free DLC — "Prequel: Silas Boone" on the title screen).';
     const bag = S().stateBag || {};

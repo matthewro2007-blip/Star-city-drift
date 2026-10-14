@@ -1,5 +1,5 @@
 /**
- * Star City Drift 1.5.0 — FREE prequel DLC "Second Shift" (playable Silas Boone). Game-logic lane.
+ * Streets of Roanoke 1.5.0 — FREE prequel DLC "Second Shift" (playable Silas Boone). Game-logic lane.
  *
  * Story, cast, missions, collectibles, its OWN save slot (localStorage 'starCityDrift_dlc_silas'; the
  * main v4 save is never read-modified here), night grade and HUD portrait. main.js owns the loop and

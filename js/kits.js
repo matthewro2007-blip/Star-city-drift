@@ -1,5 +1,5 @@
 /**
- * Star City Drift 1.4.0 — outfit kits (game-logic lane).
+ * Streets of Roanoke 1.4.0 — outfit kits (game-logic lane).
  *
  * Every outfit carries its own signature weapon. Two moves use it:
  *   - combo3  : the weapon finisher (3rd hit of the punch/kick chain)
@@ -96,6 +96,12 @@ export const KITS = {
     special: { dmg: 14, startup: 0.2, lunge: 0, effect: 'area_stun', darkpulse: true, stun: 1.2, knock: 10, pad: { reach: 150, back: 150, depth: 44 }, cost: 25, cooldown: 3.5 },
     combo3: { dmg: 20, knock: 28, knockdown: true }
   },
+  // 1.7.0 "Locked Up": Cinder Hollow Orange. A cafeteria tray and a shoulder-first rush down the chow line.
+  cinder: {
+    weapon: 'Mess Hall Tray', move: 'Chow Line', ability: 'Shoulder-first rush down the line: knocks foes over and shoves them back.', sfx: 'kit_hoodie',
+    special: { dmg: 20, startup: 0.18, lunge: 120, effect: 'knockdown', knockdown: true, kdPush: 2.2, depth: 28, cost: 25, cooldown: 3 },
+    combo3: { dmg: 19, knock: 30, knockdown: true }
+  },
   // 1.5.0 (DLC: Silas prequel reward): Silas's Suit. Matthew in this outfit fights with Silas Boone's own
   // moveset (js/silas_moves.js, numbers in SILAS_MOVES below); the kit entry keeps the HUD / picker / tables
   // working. The special slot is Iron Handshake (grab-and-slam shockwave).
@@ -111,7 +117,7 @@ export const KIT_ORDER = Object.keys(KITS);
  *  when the art isn't loaded (the live frames' own `active` flags win); gold hits on 3 and 5. */
 export const SPECIAL_ACTIVE = {
   polo: [3, 4], street: [3, 4], varsity: [3, 4], mechanic: [3, 4], webslinger: [3, 4], ironclad: [3, 4],
-  photo: [2, 3], hoodie: [2, 3], jacket: [2, 3], diner: [2, 3], beacon: [2, 3], darkstar: [2, 3], gold: [3, 5], silas: [0, 1, 4, 5] /* Joe's Iron Handshake: grab 0-1, slam + shockwave 4-5 */
+  photo: [2, 3], hoodie: [2, 3], jacket: [2, 3], diner: [2, 3], beacon: [2, 3], darkstar: [2, 3], gold: [3, 5], cinder: [1, 2, 3], silas: [0, 1, 4, 5] /* Joe's Iron Handshake: grab 0-1, slam + shockwave 4-5 */
 };
 export const COMBO3_ACTIVE = [1, 2];
 export const SPECIAL_FRAMES = 8, COMBO3_FRAMES = 4, KIT_FPS = 12;

@@ -310,9 +310,11 @@ Matthew Rose doesn't believe them.`;
 export const SEQUEL_HOOKS = `
 <strong>Hank "Rail" Pettigrew:</strong> The state inspector has his notes. The night shift at the yards is clean for the first time in years.<br><br>
 <strong>Cam Ortiz:</strong> No more wrong pins. But Vera Lisk's files were never found.<br><br>
-<strong>Silas Boone:</strong> Led down the mountain in handcuffs by officers who still answer to the city. He said they'd speak again.
+<strong>Silas Boone:</strong> Cuffed on Mill Mountain by Sgt. Dana Reyes, one of the officers he never managed to buy. Twenty-five years, Cinder Hollow Correctional, cell C-14. He says visiting hours suit him.<br><br>
+<strong>Route 9:</strong> The bus at the Community Center now runs out to Cinder Hollow. Someone there has been waiting to talk.
 `;
 
 export const ENDING_TEXT = `Midnight on Mill Mountain. The Star went dark, and for one long minute so did Roanoke.
 Matthew Rose put Silas Boone on the ground, broke the switch-house lock and walked Wren Calloway out into the rain. When he threw the breaker, the Star came back on.
-He's okay. Wren's okay. Boone Holdings is finished, and the missing are coming home one by one. Star City glows again.`;
+The patrol cars that came up the mountain road belonged to the honest ones. Sgt. Dana Reyes read Silas his rights, and Boone Holdings ended in a pair of handcuffs.
+Three months later a judge gave him twenty-five years at Cinder Hollow Correctional. Wren's okay. The debts are cancelled. Star City glows again.`;

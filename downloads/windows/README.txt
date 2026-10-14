@@ -1,38 +1,66 @@
-STAR CITY DRIFT 1.6.0 - Windows (64-bit) installer, sent in 6 parts
-===================================================================
+STREETS OF ROANOKE 1.7.0 (formerly Star City Drift) - Windows (64-bit) installer, sent in 6 parts
+=================================================================================================
 
 You need all 6 files in the SAME folder:
-  Star-City-Drift-1.6.0-Setup-win-x64.7z.001   (23.1 MB)
-  Star-City-Drift-1.6.0-Setup-win-x64.7z.002   (23.1 MB)
-  Star-City-Drift-1.6.0-Setup-win-x64.7z.003   (23.1 MB)
-  Star-City-Drift-1.6.0-Setup-win-x64.7z.004   (23.1 MB)
-  Star-City-Drift-1.6.0-Setup-win-x64.7z.005   (23.1 MB)
-  Star-City-Drift-1.6.0-Setup-win-x64.7z.006   (11.3 MB)
-Together they're one 7-Zip archive holding Star-City-Drift-Setup-1.6.0.exe (127 MB).
+  Streets-of-Roanoke-1.7.0-Setup-win-x64.7z.001   (23.1 MB)
+  Streets-of-Roanoke-1.7.0-Setup-win-x64.7z.002   (23.1 MB)
+  Streets-of-Roanoke-1.7.0-Setup-win-x64.7z.003   (23.1 MB)
+  Streets-of-Roanoke-1.7.0-Setup-win-x64.7z.004   (23.1 MB)
+  Streets-of-Roanoke-1.7.0-Setup-win-x64.7z.005   (23.1 MB)
+  Streets-of-Roanoke-1.7.0-Setup-win-x64.7z.006   (13.2 MB)
+Together they're one 7-Zip archive holding Streets-of-Roanoke-Setup-1.7.0.exe (129 MB).
 
 EASIEST: 7-Zip (free, https://www.7-zip.org)
   1. Install 7-Zip.
-  2. Right-click Star-City-Drift-1.6.0-Setup-win-x64.7z.001 > 7-Zip > Extract Here
+  2. Right-click Streets-of-Roanoke-1.7.0-Setup-win-x64.7z.001 > 7-Zip > Extract Here
      (or open the .001 in 7-Zip). It reads .002-.006 by itself.
-  3. Double-click Star-City-Drift-Setup-1.6.0.exe and follow the installer.
+  3. Double-click Streets-of-Roanoke-Setup-1.7.0.exe and follow the installer.
   NanaZip, PeaZip and WinRAR open the .001 the same way.
 
 WITHOUT 7-ZIP (Windows 11 only)
   Windows can't open the .001 file directly. Join the parts into one .7z first:
   in that folder, click the address bar, type  cmd  and press Enter, then run:
-    copy /b Star-City-Drift-1.6.0-Setup-win-x64.7z.001+Star-City-Drift-1.6.0-Setup-win-x64.7z.002+Star-City-Drift-1.6.0-Setup-win-x64.7z.003+Star-City-Drift-1.6.0-Setup-win-x64.7z.004+Star-City-Drift-1.6.0-Setup-win-x64.7z.005+Star-City-Drift-1.6.0-Setup-win-x64.7z.006 Star-City-Drift-1.6.0-Setup-win-x64.7z
-  Then right-click Star-City-Drift-1.6.0-Setup-win-x64.7z > Extract All. Windows 11 has opened .7z files natively since the
+    copy /b Streets-of-Roanoke-1.7.0-Setup-win-x64.7z.001+Streets-of-Roanoke-1.7.0-Setup-win-x64.7z.002+Streets-of-Roanoke-1.7.0-Setup-win-x64.7z.003+Streets-of-Roanoke-1.7.0-Setup-win-x64.7z.004+Streets-of-Roanoke-1.7.0-Setup-win-x64.7z.005+Streets-of-Roanoke-1.7.0-Setup-win-x64.7z.006 Streets-of-Roanoke-1.7.0-Setup-win-x64.7z
+  Then right-click Streets-of-Roanoke-1.7.0-Setup-win-x64.7z > Extract All. Windows 11 has opened .7z files natively since the
   23H2 update. Windows 10 can't open .7z, so use 7-Zip there.
 
 FIRST RUN
   The app isn't code-signed, so SmartScreen may say "Windows protected your PC".
   Click "More info" > "Run anyway".
-  F11 or Alt+Enter toggles fullscreen. Esc pauses. Saves are kept in %APPDATA%\Star City Drift.
+  F11 or Alt+Enter toggles fullscreen. Esc pauses. Saves stay in %APPDATA%\Star City Drift (same folder as before the rename).
 
-  Already have 1.2.x, 1.3.x, 1.4.x or 1.5.x? You don't need this: it updates itself from the website. Installing 1.6.0
+  Already have 1.2.x, 1.3.x, 1.4.x, 1.5.x or 1.6.x? You don't need this: it updates itself from the website. Installing 1.7.0
   over it is fine too and keeps your saves.
 
-NEW IN 1.6.0: THE STAR GOES DARK
+NEW IN 1.7.0: LOCKED UP
+  - NEW NAME: the game is now called Streets of Roanoke. Your saves, outfits and progress carry
+    over. "Star City" is still what everyone in Roanoke calls the city.
+  - NEW GAME+: after you beat the story, the title screen offers New Game+. The story starts over
+    with every outfit, collectible and unlock kept, and enemies get a little tougher each cycle
+    (the HUD shows NG+1, NG+2 and so on). Cinder Hollow and Cinder Hollow Orange stay unlocked.
+  - WEATHER: pick Sunny, Night or Rainy on the title screen or in the pause menu, or press T
+    (Create / View on a controller, the weather button on a phone). Sunny is bright daylight,
+    Night has glowing streetlamps and neon, and Rainy brings the rain, wet streets and a soft
+    rain sound. It only changes the look, and it is remembered on this computer.
+  A new ending. When Silas Boone goes down on Mill Mountain, the patrol cars coming up the road
+  belong to the honest police this time. Sgt. Dana Reyes and Officer Ben Okafor arrest him in the
+  rain while Wren watches, cuff him and walk him down the mountain. Then comes the trial, "The
+  People v. Silas Boone", and he is sent to Cinder Hollow Correctional Facility.
+  - NEW AREA: CINDER HOLLOW. After you beat the story, take the Route 9 bus at the Community
+    Center (a bus stop sign). Walk through the Visitor Lobby, Cell Block C (two tiers), the Mess
+    Hall, the Library, the Workshop and the Yard. No fighting inside, just looking around.
+  - Six prisoners with their own art and stories (some knew Wren, Boone's bookkeeper, Vera Lisk's
+    courier, the Foreman's truck driver, one of the patrolmen Silas paid) and two guards.
+  - Visit Silas in cell C-14. Pick what to ask him: why he did it, Wren, Vera, regrets. Find the
+    old newspaper on the library return cart for one more question about how it all started.
+  - NEW OUTFIT: CINDER HOLLOW ORANGE (outfit 15). A classic orange jumpsuit with the number 0417.
+    It unlocks after your first visit to Silas's cell. Weapon: Mess Hall Tray. Signature move
+    "Chow Line": a shoulder-first rush that knocks enemies over and shoves them back. Wear it with
+    % (Shift+5), cycle with L1/R1 (LB/RB), or pick it in Pause > Outfits.
+  - Old saves carry over. If your save already beat the story, Cinder Hollow is open when you load.
+  Rated for teens.
+
+ALSO IN 1.6.0: THE STAR GOES DARK
   The main story is rewritten as a darker mystery, "The Star Goes Dark".
   Matthew's friend Wren, the flower seller on Jefferson Street, disappears, and the police call
   her a runaway. Matthew finds out people have been vanishing for months, and every one of them
@@ -130,19 +158,19 @@ WHAT'S BUILT IN
   Everything up to now works offline: animations, knockdowns, sprint and Star Drive, the Star City
   Beacon outfit and Beacon Ring, the collectible item art, the closer camera and golden-hour
   lighting, the audio, the outfit picker, the Hell's Nightmare suit, all outfit weapons and moves,
-  the Silas Boone prequel with Silas's Suit, and The Star Goes Dark with the Dark Star Suit.
+  the Silas Boone prequel with Silas's Suit, the Dark Star Suit, and Cinder Hollow.
 
 UPDATES ARE AUTOMATIC
-  When you're online, the app plays the latest version of the game from the Star City Drift
+  When you're online, the app plays the latest version of the game from the Streets of Roanoke
   website. It only downloads the files that changed. Offline, it plays the copy that came with the
   installer. Your saves carry over either way. You don't need to reinstall to get new levels or
   fixes. If a new version comes out while you're playing, it loads the next time you're on the
   title screen.
 
 SHA-256 checksums (optional check):
-b0e20a014e9ef01059cadd53fec5a3ea242b4be876892f862057afdfd88b7048  Star-City-Drift-1.6.0-Setup-win-x64.7z.001
-bdb3bb5f27e93d0f354e79ba627ccdd54fef56593cbfc4e77af05f8bae4ead60  Star-City-Drift-1.6.0-Setup-win-x64.7z.002
-da0a690dac0a0eabe1455f0facd3915b88fd8a1c7ce02aadc67a52ece056a2d9  Star-City-Drift-1.6.0-Setup-win-x64.7z.003
-a8891f85de021551767bc395bed886e495e78fa63f6d5f29e3c33cae7c1bbd60  Star-City-Drift-1.6.0-Setup-win-x64.7z.004
-ea0f9adf4be42b25057a82f4f43ea6af8a728fa78162b4b60f0f56972afbab2a  Star-City-Drift-1.6.0-Setup-win-x64.7z.005
-09d9ae83a0bc8ae0ae91f5aca2fe0d3e7a2806a459279318284aefe2b6a9f740  Star-City-Drift-1.6.0-Setup-win-x64.7z.006
+293081723d706707d96ceb62bbd295a1d9b902b4eb5a87133dc1cb331cc02357  Streets-of-Roanoke-1.7.0-Setup-win-x64.7z.001
+37cc9b87edb636f74f9b98b35e77890271dd9efe3d63965c32693a748fe66e6c  Streets-of-Roanoke-1.7.0-Setup-win-x64.7z.002
+458f513177dc0e5e33619e14bdc5f89ef6f1fdeb61e7f56f5f64dc4efe7ac615  Streets-of-Roanoke-1.7.0-Setup-win-x64.7z.003
+0f660c73747b0bdf2289a5f1f033d385b867ba1b1b441e9315a91eea99931a2b  Streets-of-Roanoke-1.7.0-Setup-win-x64.7z.004
+c546e8535e1e3b1eb766db0a2f9285f68ae474ed1109fba8ed31dff25df158ec  Streets-of-Roanoke-1.7.0-Setup-win-x64.7z.005
+acf98a0080ee9e8c645146df7ae12a29662f98b9383c51c7272586804cf5f9e5  Streets-of-Roanoke-1.7.0-Setup-win-x64.7z.006

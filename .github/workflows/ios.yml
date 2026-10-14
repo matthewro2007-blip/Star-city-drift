@@ -1,0 +1,110 @@
+# Streets of Roanoke: unsigned iPhone .ipa (Capacitor wrapper around the same web build as the site).
+# Runs on GitHub's macOS runner. Output:
+#   - workflow artifact  "Streets-of-Roanoke-<version>-ipa"
+#   - release asset      tag ios-v<version>, file Streets-of-Roanoke-<version>.ipa
+#   - committed file     downloads/iphone/Streets-of-Roanoke-<version>.ipa  (the site's download link)
+# The .ipa is NOT signed. Players sign it on their own device with AltStore / Sideloadly (see downloads/iphone/IPHONE.txt).
+name: iOS unsigned ipa
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'ios-app/**'
+      - '.github/workflows/ios.yml'
+      - 'js/version.js'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ios-ipa
+  cancel-in-progress: true
+
+jobs:
+  ipa:
+    runs-on: macos-15
+    timeout-minutes: 45
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Read the game version
+        id: v
+        run: |
+          V=$(sed -nE "s/.*GAME_VERSION = '([^']+)'.*/\1/p" js/version.js)
+          test -n "$V"
+          echo "version=$V" >> "$GITHUB_OUTPUT"
+          echo "Building Streets of Roanoke $V"
+
+      - name: Copy the web build into ios-app/www
+        run: |
+          mkdir -p ios-app/www
+          rsync -a --delete \
+            --exclude '.git' --exclude '.github' --exclude 'ios-app' --exclude 'downloads' \
+            --exclude 'tools' --exclude 'node_modules' --exclude '*.md' --exclude '*.py' \
+            ./ ios-app/www/
+          test -f ios-app/www/index.html
+          test -f ios-app/www/js/main.js
+          du -sh ios-app/www
+
+      - name: Install Capacitor and sync the iOS project
+        working-directory: ios-app
+        run: |
+          npm install --no-audit --no-fund
+          npx cap sync ios
+
+      - name: Build (unsigned)
+        working-directory: ios-app/ios/App
+        run: |
+          xcodebuild -project App.xcodeproj -scheme App -configuration Release \
+            -sdk iphoneos -destination 'generic/platform=iOS' -derivedDataPath build \
+            MARKETING_VERSION='${{ steps.v.outputs.version }}' \
+            CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY="" \
+            build
+
+      - name: Package the .ipa (Payload/App.app, zipped)
+        id: ipa
+        run: |
+          V='${{ steps.v.outputs.version }}'
+          APP=ios-app/ios/App/build/Build/Products/Release-iphoneos/App.app
+          test -d "$APP"
+          rm -rf Payload && mkdir Payload && cp -R "$APP" Payload/
+          NAME="Streets-of-Roanoke-$V.ipa"
+          ditto -c -k --sequesterRsrc --keepParent Payload "$NAME"
+          ls -lh "$NAME"
+          shasum -a 256 "$NAME"
+          echo "name=$NAME" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Streets-of-Roanoke-${{ steps.v.outputs.version }}-ipa
+          path: ${{ steps.ipa.outputs.name }}
+          if-no-files-found: error
+
+      - name: Attach to the GitHub release ios-v${{ steps.v.outputs.version }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG="ios-v${{ steps.v.outputs.version }}"
+          gh release view "$TAG" >/dev/null 2>&1 || gh release create "$TAG" --title "Streets of Roanoke ${{ steps.v.outputs.version }} (iPhone, unsigned)" --notes "Unsigned iPhone build. Read downloads/iphone/IPHONE.txt before installing."
+          gh release upload "$TAG" "${{ steps.ipa.outputs.name }}" --clobber
+
+      - name: Commit to downloads/iphone/
+        run: |
+          mkdir -p downloads/iphone
+          cp "${{ steps.ipa.outputs.name }}" downloads/iphone/
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "downloads/iphone/${{ steps.ipa.outputs.name }}"
+          if git diff --cached --quiet; then echo "No change"; exit 0; fi
+          git commit -m "iPhone: unsigned ${{ steps.ipa.outputs.name }} [skip ci]"
+          git pull --rebase origin "${GITHUB_REF_NAME}"
+          git push origin "HEAD:${GITHUB_REF_NAME}"

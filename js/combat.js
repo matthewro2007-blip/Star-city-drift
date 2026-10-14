@@ -17,7 +17,14 @@ export const DIFFICULTIES = {
 };
 export const DIFFICULTY_ORDER = ['easy', 'normal', 'hard', 'arcade'];
 let diff = DIFFICULTIES.normal;
-export function setDifficulty(id) { diff = DIFFICULTIES[id] || DIFFICULTIES.normal; return diff; }
+// New Game+: enemies get +10% hp / +8% dmg per cycle (capped at NG+5). Applied as a scaled copy so DIFFICULTIES stays pristine.
+let ngLevel = 0;
+export function setNgPlus(n) { ngLevel = Math.max(0, Math.min(5, n | 0)); }
+export function setDifficulty(id) {
+  const b = DIFFICULTIES[id] || DIFFICULTIES.normal;
+  diff = ngLevel ? { ...b, hp: b.hp * (1 + 0.1 * ngLevel), bossHp: b.bossHp * (1 + 0.1 * ngLevel), dmg: b.dmg * (1 + 0.08 * ngLevel), bossDmg: b.bossDmg * (1 + 0.08 * ngLevel), ngPlus: ngLevel } : b;
+  return diff;
+}
 export function getDifficulty() { return diff; }
 
 const THUG_COLORS = ['#8e44ad', '#c0392b', '#16a085', '#d35400', '#7f8c8d'];
