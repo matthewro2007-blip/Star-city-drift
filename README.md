@@ -18,7 +18,7 @@ Download [Star-City-Drift.apk](downloads/Star-City-Drift.apk) (v1.6.0) and sidel
 
 ## Controls
 
-- **Keyboard:** WASD or arrows move, Z punch, X kick, C heavy, E talk, 1–5 outfits, Esc pause/save.
+- **Keyboard:** WASD or arrows move, Z punch, X kick, C heavy, E talk, T weather (Sunny / Night / Rainy), 1–5 outfits, Esc pause/save. Weather is also on the title screen and in the pause menu, and it is remembered on this device.
 - **Controllers:** PlayStation 5 and Xbox controllers are supported.
 - **Phones:** on-screen touch controls.
 

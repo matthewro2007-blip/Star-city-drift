@@ -13,6 +13,7 @@
  * gesture unlocks audio (required on iOS), or when WebAudio is missing.
  */
 import { NPC_DEFS } from './npcs.js';
+import { TUNING as WEATHER_TUNING } from './weather.js';
 
 // ------------------------------------------------------------------ notes / helpers
 const PC = { C: 0, 'C#': 1, Db: 1, D: 2, 'D#': 3, Eb: 3, E: 4, F: 5, 'F#': 6, Gb: 6, G: 7, 'G#': 8, Ab: 8, A: 9, 'A#': 10, Bb: 10, B: 11 };
@@ -273,6 +274,7 @@ class Engine {
     this.cur = null; this.track = null;
     this.last = {}; this.activeSfx = []; this.activeVoices = []; this.voiceLast = {};
     this.musicOn = true;
+    this.rainOn = false; this.rainSrc = null; this.rainGain = null;
   }
   now() { return this.ac.currentTime; }
   applySettings(s) {
@@ -438,6 +440,44 @@ class Engine {
     d.cancelScheduledValues(t);
     d.setTargetAtTime(level, t, 0.04);
     if (hold != null) d.setTargetAtTime(1, t + hold, rel / 3);
+  }
+  /**
+   * Soft rain bed on the SFX bus (mute + SFX slider apply). Gain is WEATHER_TUNING.rainGain.
+   * One looping noise buffer — no per-frame nodes.
+   */
+  setRain(on, t) {
+    if (!!on === !!this.rainOn) {
+      if (on && this.rainGain) {
+        const g = WEATHER_TUNING.rainGain;
+        if (Math.abs(this.rainGain.gain.value - g) > 0.01) this.rainGain.gain.setTargetAtTime(Math.max(0.0001, g), t, 0.2);
+      }
+      return;
+    }
+    this.rainOn = !!on;
+    if (on) {
+      const src = this.ac.createBufferSource();
+      src.buffer = this.noiseBuf;
+      src.loop = true;
+      const hp = this.filt('highpass', 500);
+      const lp = this.filt('lowpass', 2800);
+      const gain = this.ac.createGain();
+      gain.gain.setValueAtTime(0.0001, t);
+      gain.gain.setTargetAtTime(Math.max(0.0001, WEATHER_TUNING.rainGain), t, 0.28);
+      src.connect(hp).connect(lp).connect(gain).connect(this.sfxBus);
+      src.start(t);
+      this.rainSrc = src;
+      this.rainGain = gain;
+      return;
+    }
+    const g = this.rainGain, src = this.rainSrc;
+    this.rainGain = null; this.rainSrc = null;
+    if (!g || !src) return;
+    try {
+      g.gain.cancelScheduledValues(t);
+      g.gain.setTargetAtTime(0.0001, t, 0.12);
+      src.stop(t + 0.55);
+    } catch (_) { /* already stopped */ }
+    setTimeout(() => { try { g.disconnect(); } catch (_) { /* gone */ } }, 800);
   }
   sting(name, t) {
     const st = STINGS[name];
@@ -878,7 +918,7 @@ try {
   }
 } catch (_) { /* private mode / bad JSON: defaults */ }
 
-let eng = null, ac = null, timer = null, wanted = null, paused = false, talkOut = null, hiddenSuspended = false;
+let eng = null, ac = null, timer = null, wanted = null, paused = false, talkOut = null, hiddenSuspended = false, rainWanted = false;
 const widgets = new Set();
 const AC = typeof window !== 'undefined' ? (window.AudioContext || window.webkitAudioContext) : null;
 let unlockAt = -1e9;
@@ -894,6 +934,7 @@ export function unlockAudio() {
       try { ac = new AC({ latencyHint: 'interactive' }); } catch (_) { ac = new AC(); }
       eng = new Engine(ac);
       eng.applySettings(settings);
+      if (rainWanted) eng.setRain(true, ac.currentTime);
       // iOS: play one silent buffer inside the gesture
       const b = ac.createBufferSource(); b.buffer = ac.createBuffer(1, 1, 22050); b.connect(ac.destination); b.start(0);
       timer = setInterval(() => safe(() => { if (ac.state === 'running') { eng.pump(ac.currentTime + 0.3); if (wanted !== eng.track) eng.setTrack(wanted); } }), 50);
@@ -929,6 +970,11 @@ export function toggleMute() { setAudioSetting('muted', !settings.muted); return
 
 /** Desired music: 'title' | 'street' | 'fight' | 'boss' | null. Cheap to call every frame. */
 export function setMusic(name) { wanted = name || null; if (ready() && eng.track !== wanted) safe(() => eng.setTrack(wanted)); }
+/** Loop a quiet rain bed while Rainy is selected. Safe before audio is unlocked. */
+export function setRainAmbience(on) {
+  rainWanted = !!on;
+  if (ready()) safe(() => eng.setRain(rainWanted, ac.currentTime));
+}
 export function sting(name) { if (ready()) { safe(() => eng.sting(name, ac.currentTime + 0.02)); count(stats.sting, name); } }
 /** Pause menu: duck the music, keep it going. */
 export function setPaused(on) {

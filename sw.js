@@ -195,6 +195,7 @@ const PRECACHE = [
   "js/sprites.js",
   "js/title.js",
   "js/version.js",
+  "js/weather.js",
   "js/world.js",
   "manifest.webmanifest"
 ];
