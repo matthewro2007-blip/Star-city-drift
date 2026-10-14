@@ -1,27 +1,27 @@
-STAR CITY DRIFT 1.5.1 - Windows (64-bit) installer, sent in 6 parts
+STAR CITY DRIFT 1.5.2 - Windows (64-bit) installer, sent in 6 parts
 ===================================================================
 
 You need all 6 files in the SAME folder:
-  Star-City-Drift-1.5.1-Setup-win-x64.7z.001   (23.1 MB)
-  Star-City-Drift-1.5.1-Setup-win-x64.7z.002   (23.1 MB)
-  Star-City-Drift-1.5.1-Setup-win-x64.7z.003   (23.1 MB)
-  Star-City-Drift-1.5.1-Setup-win-x64.7z.004   (23.1 MB)
-  Star-City-Drift-1.5.1-Setup-win-x64.7z.005   (23.1 MB)
-  Star-City-Drift-1.5.1-Setup-win-x64.7z.006   (9.4 MB)
-Together they're one 7-Zip archive holding Star-City-Drift-Setup-1.5.1.exe (125 MB).
+  Star-City-Drift-1.5.2-Setup-win-x64.7z.001   (23.1 MB)
+  Star-City-Drift-1.5.2-Setup-win-x64.7z.002   (23.1 MB)
+  Star-City-Drift-1.5.2-Setup-win-x64.7z.003   (23.1 MB)
+  Star-City-Drift-1.5.2-Setup-win-x64.7z.004   (23.1 MB)
+  Star-City-Drift-1.5.2-Setup-win-x64.7z.005   (23.1 MB)
+  Star-City-Drift-1.5.2-Setup-win-x64.7z.006   (10.2 MB)
+Together they're one 7-Zip archive holding Star-City-Drift-Setup-1.5.2.exe (126 MB).
 
 EASIEST: 7-Zip (free, https://www.7-zip.org)
   1. Install 7-Zip.
-  2. Right-click Star-City-Drift-1.5.1-Setup-win-x64.7z.001 > 7-Zip > Extract Here
+  2. Right-click Star-City-Drift-1.5.2-Setup-win-x64.7z.001 > 7-Zip > Extract Here
      (or open the .001 in 7-Zip). It reads .002-.006 by itself.
-  3. Double-click Star-City-Drift-Setup-1.5.1.exe and follow the installer.
+  3. Double-click Star-City-Drift-Setup-1.5.2.exe and follow the installer.
   NanaZip, PeaZip and WinRAR open the .001 the same way.
 
 WITHOUT 7-ZIP (Windows 11 only)
   Windows can't open the .001 file directly. Join the parts into one .7z first:
   in that folder, click the address bar, type  cmd  and press Enter, then run:
-    copy /b Star-City-Drift-1.5.1-Setup-win-x64.7z.001+Star-City-Drift-1.5.1-Setup-win-x64.7z.002+Star-City-Drift-1.5.1-Setup-win-x64.7z.003+Star-City-Drift-1.5.1-Setup-win-x64.7z.004+Star-City-Drift-1.5.1-Setup-win-x64.7z.005+Star-City-Drift-1.5.1-Setup-win-x64.7z.006 Star-City-Drift-1.5.1-Setup-win-x64.7z
-  Then right-click Star-City-Drift-1.5.1-Setup-win-x64.7z > Extract All. Windows 11 has opened .7z files natively since the
+    copy /b Star-City-Drift-1.5.2-Setup-win-x64.7z.001+Star-City-Drift-1.5.2-Setup-win-x64.7z.002+Star-City-Drift-1.5.2-Setup-win-x64.7z.003+Star-City-Drift-1.5.2-Setup-win-x64.7z.004+Star-City-Drift-1.5.2-Setup-win-x64.7z.005+Star-City-Drift-1.5.2-Setup-win-x64.7z.006 Star-City-Drift-1.5.2-Setup-win-x64.7z
+  Then right-click Star-City-Drift-1.5.2-Setup-win-x64.7z > Extract All. Windows 11 has opened .7z files natively since the
   23H2 update. Windows 10 can't open .7z, so use 7-Zip there.
 
 FIRST RUN
@@ -29,10 +29,18 @@ FIRST RUN
   Click "More info" > "Run anyway".
   F11 or Alt+Enter toggles fullscreen. Esc pauses. Saves are kept in %APPDATA%\Star City Drift.
 
-  Already have 1.2.x, 1.3.x, 1.4.x or 1.5.0? You don't need this: it updates itself from the website. Installing 1.5.1
+  Already have 1.2.x, 1.3.x, 1.4.x or 1.5.x? You don't need this: it updates itself from the website. Installing 1.5.2
   over it is fine too and keeps your saves.
 
-NEW IN 1.5.1: PREQUEL FIXES
+NEW IN 1.5.2: NEW CHARACTER ART
+  The blocky placeholder characters are gone. Real hand-drawn art for:
+  - Vera Lisk and Mort "The Foreman" Kessler, each with their own boss attacks, taunt and defeat.
+  - The Foreman's crew, the work-coat gang you fight through the prequel.
+  - Lou, Gus, Ivy and Pip, the prequel cast.
+  - Wren Calloway, now drawn as the City Market flower seller.
+  Nothing else changes. Old saves carry over.
+
+ALSO NEW IN 1.5.1: PREQUEL FIXES
   - Continue Prequel works again if you quit during the closing scene: the scene replays and the
     ending plays. Older prequel saves with a stuck or blank objective fix themselves when loaded.
   - Save & Quit to Title now keeps Silas's real position and health.
@@ -44,7 +52,7 @@ NEW IN 1.5.1: PREQUEL FIXES
   - Phones: GRIP no longer covers the objective, the six-move checklist fits, the ending card
     clears the black bars, and the score/minimap/time no longer sit under the side buttons.
   - Fight banners say HOLD THE YARD! or name the boss, the credits list the prequel cast, and the
-    version (v1.5.1) shows in the corner of the title screen.
+    version shows in the corner of the title screen.
 
 ALSO NEW IN 1.5.0: FREE PREQUEL DLC - "PREQUEL: SILAS BOONE"
   Play as Silas Boone, years before Matthew's story, on a night shift in the Roanoke districts.
@@ -115,9 +123,9 @@ UPDATES ARE AUTOMATIC
   title screen.
 
 SHA-256 checksums (optional check):
-64cdabcbf7503fbed8595c3a3545d5d1651f1286356099fd45d863e653779f48  Star-City-Drift-1.5.1-Setup-win-x64.7z.001
-94f6f726610048ea64340d26d8abf41e592eda83d585ddf444ef2da5ca3cd582  Star-City-Drift-1.5.1-Setup-win-x64.7z.002
-a5aa779b550d67e02bdb0d7bd29d31dc6545c9d2e3496b1b588806a7b0bee458  Star-City-Drift-1.5.1-Setup-win-x64.7z.003
-79945c8a3ca346d4df55f7731fc26f9c336cae6f4ca71b8d2bfae167b35873f1  Star-City-Drift-1.5.1-Setup-win-x64.7z.004
-c82242284ee9d71939be114a4c6f49548948486e6b101b75da1e093edd965a26  Star-City-Drift-1.5.1-Setup-win-x64.7z.005
-3c9c6fddd0702582c36bd6031f35c56c8cc365caa08fffa440f319078221a150  Star-City-Drift-1.5.1-Setup-win-x64.7z.006
+125ebc917c9bd76acbc84471fa2a36f13af05ed397efb739a36fb4518771554b  Star-City-Drift-1.5.2-Setup-win-x64.7z.001
+fa80e593637ee193f31c3f3c5606cf91c8e9a920d33e6063f7e40d738f896348  Star-City-Drift-1.5.2-Setup-win-x64.7z.002
+59383544f854b8768a703fc87107be14ed1046db3eab183e90cd3c7d76ae5ec1  Star-City-Drift-1.5.2-Setup-win-x64.7z.003
+1c48ecdd81e175b528f7d5bff89efe444e0eb9e96be4bdada34d6339f555539e  Star-City-Drift-1.5.2-Setup-win-x64.7z.004
+40322ebd45699cd1038ecb7b8defb912e852ea5a8bd16946fe9f5653f2a096ed  Star-City-Drift-1.5.2-Setup-win-x64.7z.005
+873ad49938be5815c8c8377e1c1cd953075bdd944470012a916dda498968e244  Star-City-Drift-1.5.2-Setup-win-x64.7z.006

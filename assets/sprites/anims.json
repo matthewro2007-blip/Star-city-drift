@@ -19582,6 +19582,594 @@
     "weapon": "Iron Gauntlet",
     "move": "Iron Handshake"
    }
+  },
+  "lou": {
+   "file": "assets/sprites/lou_anim.png",
+   "states": {
+    "idle_personality": {
+     "file": "assets/sprites/lou_anim.png",
+     "frames": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+     ],
+     "fps": 8,
+     "loop": true,
+     "fw": 144,
+     "fh": 192,
+     "anchorX": 72,
+     "sx": [
+      0,
+      144,
+      288,
+      432,
+      576,
+      720
+     ],
+     "sw": [
+      144,
+      144,
+      144,
+      144,
+      144,
+      144
+     ],
+     "sy": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     "sh": [
+      192,
+      192,
+      192,
+      192,
+      192,
+      192
+     ],
+     "grounded": [
+      true,
+      true,
+      true,
+      true,
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    "talk": {
+     "file": "assets/sprites/lou_anim.png",
+     "frames": [
+      6,
+      7,
+      8,
+      9
+     ],
+     "fps": 6,
+     "loop": true,
+     "fw": 144,
+     "fh": 192,
+     "anchorX": 72,
+     "sx": [
+      864,
+      1008,
+      1152,
+      1296
+     ],
+     "sw": [
+      144,
+      144,
+      144,
+      144
+     ],
+     "sy": [
+      0,
+      0,
+      0,
+      0
+     ],
+     "sh": [
+      192,
+      192,
+      192,
+      192
+     ],
+     "grounded": [
+      true,
+      true,
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false,
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false,
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null,
+      null,
+      null
+     ]
+    }
+   }
+  },
+  "gus": {
+   "file": "assets/sprites/gus_anim.png",
+   "states": {
+    "idle_personality": {
+     "file": "assets/sprites/gus_anim.png",
+     "frames": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+     ],
+     "fps": 8,
+     "loop": true,
+     "fw": 144,
+     "fh": 192,
+     "anchorX": 72,
+     "sx": [
+      0,
+      144,
+      288,
+      432,
+      576,
+      720
+     ],
+     "sw": [
+      144,
+      144,
+      144,
+      144,
+      144,
+      144
+     ],
+     "sy": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     "sh": [
+      192,
+      192,
+      192,
+      192,
+      192,
+      192
+     ],
+     "grounded": [
+      true,
+      true,
+      true,
+      true,
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    "talk": {
+     "file": "assets/sprites/gus_anim.png",
+     "frames": [
+      6,
+      7,
+      8,
+      9
+     ],
+     "fps": 6,
+     "loop": true,
+     "fw": 144,
+     "fh": 192,
+     "anchorX": 72,
+     "sx": [
+      864,
+      1008,
+      1152,
+      1296
+     ],
+     "sw": [
+      144,
+      144,
+      144,
+      144
+     ],
+     "sy": [
+      0,
+      0,
+      0,
+      0
+     ],
+     "sh": [
+      192,
+      192,
+      192,
+      192
+     ],
+     "grounded": [
+      true,
+      true,
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false,
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false,
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null,
+      null,
+      null
+     ]
+    }
+   }
+  },
+  "ivy": {
+   "file": "assets/sprites/ivy_anim.png",
+   "states": {
+    "idle_personality": {
+     "file": "assets/sprites/ivy_anim.png",
+     "frames": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+     ],
+     "fps": 8,
+     "loop": true,
+     "fw": 144,
+     "fh": 192,
+     "anchorX": 72,
+     "sx": [
+      0,
+      144,
+      288,
+      432,
+      576,
+      720
+     ],
+     "sw": [
+      144,
+      144,
+      144,
+      144,
+      144,
+      144
+     ],
+     "sy": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     "sh": [
+      192,
+      192,
+      192,
+      192,
+      192,
+      192
+     ],
+     "grounded": [
+      true,
+      true,
+      true,
+      true,
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    "talk": {
+     "file": "assets/sprites/ivy_anim.png",
+     "frames": [
+      6,
+      7,
+      8,
+      9
+     ],
+     "fps": 6,
+     "loop": true,
+     "fw": 144,
+     "fh": 192,
+     "anchorX": 72,
+     "sx": [
+      864,
+      1008,
+      1152,
+      1296
+     ],
+     "sw": [
+      144,
+      144,
+      144,
+      144
+     ],
+     "sy": [
+      0,
+      0,
+      0,
+      0
+     ],
+     "sh": [
+      192,
+      192,
+      192,
+      192
+     ],
+     "grounded": [
+      true,
+      true,
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false,
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false,
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null,
+      null,
+      null
+     ]
+    }
+   }
+  },
+  "pip": {
+   "file": "assets/sprites/pip_anim.png",
+   "states": {
+    "idle_personality": {
+     "file": "assets/sprites/pip_anim.png",
+     "frames": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+     ],
+     "fps": 8,
+     "loop": true,
+     "fw": 144,
+     "fh": 192,
+     "anchorX": 72,
+     "sx": [
+      0,
+      144,
+      288,
+      432,
+      576,
+      720
+     ],
+     "sw": [
+      144,
+      144,
+      144,
+      144,
+      144,
+      144
+     ],
+     "sy": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     "sh": [
+      192,
+      192,
+      192,
+      192,
+      192,
+      192
+     ],
+     "grounded": [
+      true,
+      true,
+      true,
+      true,
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    "talk": {
+     "file": "assets/sprites/pip_anim.png",
+     "frames": [
+      6,
+      7,
+      8,
+      9
+     ],
+     "fps": 6,
+     "loop": true,
+     "fw": 144,
+     "fh": 192,
+     "anchorX": 72,
+     "sx": [
+      864,
+      1008,
+      1152,
+      1296
+     ],
+     "sw": [
+      144,
+      144,
+      144,
+      144
+     ],
+     "sy": [
+      0,
+      0,
+      0,
+      0
+     ],
+     "sh": [
+      192,
+      192,
+      192,
+      192
+     ],
+     "grounded": [
+      true,
+      true,
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false,
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false,
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null,
+      null,
+      null
+     ]
+    }
+   }
   }
  },
  "aliases": {
@@ -19602,6 +20190,6 @@
   "ironclad",
   "silas"
  ],
- "rev": "1791477697",
+ "rev": "1791548605",
  "kitRev": "1.3.1-kits"
 }
