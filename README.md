@@ -16,7 +16,7 @@ Play it at https://matthewro2007-blip.github.io/Star-city-drift/
 
 The easiest way is Safari: open the game, tap **Share**, then **Add to Home Screen**. It runs full screen, works offline and updates itself. Full steps are in [IPHONE.txt](downloads/iphone/IPHONE.txt).
 
-There is also an unsigned iPhone app, [Streets-of-Roanoke-1.8.0.ipa](downloads/iphone/Streets-of-Roanoke-1.8.0.ipa), built by GitHub Actions. It isn't on the App Store. You sign it yourself with your own Apple ID using [AltStore](https://altstore.io) or [Sideloadly](https://sideloadly.io). With a free Apple ID it has to be re-signed every 7 days. A paid Apple developer account makes it last a year and allows TestFlight.
+There is also an unsigned iPhone app, [Streets-of-Roanoke-1.8.0.ipa](https://github.com/matthewro2007-blip/Star-city-drift/releases/download/ios-v1.8.0/Streets-of-Roanoke-1.8.0.ipa), built by GitHub Actions and published on the `ios-v1.8.0` Release (about 150 MB, over GitHub's 100 MB file limit). It isn't on the App Store. You sign it yourself with your own Apple ID using [AltStore](https://altstore.io) or [Sideloadly](https://sideloadly.io). With a free Apple ID it has to be re-signed every 7 days. A paid Apple developer account makes it last a year and allows TestFlight.
 
 ## Android APK
 
