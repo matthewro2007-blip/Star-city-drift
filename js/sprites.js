@@ -31,10 +31,11 @@ const OUTFIT_SHEETS = {
   webslinger: 'assets/sprites/matthew_webslinger.png',
   beacon: 'assets/sprites/matthew_beacon.png',
   ironclad: 'assets/sprites/matthew_ironclad.png',     // display name "Hell's Nightmare"
-  silas: 'assets/sprites/matthew_silas.png'             // 1.5.1: Silas's Suit (prequel DLC reward)
+  silas: 'assets/sprites/matthew_silas.png',            // 1.5.1: Silas's Suit (prequel DLC reward)
+  darkstar: 'assets/sprites/matthew_darkstar.png'       // 1.6.0: Dark Star Suit (beat the main campaign)
 };
 /** Cache-bust for outfit sheets / outfit portraits (bump when sheets are regenerated). */
-const SPRITE_REV = '1.5.2-wren';
+const SPRITE_REV = '1.6.0-dark';
 const vb = (src) => src + (src.includes('?') ? '&' : '?') + 'v=' + SPRITE_REV;
 /** Optional per-outfit HUD/picker busts (112x112); outfits without one use portrait_matthew.png. */
 const OUTFIT_PORTRAITS = { ironclad: 'assets/sprites/portrait_matthew_ironclad.png', silas: 'assets/sprites/portrait_matthew_silas.png' };

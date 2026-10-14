@@ -392,6 +392,11 @@ export function getDepth(area) {
 
 let lastBgT = 0;
 
+// 1.6.0: anniversary-night blackout. The Star and most city light are off (main.js sets it from story state).
+let starDark = false;
+export function setStarDark(on) { starDark = !!on; }
+export function isStarDark() { return starDark; }
+
 /** @param {number} [dt] frame step for ambient scene motion (0 = frozen, omitted = wall clock). */
 export function drawBackground(ctx, area, cameraX, W, H, dt) {
   const t = performance.now() / 1000;
@@ -465,22 +470,30 @@ export function drawBackground(ctx, area, cameraX, W, H, dt) {
 
   // 1) Golden-hour grade over the plate, then sun shafts, contact, and street sheen
   drawGoldenGrade(ctx, area, W, H, glow.stars[0], band);
-  drawSunShafts(ctx, W, H, glow.stars[0], band);
+  if (!starDark) drawSunShafts(ctx, W, H, glow.stars[0], band);
   drawStreetMaterial(ctx, W, H, band);
 
   // 2) Additive glows (after grade so they stay punchy)
   ctx.save();
   ctx.globalCompositeOperation = 'lighter';
-  for (const l of glow.lamps) drawLampGlow(ctx, l.x, l.y, t, l.s);
-  for (const n of glow.neon) drawNeonBloom(ctx, n, t, neonK);
+  if (!starDark) for (const l of glow.lamps) drawLampGlow(ctx, l.x, l.y, t, l.s);
+  if (!starDark) for (const n of glow.neon) drawNeonBloom(ctx, n, t, neonK);
   for (const s of glow.stars) {
+    if (starDark) continue; // the Star is out
     const strength = area.id === 'star' ? s.r : s.r * 0.75;
     drawStarGlow(ctx, s.x, s.y, strength, t);
   }
   ctx.restore();
   for (const s of glow.stars) {
+    if (starDark) { // painted star: cover it with a dead, unlit silhouette
+      ctx.save(); ctx.globalCompositeOperation = 'multiply';
+      const r = 120 * Math.max(0.3, s.r);
+      const g = ctx.createRadialGradient(s.x, s.y, 2, s.x, s.y, r);
+      g.addColorStop(0, 'rgba(40,46,70,0.95)'); g.addColorStop(0.6, 'rgba(70,80,110,0.6)'); g.addColorStop(1, 'rgba(255,255,255,0)');
+      ctx.fillStyle = g; ctx.fillRect(s.x - r, s.y - r, r * 2, r * 2); ctx.restore();
+    }
     if (s.drawShape) {
-      ctx.fillStyle = '#ffe58a';
+      ctx.fillStyle = starDark ? '#3a3f52' : '#ffe58a';
       drawStar(ctx, s.x, s.y, 5, 26, 11);
     }
   }

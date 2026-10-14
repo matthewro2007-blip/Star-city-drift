@@ -1,9 +1,10 @@
 import {
   AREAS, AREA_ORDER, drawBackground, drawMinimap, DEPTH, getDepth, loadBackgrounds,
-  drawSceneGrade, drawGroundShadow, getSignRects
+  drawSceneGrade, drawGroundShadow, getSignRects, setStarDark
 } from './world.js';
 import { NPC_DEFS, OUTFITS, OUTFIT_ORDER, OUTFIT_HOTKEYS } from './npcs.js';
-import { createMissionSystem, SEQUEL_HOOKS, ENDING_TEXT } from './missions.js';
+import { createMissionSystem, SEQUEL_HOOKS, ENDING_TEXT, STORY_INTRO } from './missions.js';
+import { drawRainNight, drawLetterbox } from './rain.js'; // 1.6.0: rainy-night campaign
 import { hasSave, clearSave, serializeSave, saveGame, inspectSave, applySave } from './save.js';
 import { createInput, getPromptLabel, getPromptDevice, rumble } from './input.js';
 import {
@@ -252,6 +253,7 @@ function updateHUD() {
 
 function showTitle() {
   gameState.mode = 'title';
+  hideStoryIntro();
   leaveDlcUi();
   $('title-screen').classList.remove('hidden');
   $('hud').classList.add('hidden');
@@ -316,6 +318,8 @@ function startGame(fromSave) {
     if (!stateBag.unlockedOutfits.has('silas')) { stateBag.unlockedOutfits.add('silas'); suitNew = true; }
   }
   // <<< DLC
+  const darkNew = checkDarkStar(); // 1.6.0: existing saves that already beat the campaign get the Dark Star Suit
+  gameState.darkStarNew = false;
   gameState.enemies = [];
   gameState.combatLock = false;
   gameState.wave = 0;
@@ -338,10 +342,12 @@ function startGame(fromSave) {
     toast('Welcome back to Star City');
     gameState.areaVisitCombat[gameState.areaId] = 1; // no instant ambush on load
   } else {
-    toast("Find Dee Morales at Dee's Diner");
+    toast("Wren is missing. Find Dee Morales at Dee's Diner");
+    showStoryIntro(); // 1.6.0: "The Star Goes Dark" opening card (non-blocking)
     maybeSpawnEncounter(true);
   }
   if (suitNew) toast(`Silas's Suit unlocked — ${suitHowTo()}`, true);
+  if (darkNew) toast(`Dark Star Suit unlocked! ${darkStarHowTo()}`, true);
   persist();
   followCam.cut();
 }
@@ -374,8 +380,29 @@ function maybeSpawnEncounter(force) {
   gameState.areaVisitCombat[gameState.areaId] = visited + 1;
   gameState.wave++;
   sfx('fight_start');
-  toast('Thugs! Clear the street!');
+  toast("Boone's thugs! Clear the street!");
 }
+
+// ---------- 1.6.0 "The Star Goes Dark" story state ----------
+/** Wren is gone from her cart from Dee's news (main1) until she is rescued (main4), unless her own job is running. */
+function wrenMissing() {
+  const m = stateBag.missions; if (!m) return false;
+  return !!(m.main1?.done && !stateBag.mainComplete && !(stateBag.side && stateBag.side.id === 'side_snatch'));
+}
+/** Anniversary night: after Hank's twist (main3) the city goes dark until Silas falls. */
+function storyBlackout() {
+  const m = stateBag.missions; if (!m || isDlc()) return false;
+  return !!(m.main3?.done && !stateBag.mainComplete);
+}
+let introTimer = null;
+function showStoryIntro() {
+  const el = $('story-intro'); if (!el) return;
+  $('story-intro-text').textContent = STORY_INTRO;
+  el.classList.remove('hidden'); el.classList.remove('fade');
+  clearTimeout(introTimer);
+  introTimer = setTimeout(() => { el.classList.add('fade'); introTimer = setTimeout(() => el.classList.add('hidden'), 1200); }, 9000);
+}
+function hideStoryIntro() { const el = $('story-intro'); if (el) el.classList.add('hidden'); clearTimeout(introTimer); }
 
 function npcsInArea() {
   if (isDlc()) return dlc.npcs(gameState.areaId); // DLC: the prequel's own cast
@@ -383,6 +410,7 @@ function npcsInArea() {
   const esc = stateBag.side && stateBag.missions[stateBag.side.id]?.kind === 'escort' ? stateBag.side : null;
   const list = NPC_DEFS.filter((n) => n.area === gameState.areaId &&
     !(n.id === 'silas' && (gameState.bossActive || stateBag.mainComplete)) &&
+    !(n.id === 'wren' && wrenMissing()) && // 1.6.0: her cart stands empty while she's missing
     !(esc && n.id === 'hank'));
   if (esc && esc.area === gameState.areaId) {
     const hank = NPC_DEFS.find((n) => n.id === 'hank');
@@ -438,6 +466,7 @@ function startDialogue(npc) {
     const item = fm.items.find((it) => it.npc === npc.id && !stateBag.fetchItems.includes(it.id));
     if (item) { gameState.fetchGive = item; lines = [item.line]; }
   }
+  hideStoryIntro(); // 1.6.0: the opening card never sits over a conversation
   gameState.mode = 'dialogue';
   gameState.dialogueNpc = npc;
   gameState.dialogue = lines;
@@ -453,7 +482,7 @@ function startDialogue(npc) {
 function showLine(npc, line, greet) {
   const obj = line && typeof line === 'object';
   const text = obj ? line.text : line, id = obj ? line.id : npc.id;
-  const castRole = obj && line.id === npc.id ? npc.role : obj && line.id === 'silas' ? (isDlc() ? 'Second shift' : 'Polite stranger') : null;
+  const castRole = obj && line.id === npc.id ? npc.role : obj && line.id === 'silas' ? (isDlc() ? 'Second shift' : 'Boone Holdings') : null;
   $('dialogue-name').textContent = obj ? (castRole ? `${line.name} — ${castRole}` : line.name) : `${npc.name} — ${npc.role}`;
   $('dialogue-text').textContent = text;
   talk(id, text, greet); // audio: greeting + this character's talk blips
@@ -528,13 +557,13 @@ function finishDialogue() {
             gameState.enemies = spawnWave(AREAS[gameState.areaId], 3, gameState.wave++, player.x);
             gameState.combatLock = true;
             sfx('fight_start');
-            toast('Ambush outside the diner!');
+            toast("Boone's men were waiting outside the diner!");
           }
         }, 400);
       }
-      if (m.id === 'side_june') toast('June appreciates the help. Soft landing secured.');
-      if (m.id === 'side_tessa') toast('Check collectibles around Star City for outfits!');
-      if (m.id === 'side_cam') toast('Cam pulls away… toward the wrong pin again.');
+      if (m.id === 'side_june') toast('June gets the families settled. Soft landing secured.');
+      if (m.id === 'side_tessa') toast('Tessa says gear is stashed all over town. Check the far ends of every street.');
+      if (m.id === 'side_cam') toast('Cam deletes the app and drives home. One less pair of eyes for Vera Lisk.');
     }
   }
   updateHUD();
@@ -548,7 +577,7 @@ function startBossFight() {
   gameState.combatLock = true;
   gameState.bossActive = true;
   sfx('fight_start'); voice('silas_boss', 'taunt', { delay: 0.3 });
-  toast('Silas wants a word — with fists.');
+  toast('Midnight. The Star goes dark. Silas wants a word, with fists.');
 }
 
 /** Progress happened (mission, collectible, outfit): refresh HUD and autosave. */
@@ -651,6 +680,14 @@ function heal(base, announce = true) {
   if (announce) toast(`Breather: +${amt} HP`);
   return amt;
 }
+
+/** 1.6.0 Dark Star Suit: unlocked by beating the main campaign (mainComplete). Returns true when newly added. */
+function checkDarkStar() {
+  if (!stateBag.mainComplete || !stateBag.unlockedOutfits || stateBag.unlockedOutfits.has('darkstar')) return false;
+  stateBag.unlockedOutfits.add('darkstar');
+  return true;
+}
+function darkStarHowTo() { return input.isMobile() ? 'Pick it in Pause → Outfits.' : 'Wear it with Shift+4 or Pause → Outfits (L1/R1 to cycle).'; }
 
 /** Gold Star Suit: 100% completion (all missions + collectibles) or beating Silas on Hard / Arcade. */
 function checkGold() {
@@ -889,6 +926,7 @@ function persist() {
 }
 
 function showEnding() {
+  hideStoryIntro();
   gameState.mode = 'ending';
   gameState.ended = true;
   $('ending-screen').classList.remove('hidden');
@@ -903,7 +941,7 @@ function setOutfit(id, quiet = false) {
   if (!OUTFITS[id] || isDlc()) return;
   if (!stateBag.unlockedOutfits.has(id)) {
     sfx('denied');
-    toast(id === 'silas' ? "Silas's Suit is locked — beat the Silas Boone prequel (Title → Prequel)" : 'Outfit locked — find collectibles');
+    toast(id === 'silas' ? "Silas's Suit is locked — beat the Silas Boone prequel (Title → Prequel)" : id === 'darkstar' ? 'Dark Star Suit is locked: beat the main campaign, "The Star Goes Dark"' : 'Outfit locked — find collectibles');
     return;
   }
   if (!quiet && id !== gameState.outfitId) sfx('outfit');
@@ -1204,6 +1242,7 @@ const dlc = createDlc(dlcApi);
 /** startDialogue with explicit lines (DLC scenes). */
 function startDialogueRaw(npc, lines) {
   gameState.fetchGive = null;
+  hideStoryIntro(); // 1.6.0: the opening card never sits over a conversation
   gameState.mode = 'dialogue';
   gameState.dialogueNpc = npc;
   gameState.dialogue = lines;
@@ -1397,9 +1436,9 @@ function updateCutscene(dt) {
   if (cs.phase === 'walk' && ((mat && !mat.walking) || cs.t > 6)) {
     cs.phase = 'talk';
     dlcApi.say([
-      { id: 'silas', name: 'Silas Boone', text: 'An everyday guy in a white polo, walking home with somebody else\'s leftovers. Parcel and all.' },
-      { id: 'silas', name: 'Silas Boone', text: 'Matthew Rose… curious coincidence.' },
-      { id: 'silas', name: 'Silas Boone', text: 'Let him do his homework. We\'ll talk properly after.' }
+      { id: 'silas', name: 'Silas Boone', text: 'An everyday guy in a white polo, buying zinnias from the girl at the flower cart. She owes three people money. Soon she\'ll owe only me.' },
+      { id: 'silas', name: 'Silas Boone', text: 'Matthew Rose. Wren Calloway\'s friend. Write that name down, Pip.' },
+      { id: 'silas', name: 'Silas Boone', text: 'Every name on this street is a debt, sooner or later. One day this whole city will look up at that Star and think of me.' }
     ], () => { cs.phase = 'done'; cs.doneT = cs.t; });
   } else if (cs.phase === 'done' && cs.t - cs.doneT > 0.8) {
     const fn = cs.onDone;
@@ -1448,10 +1487,10 @@ function showDlcEnding() {
   gameState.ended = true;
   $('dlc-ending-eyebrow').textContent = 'Prequel Ending · Second Shift';
   $('dlc-ending-title').textContent = 'Before the Star';
-  $('dlc-ending-text').textContent = 'A crate rolled out of the Rail Yards after hours. Priya\'s maps never reached her shelf.\n' +
-    'A lantern stenciled "S.B. — 2nd shift" waits under the River Bridge rail.\n' +
-    'And Matthew Rose is carrying home a bag of leftovers that isn\'t his.\n\n' +
-    'Silas Boone straightens his gloves on Jefferson Street. Lovely evening.';
+  $('dlc-ending-text').textContent = 'The Foreman\'s crew answers to a new boss. Vera Lisk\'s files sit in a new safe. Two patrol cars look the other way.\n' +
+    'A lantern stenciled "S.B. — 2nd shift" waits under the River Bridge rail, and a crate of Boone Holdings paperwork rolled out of the Rail Yards.\n' +
+    'Across Jefferson Street, Matthew Rose buys zinnias from a friend whose name is already in Silas\'s ledger.\n\n' +
+    'Silas Boone straightens his gloves. The man who once stood up to the Foreman has become something worse. Lovely evening.';
   const src = suitStillSrc(); if (src) $('dlc-unlock-img').src = src;
   $('dlc-unlock-label').textContent = "Silas's Suit unlocked for Matthew";
   $('dlc-unlock-sub').textContent = `Main game: ${suitHowTo()}. Fights with all six of Silas's moves.`;
@@ -1514,7 +1553,7 @@ function syncSilasControls() {
   if (!host || $('title-prequel')) return;
   const sec = document.createElement('section');
   sec.id = 'title-prequel'; sec.className = 'title-panel'; sec.setAttribute('aria-label', 'Prequel: Silas Boone');
-  sec.innerHTML = '<h2>Prequel: Silas Boone</h2><div class="title-help prequel-blurb">Second Shift: one long night in Star City and the evening after, before Matthew Rose picked up the wrong bag.</div>' +
+  sec.innerHTML = '<h2>Prequel: Silas Boone</h2><div class="title-help prequel-blurb">Second Shift: one long night in Star City and the evening after. How a man who protected one corner became the owner of the whole city, months before the Star went dark.</div>' +
     '<button type="button" id="btn-prequel-continue" class="btn">Continue Prequel</button>' +
     '<button type="button" id="btn-prequel-new" class="btn">New Prequel</button>' +
     '<button type="button" id="btn-prequel-back" class="btn btn-secondary">Back</button>';
@@ -1616,6 +1655,7 @@ bindTap('btn-replay', () => {
   input.flush();
   input.focusGame();
   toast('Keep roaming Star City');
+  if (gameState.darkStarNew) { gameState.darkStarNew = false; toast(`Dark Star Suit unlocked! ${darkStarHowTo()}`, true); } // 1.6.0: after the credits
 });
 bindTap('dialogue-next', () => advanceDialogue());
 // Validate the save once up front (a corrupt / old-format save is quarantined, never fatal),
@@ -1753,7 +1793,7 @@ function step(dt) {
     player.y = PLAYER_START_Y;
     followCam.cut();
     toast('Matthew dusts himself off…');
-    if (lostBoss) toast('Silas is still downtown. Talk to him to try again.');
+    if (lostBoss) toast('Silas is still up at the Star. Talk to him to try again.');
     updateHUD();
     persist();
   }
@@ -1806,8 +1846,9 @@ function step(dt) {
         gameState.bossActive = false;
         if (gameState.difficulty === 'hard' || gameState.difficulty === 'arcade') stateBag.beatHard = true;
         sting('victory_big');
-        toast('Silas Boone backs off.');
+        toast('Silas Boone goes down. Matthew throws the breaker. The Star comes back on.');
         missions.completeMission('main4', toast, onProgress);
+        if (checkDarkStar()) { gameState.darkStarNew = true; persist(); } // toast waits until the ending / credits close
         if (!gameState.ended) showEnding();
       } else if (!stateBag.side) {
         toast('Street clear!');
@@ -2127,6 +2168,18 @@ function drawKitFx(cam) {
         ctx.fillStyle = fx.color || '#fff'; ctx.fillText(fx.text, x, fx.y - k * 12); ctx.textAlign = 'left';
         break;
       }
+      case 'darkpulse': { // 1.6.0 Lights Out: the lens dims, a midnight ring rolls out both ways
+        ctx.save();
+        ctx.fillStyle = `rgba(4,6,18,${0.55 * Math.sin(Math.PI * Math.min(1, k))})`;
+        ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+        const rx = 30 + (fx.reach || 150) * k, ry = rx * 0.32;
+        ctx.strokeStyle = `rgba(150,172,230,${0.8 * a})`; ctx.lineWidth = 3;
+        ctx.beginPath(); ctx.ellipse(x, fx.y - 4, rx, ry, 0, 0, Math.PI * 2); ctx.stroke();
+        ctx.strokeStyle = `rgba(20,24,52,${0.9 * a})`; ctx.lineWidth = 6;
+        ctx.beginPath(); ctx.ellipse(x, fx.y - 4, rx * 0.8, ry * 0.8, 0, 0, Math.PI * 2); ctx.stroke();
+        ctx.restore();
+        break;
+      }
       case 'flash': { // Flash Pop: white-gold burst in front of the lens
         const r = 30 + (fx.reach || 100) * (0.6 + 0.6 * k);
         const g = ctx.createRadialGradient(x, fx.y - 58, 2, x, fx.y - 58, r);
@@ -2286,6 +2339,7 @@ function drawWorld(dt) {
   ctx.setTransform(1, 0, 0, 1, 0, 0);
   ctx.imageSmoothingEnabled = false;
   ctx.clearRect(0, 0, W, H);
+  setStarDark(!isDlc() && storyBlackout()); // 1.6.0: anniversary-night blackout
   drawBackground(ctx, area, cam, viewW, H, dt); // dt drives the ambient sedan (0 = frozen while paused)
 
   // Collectibles
@@ -2386,6 +2440,10 @@ function drawWorld(dt) {
   // Shared golden-hour light over characters too (lens width, full plate height)
   drawSceneGrade(ctx, area, viewW, H);
   if (isDlc() && dlc.isNight()) drawNightGrade(ctx, viewW, H, performance.now() / 1000); // DLC: night shift
+  if (!isDlc()) { // 1.6.0: "The Star Goes Dark": rain every night; the blackout after the midpoint twist
+    drawRainNight(ctx, viewW, H, performance.now() / 1000, { blackout: storyBlackout(), groundY: getDepthBand().min, heavy: stateBag.mainComplete ? 0.45 : 1, after: !!stateBag.mainComplete, frozen: !dt });
+    if (gameState.mode === 'dialogue' && gameState.dialogueNpc?.id === 'silas') drawLetterbox(ctx, viewW, H);
+  }
 
   // HUD minimap (DOM canvas, not the game canvas)
   drawMinimap($('minimap'), {
@@ -2401,7 +2459,7 @@ function drawWorld(dt) {
   const banner = $('combat-banner');
   if (banner) {
     banner.classList.toggle('hidden', !fighting);
-    const bt = (fighting && isDlc() && dlc.bannerText()) || 'FIGHT! Clear the street'; // 1.5.1: survive / boss wording
+    const bt = (fighting && isDlc() && dlc.bannerText()) || (fighting && !isDlc() && gameState.bossActive ? 'BOSS: Silas Boone' : '') || 'FIGHT! Clear the street'; // 1.5.1: survive / boss wording
     if (banner.textContent !== bt) banner.textContent = bt;
   }
 
@@ -2439,6 +2497,7 @@ function drawTitleBg(dt) {
   drawMatthew('idle', 'polo', OUTFITS.polo, t, mx, feetY, 1);
   ctx.restore();
   title.drawGrade(ctx, W, H);
+  drawRainNight(ctx, W, H, t, { groundY: feetY, heavy: 0.8 }); // 1.6.0: rain over the title
   presenter.present({ mode: 'full' });
 }
 
@@ -2585,6 +2644,7 @@ if (DEBUG) {
     /** Skip time on the timed missions (survive / chase). */
     fastForward(sec) { if (stateBag.side && stateBag.side.t != null) stateBag.side.t -= sec; },
     collectAt(id) { const c = stateBag.collectibles.find((k) => k.id === id); if (!c) throw new Error('no ' + id); this.warp(c.home, c.x); },
+    npcs() { return npcsInArea().map((n) => ({ id: n.id, x: n.x })); },
     killAll() { for (const e of gameState.enemies) { e.hp = 0; e.alive = false; e.stun = 0; } },
     god(on = true) { gameState.god = !!on; },
     /** v3: knock an enemy (index) or Matthew ('player') down; anim API status. */

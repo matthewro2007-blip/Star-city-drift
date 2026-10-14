@@ -89,6 +89,13 @@ export const KITS = {
     special: { dmg: 26, startup: 0.27, lunge: 0, effect: 'knockdown', knockdown: true, kdPush: 3.2, pad: { reach: 84, depth: 30 }, cost: 25, cooldown: 3 },
     combo3: { dmg: 22, knock: 32, knockdown: true }
   },
+  // 1.6.0: Dark Star Suit (beat "The Star Goes Dark"). Lights Out: palms to the ground, a darkness pulse rolls out
+  // both ways, briefly dims the screen and staggers everyone close (bosses resist, like every stun).
+  darkstar: {
+    weapon: 'Dead Star Emblem', move: 'Lights Out', ability: 'Darkness pulse: dims the screen and staggers every foe around you.', sfx: 'kit_beacon',
+    special: { dmg: 14, startup: 0.2, lunge: 0, effect: 'area_stun', darkpulse: true, stun: 1.2, knock: 10, pad: { reach: 150, back: 150, depth: 44 }, cost: 25, cooldown: 3.5 },
+    combo3: { dmg: 20, knock: 28, knockdown: true }
+  },
   // 1.5.0 (DLC: Silas prequel reward): Silas's Suit. Matthew in this outfit fights with Silas Boone's own
   // moveset (js/silas_moves.js, numbers in SILAS_MOVES below); the kit entry keeps the HUD / picker / tables
   // working. The special slot is Iron Handshake (grab-and-slam shockwave).
@@ -104,7 +111,7 @@ export const KIT_ORDER = Object.keys(KITS);
  *  when the art isn't loaded (the live frames' own `active` flags win); gold hits on 3 and 5. */
 export const SPECIAL_ACTIVE = {
   polo: [3, 4], street: [3, 4], varsity: [3, 4], mechanic: [3, 4], webslinger: [3, 4], ironclad: [3, 4],
-  photo: [2, 3], hoodie: [2, 3], jacket: [2, 3], diner: [2, 3], beacon: [2, 3], gold: [3, 5], silas: [0, 1, 4, 5] /* Joe's Iron Handshake: grab 0-1, slam + shockwave 4-5 */
+  photo: [2, 3], hoodie: [2, 3], jacket: [2, 3], diner: [2, 3], beacon: [2, 3], darkstar: [2, 3], gold: [3, 5], silas: [0, 1, 4, 5] /* Joe's Iron Handshake: grab 0-1, slam + shockwave 4-5 */
 };
 export const COMBO3_ACTIVE = [1, 2];
 export const SPECIAL_FRAMES = 8, COMBO3_FRAMES = 4, KIT_FPS = 12;
@@ -129,7 +136,7 @@ export function artBoxToWorld(f, hb) {
 /** Human-readable table row (README / tests / report). */
 export function kitRow(id) {
   const k = KITS[id], s = k.special;
-  const eff = { stun: `stun ${s.stun}s`, area_stun: `area stun ${s.stun}s`, knockdown: 'knockdown', sweep: `knockback ${s.knock}px + ${s.stun}s stagger`,
+  const eff = { stun: `stun ${s.stun}s`, area_stun: s.darkpulse ? `darkness pulse, both sides, stagger ${s.stun}s` : `area stun ${s.stun}s`, knockdown: 'knockdown', sweep: `knockback ${s.knock}px + ${s.stun}s stagger`,
     projectile: `projectile, stun ${s.stun}s (1 target)`, slow: s.slow ? `slow ${Math.round((1 - s.slow.mul) * 100)}% for ${s.slow.t}s` : '', double: '2 hits (2nd knocks down)',
     pull: s.pull ? `pull from ${s.pull.range}px + stun ${s.stun}s` : '', cone: 'cone, knockdown', shockwave: `grab-slam + shockwave ${s.pad && s.pad.reach}px, knockdown` }[s.effect];
   return { id, weapon: k.weapon, move: k.move, dmg: s.dmg2 ? `${s.dmg}+${s.dmg2}` : String(s.dmg), startup: s.startup, effect: eff + (s.kdPush ? `, heavy knockback x${s.kdPush}` : '') + (s.armor ? `, x${s.armor} vs armored` : ''),

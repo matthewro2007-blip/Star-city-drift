@@ -6,12 +6,12 @@ export const NPC_DEFS = [
     voice: { wave: 'triangle', f0: 255, rate: 0.075, len: 0.06, steps: [1, 1.12, 1.26, 1.5], vowels: ['a', 'o', 'e'], fs: 1.12, greet: ['e', 'o'] },
     area: 'diner', x: 320, color: '#d35400',
     lines: [
-      "Matthew? Grab a stool — wait, that bag of leftovers wasn't yours.",
-      "Someone swapped it. Now a polite stranger's asking questions. I need your help.",
-      "Find Priya at Valley Pages. She's missing a shipment — same kind of mix-up."
+      "Matthew. Sit down, hon. Wren never came back from closing her cart last night.",
+      "I called the police. They say she's a runaway. Wren? She'd never leave her flowers.",
+      "She owed money to Boone Holdings, same as half this street. Priya at Valley Pages keeps a list. Go see her."
     ],
     doneLines: [
-      "Priya's at Valley Pages, next street over to the right. Go on, I'll keep your stool warm."
+      "Priya's at Valley Pages, next street over to the right. Bring Wren home, Matthew. Please."
     ]
   },
   {
@@ -20,15 +20,15 @@ export const NPC_DEFS = [
     voice: { wave: 'sine', f0: 330, rate: 0.065, len: 0.05, steps: [1, 1.12, 1.33, 1.5, 1.68], vowels: ['i', 'e', 'a'], fs: 1.18, slide: 1.08, greet: ['a', 'i'] },
     area: 'pages', x: 380, color: '#8e44ad',
     lines: [
-      "You're Matthew? Dee texted. Our rare-map shipment never showed.",
-      "Tracking says it hit the rail yard, then vanished. Hank might know.",
-      "If Silas Boone offers help — smile, nod, and don't tell him anything."
+      "You're Matthew? Dee texted. Close the door. Here's my list: eleven people gone since spring.",
+      "Every one of them owed Boone Holdings. Silas Boone's front company. Then come the fires, the 'accidents', the shops that sell cheap.",
+      "The Foreman's crew sets the fires. Vera Lisk keeps files on anyone who talks. And the trucks go through the Rail Yards. Hank sees everything there."
     ],
     waitLines: [
-      "Sorry, we're slammed with inventory. Dee keeps texting about you. Maybe talk to her first? The diner's just left of here."
+      "Sorry, we're closed early. Too many shops burning lately. Dee keeps texting about you. Talk to her first? The diner's just left of here."
     ],
     doneLines: [
-      "Hank hangs around the Rail Yards, past the gym. Remember: smile, nod, say nothing to Silas."
+      "Hank hangs around the Rail Yards, past the gym. Don't trust a badge out there, Matthew. Not tonight."
     ]
   },
   {
@@ -37,15 +37,15 @@ export const NPC_DEFS = [
     voice: { wave: 'sawtooth', f0: 105, rate: 0.115, len: 0.09, steps: [1, 0.94, 1.06], vowels: ['o', 'u', 'uh'], fs: 0.86, grit: 0.35, greet: ['uh', 'o'], greetFall: true },
     area: 'rails', x: 450, color: '#7f8c8d',
     lines: [
-      "Saw a crate get moved after hours. Not by my old crew.",
-      "I'll point you at odd jobs if you keep your head down.",
-      "Watch the night shift, kid. That's when the quiet ones work. Remember that."
+      "Boone trucks roll through here every night, and two patrol cars wave them on. Cops on his payroll, kid.",
+      "Last night they loaded spools of cable and a work order for the Mill Mountain Star. Tomorrow's the city's anniversary.",
+      "He's going to black out the Star, kid. And I saw a girl with flowers on her coat in the back of that truck. They took her up the mountain."
     ],
     waitLines: [
-      "Rail yard's no place for sightseeing, kid. Come back when you've got a real reason to ask."
+      "Rail yard's no place for sightseeing, kid. Patrol cars out tonight. Come back when you've got a real reason to ask."
     ],
     doneLines: [
-      "Silas Boone's been waiting downtown. Say your piece, then walk away."
+      "Silas Boone is up at the Star. Midnight, kid. Get your friend back before the lights go out."
     ]
   },
   {
@@ -54,12 +54,12 @@ export const NPC_DEFS = [
     voice: { wave: 'triangle', f0: 290, rate: 0.095, len: 0.075, steps: [1, 1.12, 1.25], vowels: ['o', 'a', 'u'], fs: 1.12, slide: 0.94, greet: ['e', 'o'] },
     area: 'community', x: 300, color: '#27ae60',
     lines: [
-      "Rough day? Community Center's open. We've got side work that pays in favors.",
-      "Drop flyers at Elmwood, or help set chairs. Soft landings matter.",
-      "You're doing fine, Matthew. Come back if the city feels loud."
+      "Rough night? Community Center's open. Half the block sleeps here since the fires.",
+      "Drop flyers for Wren at Elmwood, or help set cots. Soft landings matter.",
+      "You're doing fine, Matthew. Come back if the city feels too dark."
     ],
     doneLines: [
-      "Chairs are set, flyers are out. Thanks, Matthew. Door's always open."
+      "Cots are set, Wren's flyers are out. Thanks, Matthew. Door's always open."
     ]
   },
   {
@@ -68,9 +68,9 @@ export const NPC_DEFS = [
     voice: { wave: 'square', f0: 385, rate: 0.05, len: 0.04, steps: [1, 1.19, 1.33, 1.5, 1.78], vowels: ['i', 'e', 'ae'], fs: 1.25, greet: ['ae', 'o'] },
     area: 'skate', x: 340, color: '#e74c3c',
     lines: [
-      "Yo — outfits stash around Star City. Hoodie near the Star path, jacket by the rails.",
-      "Street rumor: a rideshare keeps circling Jefferson at the wrong times.",
-      "Collect the gear. Look sharp. Don't trust the polite stranger."
+      "Yo. Gear's stashed around Star City. Hoodie near the Star path, jacket by the rails.",
+      "Street rumor: a rideshare keeps circling Jefferson right before a shop catches fire.",
+      "Collect the gear. Stay out of the rain. And don't trust anyone in a Boone Holdings jacket."
     ],
     doneLines: [
       "Stuff's stashed all over town — check the far ends of every street. Some fits, some just cool junk. Go get 'em."
@@ -82,8 +82,8 @@ export const NPC_DEFS = [
     voice: { wave: 'sawtooth', f0: 150, rate: 0.08, len: 0.07, steps: [1, 1.25, 1.5], vowels: ['a', 'o', 'uh'], fs: 0.95, grit: 0.1, greet: ['ae', 'a'], greetFall: true },
     area: 'gym', x: 360, color: '#2980b9',
     lines: [
-      "Matthew! Need a courier who can hustle. Delivery to the river bridge.",
-      "Or race me a lap past City Market. Side cash, no questions.",
+      "Matthew! Need a courier who can hustle. Medicine for the folks camped by the River Bridge.",
+      "Boone's people burned the pharmacy on Campbell. Somebody has to carry it.",
       "Keep your feet moving. Trouble hates a moving target."
     ],
     activeLines: [
@@ -99,12 +99,12 @@ export const NPC_DEFS = [
     voice: { wave: 'square', f0: 205, rate: 0.058, len: 0.05, steps: [1, 1.12, 1.26, 0.89], vowels: ['a', 'e', 'uh'], fs: 1.02, slide: 1.05, greet: ['ae', 'o'] },
     area: 'downtown', x: 520, color: '#f1c40f',
     lines: [
-      "Need a lift? Wait — wrong pin again. Always the wrong pin lately.",
-      "Funny how I keep ending up wherever you are, Matthew.",
-      "If things heat up after dark… maybe don't ride with strangers. Even me. Sequel energy, yeah?"
+      "Need a lift? Wait. Wrong pin again. A woman named Vera Lisk keeps sending me the wrong pins.",
+      "She has photos of my brother's bad night. Says she'll mail them to his boss unless I drive where she says.",
+      "Every pin lands on a shop that burns the next day. I'm done driving for her, Matthew. Tell the right people."
     ],
     doneLines: [
-      "Pin says Mill Mountain this time. That's… not where I'm headed. Weird, right?"
+      "Last pin Vera sent says Mill Mountain, midnight. I'm not going. You shouldn't either. But you will, huh?"
     ]
   },
   {
@@ -113,24 +113,24 @@ export const NPC_DEFS = [
     // audio: talk-blip voice (waveform, pitch, cadence) + greeting, used by js/audio.js
     voice: { wave: 'sine', f0: 430, rate: 0.088, len: 0.07, steps: [1, 1.26, 1.5, 2], vowels: ['i', 'e', 'o'], fs: 1.3, slide: 1.12, greet: ['i', 'o'] },
     area: 'downtown', x: 1000, color: '#1abc9c',
-    lines: ["Fresh zinnias! Two for five — hey, careful with that cart."],
-    doneLines: ["Purse is back, petals are fine. You're a good egg, Matthew."]
+    lines: ["Matthew! Fresh zinnias, two for five. Boone's men came by my cart again. Walk with me after close?"],
+    doneLines: ["Purse is back, petals are fine. You came up that mountain for me. You're a good egg, Matthew."]
   },
   {
-    id: 'silas', name: 'Silas Boone', role: 'Polite stranger',
+    id: 'silas', name: 'Silas Boone', role: 'Boone Holdings',
     // audio: talk-blip voice (waveform, pitch, cadence) + greeting, used by js/audio.js
     voice: { wave: 'sawtooth', f0: 118, rate: 0.105, len: 0.08, steps: [1, 0.89, 1.06], vowels: ['o', 'e', 'uh'], fs: 0.92, slide: 0.95, greet: ['e', 'o'], greetFall: true },
-    area: 'downtown', x: 700, color: '#2c3e50',
+    area: 'star', x: 300, color: '#2c3e50', // 1.6.0: the finale is on Mill Mountain
     lines: [
-      "Matthew Rose. Everyday guy, unexpected bag of leftovers. Curious coincidence.",
-      "I already know about Dee, Priya, and the rail crate. I know too much — that's my charm.",
-      "Walk away from this and you'll be fine… for now. We'll speak again."
+      "Matthew Rose. You climbed a mountain in the rain to watch my city go dark.",
+      "Every block that owed me, I collected. Wren owed a little more. She's in the switch house. Quite safe, for now.",
+      "At midnight the Star goes out. When it comes back on, Roanoke answers to Boone Holdings. Walk away, or stand in the dark with her."
     ],
     waitLines: [
-      "Matthew Rose. Lovely evening. We'll talk properly once you've done a little more homework."
+      "Matthew Rose. Lovely rain. Go home. We'll talk properly once you've done a little more homework."
     ],
     doneLines: [
-      "We'll speak again, Matthew."
+      "The lights always come back on, Matthew. So do I."
     ]
   }
 ];
@@ -155,10 +155,12 @@ export const OUTFITS = {
   // 1.5.0 (DLC: Silas prequel reward): unlocked by finishing the free prequel. Fights with Silas Boone's moveset
   // (js/silas_moves.js). Art: Joe's matthew_silas set when installed; until then main.js / outfits_menu.js draw a
   // dark-suit tint over the Skate Fit's plain strips (silas_outfit.js).
+  // 1.6.0: unlocked by beating "The Star Goes Dark" (the main campaign). Art: tools/gen_darkstar_outfit.py (matthew_darkstar).
+  darkstar: { name: 'Dark Star Suit', shirt: '#161a2c', pants: '#10121c', accent: '#96ace6', desc: "Black and midnight-blue suit with a cracked Mill Mountain star on the chest. It still glows, just barely. Worn by the guy who turned the lights back on." },
   silas: { name: "Silas's Suit", shirt: '#1f2a3a', pants: '#1a2230', accent: '#a8202a', desc: "A long navy double-breasted coat, crimson tie and black gloves. Polite, pressed, and very hard to say no to." }
 };
 
 /** Outfit order for keys 1-9, 0, - (or Shift+1) and = (or Shift+2), L1/R1 (LB/RB) cycling and the pause-menu outfit picker. */
-export const OUTFIT_ORDER = ['polo', 'hoodie', 'jacket', 'street', 'photo', 'varsity', 'mechanic', 'diner', 'gold', 'webslinger', 'beacon', 'ironclad', 'silas'];
+export const OUTFIT_ORDER = ['polo', 'hoodie', 'jacket', 'street', 'photo', 'varsity', 'mechanic', 'diner', 'gold', 'webslinger', 'beacon', 'ironclad', 'silas', 'darkstar'];
 /** Hotkey → outfit index for the keys past 1-9 / 0. */
-export const OUTFIT_HOTKEYS = { '0': 9, '-': 10, '=': 11, '#': 12 }; // '#' = Shift+3 (Silas's Suit, 1.5.0)
+export const OUTFIT_HOTKEYS = { '0': 9, '-': 10, '=': 11, '#': 12, '$': 13 }; // '$' = Shift+4 (Dark Star Suit, 1.6.0) // '#' = Shift+3 (Silas's Suit, 1.5.0)
