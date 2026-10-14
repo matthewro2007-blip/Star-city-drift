@@ -39,7 +39,9 @@ export function cheapPresentation() {
   return cores <= 2 || (typeof mem === 'number' && mem <= 2) || saveData || (coarse && cores <= 4);
 }
 
-export function createPresenter(display, scene) {
+export function createPresenter(display, scene, logicalW = 960, logicalH = 540) {
+  // 1.8.0 HD: the scene buffer may be 2x the logical size; camera rects arrive in logical px.
+  const ss = () => scene.width / logicalW;
   const bloom = document.createElement('canvas');
   const bloomCtx = bloom.getContext('2d');
   const scratch = document.createElement('canvas');
@@ -65,9 +67,14 @@ export function createPresenter(display, scene) {
   }
 
   function backingSize(low) {
-    const dpr = low ? 1 : Math.min(2, Math.max(1, window.devicePixelRatio || 1));
-    const bw = Math.round(scene.width * dpr);
-    const bh = Math.round(scene.height * dpr);
+    // 1.8.0 HD: DPR-aware AND size-aware. A big window gets up to a 2x (1920x1080) backing
+    // store even at DPR 1, so the 2x art is not thrown away; phones / low power stay at 1x.
+    const css = Math.max(display.clientWidth || 0, display.getBoundingClientRect ? display.getBoundingClientRect().width : 0) || logicalW;
+    const base = Math.max(1, window.devicePixelRatio || 1);
+    // size-aware only while the scene itself is 2x (a 1x scene keeps the 1.7.0 DPR rule)
+    const dpr = low ? 1 : Math.min(2, ss() > 1 ? Math.max(base, (css * base) / logicalW) : base);
+    const bw = Math.round(logicalW * dpr);
+    const bh = Math.round(logicalH * dpr);
     if (display.width !== bw || display.height !== bh) {
       display.width = bw;
       display.height = bh;
@@ -132,10 +139,11 @@ export function createPresenter(display, scene) {
     const dctx = display.getContext('2d');
     const { bw, bh } = backingSize(low);
     const full = !opts || opts.mode !== 'world';
+    const k = ss();
     const sx = 0;
-    const sy = full ? 0 : opts.cameraY;
-    const sw = full ? scene.width : opts.viewW;
-    const sh = full ? scene.height : opts.viewH;
+    const sy = full ? 0 : opts.cameraY * k;
+    const sw = full ? scene.width : opts.viewW * k;
+    const sh = full ? scene.height : opts.viewH * k;
 
     dctx.setTransform(1, 0, 0, 1, 0, 0);
     dctx.globalAlpha = 1;

@@ -209,19 +209,20 @@ export function silasPortraitSrc() {
   try {
     const f = Sprites.getAnimFrame && Sprites.getAnimFrame('silas_boss', 'idle', 0);
     if (!f || !f.img || !f.img.complete) return null;
-    const ax = f.anchorX != null ? f.anchorX : f.sw / 2;
+    const as = f.artScale || 1; // 1.8.0 HD: anchorX is logical; scan in art px
+    const ax = (f.anchorX != null ? f.anchorX : f.sw / 2 / as) * as;
     // find the head: first opaque row near the anchor column
     const c0 = document.createElement('canvas'); c0.width = f.sw; c0.height = f.sh;
     const g0 = c0.getContext('2d'); g0.drawImage(f.img, f.sx, f.sy, f.sw, f.sh, 0, 0, f.sw, f.sh);
     const data = g0.getImageData(0, 0, f.sw, f.sh).data;
     let top = 0;
-    outer: for (let y = 0; y < f.sh; y++) for (let x = Math.max(0, Math.round(ax) - 30); x < Math.min(f.sw, Math.round(ax) + 30); x++) if (data[(y * f.sw + x) * 4 + 3] > 40) { top = y; break outer; }
+    outer: for (let y = 0; y < f.sh; y++) for (let x = Math.max(0, Math.round(ax) - 30 * as); x < Math.min(f.sw, Math.round(ax) + 30 * as); x++) if (data[(y * f.sw + x) * 4 + 3] > 40) { top = y; break outer; }
     let minX = f.sw, maxX = 0;
-    for (let y = top; y < Math.min(f.sh, top + 40); y++) for (let x = 0; x < f.sw; x++) if (data[(y * f.sw + x) * 4 + 3] > 40) { minX = Math.min(minX, x); maxX = Math.max(maxX, x); }
-    const cx = maxX > minX ? (minX + maxX) / 2 : ax, size = 64;
+    for (let y = top; y < Math.min(f.sh, top + 40 * as); y++) for (let x = 0; x < f.sw; x++) if (data[(y * f.sw + x) * 4 + 3] > 40) { minX = Math.min(minX, x); maxX = Math.max(maxX, x); }
+    const cx = maxX > minX ? (minX + maxX) / 2 : ax, size = 64 * as;
     const c = document.createElement('canvas'); c.width = 112; c.height = 112;
-    const g = c.getContext('2d'); g.imageSmoothingEnabled = false;
-    g.drawImage(c0, Math.round(cx - size / 2), Math.max(0, top - 6), size, size, 0, 0, 112, 112);
+    const g = c.getContext('2d'); g.imageSmoothingEnabled = as > 1;
+    g.drawImage(c0, Math.round(cx - size / 2), Math.max(0, top - 6 * as), size, size, 0, 0, 112, 112);
     portraitUrl = c.toDataURL('image/png');
   } catch (_) { portraitUrl = null; }
   return portraitUrl;

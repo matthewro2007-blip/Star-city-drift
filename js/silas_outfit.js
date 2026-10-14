@@ -42,8 +42,9 @@ export function tintedFrame(f, color = SUIT_TINT, frac = 0.7) {
     c = document.createElement('canvas'); c.width = f.sw; c.height = f.sh;
     const g = c.getContext('2d'); g.imageSmoothingEnabled = false;
     g.drawImage(f.img, f.sx, f.sy, f.sw, f.sh, 0, 0, f.sw, f.sh);
-    const feet = f.feetRow != null ? f.feetRow : f.sh - 3;
-    tintSuitOnCanvas(g, f.sw, f.sh, feet, 180, color, frac);
+    const as = f.artScale || 1; // 1.8.0 HD: feetRow is logical, the canvas is art px
+    const feet = f.feetRow != null ? f.feetRow * as : f.sh - 3 * as;
+    tintSuitOnCanvas(g, f.sw, f.sh, feet, 180 * as, color, frac);
     if (cache.size > 300) cache.clear();
     cache.set(key, c);
   }
@@ -53,7 +54,8 @@ export function tintedFrame(f, color = SUIT_TINT, frac = 0.7) {
 export function tintedCanvas(spr, color, frac) {
   if (!spr) return spr;
   const tall = spr.height >= 192;
-  const f = tintedFrame({ img: spr, sx: 0, sy: 0, sw: spr.width, sh: spr.height, feetRow: tall ? spr.height - 3 : spr.height - 2 }, color, tall ? frac : (frac || 0.7) * (spr.height / 180));
+  const as = spr.height >= 384 ? 2 : 1; // 1.8.0 HD stills / sheet frames
+  const f = tintedFrame({ img: spr, sx: 0, sy: 0, sw: spr.width, sh: spr.height, artScale: as, feetRow: tall ? spr.height / as - 3 : spr.height - 2 }, color, tall ? frac : (frac || 0.7) * (spr.height / 180));
   return f.img;
 }
 

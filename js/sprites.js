@@ -2,6 +2,11 @@
  * Animated sprites — loads PNG sheets when available, canvas fallback.
  * Matthew v3: one 1152x192 sheet per outfit (8 frames of 144x192, same poses), see ASSETS.md.
  * Thugs + Silas (boss) use the same 8-pose sheet layout; NPCs are single 144x192 stills.
+ *
+ * 1.8.0-hd (staged, see HD_CONTRACT.md): art may be authored at artScale 2 (288x384 cells, soft alpha).
+ * Every value this module RETURNS is in logical (1x) units: anchorX, feetRow, hitbox, dw/dh, anchorY.
+ * sx/sy/sw/sh stay the SOURCE rect in image pixels (what drawImage needs); draw it at dw x dh.
+ * `smooth` is true for HD art (draw with imageSmoothingEnabled = true, quality 'high').
  */
 
 const SCALE = 2;
@@ -36,7 +41,7 @@ const OUTFIT_SHEETS = {
   cinder: 'assets/sprites/matthew_cinder.png'          // 1.7.0: Cinder Hollow Orange (first visit to Silas's cell)       // 1.6.0: Dark Star Suit (beat the main campaign)
 };
 /** Cache-bust for outfit sheets / outfit portraits (bump when sheets are regenerated). */
-const SPRITE_REV = '1.7.0-locked';
+const SPRITE_REV = '1.8.0-hd';
 const vb = (src) => src + (src.includes('?') ? '&' : '?') + 'v=' + SPRITE_REV;
 /** Optional per-outfit HUD/picker busts (112x112); outfits without one use portrait_matthew.png. */
 const OUTFIT_PORTRAITS = { ironclad: 'assets/sprites/portrait_matthew_ironclad.png', silas: 'assets/sprites/portrait_matthew_silas.png' };
@@ -142,6 +147,8 @@ export function loadSprites() {
 // anims.json (Matthew outfits + cast) and optional anims_enemies.json (enemies) share one schema
 // (see ASSETS.md "Animation manifest"); both merge into ANIM_MANIFEST[charKey].states[state].
 const ANIM_MANIFEST = {};
+/** artScale of a state / character / manifest (1 = legacy 144x192 art). */
+const artScaleOf = (...o) => { for (const x of o) if (x && x.artScale) return x.artScale; return 1; };
 const animImages = {};
 let ANIM_REV = '';
 const CHAR_ALIASES = { coachray: 'coach', ray: 'coach', raydelgado: 'coach', deemorales: 'dee', priyashah: 'priya',
@@ -192,13 +199,14 @@ async function loadAnimManifests() {
     for (const [key, ch] of Object.entries(m.characters)) {
       const dst = ANIM_MANIFEST[key] || (ANIM_MANIFEST[key] = { file: ch.file, wideFile: ch.wideFile, states: {} });
       if (ch.wideFile) dst.wideFile = ch.wideFile;
-      Object.assign(dst.states, ch.states || {});
+      const s = artScaleOf(ch, m);          // stamp the scale on every state so mixed 1x/2x manifests merge safely
+      for (const [n, st] of Object.entries(ch.states || {})) dst.states[n] = st.artScale ? st : { ...st, artScale: s };
     }
   }
   const files = new Set();
   for (const ch of Object.values(ANIM_MANIFEST)) {
     if (ch.file) files.add(ch.file); if (ch.wideFile) files.add(ch.wideFile);
-    for (const st of Object.values(ch.states)) files.add(st.file || ch.file);
+    for (const st of Object.values(ch.states)) for (const f of [].concat(st.file || ch.file)) files.add(f);   // file may be a per-frame list
   }
   await Promise.all([...files].filter(Boolean).map(async (src) => {
     try { animImages[src] = await loadImage(src + '?v=' + ANIM_REV); } catch (_) { console.warn('Anim strip missing:', src); }
@@ -249,8 +257,9 @@ function resolveState(ch, state, depth = 0) {
   const r = { ...parts[0], ...st, frames: cat('frames'), file: undefined,
     fwA: cat('fw', 144), fhA: cat('fh', 192), ax: cat('anchorX', null),
     sx: cat('sx', null), sw: cat('sw', null), sy: cat('sy', 0), sh: cat('sh', null),
-    grounded: cat('grounded', true), lying: cat('lying', false), active: cat('active', false), hitbox: cat('hitbox', null) };
-  r._files = parts.flatMap((p) => p.frames.map(() => p.file || ch.file));
+    grounded: cat('grounded', true), lying: cat('lying', false), active: cat('active', false), hitbox: cat('hitbox', null),
+    artScaleA: parts.flatMap((p) => p.frames.map(() => p.artScale || 1)), feetRowA: cat('feetRow', null) };
+  r._files = parts.flatMap((p) => p.frames.map((_, i) => (Array.isArray(p.file) ? p.file[i] : p.file) || ch.file));
   ch.states[state] = r;                      // cache
   return r;
 }
@@ -268,14 +277,18 @@ export function getAnimFrame(charKey, state, tMs, outfitId) {
   let done = false;
   if (st.loop) i %= n; else if (i >= n - 1) { i = n - 1; done = true; }
   const pick = (a, d) => (Array.isArray(a) ? (a[i] != null ? a[i] : d) : (a != null ? a : d));
-  const file = st._files ? st._files[i] : (st.file || ch.file);
+  const file = st._files ? st._files[i] : (pick(st.file, null) || ch.file);
   const img = animImages[file];
   if (!img) return null;
-  const fw = pick(st.fwA, st.fw || 144), fh = pick(st.fhA, st.fh || 192), idx = st.frames[i];
+  const s = pick(st.artScaleA, st.artScale || 1);
+  const fw = pick(st.fwA, st.fw || 144 * s), fh = pick(st.fhA, st.fh || 192 * s), idx = st.frames[i];
   const sw = pick(st.sw, fw), sh = pick(st.sh, fh), sx = pick(st.sx, idx * fw), sy = pick(st.sy, 0);
-  const anchorX = pick(st.ax, st.anchorX != null ? st.anchorX : sw / 2);
-  return { img, sx, sy, sw, sh, done, index: i, anchorX, feetRow: sh - 3,
-    active: !!pick(st.active, false), hitbox: pick(st.hitbox, null) || null,
+  const ax = pick(st.ax, pick(st.anchorX, sw / 2));                 // anchorX may be a per-frame list (480-wide cells)
+  const fr = pick(st.feetRowA, pick(st.feetRow, sh - 3 * s));
+  const hb = pick(st.hitbox, null);
+  return { img, sx, sy, sw, sh, dw: sw / s, dh: sh / s, artScale: s, smooth: s > 1, done, index: i,
+    anchorX: ax / s, feetRow: fr / s,
+    active: !!pick(st.active, false), hitbox: hb ? { x: hb.x / s, y: hb.y / s, w: hb.w / s, h: hb.h / s } : null,
     grounded: pick(st.grounded, true) !== false, lying: !!pick(st.lying, false) };
 }
 
@@ -396,7 +409,8 @@ function sheetFrame(pose, animT) {
 /** Copy one 144x192 frame out of an 8-pose sheet (cached per key). */
 function sliceFrame(img, idx, key) {
   if (cache.has(key)) return cache.get(key);
-  const { frameW, frameH } = SHEET.matthew;
+  const s = Math.max(1, Math.round(img.width / (SHEET.matthew.frameW * 8)));   // 2304-wide sheet = artScale 2
+  const frameW = SHEET.matthew.frameW * s, frameH = SHEET.matthew.frameH * s;
   const c = document.createElement('canvas');
   c.width = frameW; c.height = frameH;
   const ctx = c.getContext('2d');
@@ -482,7 +496,8 @@ export function drawSprite(ctx, spriteCanvas, x, y, facing) {
   if (!spriteCanvas) return;
   const drawW = 64, drawH = 84;
   ctx.save();
-  ctx.imageSmoothingEnabled = false;
+  ctx.imageSmoothingEnabled = (spriteCanvas.width || 0) > 144;     // HD (artScale 2) art is drawn smoothed
+  if (ctx.imageSmoothingEnabled) ctx.imageSmoothingQuality = 'high';
   if (facing < 0) {
     ctx.translate(x, y - drawH);
     ctx.scale(-1, 1);
@@ -495,12 +510,13 @@ export function drawSprite(ctx, spriteCanvas, x, y, facing) {
 
 // ---------------------------------------------------------------- collectibles (tools/gen_collectibles.py)
 // collectibles.png: one row per item, 6 cols of 48x48 (bob + glint baked in); collectibles.json: id -> {row, frames, fw, fh, fps, name, names}
-const COLLECT = { img: null, items: {}, index: {} };
+const COLLECT = { img: null, items: {}, index: {}, s: 1, ax: 24, ay: 47 };
 const normName = (v) => String(v || '').toLowerCase().replace(/\([^)]*\)/g, '').replace(/[^a-z0-9]/g, '');
 async function loadCollectibles() {
   const m = await fetchManifest('assets/sprites/collectibles.json', false);
   if (!m) return;
   const meta = m._meta || {};
+  COLLECT.s = meta.artScale || 1; COLLECT.ax = meta.anchorX != null ? meta.anchorX : 24 * COLLECT.s; COLLECT.ay = meta.anchorY != null ? meta.anchorY : 47 * COLLECT.s;
   for (const [id, it] of Object.entries(m)) {
     if (id.startsWith('_')) continue;
     COLLECT.items[id] = it;
@@ -522,9 +538,10 @@ export function getCollectibleSprite(idOrName, tMs = 0) {
   const id = collectibleId(idOrName);
   const it = id && COLLECT.items[id];
   if (!it || !COLLECT.img) return null;
-  const fw = it.fw || 48, fh = it.fh || 48, n = it.frames || 6;
+  const s = COLLECT.s, fw = it.fw || 48 * s, fh = it.fh || 48 * s, n = it.frames || 6;
   const f = Math.floor(Math.max(0, tMs || 0) * (it.fps || 8) / 1000) % n;
-  return { img: COLLECT.img, sx: f * fw, sy: it.row * fh, sw: fw, sh: fh, anchorX: 24, anchorY: 47, id, name: it.name };
+  return { img: COLLECT.img, sx: f * fw, sy: it.row * fh, sw: fw, sh: fh, dw: fw / s, dh: fh / s, artScale: s, smooth: s > 1,
+    anchorX: COLLECT.ax / s, anchorY: COLLECT.ay / s, id, name: it.name };
 }
 
 // ---------------------------------------------------------------- outfit weapon icons (tools/gen_weapon_icons.py)
@@ -534,6 +551,7 @@ async function loadWeapons() {
   const m = await fetchManifest('assets/sprites/weapons.json', false);
   if (!m) return;
   const meta = m._meta || {};
+  WEAPONS.s = meta.artScale || 1;
   for (const [id, it] of Object.entries(m)) if (!id.startsWith('_') && id !== '__hash') WEAPONS.items[id] = it;
   try { WEAPONS.img = await loadImage((meta.file || 'assets/sprites/weapons.png') + '?v=' + m.__hash); }
   catch (_) { console.warn('Sprite missing: assets/sprites/weapons.png'); }
@@ -545,14 +563,17 @@ export function getWeaponIcon(outfitId) {
   const id = outfitKey(outfitId);
   const it = WEAPONS.items[id];
   if (!it || !WEAPONS.img) return null;
-  return { img: WEAPONS.img, sx: it.x, sy: it.y, sw: it.w || 48, sh: it.h || 48, id, name: it.name, move: it.move };
+  const s = WEAPONS.s || 1;
+  return { img: WEAPONS.img, sx: it.x, sy: it.y, sw: it.w || 48 * s, sh: it.h || 48 * s, dw: (it.w || 48 * s) / s, dh: (it.h || 48 * s) / s,
+    artScale: s, smooth: s > 1, id, name: it.name, move: it.move };
 }
 
 export function drawCollectible(ctx, x, y, name, pulse) {
   const spr = getCollectibleSprite(name, (pulse || 0) / 5 * 1000);   // pulse is seconds*5 at the call site
   if (spr) {
     const dx = Math.round(x - spr.anchorX), dy = Math.round(y - 4 - spr.anchorY);
-    ctx.drawImage(spr.img, spr.sx, spr.sy, spr.sw, spr.sh, dx, dy, spr.sw, spr.sh);
+    ctx.save(); ctx.imageSmoothingEnabled = spr.smooth; if (spr.smooth) ctx.imageSmoothingQuality = 'high';
+    ctx.drawImage(spr.img, spr.sx, spr.sy, spr.sw, spr.sh, dx, dy, spr.dw, spr.dh); ctx.restore();
     ctx.fillStyle = '#fff'; ctx.font = '9px sans-serif'; ctx.textAlign = 'center';
     ctx.fillText(name, x, dy - 4); ctx.textAlign = 'left';
     return;
@@ -567,3 +588,10 @@ export function drawCollectible(ctx, x, y, name, pulse) {
 }
 
 export function clearSpriteCache() { cache.clear(); }
+
+/** 1.8.0-hd: the art scale the loaded manifests use for a character (1 = legacy). */
+export function getArtScale(charKey, outfitId) {
+  const ch = ANIM_MANIFEST[animKey(charKey, outfitId)];
+  const st = ch && Object.values(ch.states)[0];
+  return (st && st.artScale) || 1;
+}

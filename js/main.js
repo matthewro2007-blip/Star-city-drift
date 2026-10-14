@@ -44,12 +44,33 @@ const H = canvas.height;
 // Gameplay draws into a 960×540 scene. present.js crops the follow camera and
 // upscales with filtering onto the display canvas. DOM HUD / touch controls
 // sit outside this canvas, so the lens never moves them.
+// 1.8.0 HD: the scene backing store is SS x the logical 960x540 (1920x1080 on desktop, 1x on
+// phones / low-power). Game code keeps drawing in logical px; every base transform is SS.
+const SS_PARAM = new URLSearchParams(location.search).get('ss'); // ?ss=1 / ?ss=2 pins it (tests, debugging)
+let SS = SS_PARAM === '1' || (!SS_PARAM && cheapPresentation()) ? 1 : 2;
+// Auto resolution: if a machine can't hold ~40 fps at 2x for a few seconds, drop to 1x for the
+// session (the HD art is still drawn, just into a 960x540 buffer). Never switches back up mid-session.
+const autoRes = { t: 0, n: 0, slow: 0, dropped: false };
+function setSceneScale(k) {
+  if (k === SS) return;
+  SS = k; scene.width = W * SS; scene.height = H * SS;
+  ctx.setTransform(SS, 0, 0, SS, 0, 0); ctx.imageSmoothingEnabled = false;
+}
+function watchFrameRate(rawDt) {
+  if (SS === 1 || SS_PARAM || autoRes.dropped || document.hidden || rawDt > 0.5) return;
+  autoRes.t += rawDt; autoRes.n++; if (rawDt > 1 / 40) autoRes.slow++;
+  if (autoRes.t < 3) return;
+  const slowShare = autoRes.slow / autoRes.n;
+  autoRes.t = 0; autoRes.n = 0; autoRes.slow = 0;
+  if (slowShare > 0.5) { autoRes.dropped = true; setSceneScale(1); console.info('[Streets of Roanoke] 2x scene too slow here; using 1x'); }
+}
 const scene = document.createElement('canvas');
-scene.width = W;
-scene.height = H;
+scene.width = W * SS;
+scene.height = H * SS;
 const ctx = scene.getContext('2d');
+ctx.setTransform(SS, 0, 0, SS, 0, 0);
 ctx.imageSmoothingEnabled = false;
-const presenter = createPresenter(canvas, scene);
+const presenter = createPresenter(canvas, scene, W, H);
 const followCam = createFollowCamera();
 
 const stateBag = {};
@@ -196,7 +217,7 @@ function syncWeaponIcon() {
   try { icon = typeof SpriteLib.getWeaponIcon === 'function' ? SpriteLib.getWeaponIcon(kitId) : null; } catch (_) { icon = null; }
   const g = c.getContext('2d');
   g.clearRect(0, 0, c.width, c.height);
-  g.imageSmoothingEnabled = false;
+  g.imageSmoothingEnabled = !!(icon && icon.smooth);
   if (icon) { g.drawImage(icon.img, icon.sx, icon.sy, icon.sw, icon.sh, 0, 0, c.width, c.height); c.dataset.drawn = '1'; }
   else { g.fillStyle = '#ffd24a'; g.font = 'bold 28px sans-serif'; g.textAlign = 'center'; g.fillText('★', c.width / 2, c.height * 0.72); c.dataset.drawn = '0'; }
   weaponSig = sig;
@@ -1608,7 +1629,7 @@ function drawPrisonMarkers(cam) {
     const sp = prisonSpot(stateBag, gameState.areaId, ({ bus_out: 820, bus_home: 110, keepsake: 930 })[sId]);
     if (!sp || sp.id !== sId) continue;
     const x = sp.x - cam;
-    if (x < -60 || x > ctx.canvas.width + 60) continue;
+    if (x < -60 || x > W + 60) continue;
     ctx.save();
     ctx.fillStyle = `rgba(255,220,140,${0.22 + 0.14 * Math.sin(now * 4)})`;
     ctx.beginPath(); ctx.ellipse(x, y, 26, 7, 0, 0, Math.PI * 2); ctx.fill();
@@ -2035,8 +2056,10 @@ function refreshPrompts(force) {
 let last = performance.now();
 
 function frame(now) {
-  const dt = Math.min(0.05, Math.max(0, (now - last) / 1000));
+  const rawDt = Math.max(0, (now - last) / 1000);
+  const dt = Math.min(0.05, rawDt);
   last = now;
+  watchFrameRate(rawDt);
   try {
     step(dt);
   } catch (err) {
@@ -2303,7 +2326,8 @@ function drawCastSprite(spr, x, feetY, facing, scale) {
   const footPad = spr.height >= 192 ? Math.round(dh * (3 / 192)) : 0;
   const top = feetY - dh + footPad;
   ctx.save();
-  ctx.imageSmoothingEnabled = false;
+  ctx.imageSmoothingEnabled = (spr.width || 0) > 144; // 1.8.0 HD stills (288x384) are drawn smoothed
+  if (ctx.imageSmoothingEnabled) ctx.imageSmoothingQuality = 'high';
   if (facing < 0) {
     ctx.translate(Math.round(x), 0);
     ctx.scale(-1, 1);
@@ -2388,7 +2412,8 @@ function drawMatthew(pose, outfitId, outfit, t, x, feetY, facing) {
     const footPad = spr.height >= 192 ? Math.round(dh * (3 / 192)) : 0;
     const top = feetY - dh + footPad;
     ctx.save();
-    ctx.imageSmoothingEnabled = false;
+    ctx.imageSmoothingEnabled = (spr.width || 0) > 144; // 1.8.0 HD
+    if (ctx.imageSmoothingEnabled) ctx.imageSmoothingQuality = 'high';
     if (facing < 0) {
       ctx.translate(Math.round(x), 0);
       ctx.scale(-1, 1);
@@ -2407,10 +2432,11 @@ function drawAnimFrame(f, x, feetY, facing, scale) {
   const k = (84 * scale) / 192;
   const ax = f.anchorX != null ? f.anchorX : f.sw / 2;
   const feet = f.feetRow != null ? f.feetRow : (f.sh >= 192 ? f.sh - 3 : f.sh);
-  const dw = Math.round(f.sw * k), dh = Math.round(f.sh * k);
+  const dw = Math.round((f.dw != null ? f.dw : f.sw) * k), dh = Math.round((f.dh != null ? f.dh : f.sh) * k);
   const top = Math.round(feetY - feet * k);
   ctx.save();
-  ctx.imageSmoothingEnabled = false;
+  ctx.imageSmoothingEnabled = !!f.smooth; // 1.8.0 HD: soft-alpha 2x art is drawn smoothed
+  if (f.smooth) ctx.imageSmoothingQuality = 'high';
   ctx.translate(Math.round(x), 0);
   if (facing < 0) ctx.scale(-1, 1);
   ctx.drawImage(f.img, f.sx, f.sy, f.sw, f.sh, -Math.round(ax * k), top, dw, dh);
@@ -2520,7 +2546,7 @@ function drawKitFx(cam) {
       case 'darkpulse': { // 1.6.0 Lights Out: the lens dims, a midnight ring rolls out both ways
         ctx.save();
         ctx.fillStyle = `rgba(4,6,18,${0.55 * Math.sin(Math.PI * Math.min(1, k))})`;
-        ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+        ctx.fillRect(0, 0, W, H);
         const rx = 30 + (fx.reach || 150) * k, ry = rx * 0.32;
         ctx.strokeStyle = `rgba(150,172,230,${0.8 * a})`; ctx.lineWidth = 3;
         ctx.beginPath(); ctx.ellipse(x, fx.y - 4, rx, ry, 0, 0, Math.PI * 2); ctx.stroke();
@@ -2647,7 +2673,7 @@ function drawCollectibleItem(c, x, y) {
   if (!f || !f.img || !f.sw || !f.sh) { drawCollectible(ctx, x, y, c.name, now / 200); if (vis < 1) ctx.restore(); return; }
   const ax = f.anchorX != null ? f.anchorX : f.sw / 2, ay = f.anchorY != null ? f.anchorY : f.sh - 1;
   const dx = Math.round(x - ax), dy = Math.round(y - 4 - ay);
-  const cy = dy + f.sh / 2;
+  const cy = dy + (f.dh || f.sh) / 2;
   ctx.fillStyle = 'rgba(0,0,0,0.2)';
   ctx.beginPath(); ctx.ellipse(x, y - 2, 13, 4, 0, 0, Math.PI * 2); ctx.fill();
   const pulse = (0.55 + 0.25 * Math.sin(now / 330 + c.x)) * (vis < 1 ? 0.3 : 1);
@@ -2655,8 +2681,9 @@ function drawCollectibleItem(c, x, y) {
   g.addColorStop(0, `rgba(255,224,120,${0.5 * pulse})`); g.addColorStop(1, 'rgba(255,224,120,0)');
   ctx.fillStyle = g; ctx.beginPath(); ctx.arc(x, cy, 32, 0, Math.PI * 2); ctx.fill();
   ctx.save();
-  ctx.imageSmoothingEnabled = false;
-  ctx.drawImage(f.img, f.sx || 0, f.sy || 0, f.sw, f.sh, dx, dy, f.sw, f.sh);
+  ctx.imageSmoothingEnabled = !!f.smooth;
+  if (f.smooth) ctx.imageSmoothingQuality = 'high';
+  ctx.drawImage(f.img, f.sx || 0, f.sy || 0, f.sw, f.sh, dx, dy, f.dw || f.sw, f.dh || f.sh);
   ctx.restore();
   if (vis < 1) { ctx.restore(); return; } // no name tag until it's been spotted
   ctx.fillStyle = '#fff'; ctx.font = '9px sans-serif'; ctx.textAlign = 'center';
@@ -2685,7 +2712,7 @@ function drawWorld(dt) {
   const camFrame = syncCamera(dt);
   const cam = camFrame.x;
   const viewW = camFrame.viewW;
-  ctx.setTransform(1, 0, 0, 1, 0, 0);
+  ctx.setTransform(SS, 0, 0, SS, 0, 0);
   ctx.imageSmoothingEnabled = false;
   ctx.clearRect(0, 0, W, H);
   setStarDark(!isDlc() && storyBlackout()); // 1.6.0: anniversary-night blackout
@@ -2832,7 +2859,7 @@ function drawWorld(dt) {
 
 /** Title backdrop: animated Roanoke skyline (title.js) + Matthew heroic idle vs a Silas silhouette. */
 function drawTitleBg(dt) {
-  ctx.setTransform(1, 0, 0, 1, 0, 0);
+  ctx.setTransform(SS, 0, 0, SS, 0, 0);
   ctx.globalAlpha = 1;
   ctx.globalCompositeOperation = 'source-over';
   ctx.imageSmoothingEnabled = false;
@@ -3030,6 +3057,7 @@ if (DEBUG) {
     // 1.7.0 "Locked Up"
     arrest: () => gameState.arrest ? { phase: gameState.arrest.phase, actors: gameState.finaleActors.map((x) => ({ id: x.id, key: x.key, x: Math.round(x.x), walking: !!x.walking })) } : null,
     skipArrest: () => skipArrest(),
+    sceneSize: () => ({ ss: SS, w: scene.width, h: scene.height, dropped: autoRes.dropped }), // 1.8.0 HD
     startArrest: (x, y) => startArrest(x, y),
     travel: (areaId, x = 200) => travelTo(areaId, x, 1),
     prison: () => ({ open: prisonOpen(stateBag), visited: !!stateBag.silasVisited, keepsake: !!stateBag.prisonKeepsake, inPrison: isPrisonArea(gameState.areaId) }),

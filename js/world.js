@@ -451,11 +451,13 @@ const PLATE_DEPTH = {
 };
 
 /** Walkable feet-Y band {min, max} for an area (object or id), keyed by the plate it draws. */
+/** 1.8.0 HD: plates are authored at 540 (1x) or 1080 (2x) px tall; PLATE_FX anchors stay in 1x plate px. */
+export const plateArtScale = (img) => Math.max(1, Math.round((img && img.height ? img.height : 540) / 540));
 export function getDepth(area) {
   const id = typeof area === 'string' ? area : area && area.id;
   const plate = id ? resolvePlate(id) : null;
   if (!plate) return DEPTH;
-  return PLATE_DEPTH[plate.key] || (plate.img.width < 1440 ? PLATE_DEPTH.narrow : DEPTH);
+  return PLATE_DEPTH[plate.key] || (plate.img.width / plateArtScale(plate.img) < 1440 ? PLATE_DEPTH.narrow : DEPTH); // 1.8.0: HD plates are 2x
 }
 
 let lastBgT = 0;
@@ -482,8 +484,11 @@ export function drawBackground(ctx, area, cameraX, W, H, dt) {
 
   if (plate) {
     const { img, key } = plate;
-    const scale = H / img.height;
-    const drawW = img.width * scale;
+    // 1.8.0 HD: `scale` maps 1x plate px (PLATE_FX, signs, painted-sign rects) to logical px;
+    // a 2x plate is the same plate at twice the pixels, so divide its size by artScale first.
+    const as = plateArtScale(img);
+    const scale = H / (img.height / as);
+    const drawW = (img.width / as) * scale;
     const offsets = [];
     if (drawW > W + 1) {
       // Plate wider than the lens: pan across area width (no tiling / seams).
@@ -499,13 +504,15 @@ export function drawBackground(ctx, area, cameraX, W, H, dt) {
       const focus = PLATE_FX[key]?.focus ?? 0.5;
       const k = Math.max(0, Math.min(1, cameraX / maxCam));
       const off = Math.round(focus * (span - travel) + k * travel);
-      ctx.drawImage(img, -off, 0, drawW, H);
+      ctx.save(); if (as > 1) { ctx.imageSmoothingEnabled = true; ctx.imageSmoothingQuality = 'high'; }
+      ctx.drawImage(img, -off, 0, drawW, H); ctx.restore();
       offsets.push(-off);
     } else {
       // Narrow extra: parallax tile
       const shift = ((cameraX * 0.45) % drawW + drawW) % drawW;
       for (let x0 = -shift; x0 < W; x0 += drawW - 1) {
-        ctx.drawImage(img, x0, 0, drawW, H);
+        ctx.save(); if (as > 1) { ctx.imageSmoothingEnabled = true; ctx.imageSmoothingQuality = 'high'; }
+        ctx.drawImage(img, x0, 0, drawW, H); ctx.restore();
         offsets.push(x0);
       }
     }
@@ -912,7 +919,7 @@ function drawStarGlow(ctx, x, y, strength, t) {
 }
 
 function drawNeonBloom(ctx, n, t, k) {
-  if (n.x + n.rx * 2 < 0 || n.x - n.rx * 2 > ctx.canvas.width) return;
+  if (n.x + n.rx * 2 < 0 || n.x - n.rx * 2 > ctx.canvas.width / (ctx.getTransform().a || 1)) return;
   // Neon flicker: slow breathe + rare quick buzz
   const buzz = Math.sin(t * 37 + n.x) > 0.985 ? 0.55 : 1;
   const a = (0.32 + 0.12 * Math.sin(t * 3.2 + n.x * 0.01)) * buzz * k;
