@@ -3,7 +3,7 @@
   "file": "assets/sprites/weapons.png",
   "fw": 48,
   "fh": 48,
-  "count": 13,
+  "count": 14,
   "order": [
    "polo",
    "photo",
@@ -17,7 +17,8 @@
    "webslinger",
    "beacon",
    "ironclad",
-   "silas"
+   "silas",
+   "darkstar"
   ],
   "note": "One icon per outfit, left->right in this order; transparent, hard alpha, rig outline/cel style."
  },
@@ -134,6 +135,15 @@
   "move": "Iron Handshake",
   "index": 12,
   "x": 576,
+  "y": 0,
+  "w": 48,
+  "h": 48
+ },
+ "darkstar": {
+  "name": "Dead Star Emblem",
+  "move": "Lights Out",
+  "index": 13,
+  "x": 624,
   "y": 0,
   "w": 48,
   "h": 48

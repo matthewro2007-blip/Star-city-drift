@@ -3,11 +3,12 @@
  *
  * Story, cast, missions, collectibles, its OWN save slot (localStorage 'starCityDrift_dlc_silas'; the
  * main v4 save is never read-modified here), night grade and HUD portrait. main.js owns the loop and
- * calls into the controller from createDlc(api). Canon: /workspace/scd2/dlc/CANON_NOTES.md (Kody):
+ * calls into the controller from createDlc(api). Canon (1.6.0 "The Star Goes Dark"): /workspace/scd2/dlc/CANON_NOTES.md:
+ *  - Last spring: how Silas went from protecting one corner to owning the Foreman's crew, Vera Lisk's
+ *    files and the bought patrol cars, and founded Boone Holdings with the Foreman's debt ledger.
  *  - Silas never properly meets Matthew (Matthew only walks into frame, far off, in the closing scene).
  *  - Silas ends alive, free and standing downtown at x 700, golden hour, Cam at x 520.
- *  - Sets up (and solves none of): the deliberate leftovers swap, Priya's missing map shipment, the
- *    crate moved after hours (not Hank's old crew); the "S.B. — 2nd shift" lantern left by the bridge.
+ *  - Wren Calloway's debt is in the ledger: the seed of the main campaign. The "S.B. — 2nd shift" lantern stays by the bridge.
  *  - Dee doesn't know his name; Priya and Hank's world knows him as "Mr. Boone". He never openly commands
  *    the alley crews. He fights with his overhead / lunge / jump-slam art (silas_boss).
  */
@@ -76,102 +77,103 @@ const COLLECTIBLES = [
  */
 export const MISSIONS = [
   { id: 'm1', title: 'Polite Introductions', area: 'downtown', night: true,
-    sub: 'Jefferson Street, after midnight. Somebody new is collecting "rent".',
+    sub: 'Jefferson Street, after midnight, last spring. Somebody new is collecting "rent".',
     steps: [
       { type: 'talk', npc: 'lou', obj: 'Talk to Lou at the night newsstand', lines: [
         L(CAST.lou, "Evening, Mr. Boone. Paper's late. So's everybody else tonight."),
         S("Lou. Who's the new crew leaning on your stand?"),
-        L(CAST.lou, "Calls themselves the Foreman's boys. Want 'rent' for the corner. Here they come now."),
+        L(CAST.lou, "Calls themselves the Foreman's boys. Want 'rent' for the corner, or the stand catches fire. Here they come now."),
         S("Then let's have a polite word with them. Watch the technique, Lou.")] },
       { type: 'tutorial', obj: 'Show the Foreman\'s boys all six moves', count: 3 },
       { type: 'talk', npc: 'lou', obj: 'Check on Lou', lines: [
-        L(CAST.lou, "Didn't know a coat that nice could move like that."),
+        L(CAST.lou, "Didn't know a coat that nice could move like that. Thank you, Mr. Boone. Truly."),
         S("Everyone has something in them, Lou. The trick is knowing what."),
-        L(CAST.lou, "Word is the Foreman's waiting on a delivery. Rare maps, for the bookshop. Valley Pages."),
-        S("Is it, now. Then I'll go and offer to help.")] }
+        L(CAST.lou, "You'd run this street better than the Foreman ever could. Folks would pay you to keep them safe."),
+        S("Would they, now. Pay me. I'd never thought of it that way."),
+        L(CAST.lou, "Word is the Foreman lends money to half the shops. The courier at Valley Pages carries his list.")] }
     ] },
   { id: 'm2', title: 'Homework', area: 'pages', night: true,
-    sub: 'Valley Pages. Priya Shah is expecting a delicate shipment, and Silas is expecting to help.',
+    sub: 'Valley Pages. Priya Shah owes nobody, and Silas finds that interesting.',
     steps: [
       { type: 'talk', npc: 'priya', obj: 'Offer Priya your help at Valley Pages', lines: [
         L(CAST.priya, "Mr. Boone. We're closed."),
-        S("Then I'm early for tomorrow. I hear you're expecting a delicate shipment."),
-        L(CAST.priya, "I hear lots of things. If I need help, I'll ask for it."),
+        S("Then I'm early for tomorrow. The Foreman's boys will come here next. I could keep them away. For a small monthly fee."),
+        L(CAST.priya, "That's the same thing they offer. You just say it nicer."),
         S("Of course. I only ever offer."),
         L(CAST.priya, "And that is exactly what worries me. Good night, Mr. Boone.")] },
       { type: 'fight', obj: 'A courier is being shaken down outside. Step in.', count: 4, color: '#8e44ad', toast: 'The Foreman\'s boys have the courier cornered!' },
       { type: 'talk', npc: 'ivy', obj: 'Talk to the courier', lines: [
-        L(CAST.ivy, "They grabbed my clipboard! That's the rail paperwork for Ms. Shah's crate."),
-        S("And here it is, back in your hands. Quite safe."),
-        L(CAST.ivy, "Thanks, mister. Wait… a page is missing."),
-        S("Pages go missing in this town. The crate comes in at the Rail Yards… second shift, wasn't it?"),
+        L(CAST.ivy, "They grabbed my clipboard! It's the Foreman's collection list. Every shop that owes him."),
+        S("And here it is, back in your hands. Mostly."),
+        L(CAST.ivy, "Wait… the page with all the names is missing."),
+        S("Pages go missing in this town. His freight comes through the Rail Yards… second shift, wasn't it?"),
         L(CAST.ivy, "How did you — never mind. I didn't say anything.")] }
     ] },
   { id: 'm3', title: 'Second Shift', area: 'rails', night: true,
-    sub: 'The Rail Yards after hours. Not Hank\'s old crew. Somebody with a foreman\'s whistle.',
+    sub: 'The Rail Yards after hours. Not Hank\'s old crew. Somebody with a foreman\'s whistle, and two patrol cars.',
     steps: [
       { type: 'talk', npc: 'gus', obj: 'Find the night dock clerk at the Rail Yards', lines: [
         L(CAST.gus, "New on nights. They said a man in a long coat might come by."),
-        S("They were right. Who's moving freight at this hour?"),
-        L(CAST.gus, "Not Hank's old crew, they're all retired. Some outfit with a foreman's whistle. Listen —"),
+        S("They were right. Who's moving freight at this hour, and who's letting them?"),
+        L(CAST.gus, "The Foreman's outfit. Two patrol cars park by the gate and look the other way. Listen —"),
         S("I hear it. Stay behind the switch house, Gus.")] },
       { type: 'survive', obj: 'Hold the yard', sec: 40, color: '#d35400', toast: 'Dock hands! Hold the yard!' },
       { type: 'talk', npc: 'gus', obj: 'Talk to Gus', lines: [
-        L(CAST.gus, "The crate's gone. While you were busy, they rolled it out the far gate."),
-        S("So they did. Let it travel. Things that travel leave tracks."),
+        L(CAST.gus, "The crate's gone. And those two officers just drove off with an envelope. Yours?"),
+        S("A badge is just a man with a price, Gus. Now they look the other way for me."),
         L(CAST.gus, "Every night-shift lantern gets initials. What do I paint on yours?"),
         S("S.B. Second shift."),
         L(CAST.gus, "'S.B. — 2nd shift.' There you go. Mind the bridge, somebody's been signaling from it.")],
         reward: "Got the Night-Shift Lantern: 'S.B. — 2nd shift'" }
     ] },
   { id: 'm4', title: 'Signals on the Bridge', area: 'river', night: true,
-    sub: 'A lamp blinking on the River Bridge after dark.',
+    sub: 'A lamp blinking on the River Bridge after dark. Vera Lisk keeps the Foreman\'s secrets.',
     steps: [
       { type: 'goto', area: 'river', x: 560, obj: 'Follow the signal lamp to the River Bridge' },
       { type: 'scene', lines: [
-        { id: 'vera', name: 'Vera Lisk', text: "That lamp's for my friends, Mr. Boone. Not for you." },
-        S("Then your friends will miss the message. Shall we discuss it?"),
+        { id: 'vera', name: 'Vera Lisk', text: "That lamp's for my friends, Mr. Boone. I keep files on everyone in this town. Even you." },
+        S("Then you know I'm worth listening to. Shall we discuss it?"),
         { id: 'vera', name: 'Vera Lisk', text: 'The Foreman said you talk too much.' },
         S("The Foreman is right more often than he knows.")] },
       { type: 'boss', who: 'vera', obj: 'Defeat Vera Lisk, the Foreman\'s lieutenant', adds: 2 },
       { type: 'scene', lines: [
-        { id: 'vera', name: 'Vera Lisk', text: 'Mill Mountain. He\'ll be at the Star. Go and lose there.' },
-        S("…My lantern. It went under the rail."),
-        S("Leave it. Someone will find it. Lanterns are for being found.")],
-        reward: 'The S.B. lantern stays under the bridge rail…' }
+        { id: 'vera', name: 'Vera Lisk', text: 'Fine. Take the files. He\'s at the Star. Go and lose there.' },
+        S("Keep your files, Ms. Lisk. Keep making them. From tonight, you make them for me."),
+        S("…My lantern. It went under the rail. Leave it. Lanterns are for being found.")],
+        reward: 'Vera Lisk works for Silas now. The S.B. lantern stays under the bridge rail…' }
     ] },
   { id: 'm5', title: 'The Foreman', area: 'star', night: true,
     sub: 'Mill Mountain, under the Star. The man with the whistle.',
     steps: [
       { type: 'goto', area: 'star', x: 480, obj: 'Climb to the Mill Mountain Star' },
       { type: 'scene', lines: [
-        { id: 'foreman', name: 'Mort "The Foreman" Kessler', text: "Boone. You've been asking questions all night." },
-        S("And you've been answering them, Mr. Kessler. Mostly with your fists."),
-        { id: 'foreman', name: 'Mort "The Foreman" Kessler', text: "That crate's not yours." },
-        S("Nor yours, it seems. Shall we?")] },
+        { id: 'foreman', name: 'Mort "The Foreman" Kessler', text: "Boone. You took my list, my cops and my lieutenant in one night." },
+        S("And you've been answering my questions, Mr. Kessler. Mostly with your fists."),
+        { id: 'foreman', name: 'Mort "The Foreman" Kessler', text: "This city's not yours." },
+        S("Not yet. Shall we?")] },
       { type: 'boss', who: 'foreman', obj: 'Defeat the Foreman', adds: 2, final: true },
       { type: 'scene', lines: [
         { id: 'foreman', name: 'Mort "The Foreman" Kessler', text: 'Who do you even work for?' },
-        S("Nearly dawn, Mr. Kessler. Go home. Take your whistle."),
-        S("The crate, the maps, the bridge… everyone in this town has something worth knowing.")],
-        reward: 'The crews scatter into the dark. Dawn breaks over the Star.' }
+        S("As of tonight, Mr. Kessler, you work for me. Keep the whistle. Keep the matches, too."),
+        S("Look at it. The whole city looks up at that Star. One day they'll look up and think of me.")],
+        reward: 'The crews answer to Silas now. Dawn breaks over the Star.' }
     ] },
   { id: 'm6', title: 'Curious Coincidence', area: 'diner', night: false,
-    sub: 'The next evening. Golden hour on Jefferson Street.',
+    sub: 'The next evening. Golden hour on Jefferson Street. Boone Holdings opens for business.',
     steps: [
       { type: 'talk', npc: 'pip', obj: "Meet Pip behind Dee's Diner", lines: [
-        L(CAST.pip, "Package for you, Mr. Boone. No questions, like you said."),
+        L(CAST.pip, "Package for you, Mr. Boone. The papers from the city office. No questions, like you said."),
         S("Questions are my department, Pip. Off you go.")] },
       { type: 'talk', npc: 'dee', obj: 'Have a word at the counter', lines: [
         L(CAST.dee, "Evening! Table, or to-go?"),
-        S("Just admiring your pick-up shelf. Busy night?"),
-        L(CAST.dee, "Regulars. Two leftover bags tonight, same brown paper. One's for a regular who always forgets his."),
-        S("Then let's make sure he takes one home tonight.")] },
-      { type: 'use', area: 'diner', x: 560, label: 'Swap the to-go bags', obj: 'Swap the bags on the pick-up shelf', lines: [
-        S("Two bags on the shelf. The ticket on one reads 'Matthew Rose — leftovers, to go.'"),
-        S("The parcel goes into the other bag… and the tickets trade places."),
-        S("Matthew Rose. Let's see what a man does with somebody else's leftovers.")],
-        reward: "Matthew Rose's ticket now sits on somebody else's leftovers, parcel inside." },
+        S("Just a coffee. Busy street. Who's the girl with the flower cart?"),
+        L(CAST.dee, "Wren? Sweet kid. Borrowed from the Foreman to keep that cart going. Poor thing owes everybody."),
+        S("Then someone should buy up her debts. Someone kind.")] },
+      { type: 'use', area: 'diner', x: 560, label: 'Sign the company papers', obj: 'Sign the papers at the counter', lines: [
+        S("Boone Holdings. Lending, property, protection. Very fair terms."),
+        S("The Foreman's ledger goes in the folder… and every name in it now owes me."),
+        S("Wren Calloway. Lou Badger. Dee Morales. Let's see what a city does when it owes one man.")],
+        reward: "Boone Holdings is open. The Foreman's ledger is Silas's now." },
       { type: 'goto', area: 'downtown', x: 700, obj: 'Take your spot on Jefferson Street' },
       { type: 'finale' }
     ] }
@@ -409,7 +411,7 @@ export function createDlc(api) {
       const idle = {
         lou: [L(CAST.lou, 'Quiet night, Mr. Boone. Quiet-ish.')],
         priya: [L(CAST.priya, 'Still closed, Mr. Boone.')],
-        ivy: [L(CAST.ivy, 'I just deliver things. I don\'t read them.')],
+        ivy: [L(CAST.ivy, 'I just deliver things. I don\'t read them. Not anymore.')],
         gus: [L(CAST.gus, 'Lantern suits you.')],
         pip: [L(CAST.pip, 'Can\'t talk, got deliveries.')],
         dee: [L(CAST.dee, 'Kitchen closes at ten, hon.')],

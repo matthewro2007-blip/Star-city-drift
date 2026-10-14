@@ -1,27 +1,27 @@
-STAR CITY DRIFT 1.5.2 - Windows (64-bit) installer, sent in 6 parts
+STAR CITY DRIFT 1.6.0 - Windows (64-bit) installer, sent in 6 parts
 ===================================================================
 
 You need all 6 files in the SAME folder:
-  Star-City-Drift-1.5.2-Setup-win-x64.7z.001   (23.1 MB)
-  Star-City-Drift-1.5.2-Setup-win-x64.7z.002   (23.1 MB)
-  Star-City-Drift-1.5.2-Setup-win-x64.7z.003   (23.1 MB)
-  Star-City-Drift-1.5.2-Setup-win-x64.7z.004   (23.1 MB)
-  Star-City-Drift-1.5.2-Setup-win-x64.7z.005   (23.1 MB)
-  Star-City-Drift-1.5.2-Setup-win-x64.7z.006   (10.2 MB)
-Together they're one 7-Zip archive holding Star-City-Drift-Setup-1.5.2.exe (126 MB).
+  Star-City-Drift-1.6.0-Setup-win-x64.7z.001   (23.1 MB)
+  Star-City-Drift-1.6.0-Setup-win-x64.7z.002   (23.1 MB)
+  Star-City-Drift-1.6.0-Setup-win-x64.7z.003   (23.1 MB)
+  Star-City-Drift-1.6.0-Setup-win-x64.7z.004   (23.1 MB)
+  Star-City-Drift-1.6.0-Setup-win-x64.7z.005   (23.1 MB)
+  Star-City-Drift-1.6.0-Setup-win-x64.7z.006   (11.3 MB)
+Together they're one 7-Zip archive holding Star-City-Drift-Setup-1.6.0.exe (127 MB).
 
 EASIEST: 7-Zip (free, https://www.7-zip.org)
   1. Install 7-Zip.
-  2. Right-click Star-City-Drift-1.5.2-Setup-win-x64.7z.001 > 7-Zip > Extract Here
+  2. Right-click Star-City-Drift-1.6.0-Setup-win-x64.7z.001 > 7-Zip > Extract Here
      (or open the .001 in 7-Zip). It reads .002-.006 by itself.
-  3. Double-click Star-City-Drift-Setup-1.5.2.exe and follow the installer.
+  3. Double-click Star-City-Drift-Setup-1.6.0.exe and follow the installer.
   NanaZip, PeaZip and WinRAR open the .001 the same way.
 
 WITHOUT 7-ZIP (Windows 11 only)
   Windows can't open the .001 file directly. Join the parts into one .7z first:
   in that folder, click the address bar, type  cmd  and press Enter, then run:
-    copy /b Star-City-Drift-1.5.2-Setup-win-x64.7z.001+Star-City-Drift-1.5.2-Setup-win-x64.7z.002+Star-City-Drift-1.5.2-Setup-win-x64.7z.003+Star-City-Drift-1.5.2-Setup-win-x64.7z.004+Star-City-Drift-1.5.2-Setup-win-x64.7z.005+Star-City-Drift-1.5.2-Setup-win-x64.7z.006 Star-City-Drift-1.5.2-Setup-win-x64.7z
-  Then right-click Star-City-Drift-1.5.2-Setup-win-x64.7z > Extract All. Windows 11 has opened .7z files natively since the
+    copy /b Star-City-Drift-1.6.0-Setup-win-x64.7z.001+Star-City-Drift-1.6.0-Setup-win-x64.7z.002+Star-City-Drift-1.6.0-Setup-win-x64.7z.003+Star-City-Drift-1.6.0-Setup-win-x64.7z.004+Star-City-Drift-1.6.0-Setup-win-x64.7z.005+Star-City-Drift-1.6.0-Setup-win-x64.7z.006 Star-City-Drift-1.6.0-Setup-win-x64.7z
+  Then right-click Star-City-Drift-1.6.0-Setup-win-x64.7z > Extract All. Windows 11 has opened .7z files natively since the
   23H2 update. Windows 10 can't open .7z, so use 7-Zip there.
 
 FIRST RUN
@@ -29,10 +29,29 @@ FIRST RUN
   Click "More info" > "Run anyway".
   F11 or Alt+Enter toggles fullscreen. Esc pauses. Saves are kept in %APPDATA%\Star City Drift.
 
-  Already have 1.2.x, 1.3.x, 1.4.x or 1.5.x? You don't need this: it updates itself from the website. Installing 1.5.2
+  Already have 1.2.x, 1.3.x, 1.4.x or 1.5.x? You don't need this: it updates itself from the website. Installing 1.6.0
   over it is fine too and keeps your saves.
 
-NEW IN 1.5.2: NEW CHARACTER ART
+NEW IN 1.6.0: THE STAR GOES DARK
+  The main story is rewritten as a darker mystery, "The Star Goes Dark".
+  Matthew's friend Wren, the flower seller on Jefferson Street, disappears, and the police call
+  her a runaway. Matthew finds out people have been vanishing for months, and every one of them
+  owed money to Boone Holdings, Silas Boone's front company. Follow the trail through bought
+  patrol cars in the Rail Yards, the Foreman's crew setting fires downtown and Vera Lisk's
+  blackmail files, all the way to Mill Mountain on the city's anniversary night, when Silas
+  blacks out the Star. Rescue Wren and turn the lights back on.
+  - New opening card, story dialogue for every character, new mission briefs and a new ending.
+  - Rainy night streets: falling rain, wet sidewalks, distant lightning, and a city blackout for
+    the finale. The music is slower and moodier. Silas's theme is heavier.
+  - The free prequel "Prequel: Silas Boone" now tells how Silas became that man, months earlier.
+  - NEW OUTFIT: DARK STAR SUIT. Beat the story to unlock it (outfit 14). A black and midnight-blue
+    suit with a cracked star on the chest that still glows faintly. Weapon: Dead Star Emblem.
+    Signature move "Lights Out": a darkness pulse that dims the screen and staggers every enemy
+    around you, in front and behind. Wear it with $ (Shift+4), cycle with L1/R1 (LB/RB), or pick
+    it in Pause > Outfits. If your save already beat the story, it unlocks as soon as you load.
+  Same missions, outfits, collectibles and difficulty as before. Old saves carry over. Rated for teens.
+
+ALSO IN 1.5.2: NEW CHARACTER ART
   The blocky placeholder characters are gone. Real hand-drawn art for:
   - Vera Lisk and Mort "The Foreman" Kessler, each with their own boss attacks, taunt and defeat.
   - The Foreman's crew, the work-coat gang you fight through the prequel.
@@ -45,8 +64,6 @@ ALSO NEW IN 1.5.1: PREQUEL FIXES
     ending plays. Older prequel saves with a stuck or blank objective fix themselves when loaded.
   - Save & Quit to Title now keeps Silas's real position and health.
   - The closing scene shows Matthew walking into frame.
-  - The leftovers swap now matches the main story: Silas reads Matthew Rose on his ticket and
-    switches the tickets, so Matthew carries home somebody else's leftovers.
   - Boss Rush also works from standing (Shift+Z / RUN+Z). A mashed third Jab now comes out.
   - Cold Stare works in a fight even next to someone you could talk to.
   - Phones: GRIP no longer covers the objective, the six-move checklist fits, the ending card
@@ -55,7 +72,7 @@ ALSO NEW IN 1.5.1: PREQUEL FIXES
     version shows in the corner of the title screen.
 
 ALSO NEW IN 1.5.0: FREE PREQUEL DLC - "PREQUEL: SILAS BOONE"
-  Play as Silas Boone, years before Matthew's story, on a night shift in the Roanoke districts.
+  Play as Silas Boone, months before Matthew's story, on a night shift in the Roanoke districts.
   Six missions with new characters, two bosses (Vera Lisk and Mort "The Foreman" Kessler),
   five keepsakes to find, its own music and a closing scene that leads into the main story.
   HOW TO START IT: on the title screen choose "Prequel: Silas Boone (Free DLC)", then
@@ -113,7 +130,7 @@ WHAT'S BUILT IN
   Everything up to now works offline: animations, knockdowns, sprint and Star Drive, the Star City
   Beacon outfit and Beacon Ring, the collectible item art, the closer camera and golden-hour
   lighting, the audio, the outfit picker, the Hell's Nightmare suit, all outfit weapons and moves,
-  and the Silas Boone prequel with Silas's Suit.
+  the Silas Boone prequel with Silas's Suit, and The Star Goes Dark with the Dark Star Suit.
 
 UPDATES ARE AUTOMATIC
   When you're online, the app plays the latest version of the game from the Star City Drift
@@ -123,9 +140,9 @@ UPDATES ARE AUTOMATIC
   title screen.
 
 SHA-256 checksums (optional check):
-125ebc917c9bd76acbc84471fa2a36f13af05ed397efb739a36fb4518771554b  Star-City-Drift-1.5.2-Setup-win-x64.7z.001
-fa80e593637ee193f31c3f3c5606cf91c8e9a920d33e6063f7e40d738f896348  Star-City-Drift-1.5.2-Setup-win-x64.7z.002
-59383544f854b8768a703fc87107be14ed1046db3eab183e90cd3c7d76ae5ec1  Star-City-Drift-1.5.2-Setup-win-x64.7z.003
-1c48ecdd81e175b528f7d5bff89efe444e0eb9e96be4bdada34d6339f555539e  Star-City-Drift-1.5.2-Setup-win-x64.7z.004
-40322ebd45699cd1038ecb7b8defb912e852ea5a8bd16946fe9f5653f2a096ed  Star-City-Drift-1.5.2-Setup-win-x64.7z.005
-873ad49938be5815c8c8377e1c1cd953075bdd944470012a916dda498968e244  Star-City-Drift-1.5.2-Setup-win-x64.7z.006
+b0e20a014e9ef01059cadd53fec5a3ea242b4be876892f862057afdfd88b7048  Star-City-Drift-1.6.0-Setup-win-x64.7z.001
+bdb3bb5f27e93d0f354e79ba627ccdd54fef56593cbfc4e77af05f8bae4ead60  Star-City-Drift-1.6.0-Setup-win-x64.7z.002
+da0a690dac0a0eabe1455f0facd3915b88fd8a1c7ce02aadc67a52ece056a2d9  Star-City-Drift-1.6.0-Setup-win-x64.7z.003
+a8891f85de021551767bc395bed886e495e78fa63f6d5f29e3c33cae7c1bbd60  Star-City-Drift-1.6.0-Setup-win-x64.7z.004
+ea0f9adf4be42b25057a82f4f43ea6af8a728fa78162b4b60f0f56972afbab2a  Star-City-Drift-1.6.0-Setup-win-x64.7z.005
+09d9ae83a0bc8ae0ae91f5aca2fe0d3e7a2806a459279318284aefe2b6a9f740  Star-City-Drift-1.6.0-Setup-win-x64.7z.006

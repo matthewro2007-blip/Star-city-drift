@@ -450,7 +450,8 @@ function kitGate(p, outfit) {
     sfx(kit.sfx, { lite: !spec });
     if (spec) {
       const hx = p.x + fwd * (x0 + x1) / 2, hy = p.y + (y0 + y1) / 2;
-      if (ks.effect === 'area_stun') pushFx({ type: 'flash', x: p.x + fwd * 20, y: p.y, facing: fwd, reach: x1, dur: 0.35 });
+      if (ks.darkpulse) pushFx({ type: 'darkpulse', x: p.x, y: p.y, facing: fwd, reach: x1, dur: 0.7 });
+      else if (ks.effect === 'area_stun') pushFx({ type: 'flash', x: p.x + fwd * 20, y: p.y, facing: fwd, reach: x1, dur: 0.35 });
       else if (ks.effect === 'cone') pushFx({ type: 'cone', x: p.x + fwd * 14, y: p.y, facing: fwd, reach: x1, dur: 0.35 });
       else if (id === 'ironclad') pushFx({ type: 'ring', x: p.x + fwd * 26, y: p.y, facing: fwd, reach: x1, dur: 0.45 });
       else if (id === 'mechanic' || id === 'polo') pushFx({ type: 'crack', x: p.x + fwd * x1 * 0.8, y: p.y, facing: fwd, dur: 0.5 });

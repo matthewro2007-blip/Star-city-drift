@@ -41,66 +41,69 @@ function parseLine(str) {
 // ------------------------------------------------------------------ the music (all original)
 // Bass grooves: R root, O octave, F fifth, b flat 7th, P chromatic approach to next bar's root.
 const SONGS = {
-  // "Star City Nights" — dusk over Mill Mountain, hopeful A minor.
+  // "The Star Goes Dark" — rain over Mill Mountain, slow D minor, the light going out.
   title: {
-    bpm: 104, swing: 0, delayBeats: 0.75, chords: ['Am', 'F', 'C', 'G', 'Am', 'F', 'G', 'E'],
-    bass: 'R - - . . . R . O - . . R . F .', bassVol: 0.8,
+    bpm: 84, swing: 0, delayBeats: 0.75, chords: ['Dm', 'Bbmaj7', 'Gm', 'A', 'Dm', 'Bbmaj7', 'Gm', 'A7'],
+    bass: 'R - - - . . . . R - - . F - . .', bassVol: 0.8,
     lead: [
-      'E5 - - . A5 - - . B5 - C6 - B5 - A5 -',
-      'A5 - - - - - G5 - F5 - - - E5 - C5 -',
-      'E5 - - . G5 - - . C6 - - - B5 - G5 -',
-      'D5 - - - - - - - . . B4 - D5 - G5 -',
-      'E5 - - . A5 - - . B5 - C6 - D6 - E6 -',
-      'C6 - - - A5 - - - F5 - A5 - C6 - A5 -',
-      'B5 - - - G5 - - - D6 - - - B5 - D6 -',
-      'E6 - - - - - - - G#5 - - - B5 - - -'
+      'D5 - - - - - - - F5 - - - E5 - D5 -',
+      'A4 - - - - - - - . . . . . . . .',
+      'Bb4 - - - - - A4 - G4 - - - F4 - - -',
+      'E4 - - - - - - - A4 - - - C#5 - - -',
+      'D5 - - - F5 - - - A5 - - - G5 - F5 -',
+      'D5 - - - - - - - Bb4 - - - . . . .',
+      'G4 - - - Bb4 - - - D5 - - - C5 - Bb4 -',
+      'A4 - - - - - - - C#5 - - - E5 - - -'
     ],
-    leadWave: 'square', leadVol: 0.8,
-    arp: { every: 2, pat: 'updown', oct: 5, vol: 0.6 }, pad: 1, stab: null,
-    drums: { k: 'x.......x.x.....', s: '....x.......x...', h: '..x...x...x...x.' },
+    leadWave: 'triangle', leadVol: 0.65,
+    arp: { every: 4, pat: 'down', oct: 4, vol: 0.4 }, pad: 1, stab: null,
+    drums: { k: 'x...............', s: '........x.......', h: '....x.......x...' },
+    fill: { s: '............x.x.' }, crash: [0]
+  },
+
+  // "Rain on Jefferson" — roaming the wet streets at night, slow swung C minor, muted lead.
+  street: {
+    bpm: 96, swing: 0.1, delayBeats: 0.75, chords: ['Cm7', 'Abmaj7', 'Fm7', 'G7', 'Cm7', 'Abmaj7', 'Fm7', 'G7'],
+    bass: 'R - . . R - . O . . R . F - b P', bassVol: 0.85,
+    lead: [
+      'G4 - - - Eb5 - - - D5 - C5 - - - . .',
+      'Eb4 - - - - - - - . . . . C5 - Bb4 -',
+      'Ab4 - - - C5 - - - F5 - - - Eb5 - D5 -',
+      'B4 - - - - - - - D5 - - - G4 - - -',
+      'C5 - - - Eb5 - G5 - - - F5 - Eb5 - - -',
+      'C5 - - - - - - - . . . . Ab4 - C5 -',
+      'F5 - - - Eb5 - C5 - Ab4 - - - G4 - F4 -',
+      'G4 - - - - - - - B4 - - - D5 - - -'
+    ],
+    leadWave: 'sawtooth', leadVol: 0.5,
+    arp: null, pad: 0.8, stab: null,
+    drums: { k: 'x.......x..x....', s: '....x.......x...', h: 'x.x.x.x.x.x.x.x.', g: '.......g........' },
     fill: { s: '....x.......x.xx' }, crash: [0]
   },
-  // "Jefferson Street" — roaming groove, D dorian funk with brass stabs.
-  street: {
-    bpm: 116, swing: 0.14, delayBeats: 0.75, chords: ['Dm7', 'G7', 'Dm7', 'G7', 'Bbmaj7', 'C', 'Am7', 'A7'],
-    bass: 'R - . R O . R . . R F . O b R P', bassVol: 0.95,
-    lead: [
-      'A4 - C5 . D5 - . . F5 - E5 - D5 - C5 .',
-      'D5 - - - . . . . B4 - C5 . D5 - . .',
-      'A4 - C5 . D5 - . . F5 - G5 - A5 - - .',
-      'G5 - F5 - D5 - - - . . . . . . . .',
-      'F5 - - . D5 - F5 . A5 - - - G5 - F5 -',
-      'E5 - - - C5 - - . E5 - G5 - - - . .',
-      'A5 - - . G5 - E5 . C5 - D5 - E5 - - .',
-      'C#5 - - - E5 - - - G5 - - - A5 - - -'
-    ],
-    leadWave: 'sawtooth', leadVol: 0.62,
-    arp: null, pad: 0.55, stab: '...x......x.....',
-    drums: { k: 'x.....x...x.....', s: '....x.......x...', h: 'x.xxx.x.x.xxx.x.', o: '..............x.', g: '.......g......g.' },
-    fill: { s: '....x.....x..xxx' }, crash: [0]
-  },
-  // "Clear the Street" — the fight theme, driving E minor.
+
+  // "Boone's Muscle" — the fight theme, heavy E minor under the rain.
   fight: {
-    bpm: 140, swing: 0, delayBeats: 0.75, chords: ['Em', 'C', 'D', 'B7', 'Em', 'C', 'Am', 'B'],
+    bpm: 132, swing: 0, delayBeats: 0.75, chords: ['Em', 'C', 'Am', 'B', 'Em', 'C', 'Am', 'B7'],
     bass: 'R . O . R . O . R . O . R O b O', bassVol: 1,
     lead: [
-      'E5 - - - G5 - - - B5 - - - A5 - G5 -',
-      'E5 - - - - - - - . . G5 - A5 - B5 -',
-      'A5 - - - F#5 - - - D5 - - - E5 - F#5 -',
-      'D#5 - - - - - - - F#5 - - - B5 - - -',
-      'E6 - - - D6 - B5 - G5 - - - A5 - B5 -',
-      'C6 - - - B5 - G5 - E5 - - - G5 - C6 -',
-      'B5 - - - A5 - - - E5 - A5 - C6 - E6 -',
-      'D#6 - - - - - - - B5 - - - F#5 - - -'
+      'E5 - - - - - D5 - E5 - G5 - F#5 - E5 -',
+      'B4 - - - - - - - . . E5 - F#5 - G5 -',
+      'A5 - - - G5 - E5 - C5 - - - E5 - - -',
+      'D#5 - - - - - - - F#5 - - - B4 - - -',
+      'E5 - G5 - B5 - - - A5 - G5 - F#5 - E5 -',
+      'C5 - - - E5 - - - G5 - - - E5 - C5 -',
+      'A4 - - - C5 - E5 - A5 - - - G5 - E5 -',
+      'D#5 - - - F#5 - - - A5 - - - B5 - - -'
     ],
-    leadWave: 'square', leadVol: 0.8,
-    arp: { every: 1, pat: 'up', oct: 4, vol: 0.75 }, pad: 0, stab: 'x.....x.........',
+    leadWave: 'square', leadVol: 0.7,
+    arp: { every: 1, pat: 'up', oct: 3, vol: 0.6 }, pad: 0.4, stab: 'x.....x.........',
     drums: { k: 'x...x...x...x...', s: '....X.......X..g', h: 'x.x.x.x.x.x.x.x.', o: '..............x.', c: '....x.......x...' },
     fill: { s: '....X...x.x.xxxx', t: '............x.x.' }, crash: [0, 64]
   },
-  // "Polite Stranger" — Silas Boone, ominous C minor with a Neapolitan turn.
+
+  // "Lights Out" — Silas Boone on the mountain, his C minor motif with a Neapolitan turn, slower and heavier.
   boss: {
-    bpm: 152, swing: 0, delayBeats: 0.5, chords: ['Cm', 'Cm', 'Ab', 'G', 'Cm', 'Db', 'Fm', 'G7'],
+    bpm: 140, swing: 0, delayBeats: 0.5, chords: ['Cm', 'Cm', 'Ab', 'G', 'Cm', 'Db', 'Fm', 'G7'],
     bass: 'R R O R R R O R R R O R b R O R', bassVol: 0.9, bassShort: true,
     lead: [
       'C5 - - - - - D5 - Eb5 - - - G5 - - -',
@@ -112,8 +115,8 @@ const SONGS = {
       'G5 - - - Ab5 - G5 - F5 - Eb5 - D5 - C5 -',
       'B4 - - - D5 - - - F5 - - - G5 - B5 -'
     ],
-    leadWave: 'sawtooth', leadVol: 0.75,
-    arp: { every: 2, pat: 'down', oct: 4, vol: 0.55 }, pad: 0.8, stab: 'x..x..x.........',
+    leadWave: 'sawtooth', leadVol: 0.7,
+    arp: { every: 2, pat: 'down', oct: 3, vol: 0.55 }, pad: 1, stab: 'x..x..x.........',
     drums: { k: 'x..x..x.x..x..x.', s: '....x.......x...', h: 'x.x.x.x.x.x.x.x.', c: '............x...' },
     fill: { t: '........x.x.x.xx', s: '....x.........xx' }, crash: [0, 64]
   },

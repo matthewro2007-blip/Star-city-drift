@@ -134,7 +134,8 @@ export function createInput(canvas, opts = {}) {
     const beaconKey = e.key === '-' || (e.shiftKey && e.code === 'Digit1'); // 11th outfit: - or Shift+1
     const nightmareKey = e.key === '=' || e.key === '+' || (e.shiftKey && e.code === 'Digit2'); // 12th (Hell's Nightmare): = or Shift+2
     const suitKey = e.key === '#' || e.key === '£' || (e.shiftKey && e.code === 'Digit3'); // 13th (Silas's Suit, 1.5.0): Shift+3
-    if (!a && !(e.key >= '0' && e.key <= '9') && !beaconKey && !nightmareKey && !suitKey) return;
+    const darkKey = e.key === '$' || (e.shiftKey && e.code === 'Digit4'); // 14th (Dark Star Suit, 1.6.0): Shift+4
+    if (!a && !(e.key >= '0' && e.key <= '9') && !beaconKey && !nightmareKey && !suitKey && !darkKey) return;
     setDevice(state.mobile ? 'touch' : 'keyboard');
     if (a) {
       keys[a] = true;
@@ -145,6 +146,7 @@ export function createInput(canvas, opts = {}) {
     if (beaconKey) state.outfitKey = '-';
     if (nightmareKey) state.outfitKey = '=';
     if (suitKey) state.outfitKey = '#';
+    if (darkKey) state.outfitKey = '$';
     if (a === 'punch') state.punchPressed = true;
     if (a === 'kick') state.kickPressed = true;
     if (a === 'heavy') state.heavyPressed = true;

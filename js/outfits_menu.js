@@ -83,6 +83,7 @@ export function createOutfitsMenu(opts) {
   function hintFor(id) {
     if (id === 'polo') return 'Starter outfit.';
     if (id === 'gold') return 'Unlock: finish 100% (every mission + collectible) or beat Silas on Hard / Arcade.';
+    if (id === 'darkstar') return 'Unlock: Beat the main campaign, "The Star Goes Dark". Climb Mill Mountain and turn the Star back on.';
     if (id === 'silas') return 'Unlock: Beat the Silas Boone prequel (free DLC — "Prequel: Silas Boone" on the title screen).';
     const bag = S().stateBag || {};
     const c = (bag.collectibles || []).find((k) => k.outfit === id);
