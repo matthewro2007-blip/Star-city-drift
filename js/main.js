@@ -1,10 +1,11 @@
 import {
   AREAS, AREA_ORDER, drawBackground, drawMinimap, DEPTH, getDepth, loadBackgrounds,
-  drawSceneGrade, drawGroundShadow, getSignRects, setStarDark
+  drawSceneGrade, drawGroundShadow, getSignRects, setStarDark, getSceneLights
 } from './world.js';
 import { NPC_DEFS, OUTFITS, OUTFIT_ORDER, OUTFIT_HOTKEYS } from './npcs.js';
 import { createMissionSystem, SEQUEL_HOOKS, ENDING_TEXT, STORY_INTRO } from './missions.js';
-import { drawRainNight, drawLetterbox } from './rain.js'; // 1.6.0: rainy-night campaign
+import { drawLetterbox } from './rain.js'; // letterbox for Silas dialogue
+import { drawWeather, cycleWeather, setWeather, weatherName, weatherShort, getWeather } from './weather.js';
 import { hasSave, clearSave, serializeSave, saveGame, inspectSave, applySave } from './save.js';
 import { createInput, getPromptLabel, getPromptDevice, rumble } from './input.js';
 import {
@@ -21,12 +22,12 @@ import { createTitle } from './title.js';
 import { createOutfitsMenu } from './outfits_menu.js';
 import { getHeroFrame, drawHero, clearHeroCache, HERO_DRAW_H, HERO_SHADOW_W } from './hero.js';
 import { createFollowCamera } from './camera.js';
-import { createPresenter } from './present.js';
-import { setMusic, sting, setPaused, setDialogueDuck, sfx, voice, talk, stopTalk, adjustFocusedSlider, mountAudioSettings, audioDebug } from './audio.js';
+import { createPresenter, cheapPresentation } from './present.js';
+import { setMusic, sting, setPaused, setDialogueDuck, sfx, voice, talk, stopTalk, adjustFocusedSlider, mountAudioSettings, audioDebug, setRainAmbience } from './audio.js';
 // >>> DLC: Silas prequel (1.5.0) — shared Silas moveset, Silas's Suit art glue, prequel content + own save slot
 import { silasWorld, coldStare, silasAnimMap, silasCooldowns } from './silas_moves.js';
 import { artOutfitFor, suitAnimMap, suitNeedsTint, tintedFrame, tintedCanvas, suitPortraitSrc } from './silas_outfit.js';
-import { createDlc, dlcHasRun, dlcCompleted, silasPortraitSrc, silasPlayerKey, drawNightGrade, MISSIONS as DLC_MISSIONS } from './dlc_silas.js';
+import { createDlc, dlcHasRun, dlcCompleted, silasPortraitSrc, silasPlayerKey, MISSIONS as DLC_MISSIONS } from './dlc_silas.js';
 import { SILAS_MOVES, silasMoveRows } from './kits.js';
 import { GAME_VERSION } from './version.js';
 // <<< DLC: Silas prequel
@@ -1071,7 +1072,7 @@ function handleMenu(inp) {
   else if (inp.navDown || inp.navRight) { menuFocus(menuIdx + 1, el); if (inGameMenu) sfx('ui_move'); }
   if (inp.confirmPressed) {
     const b = menuButtons(el)[menuIdx];
-    if (b && inGameMenu && !b.closest('.audio-settings')) sfx('ui_select');
+    if (b && inGameMenu && !b.closest('.audio-settings') && !b.classList.contains('weather-opt')) sfx('ui_select');
     if (b) b.click();
     return;
   }
@@ -1648,6 +1649,38 @@ bindTap('btn-resume', () => resumeGame());
 bindTap('btn-save', () => manualSave());
 bindTap('btn-outfit', () => openOutfitPicker()); // opens the visual picker (L1/R1 + 1-9/0/-/= still cycle in play)
 bindTap('btn-pause', () => pauseGame()); // phone pause button (Save Game / outfits live there)
+
+function refreshWeatherUi() {
+  const id = getWeather();
+  document.querySelectorAll('.weather-opt').forEach((b) => {
+    const on = b.dataset.weather === id;
+    b.classList.toggle('is-on', on);
+    b.setAttribute('aria-pressed', on ? 'true' : 'false');
+  });
+  const touch = $('btn-weather-touch');
+  if (touch) {
+    touch.textContent = weatherShort();
+    touch.setAttribute('aria-label', `Weather: ${weatherName()}. Tap to change.`);
+  }
+}
+function pickWeather(id) {
+  if (id !== 'sunny' && id !== 'night' && id !== 'rainy') return;
+  if (id === getWeather()) return;
+  setWeather(id);
+  refreshWeatherUi();
+  if (gameState.mode !== 'title') sfx('ui_select');
+}
+function cycleWeatherChoice() {
+  cycleWeather();
+  refreshWeatherUi();
+  sfx('ui_select');
+  if (gameState.mode !== 'title') toast(`Weather: ${weatherName()}`, true);
+}
+document.querySelectorAll('.weather-opt').forEach((b) => {
+  b.addEventListener('click', () => pickWeather(b.dataset.weather));
+});
+bindTap('btn-weather-touch', () => cycleWeatherChoice());
+refreshWeatherUi();
 bindTap('btn-replay', () => {
   $('ending-screen').classList.add('hidden');
   clearMenuFocus();
@@ -1677,9 +1710,9 @@ function refreshPrompts(force) {
   if (kbd) kbd.textContent = L('interact');
   const parts = silasSet()
     ? [['move', 'move'], ['sprint', 'sprint (+punch: Boss Rush)'], ['punch', 'Jab'], ['heavy', 'Velvet Grip'], ['special', 'Iron Handshake'], ['kick', 'Last Word (counter stance)'],
-      ['interact', 'talk / Cold Stare'], ...(isDlc() ? [] : [['outfit', 'outfits']]), ['pause', 'pause']]
+      ['interact', 'talk / Cold Stare'], ...(isDlc() ? [] : [['outfit', 'outfits']]), ['weather', 'weather'], ['pause', 'pause']]
     : [['move', 'move'], ['sprint', 'sprint'], ['punch', 'punch'], ['kick', 'kick'], ['special', 'Star Drive'], ['heavy', 'heavy'],
-    ['interact', 'talk'], ['outfit', 'outfits'], ['pause', 'pause']];
+    ['interact', 'talk'], ['outfit', 'outfits'], ['weather', 'weather'], ['pause', 'pause']];
   const hint = parts.filter(([a]) => L(a)).map(([a, w]) => `${L(a)} ${w}`).join(' · ');
   const pp = document.querySelector('#pause-screen p');
   if (pp) pp.textContent = sig === 'touch' ? hint : `${hint} · ${L('back')} resume`;
@@ -1707,6 +1740,7 @@ function frame(now) {
 let fightHold = 0;
 function syncMusic(dt) {
   const m = gameState.mode;
+  setRainAmbience(getWeather() === 'rainy');
   setDialogueDuck(m === 'dialogue');
   if (m === 'title' || m === 'ending') { setMusic('title'); return; }
   if (isDlc()) { // DLC: night-shift variations on Silas's motif
@@ -1726,6 +1760,7 @@ function step(dt) {
   const inp = input.poll();
   refreshPrompts();
   syncMusic(dt);
+  if (inp.weatherPressed) cycleWeatherChoice();
 
   if (gameState.mode === 'title') {
     if (!title.update(inp, dt)) handleMenu(inp);
@@ -2437,13 +2472,18 @@ function drawWorld(dt) {
   }
   drawKitFx(cam); // 1.4.0: Spiral footballs, Star Yank line, flashes / rings / sparks / callouts (over the cast)
 
-  // Shared golden-hour light over characters too (lens width, full plate height)
-  drawSceneGrade(ctx, area, viewW, H);
-  if (isDlc() && dlc.isNight()) drawNightGrade(ctx, viewW, H, performance.now() / 1000); // DLC: night shift
-  if (!isDlc()) { // 1.6.0: "The Star Goes Dark": rain every night; the blackout after the midpoint twist
-    drawRainNight(ctx, viewW, H, performance.now() / 1000, { blackout: storyBlackout(), groundY: getDepthBand().min, heavy: stateBag.mainComplete ? 0.45 : 1, after: !!stateBag.mainComplete, frozen: !dt });
-    if (gameState.mode === 'dialogue' && gameState.dialogueNpc?.id === 'silas') drawLetterbox(ctx, viewW, H);
-  }
+  // Shared light over characters, then the player's weather grade (Sunny / Night / Rainy).
+  // Story blackout still kills the Star and the streetlamps; it does not override the chosen weather.
+  if (getWeather() === 'sunny') drawSceneGrade(ctx, area, viewW, H);
+  const nowS = performance.now() / 1000;
+  drawWeather(ctx, viewW, H, nowS, {
+    groundY: getDepthBand().min,
+    blackout: !isDlc() && storyBlackout(),
+    frozen: !dt,
+    lights: getSceneLights(),
+    cheap: cheapPresentation()
+  });
+  if (!isDlc() && gameState.mode === 'dialogue' && gameState.dialogueNpc?.id === 'silas') drawLetterbox(ctx, viewW, H);
 
   // HUD minimap (DOM canvas, not the game canvas)
   drawMinimap($('minimap'), {
@@ -2467,7 +2507,8 @@ function drawWorld(dt) {
     mode: 'world',
     cameraY: camFrame.y,
     viewW: camFrame.viewW,
-    viewH: camFrame.viewH
+    viewH: camFrame.viewH,
+    grade: getWeather()
   });
 }
 
@@ -2497,8 +2538,8 @@ function drawTitleBg(dt) {
   drawMatthew('idle', 'polo', OUTFITS.polo, t, mx, feetY, 1);
   ctx.restore();
   title.drawGrade(ctx, W, H);
-  drawRainNight(ctx, W, H, t, { groundY: feetY, heavy: 0.8 }); // 1.6.0: rain over the title
-  presenter.present({ mode: 'full' });
+  drawWeather(ctx, W, H, t, { groundY: feetY, title: true, cheap: cheapPresentation() });
+  presenter.present({ mode: 'full', grade: getWeather() });
 }
 
 // >>> v3 PWA auto-update: check on launch / focus / reconnect; when a new service worker takes over,

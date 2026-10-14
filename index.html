@@ -98,10 +98,11 @@
           <!-- /v3 -->
           <button type="button" id="btn-pause" class="mob-btn" aria-label="Pause">II</button>
         </div>
+        <button type="button" id="btn-weather-touch" class="mob-btn mob-weather" aria-label="Cycle weather">Day</button>
       </div>
 
       <div id="desktop-hint" class="hidden">
-        WASD / Arrows move · Z/J punch · X/K kick · E interact · Esc pause · 1–9,0,−,= outfits
+        WASD / Arrows move · Z/J punch · X/K kick · E interact · T weather · Esc pause · 1–9,0,−,= outfits
       </div>
     </div>
   </div>
@@ -130,6 +131,15 @@
       <!-- end DLC: Silas prequel (Bob) -->
       <div id="title-help" class="title-help"></div>
     </nav>
+    <div id="title-weather" class="title-weather" role="group" aria-label="Weather">
+      <div class="title-weather-kicker">Settings · Weather</div>
+      <div class="weather-opts">
+        <button type="button" class="weather-opt" data-weather="sunny" id="btn-title-sunny">Sunny</button>
+        <button type="button" class="weather-opt" data-weather="night" id="btn-title-night">Night</button>
+        <button type="button" class="weather-opt" data-weather="rainy" id="btn-title-rainy">Rainy</button>
+      </div>
+      <div class="title-weather-hint">T cycles · View / Create on a pad · saved on this device</div>
+    </div>
     <section id="title-controls" class="title-panel" aria-label="Controls">
       <h2>Controls</h2>
       <div class="table-wrap"><table id="controls-table"></table></div>
@@ -177,6 +187,14 @@
       <button type="button" id="btn-save" class="btn">Save Game</button>
       <button type="button" id="btn-outfit" class="btn btn-secondary">Outfit: White Polo Tee ▸</button>
       <button type="button" id="btn-difficulty" class="btn btn-secondary">Difficulty: Normal ▸</button>
+      <div id="pause-weather" class="pause-weather" role="group" aria-label="Weather">
+        <div class="eyebrow">Weather</div>
+        <div class="weather-opts">
+          <button type="button" class="weather-opt" data-weather="sunny" id="btn-pause-sunny">Sunny</button>
+          <button type="button" class="weather-opt" data-weather="night" id="btn-pause-night">Night</button>
+          <button type="button" class="weather-opt" data-weather="rainy" id="btn-pause-rainy">Rainy</button>
+        </div>
+      </div>
       <button type="button" id="btn-missions" class="btn btn-secondary">Missions ▾</button>
       <div id="mission-list" class="mission-list hidden"></div>
     </div>

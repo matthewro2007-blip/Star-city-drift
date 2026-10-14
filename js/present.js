@@ -97,11 +97,13 @@ export function createPresenter(display, scene) {
     }
   }
 
-  function vignette(ctx, w, h) {
+  function vignette(ctx, w, h, grade) {
+    const night = grade === 'night';
+    const rainy = grade === 'rainy';
     const g = ctx.createRadialGradient(w * 0.5, h * 0.46, h * 0.32, w * 0.5, h * 0.5, w * 0.72);
-    g.addColorStop(0, 'rgba(24,10,2,0)');
-    g.addColorStop(0.72, 'rgba(18,8,2,0.08)');
-    g.addColorStop(1, 'rgba(12,6,2,0.46)');
+    g.addColorStop(0, 'rgba(0,0,0,0)');
+    g.addColorStop(0.72, night ? 'rgba(4,8,18,0.14)' : rainy ? 'rgba(8,10,14,0.1)' : 'rgba(18,8,2,0.08)');
+    g.addColorStop(1, night ? 'rgba(2,4,12,0.62)' : rainy ? 'rgba(6,8,12,0.5)' : 'rgba(12,6,2,0.4)');
     ctx.fillStyle = g;
     ctx.fillRect(0, 0, w, h);
   }
@@ -152,7 +154,7 @@ export function createPresenter(display, scene) {
     dctx.drawImage(bloom, 0, 0, bw, bh);
     dctx.restore();
 
-    if (!full) vignette(dctx, bw, bh);
+    if (!full) vignette(dctx, bw, bh, opts && opts.grade);
     if (!low) grainPass(dctx, bw, bh);
   }
 

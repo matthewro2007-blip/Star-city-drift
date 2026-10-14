@@ -8,6 +8,7 @@
 import { getPromptLabel, getPromptDevice, getPromptSet } from './input.js';
 import { unlockAudio, uiSound, mountAudioSettings } from './audio.js';
 import { silasMoveRows } from './kits.js'; // DLC: Silas prequel moves on the Controls screen
+import { getWeather } from './weather.js';
 
 const $ = (id) => document.getElementById(id);
 const reduceMQ = window.matchMedia ? window.matchMedia('(prefers-reduced-motion: reduce)') : null;
@@ -97,26 +98,45 @@ export function createTitle({ focusMenu }) {
     const rm = reduced();
     t += dt; starOnT += dt;
     const spd = rm ? 0.15 : 1;
-    // sky
+    const weather = getWeather();
+    // sky — Sunny is bright warm daylight (the old dusk grade is Night / Rainy)
     const sky = ctx.createLinearGradient(0, 0, 0, 380);
-    sky.addColorStop(0, '#1b1440'); sky.addColorStop(0.45, '#6b2f5e'); sky.addColorStop(0.75, '#e0703a'); sky.addColorStop(1, '#ffc06a');
-    ctx.fillStyle = sky; ctx.fillRect(0, 0, W, H);
-    // low sun
-    const sx = W * 0.62, sy = 330;
-    const sun = ctx.createRadialGradient(sx, sy, 10, sx, sy, 260);
-    sun.addColorStop(0, 'rgba(255,240,190,0.95)'); sun.addColorStop(0.15, 'rgba(255,190,90,0.6)'); sun.addColorStop(1, 'rgba(255,120,60,0)');
-    ctx.fillStyle = sun; ctx.fillRect(0, 0, W, H);
-    // first stars in the dusk sky
-    ctx.fillStyle = '#fff6dd';
-    for (let i = 0; i < 24; i++) {
-      const x = (i * 197) % W, y = (i * 61) % 150;
-      ctx.globalAlpha = 0.25 + 0.35 * (0.5 + 0.5 * Math.sin(t * 1.5 * spd + i));
-      ctx.fillRect(x, y, 2, 2);
+    if (weather === 'night') {
+      sky.addColorStop(0, '#070b16'); sky.addColorStop(0.55, '#121a30'); sky.addColorStop(1, '#1a2436');
+    } else if (weather === 'rainy') {
+      sky.addColorStop(0, '#6d7682'); sky.addColorStop(0.5, '#98a1ab'); sky.addColorStop(1, '#c5ccd3');
+    } else {
+      sky.addColorStop(0, '#7ec8f2'); sky.addColorStop(0.38, '#ffe6b0'); sky.addColorStop(0.72, '#ffc56a'); sky.addColorStop(1, '#fff3d2');
     }
-    ctx.globalAlpha = 1;
+    ctx.fillStyle = sky; ctx.fillRect(0, 0, W, H);
+    if (weather === 'sunny') {
+      const sx = W * 0.7, sy = 250;
+      const sun = ctx.createRadialGradient(sx, sy, 8, sx, sy, 280);
+      sun.addColorStop(0, 'rgba(255,252,236,0.98)'); sun.addColorStop(0.16, 'rgba(255,214,120,0.72)'); sun.addColorStop(1, 'rgba(255,170,70,0)');
+      ctx.fillStyle = sun; ctx.fillRect(0, 0, W, H);
+    } else if (weather === 'night') {
+      const mx = W * 0.78, my = 78;
+      const moon = ctx.createRadialGradient(mx, my, 2, mx, my, 70);
+      moon.addColorStop(0, 'rgba(244,247,255,0.95)'); moon.addColorStop(0.35, 'rgba(190,206,240,0.35)'); moon.addColorStop(1, 'rgba(140,160,210,0)');
+      ctx.fillStyle = moon; ctx.fillRect(mx - 80, my - 80, 160, 160);
+      ctx.fillStyle = '#fff6dd';
+      for (let i = 0; i < 28; i++) {
+        const x = (i * 197) % W, y = (i * 61) % 160;
+        ctx.globalAlpha = 0.35 + 0.55 * (0.5 + 0.5 * Math.sin(t * 1.5 * spd + i));
+        ctx.fillRect(x, y, i % 5 === 0 ? 2 : 1, i % 5 === 0 ? 2 : 1);
+      }
+      ctx.globalAlpha = 1;
+    } else {
+      ctx.fillStyle = 'rgba(232,236,240,0.2)';
+      for (let i = 0; i < 4; i++) {
+        const x = ((i * 260 + t * 12) % (W + 180)) - 80;
+        ctx.beginPath(); ctx.ellipse(x, 50 + (i % 3) * 28, 110, 18, 0, 0, Math.PI * 2); ctx.fill();
+      }
+    }
     // Mill Mountain + the star (flickers on, then a steady neon glow)
     ctx.drawImage(layers.mountain, 0, 0); // far away: no parallax
-    const on = rm ? 1 : starOnT < 0.4 ? 0 : starOnT < 1.6 ? (Math.sin(starOnT * 37) > 0.2 ? 1 : 0.15) : 0.88 + 0.12 * Math.sin(t * 9) * Math.sin(t * 2.3);
+    const starDim = weather === 'rainy' ? 0.35 : weather === 'night' ? 1 : 0.85;
+    const on = starDim * (rm ? 1 : starOnT < 0.4 ? 0 : starOnT < 1.6 ? (Math.sin(starOnT * 37) > 0.2 ? 1 : 0.15) : 0.88 + 0.12 * Math.sin(t * 9) * Math.sin(t * 2.3));
     const scx = 430, scy = 112;
     const glow = ctx.createRadialGradient(scx, scy, 4, scx, scy, 120);
     glow.addColorStop(0, `rgba(255,250,235,${0.7 * on})`); glow.addColorStop(0.3, `rgba(255,220,140,${0.3 * on})`); glow.addColorStop(1, 'rgba(255,200,120,0)');
@@ -131,14 +151,33 @@ export function createTitle({ focusMenu }) {
     ctx.drawImage(layers.mid, -mx, 0); ctx.drawImage(layers.mid, W * 2 - mx, 0);
     // haze at the horizon
     const hz = ctx.createLinearGradient(0, 300, 0, 400);
-    hz.addColorStop(0, 'rgba(255,170,90,0)'); hz.addColorStop(1, 'rgba(255,150,80,0.35)');
+    if (weather === 'night') {
+      hz.addColorStop(0, 'rgba(20,28,48,0)'); hz.addColorStop(1, 'rgba(12,16,28,0.45)');
+    } else if (weather === 'rainy') {
+      hz.addColorStop(0, 'rgba(180,188,196,0)'); hz.addColorStop(1, 'rgba(150,158,168,0.4)');
+    } else {
+      hz.addColorStop(0, 'rgba(255,210,140,0)'); hz.addColorStop(1, 'rgba(255,186,100,0.4)');
+    }
     ctx.fillStyle = hz; ctx.fillRect(0, 300, W, 100);
     // street
     const road = ctx.createLinearGradient(0, 372, 0, H);
-    road.addColorStop(0, '#3a2a36'); road.addColorStop(0.15, '#2a1f2c'); road.addColorStop(1, '#120d18');
+    if (weather === 'night') {
+      road.addColorStop(0, '#1a2030'); road.addColorStop(0.15, '#121722'); road.addColorStop(1, '#070910');
+    } else if (weather === 'rainy') {
+      road.addColorStop(0, '#3a4048'); road.addColorStop(0.18, '#2a3038'); road.addColorStop(1, '#161a20');
+    } else {
+      road.addColorStop(0, '#6a5348'); road.addColorStop(0.15, '#4a382e'); road.addColorStop(1, '#241810');
+    }
     ctx.fillStyle = road; ctx.fillRect(0, 372, W, H - 372);
-    ctx.fillStyle = 'rgba(255,190,110,0.35)'; ctx.fillRect(0, 372, W, 3); // curb catch-light
-    ctx.fillStyle = 'rgba(255,220,150,0.25)';
+    ctx.fillStyle = weather === 'night' ? 'rgba(255,190,120,0.45)' : weather === 'rainy' ? 'rgba(190,205,220,0.4)' : 'rgba(255,220,160,0.55)';
+    ctx.fillRect(0, 372, W, 3); // curb catch-light
+    if (weather === 'rainy') {
+      ctx.globalCompositeOperation = 'screen';
+      ctx.fillStyle = 'rgba(200,216,230,0.18)';
+      for (let i = 0; i < 4; i++) ctx.fillRect(0, 400 + i * 22, W, 2);
+      ctx.globalCompositeOperation = 'source-over';
+    }
+    ctx.fillStyle = weather === 'night' ? 'rgba(255,220,150,0.18)' : weather === 'rainy' ? 'rgba(210,220,230,0.2)' : 'rgba(255,230,170,0.4)';
     const dash = (t * 60 * spd) % 80;
     for (let x = -dash; x < W; x += 80) ctx.fillRect(x, 430, 40, 3);
     // passing cars: headlights one way, taillights the other
@@ -159,12 +198,14 @@ export function createTitle({ focusMenu }) {
     }
     ctx.globalCompositeOperation = 'source-over';
     cars = cars.filter((c) => c.x > -300 && c.x < W + 300);
-    // drifting golden dust
-    for (const p of parts) {
-      p.y -= p.v * dt * spd; p.x += Math.sin(t * 0.7 + p.p) * 6 * dt * spd;
-      if (p.y < -4) { p.y = H + 4; p.x = Math.random() * W; }
-      ctx.globalAlpha = 0.35 + 0.35 * Math.sin(t * 2 + p.p);
-      ctx.fillStyle = '#ffd890'; ctx.fillRect(p.x, p.y, p.s * 2, p.s * 2);
+    // drifting dust — warm in daylight, gone under rain and night (those grades bring their own sky)
+    if (weather === 'sunny') {
+      for (const p of parts) {
+        p.y -= p.v * dt * spd; p.x += Math.sin(t * 0.7 + p.p) * 6 * dt * spd;
+        if (p.y < -4) { p.y = H + 4; p.x = Math.random() * W; }
+        ctx.globalAlpha = 0.35 + 0.35 * Math.sin(t * 2 + p.p);
+        ctx.fillStyle = '#ffd890'; ctx.fillRect(p.x, p.y, p.s * 2, p.s * 2);
+      }
     }
     ctx.globalAlpha = 1;
   }
@@ -185,15 +226,17 @@ export function createTitle({ focusMenu }) {
     return c;
   }
 
-  /** Final grade over everything (vignette + warm top light). */
+  /** Final grade over everything. Sunny stays bright; Night and Rainy vignette cooler. */
   function drawGrade(ctx, W, H) {
+    const weather = getWeather();
+    const edge = weather === 'night' ? 'rgba(2,4,12,0.62)' : weather === 'rainy' ? 'rgba(8,10,14,0.42)' : 'rgba(40,22,8,0.28)';
     const v = ctx.createRadialGradient(W / 2, H * 0.45, H * 0.3, W / 2, H * 0.5, W * 0.7);
-    v.addColorStop(0, 'rgba(0,0,0,0)'); v.addColorStop(1, 'rgba(8,4,16,0.55)');
+    v.addColorStop(0, 'rgba(0,0,0,0)'); v.addColorStop(1, edge);
     ctx.fillStyle = v; ctx.fillRect(0, 0, W, H);
   }
 
   // ---------------- controls panel ----------------
-  const ACTIONS = [['move', 'Move'], ['sprint', 'Sprint (hold)'], ['punch', 'Punch (3rd hit = outfit weapon finisher)'], ['kick', 'Kick'], ['jumpkick', 'Jump kick (sprint + kick)'], ['special', 'Star Drive (outfit signature move)'], ['heavy', 'Heavy'], ['interact', 'Talk / use'], ['outfit', 'Outfits'], ['nightmare', "Hell's Nightmare suit"], ['suit', "Silas's Suit (after the prequel)"], ['pause', 'Pause'], ['confirm', 'Menu select'], ['back', 'Menu back']];
+  const ACTIONS = [['move', 'Move'], ['sprint', 'Sprint (hold)'], ['punch', 'Punch (3rd hit = outfit weapon finisher)'], ['kick', 'Kick'], ['jumpkick', 'Jump kick (sprint + kick)'], ['special', 'Star Drive (outfit signature move)'], ['heavy', 'Heavy'], ['interact', 'Talk / use'], ['outfit', 'Outfits'], ['nightmare', "Hell's Nightmare suit"], ['suit', "Silas's Suit (after the prequel)"], ['weather', 'Weather (Sunny / Night / Rainy)'], ['pause', 'Pause'], ['confirm', 'Menu select'], ['back', 'Menu back']];
   function renderControls() {
     const dev = getPromptDevice();
     const padType = dev === 'ps' ? 'ps' : 'xbox';
@@ -252,8 +295,13 @@ export function createTitle({ focusMenu }) {
     focusMenu(Math.max(0, ids.indexOf(back)));
   }
 
-  // pointer: tap/click anywhere to leave attract
-  screen.addEventListener('pointerdown', (e) => { if (phase === 'attract') { e.preventDefault(); pressStart(); } });
+  // pointer: tap/click anywhere to leave attract. The weather settings bar stays put.
+  screen.addEventListener('pointerdown', (e) => {
+    if (phase !== 'attract') return;
+    if (e.target.closest && e.target.closest('#title-weather')) return;
+    e.preventDefault();
+    pressStart();
+  });
   window.addEventListener('keydown', (e) => { if (phase === 'attract' && e.key === ' ' && !screen.classList.contains('hidden')) pressStart(); });
   // menu sounds for mouse / touch / keyboard / pad (handleMenu clicks the button)
   let lastSnd = 0;

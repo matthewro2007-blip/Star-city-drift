@@ -3,6 +3,7 @@
 
 import { loadProps, drawSceneLayer } from './props.js';
 import { cheapPresentation } from './present.js';
+import { getWeather } from './weather.js';
 
 const bgImages = {};
 let bgsReady = false;
@@ -397,6 +398,10 @@ let starDark = false;
 export function setStarDark(on) { starDark = !!on; }
 export function isStarDark() { return starDark; }
 
+/** Screen-space lamps / neon / star anchors from the plate just drawn. Night grade reads these. */
+let sceneLights = { stars: [], neon: [], lamps: [] };
+export function getSceneLights() { return sceneLights; }
+
 /** @param {number} [dt] frame step for ambient scene motion (0 = frozen, omitted = wall clock). */
 export function drawBackground(ctx, area, cameraX, W, H, dt) {
   const t = performance.now() / 1000;
@@ -468,9 +473,11 @@ export function drawBackground(ctx, area, cameraX, W, H, dt) {
     if (sp) glow.stars.push({ x: sp.x - cameraX, y: band.min - 140, r: 1.15, drawShape: true });
   }
 
-  // 1) Golden-hour grade over the plate, then sun shafts, contact, and street sheen
+  // 1) Sunny keeps the golden-hour grade. Night / Rainy skip the warm wash so their
+  //    overlay (js/weather.js) is the light. Sun shafts are daylight only.
+  sceneLights = glow;
   drawGoldenGrade(ctx, area, W, H, glow.stars[0], band);
-  if (!starDark) drawSunShafts(ctx, W, H, glow.stars[0], band);
+  if (!starDark && getWeather() === 'sunny') drawSunShafts(ctx, W, H, glow.stars[0], band);
   drawStreetMaterial(ctx, W, H, band);
 
   // 2) Additive glows (after grade so they stay punchy)
@@ -500,7 +507,7 @@ export function drawBackground(ctx, area, cameraX, W, H, dt) {
 
   // 3) Sidewalk depth lanes (gameplay readability) + sunlit dust in the air
   drawDepthLanes(ctx, W, H, band);
-  drawDust(ctx, W, H, stepDt, band);
+  if (getWeather() === 'sunny') drawDust(ctx, W, H, stepDt, band);
 
   // Lens vignette is applied after the camera crop (present.js) so it frames the
   // visible picture instead of the cropped sky.
@@ -602,17 +609,21 @@ function drawHint(ctx, text, x, y) {
   ctx.restore();
 }
 
-/** Warm sky / cooler street grade. Uses soft-light + screen so the plate keeps its detail. */
+/**
+ * Warm daylight over a golden-hour plate. Night and Rainy skip this so the weather
+ * pass can cool or gray the same art. Soft-light + screen keeps the plate's detail.
+ */
 function drawGoldenGrade(ctx, area, W, H, star, band = DEPTH) {
+  if (getWeather() !== 'sunny') return;
   ctx.save();
-  // Soft-light warm-to-cool ramp
+  // Soft-light warm daylight — brighter than the old dusk ramp, still golden
   ctx.globalCompositeOperation = 'soft-light';
   let g = ctx.createLinearGradient(0, 0, 0, H);
-  g.addColorStop(0, 'rgba(255,130,40,0.45)');
-  g.addColorStop(0.45, 'rgba(255,165,70,0.32)');
-  g.addColorStop(0.62, 'rgba(255,190,120,0.12)');
-  g.addColorStop(0.8, 'rgba(60,80,140,0.30)');
-  g.addColorStop(1, 'rgba(20,30,80,0.42)');
+  g.addColorStop(0, 'rgba(255,236,200,0.55)');
+  g.addColorStop(0.42, 'rgba(255,206,130,0.28)');
+  g.addColorStop(0.62, 'rgba(255,220,170,0.1)');
+  g.addColorStop(0.82, 'rgba(255,196,140,0.08)');
+  g.addColorStop(1, 'rgba(90,70,60,0.16)');
   ctx.fillStyle = g;
   ctx.fillRect(0, 0, W, H);
 
@@ -676,21 +687,47 @@ function drawSunShafts(ctx, W, H, star, band) {
  * storefronts meet the sidewalk (a cheap ambient-occlusion seam).
  */
 function drawStreetMaterial(ctx, W, H, band) {
+  const mode = getWeather();
   ctx.save();
   ctx.globalCompositeOperation = 'soft-light';
   const y0 = band.max - 50;
   const g = ctx.createLinearGradient(0, y0, 0, H);
-  g.addColorStop(0, 'rgba(255,196,140,0)');
-  g.addColorStop(0.28, 'rgba(255,186,120,0.42)');
-  g.addColorStop(0.62, 'rgba(140,148,170,0.22)');
-  g.addColorStop(1, 'rgba(16,22,40,0.5)');
+  if (mode === 'night') {
+    g.addColorStop(0, 'rgba(40,50,90,0)');
+    g.addColorStop(0.35, 'rgba(24,32,64,0.4)');
+    g.addColorStop(1, 'rgba(6,8,20,0.62)');
+  } else if (mode === 'rainy') {
+    g.addColorStop(0, 'rgba(170,180,196,0)');
+    g.addColorStop(0.3, 'rgba(70,80,100,0.5)');
+    g.addColorStop(1, 'rgba(16,20,30,0.58)');
+  } else {
+    g.addColorStop(0, 'rgba(255,210,160,0)');
+    g.addColorStop(0.28, 'rgba(255,196,130,0.34)');
+    g.addColorStop(0.62, 'rgba(190,170,140,0.14)');
+    g.addColorStop(1, 'rgba(50,40,36,0.22)');
+  }
   ctx.fillStyle = g;
   ctx.fillRect(0, y0, W, H - y0);
 
+  // Wet asphalt: thin specular streaks under the cast (the weather pass adds rain on top).
+  if (mode === 'rainy') {
+    ctx.globalCompositeOperation = 'screen';
+    const rows = cheapPresentation() ? 3 : 6;
+    const span = Math.max(24, H - band.min - 8);
+    for (let i = 0; i < rows; i++) {
+      const y = band.min + 12 + (i + 0.5) * (span / rows);
+      ctx.globalAlpha = 0.12 + (i % 2) * 0.07;
+      ctx.fillStyle = 'rgb(206, 220, 236)';
+      ctx.fillRect(0, y, W, 2);
+    }
+    ctx.globalAlpha = 1;
+  }
+
   const ao = ctx.createLinearGradient(0, band.min - 24, 0, band.min + 28);
   ao.addColorStop(0, 'rgba(40,18,8,0)');
-  ao.addColorStop(0.55, 'rgba(24,10,6,0.62)');
+  ao.addColorStop(0.55, mode === 'night' ? 'rgba(4,6,16,0.72)' : 'rgba(24,10,6,0.62)');
   ao.addColorStop(1, 'rgba(24,10,6,0)');
+  ctx.globalCompositeOperation = 'soft-light';
   ctx.fillStyle = ao;
   ctx.fillRect(0, band.min - 24, W, 52);
   ctx.restore();
@@ -791,8 +828,11 @@ function drawNeonBloom(ctx, n, t, k) {
 }
 
 function drawLampGlow(ctx, x, y, t, s = 1) {
-  const a = (0.22 + 0.03 * Math.sin(t * 5 + x)) * Math.min(1, 0.5 + s * 0.5);
-  const r = 46 * s;
+  const mode = getWeather();
+  const night = mode === 'night' && !starDark;
+  const base = night ? 0.48 : mode === 'rainy' ? 0.3 : 0.18;
+  const a = (base + 0.03 * Math.sin(t * 5 + x)) * Math.min(1, 0.5 + s * 0.5);
+  const r = (night ? 78 : mode === 'rainy' ? 58 : 46) * s;
   const g = ctx.createRadialGradient(x, y, 0, x, y, r);
   // Hot core so the lamp head reads as an emissive material, then the spill.
   g.addColorStop(0, `rgba(255,244,214,${Math.min(0.9, a + 0.34)})`);

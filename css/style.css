@@ -497,6 +497,79 @@ kbd {
 }
 .title-help { margin-top: 6px; font-size: 11px; letter-spacing: .08em; color: #e8d4a8; text-shadow: 0 1px 2px #000; }
 
+/* Weather settings: title screen (attract + main menu) and pause menu. Three explicit choices. */
+.title-weather {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  width: min(440px, 94vw);
+  margin-top: 4px;
+  padding: 10px 12px 12px;
+  border-radius: 14px;
+  border: 2px solid #ffd24a;
+  background: linear-gradient(180deg, rgba(28, 16, 10, 0.88), rgba(8, 12, 22, 0.92));
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45), 0 0 24px rgba(255, 170, 60, 0.18);
+  pointer-events: auto;
+  z-index: 3;
+}
+#title-screen[data-phase="attract"] .title-weather,
+#title-screen[data-phase="menu"] .title-weather { display: flex; }
+.title-weather-kicker {
+  font: italic 900 13px Impact, "Arial Black", system-ui, sans-serif;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #ffd24a;
+}
+.title-weather-hint { font-size: 11px; letter-spacing: 0.04em; color: #e8d4a8; text-align: center; }
+.pause-weather { margin: 8px auto 4px; max-width: 360px; }
+.pause-weather .eyebrow { margin-bottom: 6px; }
+.weather-opts { display: flex; gap: 8px; justify-content: center; width: 100%; }
+.weather-opt {
+  flex: 1 1 0;
+  min-width: 0;
+  min-height: 44px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 2px solid rgba(255, 210, 74, 0.45);
+  background: rgba(0, 0, 0, 0.35);
+  color: #ffe8b0;
+  font: 800 15px/1.1 "Segoe UI", system-ui, sans-serif;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  pointer-events: auto;
+}
+.weather-opt:hover { filter: brightness(1.12); }
+.weather-opt.is-on {
+  background: linear-gradient(135deg, #c45c26, #8b3a10);
+  border-color: #ffd24a;
+  color: #fff;
+  box-shadow: 0 0 14px rgba(255, 180, 60, 0.5);
+}
+.weather-opt.pad-focus, .weather-opt:focus-visible {
+  outline: 3px solid #fff4dc;
+  outline-offset: 2px;
+}
+@media (max-height: 500px) {
+  .title-weather { padding: 6px 8px; gap: 4px; }
+  .title-weather-hint { display: none; }
+  .weather-opt { min-height: 36px; padding: 6px 8px; font-size: 13px; }
+}
+#btn-weather-touch.mob-weather {
+  position: absolute;
+  top: 96px;
+  right: max(8px, env(safe-area-inset-right));
+  width: auto;
+  min-width: 64px;
+  height: 44px;
+  padding: 0 12px;
+  border-radius: 22px;
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  z-index: 5;
+  pointer-events: auto;
+}
+
 .title-panel {
   flex-direction: column; align-items: center; gap: 10px; margin: auto 0;
   max-width: 640px; width: 100%; max-height: 100%;
