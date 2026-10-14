@@ -1,4 +1,4 @@
-STAR CITY DRIFT 1.6.0 ON A CHROMEBOOK
+STAR CITY DRIFT 1.6.1 ON A CHROMEBOOK
 =====================================
 
 There are three ways to play on a Chromebook. Option A is the easiest and works on
@@ -27,25 +27,25 @@ OPTION C: THE LINUX APP (.deb) - INTEL/AMD CHROMEBOOKS
      Turn on, and follow the steps. (On some versions: Settings > About ChromeOS >
      Developers.) This does NOT need developer mode.
   2. Download all 7 parts into the same folder:
-       Star-City-Drift-1.6.0-chromebook-linux-x64.7z.001   (23.1 MB)
-       Star-City-Drift-1.6.0-chromebook-linux-x64.7z.002   (23.1 MB)
-       Star-City-Drift-1.6.0-chromebook-linux-x64.7z.003   (23.1 MB)
-       Star-City-Drift-1.6.0-chromebook-linux-x64.7z.004   (23.1 MB)
-       Star-City-Drift-1.6.0-chromebook-linux-x64.7z.005   (23.1 MB)
-       Star-City-Drift-1.6.0-chromebook-linux-x64.7z.006   (23.1 MB)
-       Star-City-Drift-1.6.0-chromebook-linux-x64.7z.007   (11.4 MB)
-     Together they're one 7-Zip archive holding Star-City-Drift-1.6.0-chromebook-amd64.deb.
+       Star-City-Drift-1.6.1-chromebook-linux-x64.7z.001   (23.1 MB)
+       Star-City-Drift-1.6.1-chromebook-linux-x64.7z.002   (23.1 MB)
+       Star-City-Drift-1.6.1-chromebook-linux-x64.7z.003   (23.1 MB)
+       Star-City-Drift-1.6.1-chromebook-linux-x64.7z.004   (23.1 MB)
+       Star-City-Drift-1.6.1-chromebook-linux-x64.7z.005   (23.1 MB)
+       Star-City-Drift-1.6.1-chromebook-linux-x64.7z.006   (23.1 MB)
+       Star-City-Drift-1.6.1-chromebook-linux-x64.7z.007   (10.7 MB)
+     Together they're one 7-Zip archive holding Star-City-Drift-1.6.1-chromebook-amd64.deb.
   3. In the Files app, move all the parts into "Linux files".
   4. Open the Terminal app (Launcher > Linux apps > Terminal) and run these two lines:
        sudo apt install -y p7zip-full
-       7z x Star-City-Drift-1.6.0-chromebook-linux-x64.7z.001
-     This makes Star-City-Drift-1.6.0-chromebook-amd64.deb in Linux files.
+       7z x Star-City-Drift-1.6.1-chromebook-linux-x64.7z.001
+     This makes Star-City-Drift-1.6.1-chromebook-amd64.deb in Linux files.
      (You can delete the .7z parts afterwards.)
-  5. In the Files app, double-click Star-City-Drift-1.6.0-chromebook-amd64.deb, then click
+  5. In the Files app, double-click Star-City-Drift-1.6.1-chromebook-amd64.deb, then click
      Install. Wait for the "Installation complete" notice.
   6. Open Star City Drift from Launcher > Linux apps.
   Or install from the Terminal instead of step 5:
-       sudo apt install -y ./Star-City-Drift-1.6.0-chromebook-amd64.deb
+       sudo apt install -y ./Star-City-Drift-1.6.1-chromebook-amd64.deb
   It plays the copy that came with it offline, and updates itself from the website when
   you're online, so you don't need to reinstall for new versions. F11 toggles fullscreen.
   To uninstall: right-click it in Launcher > Uninstall, or  sudo apt remove star-city-drift
@@ -54,11 +54,11 @@ WHICH ONE?
   Most people: Option A. Want the desktop app on an Intel/AMD Chromebook: Option C.
 
 SHA-256 checksums (optional check):
-a66e12fa64d0baf293dba0355721d9e9bfe5da8e5dfde365af86f2bb232a19e2  Star-City-Drift-1.6.0-chromebook-linux-x64.7z.001
-c7e090b89f09457baa27aa5ae631b0bf8ae6ed80cf2f60197931be652f8ec1dc  Star-City-Drift-1.6.0-chromebook-linux-x64.7z.002
-70cee4cf81761b970c18dc433e64142cbc3f3a8f6f44f0e7a1a95b2b7b76a17b  Star-City-Drift-1.6.0-chromebook-linux-x64.7z.003
-d2ceef8d32ce50f49f452d19c502b016936e83405ea6a5469fbcced67fda09c8  Star-City-Drift-1.6.0-chromebook-linux-x64.7z.004
-52aedeaa3a6567132f6c81148ada9511206c87b3bdd0ed2573afd4d8a077d2b5  Star-City-Drift-1.6.0-chromebook-linux-x64.7z.005
-e8331bf0c803e8f109ac5befd13a7bea7d0b884653efa5e2cc5cea129d956643  Star-City-Drift-1.6.0-chromebook-linux-x64.7z.006
-3ac12aeea5fa5592731c2735ab7963d322edcd94543b78501516e8bf88d64ff4  Star-City-Drift-1.6.0-chromebook-linux-x64.7z.007
-2927e74a1305331f159f5b06a2287857efdac4dd12afd06494b1158a56414610  Star-City-Drift-1.6.0-chromebook-amd64.deb
+f08b3ade578628e4c9f1c3e2858328b33e91036380b6798d82d8763f6bc5ae5f  Star-City-Drift-1.6.1-chromebook-linux-x64.7z.001
+53f899c7504e6e31149bcc918533ad03962629e01f06ac7605360e10e937e8dd  Star-City-Drift-1.6.1-chromebook-linux-x64.7z.002
+de3ac11376fc72efbde01cf504be7ee7f5dc1b858c5ae2ce7e2978739c1f8520  Star-City-Drift-1.6.1-chromebook-linux-x64.7z.003
+37f66a69382059561ba9f230083d06787d5d93956d32de2c0cd1e1930db0d986  Star-City-Drift-1.6.1-chromebook-linux-x64.7z.004
+c7ac532ee4839af3656ab8ba89ae2d4f5aae55dc91ea7b9afe1cdc84fb4ea666  Star-City-Drift-1.6.1-chromebook-linux-x64.7z.005
+974629b53b1fcaaef01bd1d7d69c8aae899e1b8113c43f6c3722ef0941be5725  Star-City-Drift-1.6.1-chromebook-linux-x64.7z.006
+5894cb11c73ce9ca8e0ce836fb2ff80616cfbbfa6ca5405b349e6b0ad9ada939  Star-City-Drift-1.6.1-chromebook-linux-x64.7z.007
+32b5e9acdb7e9e478b89a1e74edb598041211e6eb0f29ca5faa1d580693b4745  Star-City-Drift-1.6.1-chromebook-amd64.deb

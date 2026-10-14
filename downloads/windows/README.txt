@@ -1,27 +1,28 @@
-STAR CITY DRIFT 1.6.0 - Windows (64-bit) installer, sent in 6 parts
+STAR CITY DRIFT 1.6.1 - Windows (64-bit) installer, sent in 7 parts
 ===================================================================
 
-You need all 6 files in the SAME folder:
-  Star-City-Drift-1.6.0-Setup-win-x64.7z.001   (23.1 MB)
-  Star-City-Drift-1.6.0-Setup-win-x64.7z.002   (23.1 MB)
-  Star-City-Drift-1.6.0-Setup-win-x64.7z.003   (23.1 MB)
-  Star-City-Drift-1.6.0-Setup-win-x64.7z.004   (23.1 MB)
-  Star-City-Drift-1.6.0-Setup-win-x64.7z.005   (23.1 MB)
-  Star-City-Drift-1.6.0-Setup-win-x64.7z.006   (11.3 MB)
-Together they're one 7-Zip archive holding Star-City-Drift-Setup-1.6.0.exe (127 MB).
+You need all 7 files in the SAME folder:
+  Star-City-Drift-1.6.1-Setup-win-x64.7z.001   (23.1 MB)
+  Star-City-Drift-1.6.1-Setup-win-x64.7z.002   (23.1 MB)
+  Star-City-Drift-1.6.1-Setup-win-x64.7z.003   (23.1 MB)
+  Star-City-Drift-1.6.1-Setup-win-x64.7z.004   (23.1 MB)
+  Star-City-Drift-1.6.1-Setup-win-x64.7z.005   (23.1 MB)
+  Star-City-Drift-1.6.1-Setup-win-x64.7z.006   (23.1 MB)
+  Star-City-Drift-1.6.1-Setup-win-x64.7z.007   (2.2 MB)
+Together they're one 7-Zip archive holding Star-City-Drift-Setup-1.6.1.exe (140.7 MB).
 
 EASIEST: 7-Zip (free, https://www.7-zip.org)
   1. Install 7-Zip.
-  2. Right-click Star-City-Drift-1.6.0-Setup-win-x64.7z.001 > 7-Zip > Extract Here
-     (or open the .001 in 7-Zip). It reads .002-.006 by itself.
-  3. Double-click Star-City-Drift-Setup-1.6.0.exe and follow the installer.
+  2. Right-click Star-City-Drift-1.6.1-Setup-win-x64.7z.001 > 7-Zip > Extract Here
+     (or open the .001 in 7-Zip). It reads .002-.007 by itself.
+  3. Double-click Star-City-Drift-Setup-1.6.1.exe and follow the installer.
   NanaZip, PeaZip and WinRAR open the .001 the same way.
 
 WITHOUT 7-ZIP (Windows 11 only)
   Windows can't open the .001 file directly. Join the parts into one .7z first:
   in that folder, click the address bar, type  cmd  and press Enter, then run:
-    copy /b Star-City-Drift-1.6.0-Setup-win-x64.7z.001+Star-City-Drift-1.6.0-Setup-win-x64.7z.002+Star-City-Drift-1.6.0-Setup-win-x64.7z.003+Star-City-Drift-1.6.0-Setup-win-x64.7z.004+Star-City-Drift-1.6.0-Setup-win-x64.7z.005+Star-City-Drift-1.6.0-Setup-win-x64.7z.006 Star-City-Drift-1.6.0-Setup-win-x64.7z
-  Then right-click Star-City-Drift-1.6.0-Setup-win-x64.7z > Extract All. Windows 11 has opened .7z files natively since the
+    copy /b Star-City-Drift-1.6.1-Setup-win-x64.7z.001+Star-City-Drift-1.6.1-Setup-win-x64.7z.002+Star-City-Drift-1.6.1-Setup-win-x64.7z.003+Star-City-Drift-1.6.1-Setup-win-x64.7z.004+Star-City-Drift-1.6.1-Setup-win-x64.7z.005+Star-City-Drift-1.6.1-Setup-win-x64.7z.006+Star-City-Drift-1.6.1-Setup-win-x64.7z.007 Star-City-Drift-1.6.1-Setup-win-x64.7z
+  Then right-click Star-City-Drift-1.6.1-Setup-win-x64.7z > Extract All. Windows 11 has opened .7z files natively since the
   23H2 update. Windows 10 can't open .7z, so use 7-Zip there.
 
 FIRST RUN
@@ -29,8 +30,15 @@ FIRST RUN
   Click "More info" > "Run anyway".
   F11 or Alt+Enter toggles fullscreen. Esc pauses. Saves are kept in %APPDATA%\Star City Drift.
 
-  Already have 1.2.x, 1.3.x, 1.4.x or 1.5.x? You don't need this: it updates itself from the website. Installing 1.6.0
-  over it is fine too and keeps your saves.
+  Already have 1.2.x through 1.6.0? You don't need this: it updates itself from the website. Installing 1.6.1
+  over it is fine too and keeps your saves. The installer puts the app in %LOCALAPPDATA%\Programs\Star City Drift.
+
+NEW IN 1.6.1: WEATHER
+  Choose Sunny, Night, or Rainy from the title screen (Settings · Weather) and from the pause menu.
+  T on the keyboard cycles them. View (Xbox) or Create (PlayStation) does the same, and phones have
+  a Day/Night/Rain button. The choice is saved on this device. Sunny is bright daytime and is the
+  default. Night darkens the sky and lights the streetlamps. Rainy is overcast, with falling rain,
+  a wet street, and soft rain. Fights, hitboxes, and campaign saves are unchanged.
 
 NEW IN 1.6.0: THE STAR GOES DARK
   The main story is rewritten as a darker mystery, "The Star Goes Dark".
@@ -140,9 +148,10 @@ UPDATES ARE AUTOMATIC
   title screen.
 
 SHA-256 checksums (optional check):
-b0e20a014e9ef01059cadd53fec5a3ea242b4be876892f862057afdfd88b7048  Star-City-Drift-1.6.0-Setup-win-x64.7z.001
-bdb3bb5f27e93d0f354e79ba627ccdd54fef56593cbfc4e77af05f8bae4ead60  Star-City-Drift-1.6.0-Setup-win-x64.7z.002
-da0a690dac0a0eabe1455f0facd3915b88fd8a1c7ce02aadc67a52ece056a2d9  Star-City-Drift-1.6.0-Setup-win-x64.7z.003
-a8891f85de021551767bc395bed886e495e78fa63f6d5f29e3c33cae7c1bbd60  Star-City-Drift-1.6.0-Setup-win-x64.7z.004
-ea0f9adf4be42b25057a82f4f43ea6af8a728fa78162b4b60f0f56972afbab2a  Star-City-Drift-1.6.0-Setup-win-x64.7z.005
-09d9ae83a0bc8ae0ae91f5aca2fe0d3e7a2806a459279318284aefe2b6a9f740  Star-City-Drift-1.6.0-Setup-win-x64.7z.006
+1cfdb8fafc2c229d3679c6b792e1208d025060dce082b7872607c3949ee42d42  Star-City-Drift-1.6.1-Setup-win-x64.7z.001
+a397624f46c9d8b591c6ab965684bae6b7ccce5b97af71b91cc4b8d2d335fbd1  Star-City-Drift-1.6.1-Setup-win-x64.7z.002
+5ef27725504daf0edace39af41afbc320469d1baaf4903ac4beed20d93bbf6d9  Star-City-Drift-1.6.1-Setup-win-x64.7z.003
+dd675a163171a3885494b6d1d4c29d51cd7a21f46b78d072ea22f5982354a7f5  Star-City-Drift-1.6.1-Setup-win-x64.7z.004
+9bfdf1d881dddc75896bc21fe4741f54490d1d30da96e6a5c722dbe18bb9ff00  Star-City-Drift-1.6.1-Setup-win-x64.7z.005
+bc0a2da4690a0ec7a89762ef119a5a03b36d150b6e12863e7660b7f59b6e9e43  Star-City-Drift-1.6.1-Setup-win-x64.7z.006
+554c3b65ac8bd351309a1c7bb97bc09aa61ee89c6f5b66cee1fa5c7c1a02b8da  Star-City-Drift-1.6.1-Setup-win-x64.7z.007
