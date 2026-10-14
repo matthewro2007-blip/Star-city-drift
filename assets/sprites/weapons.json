@@ -1,8 +1,8 @@
 {
  "_meta": {
   "file": "assets/sprites/weapons.png",
-  "fw": 48,
-  "fh": 48,
+  "fw": 96,
+  "fh": 96,
   "count": 15,
   "order": [
    "polo",
@@ -21,7 +21,8 @@
    "darkstar",
    "cinder"
   ],
-  "note": "One icon per outfit, left->right in this order; transparent, hard alpha, rig outline/cel style."
+  "note": "One icon per outfit, left->right in this order; transparent, soft alpha (smoothing on), 2x, rig outline/cel style.",
+  "artScale": 2
  },
  "polo": {
   "name": "Hardcover Book",
@@ -29,133 +30,133 @@
   "index": 0,
   "x": 0,
   "y": 0,
-  "w": 48,
-  "h": 48
+  "w": 96,
+  "h": 96
  },
  "photo": {
   "name": "Strap Camera",
   "move": "Flash Pop",
   "index": 1,
-  "x": 48,
+  "x": 96,
   "y": 0,
-  "w": 48,
-  "h": 48
+  "w": 96,
+  "h": 96
  },
  "hoodie": {
   "name": "Skateboard",
   "move": "Kickflip",
   "index": 2,
-  "x": 96,
+  "x": 192,
   "y": 0,
-  "w": 48,
-  "h": 48
+  "w": 96,
+  "h": 96
  },
  "jacket": {
   "name": "Bike Chain",
   "move": "Whip Crack",
   "index": 3,
-  "x": 144,
+  "x": 288,
   "y": 0,
-  "w": 48,
-  "h": 48
+  "w": 96,
+  "h": 96
  },
  "street": {
   "name": "Baseball Bat",
   "move": "Line Drive",
   "index": 4,
-  "x": 192,
+  "x": 384,
   "y": 0,
-  "w": 48,
-  "h": 48
+  "w": 96,
+  "h": 96
  },
  "varsity": {
   "name": "Football",
   "move": "Spiral",
   "index": 5,
-  "x": 240,
+  "x": 480,
   "y": 0,
-  "w": 48,
-  "h": 48
+  "w": 96,
+  "h": 96
  },
  "mechanic": {
   "name": "Pipe Wrench",
   "move": "Torque",
   "index": 6,
-  "x": 288,
+  "x": 576,
   "y": 0,
-  "w": 48,
-  "h": 48
+  "w": 96,
+  "h": 96
  },
  "diner": {
   "name": "Frying Pan",
   "move": "Hot Plate",
   "index": 7,
-  "x": 336,
+  "x": 672,
   "y": 0,
-  "w": 48,
-  "h": 48
+  "w": 96,
+  "h": 96
  },
  "gold": {
   "name": "Gold Chain",
   "move": "Encore",
   "index": 8,
-  "x": 384,
+  "x": 768,
   "y": 0,
-  "w": 48,
-  "h": 48
+  "w": 96,
+  "h": 96
  },
  "webslinger": {
   "name": "Star-Line",
   "move": "Star Yank",
   "index": 9,
-  "x": 432,
+  "x": 864,
   "y": 0,
-  "w": 48,
-  "h": 48
+  "w": 96,
+  "h": 96
  },
  "beacon": {
   "name": "Hard-Light Star Shard",
   "move": "Star Flare",
   "index": 10,
-  "x": 480,
+  "x": 960,
   "y": 0,
-  "w": 48,
-  "h": 48
+  "w": 96,
+  "h": 96
  },
  "ironclad": {
   "name": "Breach Gauntlets",
   "move": "Breach",
   "index": 11,
-  "x": 528,
+  "x": 1056,
   "y": 0,
-  "w": 48,
-  "h": 48
+  "w": 96,
+  "h": 96
  },
  "silas": {
   "name": "Iron Gauntlet",
   "move": "Iron Handshake",
   "index": 12,
-  "x": 576,
+  "x": 1152,
   "y": 0,
-  "w": 48,
-  "h": 48
+  "w": 96,
+  "h": 96
  },
  "darkstar": {
   "name": "Dead Star Emblem",
   "move": "Lights Out",
   "index": 13,
-  "x": 624,
+  "x": 1248,
   "y": 0,
-  "w": 48,
-  "h": 48
+  "w": 96,
+  "h": 96
  },
  "cinder": {
   "name": "Mess Hall Tray",
   "move": "Chow Line",
   "index": 14,
-  "x": 672,
+  "x": 1344,
   "y": 0,
-  "w": 48,
-  "h": 48
+  "w": 96,
+  "h": 96
  }
 }

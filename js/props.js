@@ -8,12 +8,17 @@
 
 const PROP_FILES = ['bench', 'trashcan', 'sedan_side', 'sedan_rear'];
 const IMG = {};
+/** 1.8.0 HD: props are authored at artScale 2 (Joe's city batch). The 1x widths detect legacy art. */
+export const PROP_ART_SCALE = 2;
+const PROP_BASE_W = { sedan_side: 160, sedan_rear: 96, bench: 96, trashcan: 32 };
+const pw = (img) => img.width / (img.artScale || 1);
+const ph = (img) => img.height / (img.artScale || 1);
 
 /** Preload prop PNGs; a missing/broken file is skipped (that prop just isn't drawn). */
 export function loadProps() {
   return Promise.all(PROP_FILES.map((id) => new Promise((resolve) => {
     const img = new Image();
-    img.onload = () => { IMG[id] = img; resolve(); };
+    img.onload = () => { const b = PROP_BASE_W[id]; img.artScale = b && img.width >= b * PROP_ART_SCALE ? PROP_ART_SCALE : 1; IMG[id] = img; resolve(); };
     img.onerror = () => { console.warn(`[props] skipped missing prop: assets/props/${id}.png`); resolve(); };
     img.src = `assets/props/${id}.png`;
   })));
@@ -38,10 +43,11 @@ function softShadow(ctx, cx, y, w, alpha = 0.38) {
 
 /** Bottom-centre anchored sprite, nearest-neighbour, optional mirror. */
 function blit(ctx, img, cx, bottomY, scale = 1, flip = false, alpha = 1) {
-  const w = Math.max(1, Math.round(img.width * scale));
-  const h = Math.max(1, Math.round(img.height * scale));
+  const w = Math.max(1, Math.round(pw(img) * scale));
+  const h = Math.max(1, Math.round(ph(img) * scale));
   ctx.save();
-  ctx.imageSmoothingEnabled = false;
+  ctx.imageSmoothingEnabled = (img.artScale || 1) > 1;
+  if (ctx.imageSmoothingEnabled) ctx.imageSmoothingQuality = 'high';
   if (alpha < 1) ctx.globalAlpha *= alpha;
   const x = Math.round(cx - w / 2), y = Math.round(bottomY - h);
   if (flip) {
@@ -172,7 +178,7 @@ function updateTraffic(cfg, st, cameraX, W, dt) {
     traffic.timer -= dt;
     if (traffic.timer > 0) return;
     const dir = Math.random() < 0.6 ? -1 : 1;
-    const wide = IMG.sedan_side.width;
+    const wide = pw(IMG.sedan_side);
     traffic.car = {
       mode: 'side', dir,
       x: dir > 0 ? cameraX - wide : cameraX + W + wide,
@@ -212,13 +218,13 @@ function drawTraffic(ctx, cfg, st, cameraX) {
   if (c.mode === 'side') {
     const img = IMG.sedan_side;
     const sx = c.x - cameraX;
-    softShadow(ctx, sx, cfg.laneY - 1, img.width * 0.95, 0.42);
+    softShadow(ctx, sx, cfg.laneY - 1, pw(img) * 0.95, 0.42);
     blit(ctx, img, sx, cfg.laneY, 1, c.dir < 0);
   } else {
     const img = IMG.sedan_rear;
     const s = c.z0 / c.z;
     const [px, py] = persp(st, -cameraX, c.x, c.z);
-    softShadow(ctx, px, py - 1, img.width * s * 0.95, 0.4 * c.alpha);
+    softShadow(ctx, px, py - 1, pw(img) * s * 0.95, 0.4 * c.alpha);
     blit(ctx, img, px, py, s, false, c.alpha);
   }
 }
@@ -245,9 +251,9 @@ export function drawSceneLayer(ctx, o) {
     if (!img) continue;
     const s = p.scale || 1;
     const sx = p.x - cameraX;
-    if (sx < -img.width * s || sx > W + img.width * s) continue;
+    if (sx < -pw(img) * s || sx > W + pw(img) * s) continue;
     const by = (p.y ?? o.groundY);
-    softShadow(ctx, sx, by - 1, img.width * s * 0.9, 0.36);
+    softShadow(ctx, sx, by - 1, pw(img) * s * 0.9, 0.36);
     blit(ctx, img, sx, by, s, !!p.flip);
   }
 

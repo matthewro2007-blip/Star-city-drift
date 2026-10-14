@@ -3,15 +3,16 @@
   "version": 1,
   "file": "assets/sprites/collectibles.png",
   "cols": 6,
-  "anchorX": 24,
-  "anchorY": 47,
-  "note": "frame f of item = (f*fw, row*fh); bob +-2px and glint (frames 2-3) are baked in"
+  "anchorX": 48,
+  "anchorY": 94,
+  "note": "frame f of item = (f*fw, row*fh); bob +-2px and glint (frames 2-3) are baked in",
+  "artScale": 2
  },
  "glasses": {
   "row": 0,
   "frames": 6,
-  "fw": 48,
-  "fh": 48,
+  "fw": 96,
+  "fh": 96,
   "fps": 8,
   "name": "Glasses",
   "names": [
@@ -21,8 +22,8 @@
  "bottle": {
   "row": 1,
   "frames": 6,
-  "fw": 48,
-  "fh": 48,
+  "fw": 96,
+  "fh": 96,
   "fps": 8,
   "name": "Water Bottle",
   "names": [
@@ -33,8 +34,8 @@
  "hoodie": {
   "row": 2,
   "frames": 6,
-  "fw": 48,
-  "fh": 48,
+  "fw": 96,
+  "fh": 96,
   "fps": 8,
   "name": "Star City Hoodie",
   "names": [
@@ -45,8 +46,8 @@
  "jacket": {
   "row": 3,
   "frames": 6,
-  "fw": 48,
-  "fh": 48,
+  "fw": 96,
+  "fh": 96,
   "fps": 8,
   "name": "Rail Yard Jacket",
   "names": [
@@ -56,8 +57,8 @@
  "street": {
   "row": 4,
   "frames": 6,
-  "fw": 48,
-  "fh": 48,
+  "fw": 96,
+  "fh": 96,
   "fps": 8,
   "name": "Skate Fit",
   "names": [
@@ -68,8 +69,8 @@
  "notebook": {
   "row": 5,
   "frames": 6,
-  "fw": 48,
-  "fh": 48,
+  "fw": 96,
+  "fh": 96,
   "fps": 8,
   "name": "Notebook",
   "names": [
@@ -79,8 +80,8 @@
  "photo": {
   "row": 6,
   "frames": 6,
-  "fw": 48,
-  "fh": 48,
+  "fw": 96,
+  "fh": 96,
   "fps": 8,
   "name": "Classroom Photo",
   "names": [
@@ -91,8 +92,8 @@
  "flyer": {
   "row": 7,
   "frames": 6,
-  "fw": 48,
-  "fh": 48,
+  "fw": 96,
+  "fh": 96,
   "fps": 8,
   "name": "Bake-Sale Flyer",
   "names": [
@@ -103,8 +104,8 @@
  "token": {
   "row": 8,
   "frames": 6,
-  "fw": 48,
-  "fh": 48,
+  "fw": 96,
+  "fh": 96,
   "fps": 8,
   "name": "Old Trolley Token",
   "names": [
@@ -115,8 +116,8 @@
  "bookmark": {
   "row": 9,
   "frames": 6,
-  "fw": 48,
-  "fh": 48,
+  "fw": 96,
+  "fh": 96,
   "fps": 8,
   "name": "Valley Pages Bookmark",
   "names": [
@@ -127,8 +128,8 @@
  "wax": {
   "row": 10,
   "frames": 6,
-  "fw": 48,
-  "fh": 48,
+  "fw": 96,
+  "fh": 96,
   "fps": 8,
   "name": "Starboard Board Wax",
   "names": [
@@ -139,8 +140,8 @@
  "webmask": {
   "row": 11,
   "frames": 6,
-  "fw": 48,
-  "fh": 48,
+  "fw": 96,
+  "fh": 96,
   "fps": 8,
   "name": "Web-Slinger Mask (top of the half-pipe)",
   "names": [
@@ -152,8 +153,8 @@
  "coveralls": {
   "row": 12,
   "frames": 6,
-  "fw": 48,
-  "fh": 48,
+  "fw": 96,
+  "fh": 96,
   "fps": 8,
   "name": "Rail Yard Coveralls",
   "names": [
@@ -164,8 +165,8 @@
  "ticket": {
   "row": 13,
   "frames": 6,
-  "fw": 48,
-  "fh": 48,
+  "fw": 96,
+  "fh": 96,
   "fps": 8,
   "name": "Excursion Train Ticket Stub",
   "names": [
@@ -177,8 +178,8 @@
  "pin": {
   "row": 14,
   "frames": 6,
-  "fw": 48,
-  "fh": 48,
+  "fw": 96,
+  "fh": 96,
   "fps": 8,
   "name": "Mill Mountain Star Pin",
   "names": [
@@ -189,8 +190,8 @@
  "apron": {
   "row": 15,
   "frames": 6,
-  "fw": 48,
-  "fh": 48,
+  "fw": 96,
+  "fh": 96,
   "fps": 8,
   "name": "Dee's Spare Apron",
   "names": [
@@ -201,8 +202,8 @@
  "varsity": {
   "row": 16,
   "frames": 6,
-  "fw": 48,
-  "fh": 48,
+  "fw": 96,
+  "fh": 96,
   "fps": 8,
   "name": "Valley Gym Varsity Jacket",
   "names": [
@@ -213,8 +214,8 @@
  "lantern": {
   "row": 17,
   "frames": 6,
-  "fw": 48,
-  "fh": 48,
+  "fw": 96,
+  "fh": 96,
   "fps": 8,
   "name": "Night Shift Lantern",
   "names": [
@@ -225,8 +226,8 @@
  "beaconring": {
   "row": 18,
   "frames": 6,
-  "fw": 48,
-  "fh": 48,
+  "fw": 96,
+  "fh": 96,
   "fps": 8,
   "name": "Beacon Ring (under the Mill Mountain Star)",
   "names": [
@@ -237,8 +238,8 @@
  "ironclad": {
   "row": 19,
   "frames": 6,
-  "fw": 48,
-  "fh": 48,
+  "fw": 96,
+  "fh": 96,
   "fps": 8,
   "name": "Hell's Nightmare",
   "names": [
@@ -254,8 +255,8 @@
  "silas": {
   "row": 20,
   "frames": 6,
-  "fw": 48,
-  "fh": 48,
+  "fw": 96,
+  "fh": 96,
   "fps": 8,
   "name": "Boone's Overcoat",
   "names": [

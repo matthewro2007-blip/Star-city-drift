@@ -116,14 +116,17 @@ export function createOutfitsMenu(opts) {
     if (f) {
       done = !!f.done;
       let k = (H * 0.86) / 192;
-      const ax = f.anchorX != null ? f.anchorX : f.sw / 2, feet = f.feetRow != null ? f.feetRow : f.sh - 3;
+      // 1.8.0 HD: anchorX / feetRow / dw / dh are logical (1x) px; sx..sh stay the art-px source rect
+      const lw = f.dw != null ? f.dw : f.sw, lh = f.dh != null ? f.dh : f.sh;
+      const ax = f.anchorX != null ? f.anchorX : lw / 2, feet = f.feetRow != null ? f.feetRow : lh - 3;
       let cx = W / 2;
-      if (f.sw > 144) { // wide kit cell (240 px, 48 px empty on the left): fit the reach inside the canvas
+      ctx.imageSmoothingEnabled = !!f.smooth; if (f.smooth) ctx.imageSmoothingQuality = 'high';
+      if (lw > 144) { // wide kit cell (240 px, 48 px empty on the left): fit the reach inside the canvas
         const padL = Math.max(0, ax - 72);
-        k = Math.min(k, W / (f.sw - padL));
+        k = Math.min(k, W / (lw - padL));
         cx = (ax - padL) * k;
       }
-      ctx.drawImage(f.img, f.sx, f.sy, f.sw, f.sh, Math.round(cx - ax * k), Math.round(feetY - feet * k), Math.round(f.sw * k), Math.round(f.sh * k));
+      ctx.drawImage(f.img, f.sx, f.sy, f.sw, f.sh, Math.round(cx - ax * k), Math.round(feetY - feet * k), Math.round(lw * k), Math.round(lh * k));
     } else {
       const spr = Sprites.getMatthewSprite && Sprites.getMatthewSprite('idle', artId, OUTFITS[artId], tMs / 1000);
       if (spr) { const dh = H * 0.86, dw = dh * (spr.width / spr.height); ctx.drawImage(spr, Math.round(W / 2 - dw / 2), Math.round(feetY - dh), Math.round(dw), Math.round(dh)); }
@@ -217,6 +220,7 @@ export function createOutfitsMenu(opts) {
     g.clearRect(0, 0, c.width, c.height); g.imageSmoothingEnabled = false;
     let icon = null;
     try { icon = Sprites.getWeaponIcon && Sprites.getWeaponIcon(id); } catch (_) { icon = null; }
+    g.imageSmoothingEnabled = !!(icon && icon.smooth);
     if (icon) { g.drawImage(icon.img, icon.sx, icon.sy, icon.sw, icon.sh, 0, 0, c.width, c.height); kitDrawn = id; }
     else { g.fillStyle = '#ffd24a'; g.font = 'bold 30px sans-serif'; g.textAlign = 'center'; g.fillText('★', 24, 35); kitDrawn = ''; }
   }
