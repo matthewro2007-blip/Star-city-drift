@@ -21,6 +21,8 @@ OPTION B: THE ANDROID APK
   (sideloading) needs ChromeOS developer mode, which wipes the Chromebook and turns off
   some security. School and work Chromebooks usually block it. We don't recommend it:
   use Option A or Option C instead.
+  On a phone, the full install steps (all six parts) are here:
+  https://matthewro2007-blip.github.io/Star-city-drift/downloads/android/how-to-install.html
 
 OPTION C: THE LINUX APP (.deb) - INTEL/AMD CHROMEBOOKS
   This is the full desktop app. It needs a Chromebook with an Intel or AMD processor
