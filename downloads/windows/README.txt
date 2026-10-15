@@ -1,31 +1,33 @@
-STREETS OF ROANOKE 1.8.0 (formerly Star City Drift) - Windows (64-bit) installer, sent in 10 parts
+STREETS OF ROANOKE 1.9.0 (formerly Star City Drift) - Windows (64-bit) installer, sent in 12 parts
 ==================================================================================================
 
-You need all 10 files in the SAME folder:
-  Streets-of-Roanoke-1.8.0-Setup-win-x64.7z.001   (23.1 MB)
-  Streets-of-Roanoke-1.8.0-Setup-win-x64.7z.002   (23.1 MB)
-  Streets-of-Roanoke-1.8.0-Setup-win-x64.7z.003   (23.1 MB)
-  Streets-of-Roanoke-1.8.0-Setup-win-x64.7z.004   (23.1 MB)
-  Streets-of-Roanoke-1.8.0-Setup-win-x64.7z.005   (23.1 MB)
-  Streets-of-Roanoke-1.8.0-Setup-win-x64.7z.006   (23.1 MB)
-  Streets-of-Roanoke-1.8.0-Setup-win-x64.7z.007   (23.1 MB)
-  Streets-of-Roanoke-1.8.0-Setup-win-x64.7z.008   (23.1 MB)
-  Streets-of-Roanoke-1.8.0-Setup-win-x64.7z.009   (23.1 MB)
-  Streets-of-Roanoke-1.8.0-Setup-win-x64.7z.010   (15.6 MB)
-Together they're one 7-Zip archive holding Streets-of-Roanoke-Setup-1.8.0.exe (223 MB).
+You need all 12 files in the SAME folder:
+  Streets-of-Roanoke-1.9.0-Setup-win-x64.7z.001   (23.1 MB)
+  Streets-of-Roanoke-1.9.0-Setup-win-x64.7z.002   (23.1 MB)
+  Streets-of-Roanoke-1.9.0-Setup-win-x64.7z.003   (23.1 MB)
+  Streets-of-Roanoke-1.9.0-Setup-win-x64.7z.004   (23.1 MB)
+  Streets-of-Roanoke-1.9.0-Setup-win-x64.7z.005   (23.1 MB)
+  Streets-of-Roanoke-1.9.0-Setup-win-x64.7z.006   (23.1 MB)
+  Streets-of-Roanoke-1.9.0-Setup-win-x64.7z.007   (23.1 MB)
+  Streets-of-Roanoke-1.9.0-Setup-win-x64.7z.008   (23.1 MB)
+  Streets-of-Roanoke-1.9.0-Setup-win-x64.7z.009   (23.1 MB)
+  Streets-of-Roanoke-1.9.0-Setup-win-x64.7z.010   (23.1 MB)
+  Streets-of-Roanoke-1.9.0-Setup-win-x64.7z.011   (23.1 MB)
+  Streets-of-Roanoke-1.9.0-Setup-win-x64.7z.012   (17.2 MB)
+Together they're one 7-Zip archive holding Streets-of-Roanoke-Setup-1.9.0.exe (271 MB).
 
 EASIEST: 7-Zip (free, https://www.7-zip.org)
   1. Install 7-Zip.
-  2. Right-click Streets-of-Roanoke-1.8.0-Setup-win-x64.7z.001 > 7-Zip > Extract Here
-     (or open the .001 in 7-Zip). It reads .002-.010 by itself.
-  3. Double-click Streets-of-Roanoke-Setup-1.8.0.exe and follow the installer.
+  2. Right-click Streets-of-Roanoke-1.9.0-Setup-win-x64.7z.001 > 7-Zip > Extract Here
+     (or open the .001 in 7-Zip). It reads .002-.012 by itself.
+  3. Double-click Streets-of-Roanoke-Setup-1.9.0.exe and follow the installer.
   NanaZip, PeaZip and WinRAR open the .001 the same way.
 
 WITHOUT 7-ZIP (Windows 11 only)
   Windows can't open the .001 file directly. Join the parts into one .7z first:
   in that folder, click the address bar, type  cmd  and press Enter, then run:
-    copy /b Streets-of-Roanoke-1.8.0-Setup-win-x64.7z.001+Streets-of-Roanoke-1.8.0-Setup-win-x64.7z.002+Streets-of-Roanoke-1.8.0-Setup-win-x64.7z.003+Streets-of-Roanoke-1.8.0-Setup-win-x64.7z.004+Streets-of-Roanoke-1.8.0-Setup-win-x64.7z.005+Streets-of-Roanoke-1.8.0-Setup-win-x64.7z.006+Streets-of-Roanoke-1.8.0-Setup-win-x64.7z.007+Streets-of-Roanoke-1.8.0-Setup-win-x64.7z.008+Streets-of-Roanoke-1.8.0-Setup-win-x64.7z.009+Streets-of-Roanoke-1.8.0-Setup-win-x64.7z.010 Streets-of-Roanoke-1.8.0-Setup-win-x64.7z
-  Then right-click Streets-of-Roanoke-1.8.0-Setup-win-x64.7z > Extract All. Windows 11 has opened .7z files natively since the
+    copy /b Streets-of-Roanoke-1.9.0-Setup-win-x64.7z.001+Streets-of-Roanoke-1.9.0-Setup-win-x64.7z.002+Streets-of-Roanoke-1.9.0-Setup-win-x64.7z.003+Streets-of-Roanoke-1.9.0-Setup-win-x64.7z.004+Streets-of-Roanoke-1.9.0-Setup-win-x64.7z.005+Streets-of-Roanoke-1.9.0-Setup-win-x64.7z.006+Streets-of-Roanoke-1.9.0-Setup-win-x64.7z.007+Streets-of-Roanoke-1.9.0-Setup-win-x64.7z.008+Streets-of-Roanoke-1.9.0-Setup-win-x64.7z.009+Streets-of-Roanoke-1.9.0-Setup-win-x64.7z.010+Streets-of-Roanoke-1.9.0-Setup-win-x64.7z.011+Streets-of-Roanoke-1.9.0-Setup-win-x64.7z.012 Streets-of-Roanoke-1.9.0-Setup-win-x64.7z
+  Then right-click Streets-of-Roanoke-1.9.0-Setup-win-x64.7z > Extract All. Windows 11 has opened .7z files natively since the
   23H2 update. Windows 10 can't open .7z, so use 7-Zip there.
 
 FIRST RUN
@@ -33,10 +35,22 @@ FIRST RUN
   Click "More info" > "Run anyway".
   F11 or Alt+Enter toggles fullscreen. Esc pauses. Saves stay in %APPDATA%\Star City Drift (same folder as before the rename).
 
-  Already have 1.2.x, 1.3.x, 1.4.x, 1.5.x, 1.6.x or 1.7.x? You don't need this: it updates itself from the website. Installing 1.8.0
+  Already have 1.2.x, 1.3.x, 1.4.x, 1.5.x, 1.6.x, 1.7.x or 1.8.x? You don't need this: it updates itself from the website. Installing 1.9.0
   over it is fine too and keeps your saves.
 
-NEW IN 1.8.0: HD REMASTER
+NEW IN 1.9.0: CUTSCENES & VOICES
+  - Real cutscenes: the big story moments now play as short scenes with black bars, camera moves
+    and close-ups (the arrest on Mill Mountain, the prequel scenes and its closing scene). Press
+    Esc, Start / B on a controller, or the Skip button on a phone to skip one.
+  - Voices: the characters now speak their lines out loud, with talking portraits in the dialogue
+    box. The voice volume follows the sound effects slider.
+  - Camera zoom: press Q (R3 on a controller, or the zoom option in the pause menu) to switch
+    between 1x, 2x and 3x. Close-up zoom keeps you in the middle and leans toward the fight.
+  - Story: the free prequel is now set in spring 2015, with a teenage Matthew, a new last mission
+    and a new ending. Marcus Hale has three new side missions at the river.
+  Old saves carry over.
+
+ALSO IN 1.8.0: HD REMASTER
   - Every character is redrawn at twice the detail: Matthew in all 15 outfits (including the Dark Star
     Suit and Cinder Hollow Orange), the thugs and bosses, Silas (prequel, boss and prison), the Cinder
     Hollow inmates and guards, Sgt. Reyes and Officer Okafor, and every street character.
@@ -183,13 +197,15 @@ UPDATES ARE AUTOMATIC
   title screen.
 
 SHA-256 checksums (optional check):
-72d2928403e6d74fd96fa14e5441f5f18dc347033766462baa457b93ac77f0db  Streets-of-Roanoke-1.8.0-Setup-win-x64.7z.001
-d3d2cd280ed45503fa26e7c3141c644a1022b7c656f993d8aec74c62993a510b  Streets-of-Roanoke-1.8.0-Setup-win-x64.7z.002
-7d177a069b85c85d83cad64fe8f069a78f5cc7f177c658e142f8f143e405b8c0  Streets-of-Roanoke-1.8.0-Setup-win-x64.7z.003
-8013489f2af089e15474467c5f93cabdbd56a46959d9efdea41553a39300eedb  Streets-of-Roanoke-1.8.0-Setup-win-x64.7z.004
-db578d27450921690275be62c91194c4874023ef9659f402caddc87f46375d0e  Streets-of-Roanoke-1.8.0-Setup-win-x64.7z.005
-6ef578d705f26a6c4b7fc79b90f764daf7b86ed2b7625451ff14b3b0f475a02b  Streets-of-Roanoke-1.8.0-Setup-win-x64.7z.006
-824273b13d46b7358b50d1eb7a92af274ae39200d218b51044619c749d913f5f  Streets-of-Roanoke-1.8.0-Setup-win-x64.7z.007
-1a02a5d04eb7ac328254af0108fb1865cbbb5b9e14a8b2c129a7290494ba82d5  Streets-of-Roanoke-1.8.0-Setup-win-x64.7z.008
-6f7ddd1aec1618e3b5e38d5ef615ad864a1d21e62e697fa21a3ea18d2baf9be9  Streets-of-Roanoke-1.8.0-Setup-win-x64.7z.009
-76c668e3d7a6fa770723d8fcdd121fa4dc47f05e49eae372446bb25da7bc175f  Streets-of-Roanoke-1.8.0-Setup-win-x64.7z.010
+2ebf803e3ff2ece3f62e1e0245063b0ee7a004e8d0768abf849057a3d8dd2136  Streets-of-Roanoke-1.9.0-Setup-win-x64.7z.001
+84ddebea0a73418128387a73099ef4e1486460322ca62729e60efef5776b9961  Streets-of-Roanoke-1.9.0-Setup-win-x64.7z.002
+49ca5a79650ba5edced52ddd2e1731d0097b56a8d16ecd9868f44781f9666ec0  Streets-of-Roanoke-1.9.0-Setup-win-x64.7z.003
+a60f4d75e44aa8766568afad23e847424884af9f200e105d5d9457b568208673  Streets-of-Roanoke-1.9.0-Setup-win-x64.7z.004
+3fef5dbd6dfb8fb1feb1c73ffb826d5b45cb2a64c6e9acfd925af2277078193c  Streets-of-Roanoke-1.9.0-Setup-win-x64.7z.005
+24e439d37d39d2cc6b013cc8e54ced7489de7c7058cf2e2389f04fab604a5f69  Streets-of-Roanoke-1.9.0-Setup-win-x64.7z.006
+8a8a7cfe64d1473e8a99549b04c958c72518d80e346d2abb6490228193ae917d  Streets-of-Roanoke-1.9.0-Setup-win-x64.7z.007
+cd18d1a67b0076469d253b25fee6919d9ace93f39c8f0af0c13975e360b7021e  Streets-of-Roanoke-1.9.0-Setup-win-x64.7z.008
+02dc4d9859a108b265d568c63b46d74fc243084c2aee45e416891093698e8704  Streets-of-Roanoke-1.9.0-Setup-win-x64.7z.009
+1f91c70425e799a11a300dc64f038cd87394f6bac319474ff28ed4284b3525fc  Streets-of-Roanoke-1.9.0-Setup-win-x64.7z.010
+3cfa39518b48ccbb1ccac1c6b55eafa99b06bc71822953d26ba89d88f107cc87  Streets-of-Roanoke-1.9.0-Setup-win-x64.7z.011
+5e6c4f4c19dcaba37335b91deed7cd8ec23115ca4ff52aea6b0407ee3f6efb8c  Streets-of-Roanoke-1.9.0-Setup-win-x64.7z.012

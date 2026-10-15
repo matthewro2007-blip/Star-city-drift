@@ -2,7 +2,7 @@
 # Runs on GitHub's macOS runner. Output:
 #   - workflow artifact  "Streets-of-Roanoke-<version>-ipa"
 #   - release asset      tag ios-v<version>, file Streets-of-Roanoke-<version>.ipa
-# The .ipa is about 150 MB, over GitHub's 100 MB file limit, so this workflow publishes it
+# The .ipa is over GitHub's 100 MB file limit, so this workflow publishes it
 # only as a Release asset (tag ios-v<version>) and never commits it to git.
 # The .ipa is NOT signed. Players sign it on their own device with AltStore / Sideloadly (see downloads/iphone/IPHONE.txt).
 name: iOS unsigned ipa
@@ -55,6 +55,18 @@ jobs:
           test -f ios-app/www/index.html
           test -f ios-app/www/js/main.js
           du -sh ios-app/www
+
+      - name: Voice-over for iOS (m4a only)
+        run: |
+          # 1.9.0: the site keeps assets/vo with .ogg + .m4a (web picks by canPlayType; never precached).
+          # The .ipa keeps only the AAC clips and marks the manifest bundled=m4a so WKWebView requests .m4a only.
+          if [ -f ios-app/www/assets/vo/manifest.json ]; then
+            find ios-app/www/assets/vo -name '*.ogg' -delete
+            node -e "const f='ios-app/www/assets/vo/manifest.json',fs=require('fs'),m=JSON.parse(fs.readFileSync(f));m.bundled='m4a';fs.writeFileSync(f,JSON.stringify(m))"
+            echo "VO: $(find ios-app/www/assets/vo -name '*.m4a' | wc -l) m4a clips"
+          else
+            echo "VO: none on the site (text + blips only)"
+          fi
 
       - name: Install Capacitor and sync the iOS project
         working-directory: ios-app

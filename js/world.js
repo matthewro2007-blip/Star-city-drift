@@ -172,6 +172,9 @@ const PAINTED_SIGNS = {
   prison_shop: [[350, 112, 500, 140]]
 };
 
+// 1.9.0: scenes hold the ambient sedan still (it no longer drives through the cast mid-scene)
+let trafficPaused = false;
+export function setTrafficPaused(on) { trafficPaused = !!on; }
 /** Ambient sedan on the far lane (cosmetic, no collision). laneY = tyre line just past the far curb. */
 const SCENE_TRAFFIC = {
   diner: { plate: 'diner', laneY: 426, speed: 150, turnChance: 0.6 },
@@ -518,7 +521,7 @@ export function drawBackground(ctx, area, cameraX, W, H, dt) {
     }
     // Props / receding street / ambient sedan: above the plate, below grade + characters.
     const scene = drawSceneLayer(ctx, {
-      areaId: area.id, plateKey: key, cameraX, W, dt: stepDt,
+      areaId: area.id, plateKey: key, cameraX, W, dt: trafficPaused ? 0 : stepDt,
       groundY: band.min - 2,
       props: SCENE_PROPS[area.id], street: SCENE_STREETS[area.id], traffic: SCENE_TRAFFIC[area.id]
     });

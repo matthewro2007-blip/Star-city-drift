@@ -41,7 +41,7 @@ const OUTFIT_SHEETS = {
   cinder: 'assets/sprites/matthew_cinder.png'          // 1.7.0: Cinder Hollow Orange (first visit to Silas's cell)       // 1.6.0: Dark Star Suit (beat the main campaign)
 };
 /** Cache-bust for outfit sheets / outfit portraits (bump when sheets are regenerated). */
-const SPRITE_REV = '1.8.0-hd';
+const SPRITE_REV = '1.9.0-cutscene';
 const vb = (src) => src + (src.includes('?') ? '&' : '?') + 'v=' + SPRITE_REV;
 /** Optional per-outfit HUD/picker busts (112x112); outfits without one use portrait_matthew.png. */
 const OUTFIT_PORTRAITS = { ironclad: 'assets/sprites/portrait_matthew_ironclad.png', silas: 'assets/sprites/portrait_matthew_silas.png' };
@@ -82,6 +82,17 @@ const NPC_SRC = {
   reyes: 'assets/sprites/reyes.png',
   okafor: 'assets/sprites/okafor.png',
   silas_cuffed: 'assets/sprites/silas_cuffed.png',
+  // 1.9.0-cutscene: Marcus Hale (2015 / 2026 / 2028) + teenage Matthew (2015 prequel NPC)
+  marcus_young: 'assets/sprites/marcus_young.png',
+  marcus: 'assets/sprites/marcus.png',
+  marcus_lockkeeper: 'assets/sprites/marcus_lockkeeper.png',
+  matthew_young: 'assets/sprites/matthew_young.png',
+  // 1.9.1: 2015 prequel cast (js/dlc_silas.js CAST): Rosa Calloway + the 2015 selves of the Cinder Hollow inmates
+  rosa: 'assets/sprites/rosa.png',
+  dora_young: 'assets/sprites/dora_young.png',
+  mina_young: 'assets/sprites/mina_young.png',
+  bart_young: 'assets/sprites/bart_young.png',
+  otto_young: 'assets/sprites/otto_young.png',
   priya: 'assets/sprites/priya.png',
   hank: 'assets/sprites/hank.png',
   june: 'assets/sprites/june.png',
@@ -154,7 +165,10 @@ let ANIM_REV = '';
 const CHAR_ALIASES = { coachray: 'coach', ray: 'coach', raydelgado: 'coach', deemorales: 'dee', priyashah: 'priya',
   hankrail: 'hank', hankpettigrew: 'hank', rail: 'hank', junewhitaker: 'june', tessaquinn: 'tessa', camortiz: 'cam',
   wrencalloway: 'wren', loubadger: 'lou', guspell: 'gus', ivymarsh: 'ivy', silasboone: 'silas', silasnpc: 'silas', stranger: 'silas', boss: 'silas_boss', silasboss: 'silas_boss',
-  matthewrose: 'matthew', player: 'matthew', hero: 'matthew', runner: 'snatcher', pursesnatcher: 'snatcher' };
+  matthewrose: 'matthew', player: 'matthew', hero: 'matthew', runner: 'snatcher', pursesnatcher: 'snatcher',
+  // 1.9.0-cutscene (manifest keyAliases are merged in too)
+  lockkeeper: 'marcus_lockkeeper', thelockkeeper: 'marcus_lockkeeper', marcushale: 'marcus', kessler: 'foreman', mortkessler: 'foreman',
+  rosacalloway: 'rosa', dorakeene: 'dora', minasolis: 'mina', bartholley: 'bart', ottopike: 'otto' };
 export const ANIM_STATES = {
   matthew: ['idle_signature', 'run', 'sprint', 'combo1', 'combo2', 'combo3', 'jump_kick', 'special',
     'hurt', 'ko', 'victory', 'knockdown_fall', 'knockdown_ground', 'getup'],
@@ -188,13 +202,17 @@ async function fetchManifest(src, quiet) {
 }
 
 async function loadAnimManifests() {
-  const [main, enemies] = await Promise.all([
+  const [main, enemies, poses, portraits] = await Promise.all([
     fetchManifest('assets/sprites/anims.json', false),
-    fetchManifest('assets/sprites/anims_enemies.json', true)   // optional (Jack's file)
+    fetchManifest('assets/sprites/anims_enemies.json', true),   // optional (Jack's file)
+    fetchManifest('assets/sprites/cutscene_poses.json', true),  // 1.9.0-cutscene: cs_<pose> states (frame 0 closed, 1 open)
+    fetchManifest('assets/sprites/portraits.json', true)        // 1.9.0-cutscene: dialogue busts (loaded lazily by getPortrait)
   ]);
   // cache-bust strips by manifest content: any regenerate (mine or Jack's) changes the URL
-  ANIM_REV = [main && main.__hash, enemies && enemies.__hash].filter(Boolean).join('.') || String(Date.now());
-  for (const m of [main, enemies]) {
+  ANIM_REV = [main, enemies, poses].map((m) => m && m.__hash).filter(Boolean).join('.') || String(Date.now());
+  if (portraits && portraits.characters) { PORTRAITS.m = portraits; PORTRAITS.rev = portraits.__hash || ''; }
+  for (const m of [main, enemies]) if (m && m.keyAliases) for (const [a, k] of Object.entries(m.keyAliases)) CHAR_ALIASES[a.replace(/_/g, '')] = k;
+  for (const m of [main, enemies, poses]) {
     if (!m || !m.characters) continue;
     for (const [key, ch] of Object.entries(m.characters)) {
       const dst = ANIM_MANIFEST[key] || (ANIM_MANIFEST[key] = { file: ch.file, wideFile: ch.wideFile, states: {} });
@@ -291,6 +309,51 @@ export function getAnimFrame(charKey, state, tMs, outfitId) {
     active: !!pick(st.active, false), hitbox: hb ? { x: hb.x / s, y: hb.y / s, w: hb.w / s, h: hb.h / s } : null,
     grounded: pick(st.grounded, true) !== false, lying: !!pick(st.lying, false) };
 }
+
+// ---------------------------------------------------------------- 1.9.0-cutscene: cutscene poses + dialogue portraits
+/** Cutscene pose cell: pose = 'talk'|'point'|'crossed'|'shocked'|'laugh'|'kneel' (or 'cs_talk'), open = mouth open.
+ * -> same shape as getAnimFrame (dw/dh/anchorX/feetRow in logical px, artScale normalised) or null (fall back to idle). */
+export function getCutscenePose(charKey, pose, open, outfitId) {
+  const key = animKey(charKey, outfitId);
+  const name = String(pose || 'talk').startsWith('cs_') ? pose : 'cs_' + pose;
+  let ch = ANIM_MANIFEST[key], st = resolveState(ch, name);
+  if (!st && key.startsWith('matthew_') && key !== 'matthew_polo') { ch = ANIM_MANIFEST.matthew_polo; st = resolveState(ch, name); }
+  if (!st || !st.frames || !st.frames.length) return null;
+  const i = open && st.frames.length > 1 ? 1 : 0;
+  const pick = (a, d) => (Array.isArray(a) ? (a[i] != null ? a[i] : d) : (a != null ? a : d));
+  const img = animImages[pick(st.file, null) || ch.file];
+  if (!img) return null;
+  const s = st.artScale || 1, sw = pick(st.sw, st.fw || 144 * s), sh = pick(st.sh, st.fh || 192 * s);
+  return { img, sx: pick(st.sx, 0), sy: pick(st.sy, 0), sw, sh, dw: sw / s, dh: sh / s, artScale: s, smooth: s > 1,
+    anchorX: pick(st.anchorX, sw / 2) / s, feetRow: pick(st.feetRow, sh - 3 * s) / s, expr: st.expr || null, open: i === 1,
+    grounded: true, lying: false, done: false, index: i, active: false, hitbox: null };
+}
+
+const PORTRAITS = { m: null, rev: '', img: {} };
+/** Dialogue bust: expr = 'neutral'|'happy'|'angry'|'sad'|'surprised' (Marcus: neutral|angry|smug), open = mouth open.
+ * Falls back to 'neutral' when the expression is missing. Loads lazily: returns null until the image arrives (draw nothing or a
+ * placeholder that frame). -> {img, sw, sh, dw, dh, artScale, smooth}; dw/dh = 112 logical. size >= 300 on screen picks the 3x file. */
+export function getPortrait(charKey, expr, open, size) {
+  const m = PORTRAITS.m; if (!m) return null;
+  let k = squash(charKey && typeof charKey === 'object' ? charKey.key || charKey.id : charKey);
+  if (!m.characters[k]) { const a = animKey(k); k = m.characters[a] ? a : (m.characters[k.split('_')[0]] ? k.split('_')[0] : k); }
+  const c = m.characters[k]; if (!c) return null;
+  const e = c[expr] || c.neutral || Object.values(c)[0]; if (!e) return null;
+  const big = size >= 300 && e.files3x;
+  const src = (big ? e.files3x : e)[open ? 'open' : 'closed'];
+  if (!src) return null;
+  const slot = PORTRAITS.img[src];
+  if (slot === undefined) {
+    PORTRAITS.img[src] = null;
+    loadImage(src + '?v=' + (PORTRAITS.rev || SPRITE_REV)).then((im) => { PORTRAITS.img[src] = im; }).catch(() => { console.warn('Portrait missing:', src); });
+    return null;
+  }
+  if (!slot) return null;
+  const s = big ? 3 : (m.artScale || 2);
+  return { img: slot, sx: 0, sy: 0, sw: slot.width, sh: slot.height, dw: slot.width / s, dh: slot.height / s, artScale: s, smooth: true };
+}
+/** Warm the portrait cache for a scene (call before a dialogue so the first line isn't blank). */
+export function preloadPortraits(list) { for (const [k, e] of list || []) { getPortrait(k, e, false); getPortrait(k, e, true); } }
 
 export function getHeartImages() {
   return { full: images.heart, empty: images.heartEmpty };

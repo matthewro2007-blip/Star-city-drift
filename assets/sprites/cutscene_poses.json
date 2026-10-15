@@ -1,0 +1,7828 @@
+{
+ "version": 1,
+ "frameW": 288,
+ "frameH": 384,
+ "feetRow": 378,
+ "artScale": 2,
+ "anchorX": 144,
+ "rev": "1.9.0-cutscene",
+ "note": "Cutscene poses. Each state cs_<pose> has 2 frames: [0] mouth closed, [1] mouth open. Flap by voice loudness or fps 6 while a line plays. Same per-state format as anims.json, so it can be merged by loadAnimManifests(). Main-game Matthew is keyed matthew_polo (other outfits fall back to it in getCutscenePose).",
+ "poses": [
+  "talk",
+  "point",
+  "crossed",
+  "shocked",
+  "laugh",
+  "kneel"
+ ],
+ "expr": {
+  "talk": "neutral",
+  "point": "angry",
+  "crossed": "smug",
+  "shocked": "shocked",
+  "laugh": "laugh",
+  "kneel": "hurt"
+ },
+ "characters": {
+  "matthew_polo": {
+   "file": "assets/sprites/cutscene/matthew_cutscene.png",
+   "artScale": 2,
+   "states": {
+    "cs_talk": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/matthew_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      0,
+      0
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "neutral",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    },
+    "cs_point": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/matthew_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      288,
+      288
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "angry",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    },
+    "cs_crossed": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/matthew_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      576,
+      576
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "smug",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    },
+    "cs_shocked": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/matthew_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      864,
+      864
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "shocked",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    },
+    "cs_laugh": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/matthew_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      1152,
+      1152
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "laugh",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    },
+    "cs_kneel": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/matthew_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      1440,
+      1440
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "hurt",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    }
+   }
+  },
+  "dee": {
+   "file": "assets/sprites/cutscene/dee_cutscene.png",
+   "artScale": 2,
+   "states": {
+    "cs_talk": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/dee_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      0,
+      0
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "neutral",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    },
+    "cs_point": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/dee_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      288,
+      288
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "angry",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    },
+    "cs_crossed": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/dee_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      576,
+      576
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "smug",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    },
+    "cs_shocked": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/dee_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      864,
+      864
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "shocked",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    },
+    "cs_laugh": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/dee_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      1152,
+      1152
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "laugh",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    },
+    "cs_kneel": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/dee_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      1440,
+      1440
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "hurt",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    }
+   }
+  },
+  "hank": {
+   "file": "assets/sprites/cutscene/hank_cutscene.png",
+   "artScale": 2,
+   "states": {
+    "cs_talk": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/hank_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      0,
+      0
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "neutral",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    },
+    "cs_point": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/hank_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      288,
+      288
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "angry",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    },
+    "cs_crossed": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/hank_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      576,
+      576
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "smug",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    },
+    "cs_shocked": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/hank_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      864,
+      864
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "shocked",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    },
+    "cs_laugh": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/hank_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      1152,
+      1152
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "laugh",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    },
+    "cs_kneel": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/hank_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      1440,
+      1440
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "hurt",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    }
+   }
+  },
+  "priya": {
+   "file": "assets/sprites/cutscene/priya_cutscene.png",
+   "artScale": 2,
+   "states": {
+    "cs_talk": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/priya_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      0,
+      0
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "neutral",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    },
+    "cs_point": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/priya_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      288,
+      288
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "angry",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    },
+    "cs_crossed": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/priya_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      576,
+      576
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "smug",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    },
+    "cs_shocked": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/priya_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      864,
+      864
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "shocked",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    },
+    "cs_laugh": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/priya_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      1152,
+      1152
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "laugh",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    },
+    "cs_kneel": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/priya_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      1440,
+      1440
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "hurt",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    }
+   }
+  },
+  "cam": {
+   "file": "assets/sprites/cutscene/cam_cutscene.png",
+   "artScale": 2,
+   "states": {
+    "cs_talk": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/cam_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      0,
+      0
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "neutral",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    },
+    "cs_point": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/cam_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      288,
+      288
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "angry",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    },
+    "cs_crossed": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/cam_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      576,
+      576
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "smug",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    },
+    "cs_shocked": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/cam_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      864,
+      864
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "shocked",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    },
+    "cs_laugh": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/cam_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      1152,
+      1152
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "laugh",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    },
+    "cs_kneel": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/cam_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      1440,
+      1440
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "hurt",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    }
+   }
+  },
+  "june": {
+   "file": "assets/sprites/cutscene/june_cutscene.png",
+   "artScale": 2,
+   "states": {
+    "cs_talk": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/june_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      0,
+      0
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "neutral",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    },
+    "cs_point": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/june_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      288,
+      288
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "angry",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    },
+    "cs_crossed": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/june_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      576,
+      576
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "smug",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    },
+    "cs_shocked": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/june_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      864,
+      864
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "shocked",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    },
+    "cs_laugh": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/june_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      1152,
+      1152
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "laugh",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    },
+    "cs_kneel": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/june_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      1440,
+      1440
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "hurt",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    }
+   }
+  },
+  "coach": {
+   "file": "assets/sprites/cutscene/coach_cutscene.png",
+   "artScale": 2,
+   "states": {
+    "cs_talk": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/coach_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      0,
+      0
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "neutral",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    },
+    "cs_point": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/coach_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      288,
+      288
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "angry",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    },
+    "cs_crossed": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/coach_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      576,
+      576
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "smug",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    },
+    "cs_shocked": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/coach_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      864,
+      864
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "shocked",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    },
+    "cs_laugh": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/coach_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      1152,
+      1152
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "laugh",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    },
+    "cs_kneel": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/coach_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      1440,
+      1440
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "hurt",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    }
+   }
+  },
+  "tessa": {
+   "file": "assets/sprites/cutscene/tessa_cutscene.png",
+   "artScale": 2,
+   "states": {
+    "cs_talk": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/tessa_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      0,
+      0
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "neutral",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    },
+    "cs_point": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/tessa_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      288,
+      288
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "angry",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    },
+    "cs_crossed": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/tessa_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      576,
+      576
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "smug",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    },
+    "cs_shocked": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/tessa_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      864,
+      864
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "shocked",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    },
+    "cs_laugh": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/tessa_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      1152,
+      1152
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "laugh",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    },
+    "cs_kneel": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/tessa_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      1440,
+      1440
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "hurt",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    }
+   }
+  },
+  "wren": {
+   "file": "assets/sprites/cutscene/wren_cutscene.png",
+   "artScale": 2,
+   "states": {
+    "cs_talk": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/wren_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      0,
+      0
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "neutral",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    },
+    "cs_point": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/wren_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      288,
+      288
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "angry",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    },
+    "cs_crossed": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/wren_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      576,
+      576
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "smug",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    },
+    "cs_shocked": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/wren_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      864,
+      864
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "shocked",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    },
+    "cs_laugh": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/wren_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      1152,
+      1152
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "laugh",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    },
+    "cs_kneel": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/wren_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      1440,
+      1440
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "hurt",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    }
+   }
+  },
+  "silas": {
+   "file": "assets/sprites/cutscene/silas_cutscene.png",
+   "artScale": 2,
+   "states": {
+    "cs_talk": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/silas_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      0,
+      0
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "neutral",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    },
+    "cs_point": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/silas_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      288,
+      288
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "angry",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    },
+    "cs_crossed": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/silas_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      576,
+      576
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "smug",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    },
+    "cs_shocked": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/silas_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      864,
+      864
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "shocked",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    },
+    "cs_laugh": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/silas_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      1152,
+      1152
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "laugh",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    },
+    "cs_kneel": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/silas_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      1440,
+      1440
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "hurt",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    }
+   }
+  },
+  "silas_prison": {
+   "file": "assets/sprites/cutscene/silas_prison_cutscene.png",
+   "artScale": 2,
+   "states": {
+    "cs_talk": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/silas_prison_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      0,
+      0
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "neutral",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    },
+    "cs_point": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/silas_prison_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      288,
+      288
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "angry",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    },
+    "cs_crossed": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/silas_prison_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      576,
+      576
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "smug",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    },
+    "cs_shocked": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/silas_prison_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      864,
+      864
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "shocked",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    },
+    "cs_laugh": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/silas_prison_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      1152,
+      1152
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "laugh",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    },
+    "cs_kneel": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/silas_prison_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      1440,
+      1440
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "hurt",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    }
+   }
+  },
+  "silas_cuffed": {
+   "file": "assets/sprites/cutscene/silas_cuffed_cutscene.png",
+   "artScale": 2,
+   "states": {
+    "cs_talk": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/silas_cuffed_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      0,
+      0
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "neutral",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    },
+    "cs_point": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/silas_cuffed_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      288,
+      288
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "angry",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    },
+    "cs_crossed": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/silas_cuffed_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      576,
+      576
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "smug",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    },
+    "cs_shocked": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/silas_cuffed_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      864,
+      864
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "shocked",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    },
+    "cs_laugh": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/silas_cuffed_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      1152,
+      1152
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "laugh",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    },
+    "cs_kneel": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/silas_cuffed_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      1440,
+      1440
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "hurt",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    }
+   }
+  },
+  "marcus_young": {
+   "file": "assets/sprites/cutscene/marcus_young_cutscene.png",
+   "artScale": 2,
+   "states": {
+    "cs_talk": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/marcus_young_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      0,
+      0
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "neutral",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    },
+    "cs_point": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/marcus_young_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      288,
+      288
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "angry",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    },
+    "cs_crossed": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/marcus_young_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      576,
+      576
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "smug",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    },
+    "cs_shocked": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/marcus_young_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      864,
+      864
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "shocked",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    },
+    "cs_laugh": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/marcus_young_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      1152,
+      1152
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "laugh",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    },
+    "cs_kneel": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/marcus_young_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      1440,
+      1440
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "hurt",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    }
+   }
+  },
+  "marcus": {
+   "file": "assets/sprites/cutscene/marcus_cutscene.png",
+   "artScale": 2,
+   "states": {
+    "cs_talk": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/marcus_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      0,
+      0
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "neutral",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    },
+    "cs_point": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/marcus_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      288,
+      288
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "angry",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    },
+    "cs_crossed": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/marcus_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      576,
+      576
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "smug",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    },
+    "cs_shocked": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/marcus_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      864,
+      864
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "shocked",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    },
+    "cs_laugh": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/marcus_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      1152,
+      1152
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "laugh",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    },
+    "cs_kneel": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/marcus_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      1440,
+      1440
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "hurt",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    }
+   }
+  },
+  "marcus_lockkeeper": {
+   "file": "assets/sprites/cutscene/marcus_lockkeeper_cutscene.png",
+   "artScale": 2,
+   "states": {
+    "cs_talk": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/marcus_lockkeeper_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      0,
+      0
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "neutral",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    },
+    "cs_point": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/marcus_lockkeeper_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      288,
+      288
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "angry",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    },
+    "cs_crossed": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/marcus_lockkeeper_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      576,
+      576
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "smug",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    },
+    "cs_shocked": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/marcus_lockkeeper_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      864,
+      864
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "shocked",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    },
+    "cs_laugh": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/marcus_lockkeeper_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      1152,
+      1152
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "laugh",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    },
+    "cs_kneel": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/marcus_lockkeeper_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      1440,
+      1440
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "hurt",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    }
+   }
+  },
+  "matthew_young": {
+   "file": "assets/sprites/cutscene/matthew_young_cutscene.png",
+   "artScale": 2,
+   "states": {
+    "cs_talk": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/matthew_young_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      0,
+      0
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "neutral",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    },
+    "cs_point": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/matthew_young_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      288,
+      288
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "angry",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    },
+    "cs_crossed": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/matthew_young_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      576,
+      576
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "smug",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    },
+    "cs_shocked": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/matthew_young_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      864,
+      864
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "shocked",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    },
+    "cs_laugh": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/matthew_young_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      1152,
+      1152
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "laugh",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    },
+    "cs_kneel": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/matthew_young_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      1440,
+      1440
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "hurt",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    }
+   }
+  },
+  "rosa": {
+   "file": "assets/sprites/cutscene/rosa_cutscene.png",
+   "artScale": 2,
+   "states": {
+    "cs_talk": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/rosa_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      0,
+      0
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "neutral",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    },
+    "cs_point": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/rosa_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      288,
+      288
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "angry",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    },
+    "cs_crossed": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/rosa_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      576,
+      576
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "smug",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    },
+    "cs_shocked": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/rosa_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      864,
+      864
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "shocked",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    },
+    "cs_laugh": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/rosa_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      1152,
+      1152
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "laugh",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    },
+    "cs_kneel": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/rosa_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      1440,
+      1440
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "hurt",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    }
+   }
+  },
+  "dora_young": {
+   "file": "assets/sprites/cutscene/dora_young_cutscene.png",
+   "artScale": 2,
+   "states": {
+    "cs_talk": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/dora_young_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      0,
+      0
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "neutral",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    },
+    "cs_point": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/dora_young_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      288,
+      288
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "angry",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    },
+    "cs_crossed": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/dora_young_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      576,
+      576
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "smug",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    },
+    "cs_shocked": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/dora_young_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      864,
+      864
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "shocked",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    },
+    "cs_laugh": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/dora_young_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      1152,
+      1152
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "laugh",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    },
+    "cs_kneel": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/dora_young_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      1440,
+      1440
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "hurt",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    }
+   }
+  },
+  "mina_young": {
+   "file": "assets/sprites/cutscene/mina_young_cutscene.png",
+   "artScale": 2,
+   "states": {
+    "cs_talk": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/mina_young_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      0,
+      0
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "neutral",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    },
+    "cs_point": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/mina_young_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      288,
+      288
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "angry",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    },
+    "cs_crossed": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/mina_young_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      576,
+      576
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "smug",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    },
+    "cs_shocked": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/mina_young_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      864,
+      864
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "shocked",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    },
+    "cs_laugh": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/mina_young_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      1152,
+      1152
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "laugh",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    },
+    "cs_kneel": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/mina_young_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      1440,
+      1440
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "hurt",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    }
+   }
+  },
+  "bart_young": {
+   "file": "assets/sprites/cutscene/bart_young_cutscene.png",
+   "artScale": 2,
+   "states": {
+    "cs_talk": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/bart_young_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      0,
+      0
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "neutral",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    },
+    "cs_point": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/bart_young_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      288,
+      288
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "angry",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    },
+    "cs_crossed": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/bart_young_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      576,
+      576
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "smug",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    },
+    "cs_shocked": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/bart_young_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      864,
+      864
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "shocked",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    },
+    "cs_laugh": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/bart_young_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      1152,
+      1152
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "laugh",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    },
+    "cs_kneel": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/bart_young_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      1440,
+      1440
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "hurt",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    }
+   }
+  },
+  "otto_young": {
+   "file": "assets/sprites/cutscene/otto_young_cutscene.png",
+   "artScale": 2,
+   "states": {
+    "cs_talk": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/otto_young_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      0,
+      0
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "neutral",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    },
+    "cs_point": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/otto_young_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      288,
+      288
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "angry",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    },
+    "cs_crossed": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/otto_young_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      576,
+      576
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "smug",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    },
+    "cs_shocked": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/otto_young_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      864,
+      864
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "shocked",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    },
+    "cs_laugh": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/otto_young_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      1152,
+      1152
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "laugh",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    },
+    "cs_kneel": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/otto_young_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      1440,
+      1440
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "hurt",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    }
+   }
+  },
+  "dora": {
+   "file": "assets/sprites/cutscene/dora_cutscene.png",
+   "artScale": 2,
+   "states": {
+    "cs_talk": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/dora_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      0,
+      0
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "neutral",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    },
+    "cs_point": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/dora_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      288,
+      288
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "angry",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    },
+    "cs_crossed": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/dora_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      576,
+      576
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "smug",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    },
+    "cs_shocked": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/dora_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      864,
+      864
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "shocked",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    },
+    "cs_laugh": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/dora_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      1152,
+      1152
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "laugh",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    },
+    "cs_kneel": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/dora_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      1440,
+      1440
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "hurt",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    }
+   }
+  },
+  "mina": {
+   "file": "assets/sprites/cutscene/mina_cutscene.png",
+   "artScale": 2,
+   "states": {
+    "cs_talk": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/mina_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      0,
+      0
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "neutral",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    },
+    "cs_point": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/mina_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      288,
+      288
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "angry",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    },
+    "cs_crossed": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/mina_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      576,
+      576
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "smug",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    },
+    "cs_shocked": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/mina_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      864,
+      864
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "shocked",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    },
+    "cs_laugh": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/mina_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      1152,
+      1152
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "laugh",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    },
+    "cs_kneel": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/mina_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      1440,
+      1440
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "hurt",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    }
+   }
+  },
+  "bart": {
+   "file": "assets/sprites/cutscene/bart_cutscene.png",
+   "artScale": 2,
+   "states": {
+    "cs_talk": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/bart_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      0,
+      0
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "neutral",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    },
+    "cs_point": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/bart_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      288,
+      288
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "angry",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    },
+    "cs_crossed": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/bart_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      576,
+      576
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "smug",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    },
+    "cs_shocked": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/bart_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      864,
+      864
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "shocked",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    },
+    "cs_laugh": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/bart_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      1152,
+      1152
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "laugh",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    },
+    "cs_kneel": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/bart_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      1440,
+      1440
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "hurt",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    }
+   }
+  },
+  "otto": {
+   "file": "assets/sprites/cutscene/otto_cutscene.png",
+   "artScale": 2,
+   "states": {
+    "cs_talk": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/otto_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      0,
+      0
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "neutral",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    },
+    "cs_point": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/otto_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      288,
+      288
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "angry",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    },
+    "cs_crossed": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/otto_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      576,
+      576
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "smug",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    },
+    "cs_shocked": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/otto_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      864,
+      864
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "shocked",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    },
+    "cs_laugh": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/otto_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      1152,
+      1152
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "laugh",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    },
+    "cs_kneel": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/cutscene/otto_cutscene.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384
+     ],
+     "sx": [
+      1440,
+      1440
+     ],
+     "sy": [
+      0,
+      384
+     ],
+     "frames": [
+      0,
+      1
+     ],
+     "grounded": [
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null
+     ],
+     "expr": "hurt",
+     "mouth": [
+      "closed",
+      "open"
+     ]
+    }
+   }
+  }
+ }
+}

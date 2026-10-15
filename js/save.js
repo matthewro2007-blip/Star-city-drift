@@ -156,7 +156,8 @@ export function serializeSave({ player, stateBag, gameState, outfitId, areaId })
     playTime: Math.floor(gameState.playTime || 0),
     difficulty: gameState.difficulty || 'normal',
     fetchItems: [...(stateBag.fetchItems || [])],
-    fetchActive: !!(stateBag.side && stateBag.side.id === 'side_potluck'),
+    fetchActive: !!(stateBag.side && stateBag.missions[stateBag.side.id]?.kind === 'fetch'), // any fetch run (Potluck, Marcus's pages…)
+    fetchMission: stateBag.side && stateBag.missions[stateBag.side.id]?.kind === 'fetch' ? stateBag.side.id : null, // 1.9.0: which one
     beatHard: !!stateBag.beatHard,
     dlcSilas: !!stateBag.dlcSilas, // 1.5.0: finished the Silas prequel (Silas's Suit); read from the DLC's own slot
     spotted: (stateBag.collectibles || []).filter((c) => c.stealth && c.spotted && !c.taken).map((c) => c.id),
@@ -193,6 +194,7 @@ export function makeNgPlusSave(d) {
     deliveryActive: false,
     fetchItems: [],
     fetchActive: false,
+    fetchMission: null,
     special: 40,
     storyBeaten: true,
     ngPlus: Math.max(0, Math.floor(num(d.ngPlus, 0))) + 1
@@ -243,7 +245,9 @@ export function applySave(data, { player, stateBag, gameState, areas }) {
     stateBag.beatHard = !!data.beatHard;
     stateBag.dlcSilas = !!data.dlcSilas;
     // timed / wave missions restart from their giver after a load; the fetch run resumes
-    stateBag.side = data.fetchActive && !stateBag.missions.side_potluck?.done ? { id: 'side_potluck' } : null;
+    // 1.9.0: fetchMission names the run; saves without it were the Potluck (the only fetch mission before)
+    const fid = typeof data.fetchMission === 'string' && stateBag.missions[data.fetchMission]?.kind === 'fetch' ? data.fetchMission : 'side_potluck';
+    stateBag.side = data.fetchActive && stateBag.missions[fid] && !stateBag.missions[fid].done ? { id: fid } : null;
     for (const c of stateBag.collectibles) {
       if (c.reveal) c.area = stateBag.missions[c.reveal]?.done ? c.home : 'hidden:' + c.home;
     }

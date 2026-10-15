@@ -13,22 +13,22 @@ const PROMPTS = {
   keyboard: {
     punch: 'Z', kick: 'X', heavy: 'C', interact: 'E', pause: 'Esc',
     confirm: 'Enter', back: 'Esc', move: 'WASD / Arrows', outfit: '1–9, 0, −, =, #', nightmare: '= or Shift+2', suit: '# or Shift+3',
-    sprint: 'Shift', special: 'V', jumpkick: 'Shift + X', weather: 'T'
+    sprint: 'Shift', special: 'V', jumpkick: 'Shift + X', weather: 'T', zoom: 'Q', skip: 'Esc'
   },
   touch: {
     punch: 'Z', kick: 'X', heavy: '', interact: 'E', pause: 'II',
     confirm: 'Tap', back: 'Tap', move: 'Stick', outfit: '', nightmare: 'II ▸ Outfits', suit: 'II ▸ Outfits',
-    sprint: 'RUN', special: '★', jumpkick: 'RUN + X', weather: 'Day'
+    sprint: 'RUN', special: '★', jumpkick: 'RUN + X', weather: 'Day', zoom: '', skip: 'Skip'
   },
   ps: {
     punch: '✕ Cross', kick: '○ Circle', heavy: '△ Triangle', interact: '□ Square',
     pause: 'Options', confirm: '✕ Cross', back: '○ Circle', move: 'Left stick / D-pad', outfit: 'L1 / R1', nightmare: 'L1 / R1', suit: 'L1 / R1',
-    sprint: 'L3 / L2', special: 'R2', jumpkick: 'L2 + ○', weather: 'Create'
+    sprint: 'L3 / L2', special: 'R2', jumpkick: 'L2 + ○', weather: 'Create', zoom: 'R3', skip: 'Options / ○'
   },
   xbox: {
     punch: 'A', kick: 'B', heavy: 'Y', interact: 'X', pause: 'Menu',
     confirm: 'A', back: 'B', move: 'Left stick / D-pad', outfit: 'LB / RB', nightmare: 'LB / RB', suit: 'LB / RB',
-    sprint: 'LS / LT', special: 'RT', jumpkick: 'LT + B', weather: 'View'
+    sprint: 'LS / LT', special: 'RT', jumpkick: 'LT + B', weather: 'View', zoom: 'RS', skip: 'Menu / B'
   }
 };
 
@@ -84,6 +84,7 @@ export function createInput(canvas, opts = {}) {
     specialPressed: false, sprint: false, // v3: special (Star Drive) + held sprint
     pausePressed: false, confirmPressed: false, backPressed: false,
     weatherPressed: false,
+    zoomPressed: false, // 1.9.0: camera zoom level (Q / R3)
     navUp: false, navDown: false, navLeft: false, navRight: false,
     outfitKey: null,
     outfitCycle: 0,
@@ -125,6 +126,7 @@ export function createInput(canvas, opts = {}) {
     e: 'interact', E: 'interact',
     v: 'special', V: 'special',
     t: 'weather', T: 'weather',
+    q: 'zoom', Q: 'zoom', // 1.9.0: camera zoom level 1x / 2x / 3x
     Shift: 'sprint',
     Enter: 'confirm',
     Escape: 'pause'
@@ -159,6 +161,7 @@ export function createInput(canvas, opts = {}) {
     if (a === 'confirm') state.confirmPressed = true;
     if (a === 'pause') { state.pausePressed = true; state.backPressed = true; }
     if (a === 'weather') state.weatherPressed = true;
+    if (a === 'zoom') state.zoomPressed = true;
     if (a === 'up') state.navUp = true;
     if (a === 'down') state.navDown = true;
     if (a === 'left') state.navLeft = true;
@@ -329,7 +332,9 @@ export function createInput(canvas, opts = {}) {
     const e6 = edge(6), e10 = edge(10);       // L2 / LT, L3 / LS: sprint (held)
     for (let i = 8; i < 18; i++) {
       if (i === 9 || i === 10) continue;
-      if (edge(i) && i === 8) state.weatherPressed = true; // View / Create: cycle weather (not a gameplay button)
+      const ei = edge(i);
+      if (ei && i === 8) state.weatherPressed = true; // View / Create: cycle weather (not a gameplay button)
+      if (ei && i === 11) state.zoomPressed = true;   // 1.9.0: R3 / RS click: camera zoom level
     }
     if (e7) state.specialPressed = true;
     out.sprint = btn(6) || btn(10);
@@ -379,6 +384,7 @@ export function createInput(canvas, opts = {}) {
       state.punchPressed = state.kickPressed = state.heavyPressed = state.specialPressed = false;
       state.interactPressed = state.confirmPressed = state.backPressed = state.pausePressed = false;
       state.weatherPressed = false;
+      state.zoomPressed = false;
       state.navUp = state.navDown = state.navLeft = state.navRight = false;
       state.outfitKey = null;
       state.outfitCycle = 0;
@@ -404,6 +410,7 @@ export function createInput(canvas, opts = {}) {
         backPressed: state.backPressed,
         pausePressed: state.pausePressed,
         weatherPressed: state.weatherPressed,
+        zoomPressed: state.zoomPressed,
         navUp: state.navUp, navDown: state.navDown, navLeft: state.navLeft, navRight: state.navRight,
         outfitKey: state.outfitKey,
         outfitCycle: state.outfitCycle,

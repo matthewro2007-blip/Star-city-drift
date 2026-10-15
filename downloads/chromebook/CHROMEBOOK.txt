@@ -1,4 +1,4 @@
-STREETS OF ROANOKE 1.8.0 ON A CHROMEBOOK
+STREETS OF ROANOKE 1.9.0 ON A CHROMEBOOK
 (formerly Star City Drift)
 ======================================
 
@@ -21,8 +21,6 @@ OPTION B: THE ANDROID APK
   (sideloading) needs ChromeOS developer mode, which wipes the Chromebook and turns off
   some security. School and work Chromebooks usually block it. We don't recommend it:
   use Option A or Option C instead.
-  On a phone, the full install steps (all six parts) are here:
-  https://matthewro2007-blip.github.io/Star-city-drift/downloads/android/how-to-install.html
 
 OPTION C: THE LINUX APP (.deb) - INTEL/AMD CHROMEBOOKS
   This is the full desktop app. It needs a Chromebook with an Intel or AMD processor
@@ -30,31 +28,33 @@ OPTION C: THE LINUX APP (.deb) - INTEL/AMD CHROMEBOOKS
   1. Turn on Linux: Settings > Advanced > Developers > Linux development environment >
      Turn on, and follow the steps. (On some versions: Settings > About ChromeOS >
      Developers.) This does NOT need developer mode.
-  2. Download all 11 parts into the same folder:
-       Streets-of-Roanoke-1.8.0-chromebook-linux-x64.7z.001   (23.1 MB)
-       Streets-of-Roanoke-1.8.0-chromebook-linux-x64.7z.002   (23.1 MB)
-       Streets-of-Roanoke-1.8.0-chromebook-linux-x64.7z.003   (23.1 MB)
-       Streets-of-Roanoke-1.8.0-chromebook-linux-x64.7z.004   (23.1 MB)
-       Streets-of-Roanoke-1.8.0-chromebook-linux-x64.7z.005   (23.1 MB)
-       Streets-of-Roanoke-1.8.0-chromebook-linux-x64.7z.006   (23.1 MB)
-       Streets-of-Roanoke-1.8.0-chromebook-linux-x64.7z.007   (23.1 MB)
-       Streets-of-Roanoke-1.8.0-chromebook-linux-x64.7z.008   (23.1 MB)
-       Streets-of-Roanoke-1.8.0-chromebook-linux-x64.7z.009   (23.1 MB)
-       Streets-of-Roanoke-1.8.0-chromebook-linux-x64.7z.010   (23.1 MB)
-       Streets-of-Roanoke-1.8.0-chromebook-linux-x64.7z.011   (15.3 MB)
-     Together they're one 7-Zip archive holding Streets-of-Roanoke-1.8.0-chromebook-amd64.deb.
+  2. Download all 13 parts into the same folder:
+       Streets-of-Roanoke-1.9.0-chromebook-linux-x64.7z.001   (23.1 MB)
+       Streets-of-Roanoke-1.9.0-chromebook-linux-x64.7z.002   (23.1 MB)
+       Streets-of-Roanoke-1.9.0-chromebook-linux-x64.7z.003   (23.1 MB)
+       Streets-of-Roanoke-1.9.0-chromebook-linux-x64.7z.004   (23.1 MB)
+       Streets-of-Roanoke-1.9.0-chromebook-linux-x64.7z.005   (23.1 MB)
+       Streets-of-Roanoke-1.9.0-chromebook-linux-x64.7z.006   (23.1 MB)
+       Streets-of-Roanoke-1.9.0-chromebook-linux-x64.7z.007   (23.1 MB)
+       Streets-of-Roanoke-1.9.0-chromebook-linux-x64.7z.008   (23.1 MB)
+       Streets-of-Roanoke-1.9.0-chromebook-linux-x64.7z.009   (23.1 MB)
+       Streets-of-Roanoke-1.9.0-chromebook-linux-x64.7z.010   (23.1 MB)
+       Streets-of-Roanoke-1.9.0-chromebook-linux-x64.7z.011   (23.1 MB)
+       Streets-of-Roanoke-1.9.0-chromebook-linux-x64.7z.012   (23.1 MB)
+       Streets-of-Roanoke-1.9.0-chromebook-linux-x64.7z.013   (23.0 MB)
+     Together they're one 7-Zip archive holding Streets-of-Roanoke-1.9.0-chromebook-amd64.deb.
   3. In the Files app, move all the parts into "Linux files".
   4. Open the Terminal app (Launcher > Linux apps > Terminal) and run these two lines:
        sudo apt install -y p7zip-full
-       7z x Streets-of-Roanoke-1.8.0-chromebook-linux-x64.7z.001
-     This makes Streets-of-Roanoke-1.8.0-chromebook-amd64.deb in Linux files.
+       7z x Streets-of-Roanoke-1.9.0-chromebook-linux-x64.7z.001
+     This makes Streets-of-Roanoke-1.9.0-chromebook-amd64.deb in Linux files.
      (You can delete the .7z parts afterwards.)
-  5. In the Files app, double-click Streets-of-Roanoke-1.8.0-chromebook-amd64.deb, then click
+  5. In the Files app, double-click Streets-of-Roanoke-1.9.0-chromebook-amd64.deb, then click
      Install. Wait for the "Installation complete" notice.
   6. Open Streets of Roanoke from Launcher > Linux apps.
   Or install from the Terminal instead of step 5:
-       sudo apt install -y ./Streets-of-Roanoke-1.8.0-chromebook-amd64.deb
-  Already have 1.6.0 or 1.7.0 from the .deb? Install this over it: it is the same
+       sudo apt install -y ./Streets-of-Roanoke-1.9.0-chromebook-amd64.deb
+  Already have 1.6.0, 1.7.0 or 1.8.0 from the .deb? Install this over it: it is the same
   package (star-city-drift), it replaces the old one and keeps your saves.
   It plays the copy that came with it offline, and updates itself from the website when
   you're online, so you don't need to reinstall for new versions. F11 toggles fullscreen.
@@ -64,15 +64,17 @@ WHICH ONE?
   Most people: Option A. Want the desktop app on an Intel/AMD Chromebook: Option C.
 
 SHA-256 checksums (optional check):
-d096ad94071eb7ee02e4f74f44c88803c5c79acf9d5d56707b3ca7e5809d5a11  Streets-of-Roanoke-1.8.0-chromebook-linux-x64.7z.001
-f8032c551fae2772125b800ac4cabd29ff9fe22c6fd191391a1594cd40e53827  Streets-of-Roanoke-1.8.0-chromebook-linux-x64.7z.002
-6e64d045055799a468e6c53ac20ea66abd09a5901fc99f9a6547078a15fec20a  Streets-of-Roanoke-1.8.0-chromebook-linux-x64.7z.003
-3b4712e15f2024f6fd81a13712a8a4e4db8047ba3a54fe2a12c0025e9ae35837  Streets-of-Roanoke-1.8.0-chromebook-linux-x64.7z.004
-9a44e5a0f7a45561885a6e20c6280c23fe25e9fcd54fd89952f5a207e4b9ef44  Streets-of-Roanoke-1.8.0-chromebook-linux-x64.7z.005
-d35703c4d6a8b833e734adefd1ca60cf0a215cc78ab216c0b3064576a929a0ee  Streets-of-Roanoke-1.8.0-chromebook-linux-x64.7z.006
-59b2feee6776a2a153a1ba6beb8b6f4fac909da43514fe5a025ee28dbf0ad1ce  Streets-of-Roanoke-1.8.0-chromebook-linux-x64.7z.007
-6cf78118ca3ee89eb13cab721c2732ed0e4fd423b1c2b6cbbc6997180d55e1df  Streets-of-Roanoke-1.8.0-chromebook-linux-x64.7z.008
-13e922a5f0983a2bf7afd2bc2b0a4996b94ed1a42a36753685a09821357a9ac0  Streets-of-Roanoke-1.8.0-chromebook-linux-x64.7z.009
-a11d67ee12ef714edcbf61ff22c1d4b2b3f9613405856aecc31d3b5d9125630e  Streets-of-Roanoke-1.8.0-chromebook-linux-x64.7z.010
-b3c8ea7cd4ed520f00d1e2506da8b3b41535347f7e86b9104c2fd14f0c83d02b  Streets-of-Roanoke-1.8.0-chromebook-linux-x64.7z.011
-9ff55b2c448cdd7bbacbf9064ee63c8e9cc964dd4b0e0882032d0d7da40cdcf2  Streets-of-Roanoke-1.8.0-chromebook-amd64.deb
+6907f5593a7f91f1248d2e7e623263972c0664cdf2bc75beba1c45462b7df82b  Streets-of-Roanoke-1.9.0-chromebook-linux-x64.7z.001
+e308701c331c6a5671cccf8ca0d4110cdcba3410f546baf47c2a1981b89571b5  Streets-of-Roanoke-1.9.0-chromebook-linux-x64.7z.002
+1ef859a903e284b41dd26dfb36088dc5b580c728aa27870d8b26afa7ea2aedf4  Streets-of-Roanoke-1.9.0-chromebook-linux-x64.7z.003
+3ae1ea816df470268fba31825f944fa048d8627ae9479a8e610e4d3dd1016994  Streets-of-Roanoke-1.9.0-chromebook-linux-x64.7z.004
+78e63f856c37734d9fda6c5b66188d50d46da6ed8e5a9627dbfb228d863ce430  Streets-of-Roanoke-1.9.0-chromebook-linux-x64.7z.005
+5ead050edc3da2b1021baee3ab3c93e2be21ab0ffbcc0872728f5fd216464a7f  Streets-of-Roanoke-1.9.0-chromebook-linux-x64.7z.006
+c51db612b8164b434888c1a5550e57209fc00f743cc581a231699653fa04f34c  Streets-of-Roanoke-1.9.0-chromebook-linux-x64.7z.007
+0a5124a6a1fca495c31274e579225637ac8e9fc96317b50df627eb39f1b8543a  Streets-of-Roanoke-1.9.0-chromebook-linux-x64.7z.008
+3a33ed22492e42ef35ba2f2adaf21f9a45ea7eba4167bb22b8107db26b4e062b  Streets-of-Roanoke-1.9.0-chromebook-linux-x64.7z.009
+ef9be940e17592aa165c2ac379de7911229e6f149f02b82df38718c3fc7eb725  Streets-of-Roanoke-1.9.0-chromebook-linux-x64.7z.010
+97bcd3985daed6233ef8a47332f0f89c03c554ee74b691dc687413d19691c40b  Streets-of-Roanoke-1.9.0-chromebook-linux-x64.7z.011
+0d99cad00c4e35b2881484d3ab2942fe0e488c707ee3cf388cb798da30aa46aa  Streets-of-Roanoke-1.9.0-chromebook-linux-x64.7z.012
+cd086eeb2d1ab009a96a2bc28fcad749bb60ea87c9a306ea2c87e84a21bd86d3  Streets-of-Roanoke-1.9.0-chromebook-linux-x64.7z.013
+ae136f673af110be93d9e2c2a448cb5036342b01d12ddfc94faffd207091ed50  Streets-of-Roanoke-1.9.0-chromebook-amd64.deb

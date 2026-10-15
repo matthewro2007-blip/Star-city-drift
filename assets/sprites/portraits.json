@@ -1,0 +1,1013 @@
+{
+ "version": 1,
+ "artScale": 2,
+ "size": 224,
+ "logical": 112,
+ "size3x": 336,
+ "rev": "1.9.0-cutscene",
+ "note": "Dialogue portraits, 3/4 facing right (mirror for left speakers). closed/open = mouth flap. files3x = optional native 3x busts for the 3x camera.",
+ "characters": {
+  "matthew": {
+   "neutral": {
+    "closed": "assets/sprites/portraits/portrait_matthew_neutral_closed.png",
+    "files3x": {
+     "closed": "assets/sprites/portraits_3x/portrait_matthew_neutral_closed.png",
+     "open": "assets/sprites/portraits_3x/portrait_matthew_neutral_open.png"
+    },
+    "open": "assets/sprites/portraits/portrait_matthew_neutral_open.png"
+   },
+   "happy": {
+    "closed": "assets/sprites/portraits/portrait_matthew_happy_closed.png",
+    "files3x": {
+     "closed": "assets/sprites/portraits_3x/portrait_matthew_happy_closed.png",
+     "open": "assets/sprites/portraits_3x/portrait_matthew_happy_open.png"
+    },
+    "open": "assets/sprites/portraits/portrait_matthew_happy_open.png"
+   },
+   "angry": {
+    "closed": "assets/sprites/portraits/portrait_matthew_angry_closed.png",
+    "files3x": {
+     "closed": "assets/sprites/portraits_3x/portrait_matthew_angry_closed.png",
+     "open": "assets/sprites/portraits_3x/portrait_matthew_angry_open.png"
+    },
+    "open": "assets/sprites/portraits/portrait_matthew_angry_open.png"
+   },
+   "sad": {
+    "closed": "assets/sprites/portraits/portrait_matthew_sad_closed.png",
+    "files3x": {
+     "closed": "assets/sprites/portraits_3x/portrait_matthew_sad_closed.png",
+     "open": "assets/sprites/portraits_3x/portrait_matthew_sad_open.png"
+    },
+    "open": "assets/sprites/portraits/portrait_matthew_sad_open.png"
+   },
+   "surprised": {
+    "closed": "assets/sprites/portraits/portrait_matthew_surprised_closed.png",
+    "files3x": {
+     "closed": "assets/sprites/portraits_3x/portrait_matthew_surprised_closed.png",
+     "open": "assets/sprites/portraits_3x/portrait_matthew_surprised_open.png"
+    },
+    "open": "assets/sprites/portraits/portrait_matthew_surprised_open.png"
+   }
+  },
+  "dee": {
+   "neutral": {
+    "closed": "assets/sprites/portraits/portrait_dee_neutral_closed.png",
+    "files3x": {
+     "closed": "assets/sprites/portraits_3x/portrait_dee_neutral_closed.png",
+     "open": "assets/sprites/portraits_3x/portrait_dee_neutral_open.png"
+    },
+    "open": "assets/sprites/portraits/portrait_dee_neutral_open.png"
+   },
+   "happy": {
+    "closed": "assets/sprites/portraits/portrait_dee_happy_closed.png",
+    "files3x": {
+     "closed": "assets/sprites/portraits_3x/portrait_dee_happy_closed.png",
+     "open": "assets/sprites/portraits_3x/portrait_dee_happy_open.png"
+    },
+    "open": "assets/sprites/portraits/portrait_dee_happy_open.png"
+   },
+   "angry": {
+    "closed": "assets/sprites/portraits/portrait_dee_angry_closed.png",
+    "files3x": {
+     "closed": "assets/sprites/portraits_3x/portrait_dee_angry_closed.png",
+     "open": "assets/sprites/portraits_3x/portrait_dee_angry_open.png"
+    },
+    "open": "assets/sprites/portraits/portrait_dee_angry_open.png"
+   },
+   "sad": {
+    "closed": "assets/sprites/portraits/portrait_dee_sad_closed.png",
+    "files3x": {
+     "closed": "assets/sprites/portraits_3x/portrait_dee_sad_closed.png",
+     "open": "assets/sprites/portraits_3x/portrait_dee_sad_open.png"
+    },
+    "open": "assets/sprites/portraits/portrait_dee_sad_open.png"
+   },
+   "surprised": {
+    "closed": "assets/sprites/portraits/portrait_dee_surprised_closed.png",
+    "files3x": {
+     "closed": "assets/sprites/portraits_3x/portrait_dee_surprised_closed.png",
+     "open": "assets/sprites/portraits_3x/portrait_dee_surprised_open.png"
+    },
+    "open": "assets/sprites/portraits/portrait_dee_surprised_open.png"
+   }
+  },
+  "hank": {
+   "neutral": {
+    "closed": "assets/sprites/portraits/portrait_hank_neutral_closed.png",
+    "files3x": {
+     "closed": "assets/sprites/portraits_3x/portrait_hank_neutral_closed.png",
+     "open": "assets/sprites/portraits_3x/portrait_hank_neutral_open.png"
+    },
+    "open": "assets/sprites/portraits/portrait_hank_neutral_open.png"
+   },
+   "happy": {
+    "closed": "assets/sprites/portraits/portrait_hank_happy_closed.png",
+    "files3x": {
+     "closed": "assets/sprites/portraits_3x/portrait_hank_happy_closed.png",
+     "open": "assets/sprites/portraits_3x/portrait_hank_happy_open.png"
+    },
+    "open": "assets/sprites/portraits/portrait_hank_happy_open.png"
+   },
+   "angry": {
+    "closed": "assets/sprites/portraits/portrait_hank_angry_closed.png",
+    "files3x": {
+     "closed": "assets/sprites/portraits_3x/portrait_hank_angry_closed.png",
+     "open": "assets/sprites/portraits_3x/portrait_hank_angry_open.png"
+    },
+    "open": "assets/sprites/portraits/portrait_hank_angry_open.png"
+   },
+   "sad": {
+    "closed": "assets/sprites/portraits/portrait_hank_sad_closed.png",
+    "files3x": {
+     "closed": "assets/sprites/portraits_3x/portrait_hank_sad_closed.png",
+     "open": "assets/sprites/portraits_3x/portrait_hank_sad_open.png"
+    },
+    "open": "assets/sprites/portraits/portrait_hank_sad_open.png"
+   },
+   "surprised": {
+    "closed": "assets/sprites/portraits/portrait_hank_surprised_closed.png",
+    "files3x": {
+     "closed": "assets/sprites/portraits_3x/portrait_hank_surprised_closed.png",
+     "open": "assets/sprites/portraits_3x/portrait_hank_surprised_open.png"
+    },
+    "open": "assets/sprites/portraits/portrait_hank_surprised_open.png"
+   }
+  },
+  "priya": {
+   "neutral": {
+    "closed": "assets/sprites/portraits/portrait_priya_neutral_closed.png",
+    "files3x": {
+     "closed": "assets/sprites/portraits_3x/portrait_priya_neutral_closed.png",
+     "open": "assets/sprites/portraits_3x/portrait_priya_neutral_open.png"
+    },
+    "open": "assets/sprites/portraits/portrait_priya_neutral_open.png"
+   },
+   "happy": {
+    "closed": "assets/sprites/portraits/portrait_priya_happy_closed.png",
+    "files3x": {
+     "closed": "assets/sprites/portraits_3x/portrait_priya_happy_closed.png",
+     "open": "assets/sprites/portraits_3x/portrait_priya_happy_open.png"
+    },
+    "open": "assets/sprites/portraits/portrait_priya_happy_open.png"
+   },
+   "angry": {
+    "closed": "assets/sprites/portraits/portrait_priya_angry_closed.png",
+    "files3x": {
+     "closed": "assets/sprites/portraits_3x/portrait_priya_angry_closed.png",
+     "open": "assets/sprites/portraits_3x/portrait_priya_angry_open.png"
+    },
+    "open": "assets/sprites/portraits/portrait_priya_angry_open.png"
+   },
+   "sad": {
+    "closed": "assets/sprites/portraits/portrait_priya_sad_closed.png",
+    "files3x": {
+     "closed": "assets/sprites/portraits_3x/portrait_priya_sad_closed.png",
+     "open": "assets/sprites/portraits_3x/portrait_priya_sad_open.png"
+    },
+    "open": "assets/sprites/portraits/portrait_priya_sad_open.png"
+   },
+   "surprised": {
+    "closed": "assets/sprites/portraits/portrait_priya_surprised_closed.png",
+    "files3x": {
+     "closed": "assets/sprites/portraits_3x/portrait_priya_surprised_closed.png",
+     "open": "assets/sprites/portraits_3x/portrait_priya_surprised_open.png"
+    },
+    "open": "assets/sprites/portraits/portrait_priya_surprised_open.png"
+   }
+  },
+  "cam": {
+   "neutral": {
+    "closed": "assets/sprites/portraits/portrait_cam_neutral_closed.png",
+    "files3x": {
+     "closed": "assets/sprites/portraits_3x/portrait_cam_neutral_closed.png",
+     "open": "assets/sprites/portraits_3x/portrait_cam_neutral_open.png"
+    },
+    "open": "assets/sprites/portraits/portrait_cam_neutral_open.png"
+   },
+   "happy": {
+    "closed": "assets/sprites/portraits/portrait_cam_happy_closed.png",
+    "files3x": {
+     "closed": "assets/sprites/portraits_3x/portrait_cam_happy_closed.png",
+     "open": "assets/sprites/portraits_3x/portrait_cam_happy_open.png"
+    },
+    "open": "assets/sprites/portraits/portrait_cam_happy_open.png"
+   },
+   "angry": {
+    "closed": "assets/sprites/portraits/portrait_cam_angry_closed.png",
+    "files3x": {
+     "closed": "assets/sprites/portraits_3x/portrait_cam_angry_closed.png",
+     "open": "assets/sprites/portraits_3x/portrait_cam_angry_open.png"
+    },
+    "open": "assets/sprites/portraits/portrait_cam_angry_open.png"
+   },
+   "sad": {
+    "closed": "assets/sprites/portraits/portrait_cam_sad_closed.png",
+    "files3x": {
+     "closed": "assets/sprites/portraits_3x/portrait_cam_sad_closed.png",
+     "open": "assets/sprites/portraits_3x/portrait_cam_sad_open.png"
+    },
+    "open": "assets/sprites/portraits/portrait_cam_sad_open.png"
+   },
+   "surprised": {
+    "closed": "assets/sprites/portraits/portrait_cam_surprised_closed.png",
+    "files3x": {
+     "closed": "assets/sprites/portraits_3x/portrait_cam_surprised_closed.png",
+     "open": "assets/sprites/portraits_3x/portrait_cam_surprised_open.png"
+    },
+    "open": "assets/sprites/portraits/portrait_cam_surprised_open.png"
+   }
+  },
+  "june": {
+   "neutral": {
+    "closed": "assets/sprites/portraits/portrait_june_neutral_closed.png",
+    "files3x": {
+     "closed": "assets/sprites/portraits_3x/portrait_june_neutral_closed.png",
+     "open": "assets/sprites/portraits_3x/portrait_june_neutral_open.png"
+    },
+    "open": "assets/sprites/portraits/portrait_june_neutral_open.png"
+   },
+   "happy": {
+    "closed": "assets/sprites/portraits/portrait_june_happy_closed.png",
+    "files3x": {
+     "closed": "assets/sprites/portraits_3x/portrait_june_happy_closed.png",
+     "open": "assets/sprites/portraits_3x/portrait_june_happy_open.png"
+    },
+    "open": "assets/sprites/portraits/portrait_june_happy_open.png"
+   },
+   "angry": {
+    "closed": "assets/sprites/portraits/portrait_june_angry_closed.png",
+    "files3x": {
+     "closed": "assets/sprites/portraits_3x/portrait_june_angry_closed.png",
+     "open": "assets/sprites/portraits_3x/portrait_june_angry_open.png"
+    },
+    "open": "assets/sprites/portraits/portrait_june_angry_open.png"
+   },
+   "sad": {
+    "closed": "assets/sprites/portraits/portrait_june_sad_closed.png",
+    "files3x": {
+     "closed": "assets/sprites/portraits_3x/portrait_june_sad_closed.png",
+     "open": "assets/sprites/portraits_3x/portrait_june_sad_open.png"
+    },
+    "open": "assets/sprites/portraits/portrait_june_sad_open.png"
+   },
+   "surprised": {
+    "closed": "assets/sprites/portraits/portrait_june_surprised_closed.png",
+    "files3x": {
+     "closed": "assets/sprites/portraits_3x/portrait_june_surprised_closed.png",
+     "open": "assets/sprites/portraits_3x/portrait_june_surprised_open.png"
+    },
+    "open": "assets/sprites/portraits/portrait_june_surprised_open.png"
+   }
+  },
+  "coach": {
+   "neutral": {
+    "closed": "assets/sprites/portraits/portrait_coach_neutral_closed.png",
+    "files3x": {
+     "closed": "assets/sprites/portraits_3x/portrait_coach_neutral_closed.png",
+     "open": "assets/sprites/portraits_3x/portrait_coach_neutral_open.png"
+    },
+    "open": "assets/sprites/portraits/portrait_coach_neutral_open.png"
+   },
+   "happy": {
+    "closed": "assets/sprites/portraits/portrait_coach_happy_closed.png",
+    "files3x": {
+     "closed": "assets/sprites/portraits_3x/portrait_coach_happy_closed.png",
+     "open": "assets/sprites/portraits_3x/portrait_coach_happy_open.png"
+    },
+    "open": "assets/sprites/portraits/portrait_coach_happy_open.png"
+   },
+   "angry": {
+    "closed": "assets/sprites/portraits/portrait_coach_angry_closed.png",
+    "files3x": {
+     "closed": "assets/sprites/portraits_3x/portrait_coach_angry_closed.png",
+     "open": "assets/sprites/portraits_3x/portrait_coach_angry_open.png"
+    },
+    "open": "assets/sprites/portraits/portrait_coach_angry_open.png"
+   },
+   "sad": {
+    "closed": "assets/sprites/portraits/portrait_coach_sad_closed.png",
+    "files3x": {
+     "closed": "assets/sprites/portraits_3x/portrait_coach_sad_closed.png",
+     "open": "assets/sprites/portraits_3x/portrait_coach_sad_open.png"
+    },
+    "open": "assets/sprites/portraits/portrait_coach_sad_open.png"
+   },
+   "surprised": {
+    "closed": "assets/sprites/portraits/portrait_coach_surprised_closed.png",
+    "files3x": {
+     "closed": "assets/sprites/portraits_3x/portrait_coach_surprised_closed.png",
+     "open": "assets/sprites/portraits_3x/portrait_coach_surprised_open.png"
+    },
+    "open": "assets/sprites/portraits/portrait_coach_surprised_open.png"
+   }
+  },
+  "tessa": {
+   "neutral": {
+    "closed": "assets/sprites/portraits/portrait_tessa_neutral_closed.png",
+    "files3x": {
+     "closed": "assets/sprites/portraits_3x/portrait_tessa_neutral_closed.png",
+     "open": "assets/sprites/portraits_3x/portrait_tessa_neutral_open.png"
+    },
+    "open": "assets/sprites/portraits/portrait_tessa_neutral_open.png"
+   },
+   "happy": {
+    "closed": "assets/sprites/portraits/portrait_tessa_happy_closed.png",
+    "files3x": {
+     "closed": "assets/sprites/portraits_3x/portrait_tessa_happy_closed.png",
+     "open": "assets/sprites/portraits_3x/portrait_tessa_happy_open.png"
+    },
+    "open": "assets/sprites/portraits/portrait_tessa_happy_open.png"
+   },
+   "angry": {
+    "closed": "assets/sprites/portraits/portrait_tessa_angry_closed.png",
+    "files3x": {
+     "closed": "assets/sprites/portraits_3x/portrait_tessa_angry_closed.png",
+     "open": "assets/sprites/portraits_3x/portrait_tessa_angry_open.png"
+    },
+    "open": "assets/sprites/portraits/portrait_tessa_angry_open.png"
+   },
+   "sad": {
+    "closed": "assets/sprites/portraits/portrait_tessa_sad_closed.png",
+    "files3x": {
+     "closed": "assets/sprites/portraits_3x/portrait_tessa_sad_closed.png",
+     "open": "assets/sprites/portraits_3x/portrait_tessa_sad_open.png"
+    },
+    "open": "assets/sprites/portraits/portrait_tessa_sad_open.png"
+   },
+   "surprised": {
+    "closed": "assets/sprites/portraits/portrait_tessa_surprised_closed.png",
+    "files3x": {
+     "closed": "assets/sprites/portraits_3x/portrait_tessa_surprised_closed.png",
+     "open": "assets/sprites/portraits_3x/portrait_tessa_surprised_open.png"
+    },
+    "open": "assets/sprites/portraits/portrait_tessa_surprised_open.png"
+   }
+  },
+  "wren": {
+   "neutral": {
+    "closed": "assets/sprites/portraits/portrait_wren_neutral_closed.png",
+    "files3x": {
+     "closed": "assets/sprites/portraits_3x/portrait_wren_neutral_closed.png",
+     "open": "assets/sprites/portraits_3x/portrait_wren_neutral_open.png"
+    },
+    "open": "assets/sprites/portraits/portrait_wren_neutral_open.png"
+   },
+   "happy": {
+    "closed": "assets/sprites/portraits/portrait_wren_happy_closed.png",
+    "files3x": {
+     "closed": "assets/sprites/portraits_3x/portrait_wren_happy_closed.png",
+     "open": "assets/sprites/portraits_3x/portrait_wren_happy_open.png"
+    },
+    "open": "assets/sprites/portraits/portrait_wren_happy_open.png"
+   },
+   "angry": {
+    "closed": "assets/sprites/portraits/portrait_wren_angry_closed.png",
+    "files3x": {
+     "closed": "assets/sprites/portraits_3x/portrait_wren_angry_closed.png",
+     "open": "assets/sprites/portraits_3x/portrait_wren_angry_open.png"
+    },
+    "open": "assets/sprites/portraits/portrait_wren_angry_open.png"
+   },
+   "sad": {
+    "closed": "assets/sprites/portraits/portrait_wren_sad_closed.png",
+    "files3x": {
+     "closed": "assets/sprites/portraits_3x/portrait_wren_sad_closed.png",
+     "open": "assets/sprites/portraits_3x/portrait_wren_sad_open.png"
+    },
+    "open": "assets/sprites/portraits/portrait_wren_sad_open.png"
+   },
+   "surprised": {
+    "closed": "assets/sprites/portraits/portrait_wren_surprised_closed.png",
+    "files3x": {
+     "closed": "assets/sprites/portraits_3x/portrait_wren_surprised_closed.png",
+     "open": "assets/sprites/portraits_3x/portrait_wren_surprised_open.png"
+    },
+    "open": "assets/sprites/portraits/portrait_wren_surprised_open.png"
+   }
+  },
+  "silas": {
+   "neutral": {
+    "closed": "assets/sprites/portraits/portrait_silas_neutral_closed.png",
+    "files3x": {
+     "closed": "assets/sprites/portraits_3x/portrait_silas_neutral_closed.png",
+     "open": "assets/sprites/portraits_3x/portrait_silas_neutral_open.png"
+    },
+    "open": "assets/sprites/portraits/portrait_silas_neutral_open.png"
+   },
+   "happy": {
+    "closed": "assets/sprites/portraits/portrait_silas_happy_closed.png",
+    "files3x": {
+     "closed": "assets/sprites/portraits_3x/portrait_silas_happy_closed.png",
+     "open": "assets/sprites/portraits_3x/portrait_silas_happy_open.png"
+    },
+    "open": "assets/sprites/portraits/portrait_silas_happy_open.png"
+   },
+   "angry": {
+    "closed": "assets/sprites/portraits/portrait_silas_angry_closed.png",
+    "files3x": {
+     "closed": "assets/sprites/portraits_3x/portrait_silas_angry_closed.png",
+     "open": "assets/sprites/portraits_3x/portrait_silas_angry_open.png"
+    },
+    "open": "assets/sprites/portraits/portrait_silas_angry_open.png"
+   },
+   "sad": {
+    "closed": "assets/sprites/portraits/portrait_silas_sad_closed.png",
+    "files3x": {
+     "closed": "assets/sprites/portraits_3x/portrait_silas_sad_closed.png",
+     "open": "assets/sprites/portraits_3x/portrait_silas_sad_open.png"
+    },
+    "open": "assets/sprites/portraits/portrait_silas_sad_open.png"
+   },
+   "surprised": {
+    "closed": "assets/sprites/portraits/portrait_silas_surprised_closed.png",
+    "files3x": {
+     "closed": "assets/sprites/portraits_3x/portrait_silas_surprised_closed.png",
+     "open": "assets/sprites/portraits_3x/portrait_silas_surprised_open.png"
+    },
+    "open": "assets/sprites/portraits/portrait_silas_surprised_open.png"
+   }
+  },
+  "silas_prison": {
+   "neutral": {
+    "closed": "assets/sprites/portraits/portrait_silas_prison_neutral_closed.png",
+    "files3x": {
+     "closed": "assets/sprites/portraits_3x/portrait_silas_prison_neutral_closed.png",
+     "open": "assets/sprites/portraits_3x/portrait_silas_prison_neutral_open.png"
+    },
+    "open": "assets/sprites/portraits/portrait_silas_prison_neutral_open.png"
+   },
+   "happy": {
+    "closed": "assets/sprites/portraits/portrait_silas_prison_happy_closed.png",
+    "files3x": {
+     "closed": "assets/sprites/portraits_3x/portrait_silas_prison_happy_closed.png",
+     "open": "assets/sprites/portraits_3x/portrait_silas_prison_happy_open.png"
+    },
+    "open": "assets/sprites/portraits/portrait_silas_prison_happy_open.png"
+   },
+   "angry": {
+    "closed": "assets/sprites/portraits/portrait_silas_prison_angry_closed.png",
+    "files3x": {
+     "closed": "assets/sprites/portraits_3x/portrait_silas_prison_angry_closed.png",
+     "open": "assets/sprites/portraits_3x/portrait_silas_prison_angry_open.png"
+    },
+    "open": "assets/sprites/portraits/portrait_silas_prison_angry_open.png"
+   },
+   "sad": {
+    "closed": "assets/sprites/portraits/portrait_silas_prison_sad_closed.png",
+    "files3x": {
+     "closed": "assets/sprites/portraits_3x/portrait_silas_prison_sad_closed.png",
+     "open": "assets/sprites/portraits_3x/portrait_silas_prison_sad_open.png"
+    },
+    "open": "assets/sprites/portraits/portrait_silas_prison_sad_open.png"
+   },
+   "surprised": {
+    "closed": "assets/sprites/portraits/portrait_silas_prison_surprised_closed.png",
+    "files3x": {
+     "closed": "assets/sprites/portraits_3x/portrait_silas_prison_surprised_closed.png",
+     "open": "assets/sprites/portraits_3x/portrait_silas_prison_surprised_open.png"
+    },
+    "open": "assets/sprites/portraits/portrait_silas_prison_surprised_open.png"
+   }
+  },
+  "silas_cuffed": {
+   "neutral": {
+    "closed": "assets/sprites/portraits/portrait_silas_cuffed_neutral_closed.png",
+    "files3x": {
+     "closed": "assets/sprites/portraits_3x/portrait_silas_cuffed_neutral_closed.png",
+     "open": "assets/sprites/portraits_3x/portrait_silas_cuffed_neutral_open.png"
+    },
+    "open": "assets/sprites/portraits/portrait_silas_cuffed_neutral_open.png"
+   },
+   "happy": {
+    "closed": "assets/sprites/portraits/portrait_silas_cuffed_happy_closed.png",
+    "files3x": {
+     "closed": "assets/sprites/portraits_3x/portrait_silas_cuffed_happy_closed.png",
+     "open": "assets/sprites/portraits_3x/portrait_silas_cuffed_happy_open.png"
+    },
+    "open": "assets/sprites/portraits/portrait_silas_cuffed_happy_open.png"
+   },
+   "angry": {
+    "closed": "assets/sprites/portraits/portrait_silas_cuffed_angry_closed.png",
+    "files3x": {
+     "closed": "assets/sprites/portraits_3x/portrait_silas_cuffed_angry_closed.png",
+     "open": "assets/sprites/portraits_3x/portrait_silas_cuffed_angry_open.png"
+    },
+    "open": "assets/sprites/portraits/portrait_silas_cuffed_angry_open.png"
+   },
+   "sad": {
+    "closed": "assets/sprites/portraits/portrait_silas_cuffed_sad_closed.png",
+    "files3x": {
+     "closed": "assets/sprites/portraits_3x/portrait_silas_cuffed_sad_closed.png",
+     "open": "assets/sprites/portraits_3x/portrait_silas_cuffed_sad_open.png"
+    },
+    "open": "assets/sprites/portraits/portrait_silas_cuffed_sad_open.png"
+   },
+   "surprised": {
+    "closed": "assets/sprites/portraits/portrait_silas_cuffed_surprised_closed.png",
+    "files3x": {
+     "closed": "assets/sprites/portraits_3x/portrait_silas_cuffed_surprised_closed.png",
+     "open": "assets/sprites/portraits_3x/portrait_silas_cuffed_surprised_open.png"
+    },
+    "open": "assets/sprites/portraits/portrait_silas_cuffed_surprised_open.png"
+   }
+  },
+  "matthew_young": {
+   "neutral": {
+    "closed": "assets/sprites/portraits/portrait_matthew_young_neutral_closed.png",
+    "files3x": {
+     "closed": "assets/sprites/portraits_3x/portrait_matthew_young_neutral_closed.png",
+     "open": "assets/sprites/portraits_3x/portrait_matthew_young_neutral_open.png"
+    },
+    "open": "assets/sprites/portraits/portrait_matthew_young_neutral_open.png"
+   },
+   "happy": {
+    "closed": "assets/sprites/portraits/portrait_matthew_young_happy_closed.png",
+    "files3x": {
+     "closed": "assets/sprites/portraits_3x/portrait_matthew_young_happy_closed.png",
+     "open": "assets/sprites/portraits_3x/portrait_matthew_young_happy_open.png"
+    },
+    "open": "assets/sprites/portraits/portrait_matthew_young_happy_open.png"
+   },
+   "angry": {
+    "closed": "assets/sprites/portraits/portrait_matthew_young_angry_closed.png",
+    "files3x": {
+     "closed": "assets/sprites/portraits_3x/portrait_matthew_young_angry_closed.png",
+     "open": "assets/sprites/portraits_3x/portrait_matthew_young_angry_open.png"
+    },
+    "open": "assets/sprites/portraits/portrait_matthew_young_angry_open.png"
+   },
+   "sad": {
+    "closed": "assets/sprites/portraits/portrait_matthew_young_sad_closed.png",
+    "files3x": {
+     "closed": "assets/sprites/portraits_3x/portrait_matthew_young_sad_closed.png",
+     "open": "assets/sprites/portraits_3x/portrait_matthew_young_sad_open.png"
+    },
+    "open": "assets/sprites/portraits/portrait_matthew_young_sad_open.png"
+   },
+   "surprised": {
+    "closed": "assets/sprites/portraits/portrait_matthew_young_surprised_closed.png",
+    "files3x": {
+     "closed": "assets/sprites/portraits_3x/portrait_matthew_young_surprised_closed.png",
+     "open": "assets/sprites/portraits_3x/portrait_matthew_young_surprised_open.png"
+    },
+    "open": "assets/sprites/portraits/portrait_matthew_young_surprised_open.png"
+   }
+  },
+  "marcus_young": {
+   "neutral": {
+    "closed": "assets/sprites/portraits/portrait_marcus_young_neutral_closed.png",
+    "files3x": {
+     "closed": "assets/sprites/portraits_3x/portrait_marcus_young_neutral_closed.png",
+     "open": "assets/sprites/portraits_3x/portrait_marcus_young_neutral_open.png"
+    },
+    "open": "assets/sprites/portraits/portrait_marcus_young_neutral_open.png"
+   },
+   "angry": {
+    "closed": "assets/sprites/portraits/portrait_marcus_young_angry_closed.png",
+    "files3x": {
+     "closed": "assets/sprites/portraits_3x/portrait_marcus_young_angry_closed.png",
+     "open": "assets/sprites/portraits_3x/portrait_marcus_young_angry_open.png"
+    },
+    "open": "assets/sprites/portraits/portrait_marcus_young_angry_open.png"
+   },
+   "smug": {
+    "closed": "assets/sprites/portraits/portrait_marcus_young_smug_closed.png",
+    "files3x": {
+     "closed": "assets/sprites/portraits_3x/portrait_marcus_young_smug_closed.png",
+     "open": "assets/sprites/portraits_3x/portrait_marcus_young_smug_open.png"
+    },
+    "open": "assets/sprites/portraits/portrait_marcus_young_smug_open.png"
+   }
+  },
+  "marcus": {
+   "neutral": {
+    "closed": "assets/sprites/portraits/portrait_marcus_neutral_closed.png",
+    "files3x": {
+     "closed": "assets/sprites/portraits_3x/portrait_marcus_neutral_closed.png",
+     "open": "assets/sprites/portraits_3x/portrait_marcus_neutral_open.png"
+    },
+    "open": "assets/sprites/portraits/portrait_marcus_neutral_open.png"
+   },
+   "angry": {
+    "closed": "assets/sprites/portraits/portrait_marcus_angry_closed.png",
+    "files3x": {
+     "closed": "assets/sprites/portraits_3x/portrait_marcus_angry_closed.png",
+     "open": "assets/sprites/portraits_3x/portrait_marcus_angry_open.png"
+    },
+    "open": "assets/sprites/portraits/portrait_marcus_angry_open.png"
+   },
+   "smug": {
+    "closed": "assets/sprites/portraits/portrait_marcus_smug_closed.png",
+    "files3x": {
+     "closed": "assets/sprites/portraits_3x/portrait_marcus_smug_closed.png",
+     "open": "assets/sprites/portraits_3x/portrait_marcus_smug_open.png"
+    },
+    "open": "assets/sprites/portraits/portrait_marcus_smug_open.png"
+   }
+  },
+  "marcus_lockkeeper": {
+   "neutral": {
+    "closed": "assets/sprites/portraits/portrait_marcus_lockkeeper_neutral_closed.png",
+    "files3x": {
+     "closed": "assets/sprites/portraits_3x/portrait_marcus_lockkeeper_neutral_closed.png",
+     "open": "assets/sprites/portraits_3x/portrait_marcus_lockkeeper_neutral_open.png"
+    },
+    "open": "assets/sprites/portraits/portrait_marcus_lockkeeper_neutral_open.png"
+   },
+   "angry": {
+    "closed": "assets/sprites/portraits/portrait_marcus_lockkeeper_angry_closed.png",
+    "files3x": {
+     "closed": "assets/sprites/portraits_3x/portrait_marcus_lockkeeper_angry_closed.png",
+     "open": "assets/sprites/portraits_3x/portrait_marcus_lockkeeper_angry_open.png"
+    },
+    "open": "assets/sprites/portraits/portrait_marcus_lockkeeper_angry_open.png"
+   },
+   "smug": {
+    "closed": "assets/sprites/portraits/portrait_marcus_lockkeeper_smug_closed.png",
+    "files3x": {
+     "closed": "assets/sprites/portraits_3x/portrait_marcus_lockkeeper_smug_closed.png",
+     "open": "assets/sprites/portraits_3x/portrait_marcus_lockkeeper_smug_open.png"
+    },
+    "open": "assets/sprites/portraits/portrait_marcus_lockkeeper_smug_open.png"
+   }
+  },
+  "rosa": {
+   "neutral": {
+    "closed": "assets/sprites/portraits/portrait_rosa_neutral_closed.png",
+    "files3x": {
+     "closed": "assets/sprites/portraits_3x/portrait_rosa_neutral_closed.png",
+     "open": "assets/sprites/portraits_3x/portrait_rosa_neutral_open.png"
+    },
+    "open": "assets/sprites/portraits/portrait_rosa_neutral_open.png"
+   },
+   "happy": {
+    "closed": "assets/sprites/portraits/portrait_rosa_happy_closed.png",
+    "files3x": {
+     "closed": "assets/sprites/portraits_3x/portrait_rosa_happy_closed.png",
+     "open": "assets/sprites/portraits_3x/portrait_rosa_happy_open.png"
+    },
+    "open": "assets/sprites/portraits/portrait_rosa_happy_open.png"
+   },
+   "angry": {
+    "closed": "assets/sprites/portraits/portrait_rosa_angry_closed.png",
+    "files3x": {
+     "closed": "assets/sprites/portraits_3x/portrait_rosa_angry_closed.png",
+     "open": "assets/sprites/portraits_3x/portrait_rosa_angry_open.png"
+    },
+    "open": "assets/sprites/portraits/portrait_rosa_angry_open.png"
+   },
+   "sad": {
+    "closed": "assets/sprites/portraits/portrait_rosa_sad_closed.png",
+    "files3x": {
+     "closed": "assets/sprites/portraits_3x/portrait_rosa_sad_closed.png",
+     "open": "assets/sprites/portraits_3x/portrait_rosa_sad_open.png"
+    },
+    "open": "assets/sprites/portraits/portrait_rosa_sad_open.png"
+   },
+   "surprised": {
+    "closed": "assets/sprites/portraits/portrait_rosa_surprised_closed.png",
+    "files3x": {
+     "closed": "assets/sprites/portraits_3x/portrait_rosa_surprised_closed.png",
+     "open": "assets/sprites/portraits_3x/portrait_rosa_surprised_open.png"
+    },
+    "open": "assets/sprites/portraits/portrait_rosa_surprised_open.png"
+   }
+  },
+  "dora_young": {
+   "neutral": {
+    "closed": "assets/sprites/portraits/portrait_dora_young_neutral_closed.png",
+    "files3x": {
+     "closed": "assets/sprites/portraits_3x/portrait_dora_young_neutral_closed.png",
+     "open": "assets/sprites/portraits_3x/portrait_dora_young_neutral_open.png"
+    },
+    "open": "assets/sprites/portraits/portrait_dora_young_neutral_open.png"
+   },
+   "happy": {
+    "closed": "assets/sprites/portraits/portrait_dora_young_happy_closed.png",
+    "files3x": {
+     "closed": "assets/sprites/portraits_3x/portrait_dora_young_happy_closed.png",
+     "open": "assets/sprites/portraits_3x/portrait_dora_young_happy_open.png"
+    },
+    "open": "assets/sprites/portraits/portrait_dora_young_happy_open.png"
+   },
+   "angry": {
+    "closed": "assets/sprites/portraits/portrait_dora_young_angry_closed.png",
+    "files3x": {
+     "closed": "assets/sprites/portraits_3x/portrait_dora_young_angry_closed.png",
+     "open": "assets/sprites/portraits_3x/portrait_dora_young_angry_open.png"
+    },
+    "open": "assets/sprites/portraits/portrait_dora_young_angry_open.png"
+   },
+   "sad": {
+    "closed": "assets/sprites/portraits/portrait_dora_young_sad_closed.png",
+    "files3x": {
+     "closed": "assets/sprites/portraits_3x/portrait_dora_young_sad_closed.png",
+     "open": "assets/sprites/portraits_3x/portrait_dora_young_sad_open.png"
+    },
+    "open": "assets/sprites/portraits/portrait_dora_young_sad_open.png"
+   },
+   "surprised": {
+    "closed": "assets/sprites/portraits/portrait_dora_young_surprised_closed.png",
+    "files3x": {
+     "closed": "assets/sprites/portraits_3x/portrait_dora_young_surprised_closed.png",
+     "open": "assets/sprites/portraits_3x/portrait_dora_young_surprised_open.png"
+    },
+    "open": "assets/sprites/portraits/portrait_dora_young_surprised_open.png"
+   }
+  },
+  "mina_young": {
+   "neutral": {
+    "closed": "assets/sprites/portraits/portrait_mina_young_neutral_closed.png",
+    "files3x": {
+     "closed": "assets/sprites/portraits_3x/portrait_mina_young_neutral_closed.png",
+     "open": "assets/sprites/portraits_3x/portrait_mina_young_neutral_open.png"
+    },
+    "open": "assets/sprites/portraits/portrait_mina_young_neutral_open.png"
+   },
+   "happy": {
+    "closed": "assets/sprites/portraits/portrait_mina_young_happy_closed.png",
+    "files3x": {
+     "closed": "assets/sprites/portraits_3x/portrait_mina_young_happy_closed.png",
+     "open": "assets/sprites/portraits_3x/portrait_mina_young_happy_open.png"
+    },
+    "open": "assets/sprites/portraits/portrait_mina_young_happy_open.png"
+   },
+   "angry": {
+    "closed": "assets/sprites/portraits/portrait_mina_young_angry_closed.png",
+    "files3x": {
+     "closed": "assets/sprites/portraits_3x/portrait_mina_young_angry_closed.png",
+     "open": "assets/sprites/portraits_3x/portrait_mina_young_angry_open.png"
+    },
+    "open": "assets/sprites/portraits/portrait_mina_young_angry_open.png"
+   },
+   "sad": {
+    "closed": "assets/sprites/portraits/portrait_mina_young_sad_closed.png",
+    "files3x": {
+     "closed": "assets/sprites/portraits_3x/portrait_mina_young_sad_closed.png",
+     "open": "assets/sprites/portraits_3x/portrait_mina_young_sad_open.png"
+    },
+    "open": "assets/sprites/portraits/portrait_mina_young_sad_open.png"
+   },
+   "surprised": {
+    "closed": "assets/sprites/portraits/portrait_mina_young_surprised_closed.png",
+    "files3x": {
+     "closed": "assets/sprites/portraits_3x/portrait_mina_young_surprised_closed.png",
+     "open": "assets/sprites/portraits_3x/portrait_mina_young_surprised_open.png"
+    },
+    "open": "assets/sprites/portraits/portrait_mina_young_surprised_open.png"
+   }
+  },
+  "bart_young": {
+   "neutral": {
+    "closed": "assets/sprites/portraits/portrait_bart_young_neutral_closed.png",
+    "files3x": {
+     "closed": "assets/sprites/portraits_3x/portrait_bart_young_neutral_closed.png",
+     "open": "assets/sprites/portraits_3x/portrait_bart_young_neutral_open.png"
+    },
+    "open": "assets/sprites/portraits/portrait_bart_young_neutral_open.png"
+   },
+   "happy": {
+    "closed": "assets/sprites/portraits/portrait_bart_young_happy_closed.png",
+    "files3x": {
+     "closed": "assets/sprites/portraits_3x/portrait_bart_young_happy_closed.png",
+     "open": "assets/sprites/portraits_3x/portrait_bart_young_happy_open.png"
+    },
+    "open": "assets/sprites/portraits/portrait_bart_young_happy_open.png"
+   },
+   "angry": {
+    "closed": "assets/sprites/portraits/portrait_bart_young_angry_closed.png",
+    "files3x": {
+     "closed": "assets/sprites/portraits_3x/portrait_bart_young_angry_closed.png",
+     "open": "assets/sprites/portraits_3x/portrait_bart_young_angry_open.png"
+    },
+    "open": "assets/sprites/portraits/portrait_bart_young_angry_open.png"
+   },
+   "sad": {
+    "closed": "assets/sprites/portraits/portrait_bart_young_sad_closed.png",
+    "files3x": {
+     "closed": "assets/sprites/portraits_3x/portrait_bart_young_sad_closed.png",
+     "open": "assets/sprites/portraits_3x/portrait_bart_young_sad_open.png"
+    },
+    "open": "assets/sprites/portraits/portrait_bart_young_sad_open.png"
+   },
+   "surprised": {
+    "closed": "assets/sprites/portraits/portrait_bart_young_surprised_closed.png",
+    "files3x": {
+     "closed": "assets/sprites/portraits_3x/portrait_bart_young_surprised_closed.png",
+     "open": "assets/sprites/portraits_3x/portrait_bart_young_surprised_open.png"
+    },
+    "open": "assets/sprites/portraits/portrait_bart_young_surprised_open.png"
+   }
+  },
+  "otto_young": {
+   "neutral": {
+    "closed": "assets/sprites/portraits/portrait_otto_young_neutral_closed.png",
+    "files3x": {
+     "closed": "assets/sprites/portraits_3x/portrait_otto_young_neutral_closed.png",
+     "open": "assets/sprites/portraits_3x/portrait_otto_young_neutral_open.png"
+    },
+    "open": "assets/sprites/portraits/portrait_otto_young_neutral_open.png"
+   },
+   "happy": {
+    "closed": "assets/sprites/portraits/portrait_otto_young_happy_closed.png",
+    "files3x": {
+     "closed": "assets/sprites/portraits_3x/portrait_otto_young_happy_closed.png",
+     "open": "assets/sprites/portraits_3x/portrait_otto_young_happy_open.png"
+    },
+    "open": "assets/sprites/portraits/portrait_otto_young_happy_open.png"
+   },
+   "angry": {
+    "closed": "assets/sprites/portraits/portrait_otto_young_angry_closed.png",
+    "files3x": {
+     "closed": "assets/sprites/portraits_3x/portrait_otto_young_angry_closed.png",
+     "open": "assets/sprites/portraits_3x/portrait_otto_young_angry_open.png"
+    },
+    "open": "assets/sprites/portraits/portrait_otto_young_angry_open.png"
+   },
+   "sad": {
+    "closed": "assets/sprites/portraits/portrait_otto_young_sad_closed.png",
+    "files3x": {
+     "closed": "assets/sprites/portraits_3x/portrait_otto_young_sad_closed.png",
+     "open": "assets/sprites/portraits_3x/portrait_otto_young_sad_open.png"
+    },
+    "open": "assets/sprites/portraits/portrait_otto_young_sad_open.png"
+   },
+   "surprised": {
+    "closed": "assets/sprites/portraits/portrait_otto_young_surprised_closed.png",
+    "files3x": {
+     "closed": "assets/sprites/portraits_3x/portrait_otto_young_surprised_closed.png",
+     "open": "assets/sprites/portraits_3x/portrait_otto_young_surprised_open.png"
+    },
+    "open": "assets/sprites/portraits/portrait_otto_young_surprised_open.png"
+   }
+  },
+  "dora": {
+   "neutral": {
+    "closed": "assets/sprites/portraits/portrait_dora_neutral_closed.png",
+    "files3x": {
+     "closed": "assets/sprites/portraits_3x/portrait_dora_neutral_closed.png",
+     "open": "assets/sprites/portraits_3x/portrait_dora_neutral_open.png"
+    },
+    "open": "assets/sprites/portraits/portrait_dora_neutral_open.png"
+   },
+   "happy": {
+    "closed": "assets/sprites/portraits/portrait_dora_happy_closed.png",
+    "files3x": {
+     "closed": "assets/sprites/portraits_3x/portrait_dora_happy_closed.png",
+     "open": "assets/sprites/portraits_3x/portrait_dora_happy_open.png"
+    },
+    "open": "assets/sprites/portraits/portrait_dora_happy_open.png"
+   },
+   "angry": {
+    "closed": "assets/sprites/portraits/portrait_dora_angry_closed.png",
+    "files3x": {
+     "closed": "assets/sprites/portraits_3x/portrait_dora_angry_closed.png",
+     "open": "assets/sprites/portraits_3x/portrait_dora_angry_open.png"
+    },
+    "open": "assets/sprites/portraits/portrait_dora_angry_open.png"
+   },
+   "sad": {
+    "closed": "assets/sprites/portraits/portrait_dora_sad_closed.png",
+    "files3x": {
+     "closed": "assets/sprites/portraits_3x/portrait_dora_sad_closed.png",
+     "open": "assets/sprites/portraits_3x/portrait_dora_sad_open.png"
+    },
+    "open": "assets/sprites/portraits/portrait_dora_sad_open.png"
+   },
+   "surprised": {
+    "closed": "assets/sprites/portraits/portrait_dora_surprised_closed.png",
+    "files3x": {
+     "closed": "assets/sprites/portraits_3x/portrait_dora_surprised_closed.png",
+     "open": "assets/sprites/portraits_3x/portrait_dora_surprised_open.png"
+    },
+    "open": "assets/sprites/portraits/portrait_dora_surprised_open.png"
+   }
+  },
+  "mina": {
+   "neutral": {
+    "closed": "assets/sprites/portraits/portrait_mina_neutral_closed.png",
+    "files3x": {
+     "closed": "assets/sprites/portraits_3x/portrait_mina_neutral_closed.png",
+     "open": "assets/sprites/portraits_3x/portrait_mina_neutral_open.png"
+    },
+    "open": "assets/sprites/portraits/portrait_mina_neutral_open.png"
+   },
+   "happy": {
+    "closed": "assets/sprites/portraits/portrait_mina_happy_closed.png",
+    "files3x": {
+     "closed": "assets/sprites/portraits_3x/portrait_mina_happy_closed.png",
+     "open": "assets/sprites/portraits_3x/portrait_mina_happy_open.png"
+    },
+    "open": "assets/sprites/portraits/portrait_mina_happy_open.png"
+   },
+   "angry": {
+    "closed": "assets/sprites/portraits/portrait_mina_angry_closed.png",
+    "files3x": {
+     "closed": "assets/sprites/portraits_3x/portrait_mina_angry_closed.png",
+     "open": "assets/sprites/portraits_3x/portrait_mina_angry_open.png"
+    },
+    "open": "assets/sprites/portraits/portrait_mina_angry_open.png"
+   },
+   "sad": {
+    "closed": "assets/sprites/portraits/portrait_mina_sad_closed.png",
+    "files3x": {
+     "closed": "assets/sprites/portraits_3x/portrait_mina_sad_closed.png",
+     "open": "assets/sprites/portraits_3x/portrait_mina_sad_open.png"
+    },
+    "open": "assets/sprites/portraits/portrait_mina_sad_open.png"
+   },
+   "surprised": {
+    "closed": "assets/sprites/portraits/portrait_mina_surprised_closed.png",
+    "files3x": {
+     "closed": "assets/sprites/portraits_3x/portrait_mina_surprised_closed.png",
+     "open": "assets/sprites/portraits_3x/portrait_mina_surprised_open.png"
+    },
+    "open": "assets/sprites/portraits/portrait_mina_surprised_open.png"
+   }
+  },
+  "bart": {
+   "neutral": {
+    "closed": "assets/sprites/portraits/portrait_bart_neutral_closed.png",
+    "files3x": {
+     "closed": "assets/sprites/portraits_3x/portrait_bart_neutral_closed.png",
+     "open": "assets/sprites/portraits_3x/portrait_bart_neutral_open.png"
+    },
+    "open": "assets/sprites/portraits/portrait_bart_neutral_open.png"
+   },
+   "happy": {
+    "closed": "assets/sprites/portraits/portrait_bart_happy_closed.png",
+    "files3x": {
+     "closed": "assets/sprites/portraits_3x/portrait_bart_happy_closed.png",
+     "open": "assets/sprites/portraits_3x/portrait_bart_happy_open.png"
+    },
+    "open": "assets/sprites/portraits/portrait_bart_happy_open.png"
+   },
+   "angry": {
+    "closed": "assets/sprites/portraits/portrait_bart_angry_closed.png",
+    "files3x": {
+     "closed": "assets/sprites/portraits_3x/portrait_bart_angry_closed.png",
+     "open": "assets/sprites/portraits_3x/portrait_bart_angry_open.png"
+    },
+    "open": "assets/sprites/portraits/portrait_bart_angry_open.png"
+   },
+   "sad": {
+    "closed": "assets/sprites/portraits/portrait_bart_sad_closed.png",
+    "files3x": {
+     "closed": "assets/sprites/portraits_3x/portrait_bart_sad_closed.png",
+     "open": "assets/sprites/portraits_3x/portrait_bart_sad_open.png"
+    },
+    "open": "assets/sprites/portraits/portrait_bart_sad_open.png"
+   },
+   "surprised": {
+    "closed": "assets/sprites/portraits/portrait_bart_surprised_closed.png",
+    "files3x": {
+     "closed": "assets/sprites/portraits_3x/portrait_bart_surprised_closed.png",
+     "open": "assets/sprites/portraits_3x/portrait_bart_surprised_open.png"
+    },
+    "open": "assets/sprites/portraits/portrait_bart_surprised_open.png"
+   }
+  },
+  "otto": {
+   "neutral": {
+    "closed": "assets/sprites/portraits/portrait_otto_neutral_closed.png",
+    "files3x": {
+     "closed": "assets/sprites/portraits_3x/portrait_otto_neutral_closed.png",
+     "open": "assets/sprites/portraits_3x/portrait_otto_neutral_open.png"
+    },
+    "open": "assets/sprites/portraits/portrait_otto_neutral_open.png"
+   },
+   "happy": {
+    "closed": "assets/sprites/portraits/portrait_otto_happy_closed.png",
+    "files3x": {
+     "closed": "assets/sprites/portraits_3x/portrait_otto_happy_closed.png",
+     "open": "assets/sprites/portraits_3x/portrait_otto_happy_open.png"
+    },
+    "open": "assets/sprites/portraits/portrait_otto_happy_open.png"
+   },
+   "angry": {
+    "closed": "assets/sprites/portraits/portrait_otto_angry_closed.png",
+    "files3x": {
+     "closed": "assets/sprites/portraits_3x/portrait_otto_angry_closed.png",
+     "open": "assets/sprites/portraits_3x/portrait_otto_angry_open.png"
+    },
+    "open": "assets/sprites/portraits/portrait_otto_angry_open.png"
+   },
+   "sad": {
+    "closed": "assets/sprites/portraits/portrait_otto_sad_closed.png",
+    "files3x": {
+     "closed": "assets/sprites/portraits_3x/portrait_otto_sad_closed.png",
+     "open": "assets/sprites/portraits_3x/portrait_otto_sad_open.png"
+    },
+    "open": "assets/sprites/portraits/portrait_otto_sad_open.png"
+   },
+   "surprised": {
+    "closed": "assets/sprites/portraits/portrait_otto_surprised_closed.png",
+    "files3x": {
+     "closed": "assets/sprites/portraits_3x/portrait_otto_surprised_closed.png",
+     "open": "assets/sprites/portraits_3x/portrait_otto_surprised_open.png"
+    },
+    "open": "assets/sprites/portraits/portrait_otto_surprised_open.png"
+   }
+  }
+ }
+}

@@ -1,4 +1,5 @@
 /** Original fictional cast — preserved from 3D build. */
+import { MARCUS_NPC } from './marcus.js'; // JACK-STORY: River Bridge tender (side missions only)
 export const NPC_DEFS = [
   {
     id: 'dee', name: 'Dee Morales', role: 'Diner cook',
@@ -6,9 +7,10 @@ export const NPC_DEFS = [
     voice: { wave: 'triangle', f0: 255, rate: 0.075, len: 0.06, steps: [1, 1.12, 1.26, 1.5], vowels: ['a', 'o', 'e'], fs: 1.12, greet: ['e', 'o'] },
     area: 'diner', x: 320, color: '#d35400',
     lines: [
-      "Matthew. Sit down, hon. Wren never came back from closing her cart last night.",
+      "Matthew. Sit down, hon. Your old booth. Wren never came back from closing her cart last night.",
       "I called the police. They say she's a runaway. Wren? She'd never leave her flowers.",
-      "She owed money to Boone Holdings, same as half this street. Priya at Valley Pages keeps a list. Go see her."
+      "She owed money to Boone Holdings, same as half this street. Same man who used to tip you twenty for a coffee run.",
+      "Priya at Valley Pages keeps a list. Go see her."
     ],
     doneLines: [
       "Priya's at Valley Pages, next street over to the right. Bring Wren home, Matthew. Please."
@@ -20,7 +22,8 @@ export const NPC_DEFS = [
     voice: { wave: 'sine', f0: 330, rate: 0.065, len: 0.05, steps: [1, 1.12, 1.33, 1.5, 1.68], vowels: ['i', 'e', 'a'], fs: 1.18, slide: 1.08, greet: ['a', 'i'] },
     area: 'pages', x: 380, color: '#8e44ad',
     lines: [
-      "You're Matthew? Dee texted. Close the door. Here's my list: eleven people gone since spring.",
+      "Matthew. You got tall. Dee texted. Close the door. Here's my list: eleven people gone since spring.",
+      "I told you at sixteen what that man was. I should've told everyone.",
       "Every one of them owed Boone Holdings. Silas Boone's front company. Then come the fires, the 'accidents', the shops that sell cheap.",
       "The Foreman's crew sets the fires. Vera Lisk keeps files on anyone who talks. And the trucks go through the Rail Yards. Hank sees everything there."
     ],
@@ -37,7 +40,8 @@ export const NPC_DEFS = [
     voice: { wave: 'sawtooth', f0: 105, rate: 0.115, len: 0.09, steps: [1, 0.94, 1.06], vowels: ['o', 'u', 'uh'], fs: 0.86, grit: 0.35, greet: ['uh', 'o'], greetFall: true },
     area: 'rails', x: 450, color: '#7f8c8d',
     lines: [
-      "Boone trucks roll through here every night, and two patrol cars wave them on. Cops on his payroll, kid.",
+      "Boone trucks roll through here every night, and two patrol cars wave them on. Eleven years they've been on his payroll, kid.",
+      "I said no to his envelope once, back in 2015. Cost me my nights.",
       "Last night they loaded spools of cable and a work order for the Mill Mountain Star. Tomorrow's the city's anniversary.",
       "He's going to black out the Star, kid. And I saw a girl with flowers on her coat in the back of that truck. They took her up the mountain."
     ],
@@ -82,7 +86,7 @@ export const NPC_DEFS = [
     voice: { wave: 'sawtooth', f0: 150, rate: 0.08, len: 0.07, steps: [1, 1.25, 1.5], vowels: ['a', 'o', 'uh'], fs: 0.95, grit: 0.1, greet: ['ae', 'a'], greetFall: true },
     area: 'gym', x: 360, color: '#2980b9',
     lines: [
-      "Matthew! Need a courier who can hustle. Medicine for the folks camped by the River Bridge.",
+      "Matthew! Need a courier who can hustle. Medicine for the folks camped by the River Bridge. Better than the errands you used to run, kid.",
       "Boone's people burned the pharmacy on Campbell. Somebody has to carry it.",
       "Keep your feet moving. Trouble hates a moving target."
     ],
@@ -101,6 +105,7 @@ export const NPC_DEFS = [
     lines: [
       "Need a lift? Wait. Wrong pin again. A woman named Vera Lisk keeps sending me the wrong pins.",
       "She has photos of my brother's bad night. Says she'll mail them to his boss unless I drive where she says.",
+      "She's had my plate since my first year driving. 2015. Said she never forgets a car.",
       "Every pin lands on a shop that burns the next day. I'm done driving for her, Matthew. Tell the right people."
     ],
     doneLines: [
@@ -113,7 +118,7 @@ export const NPC_DEFS = [
     // audio: talk-blip voice (waveform, pitch, cadence) + greeting, used by js/audio.js
     voice: { wave: 'sine', f0: 430, rate: 0.088, len: 0.07, steps: [1, 1.26, 1.5, 2], vowels: ['i', 'e', 'o'], fs: 1.3, slide: 1.12, greet: ['i', 'o'] },
     area: 'downtown', x: 1000, color: '#1abc9c',
-    lines: ["Matthew! Fresh zinnias, two for five. Boone's men came by my cart again. Walk with me after close?"],
+    lines: ["Matthew! Fresh zinnias, two for five. Boone's men came by again. Mom's loan never dies. Walk with me after close?"],
     doneLines: ["Purse is back, petals are fine. You came up that mountain for me. You're a good egg, Matthew."]
   },
   {
@@ -122,11 +127,13 @@ export const NPC_DEFS = [
     voice: { wave: 'sawtooth', f0: 118, rate: 0.105, len: 0.08, steps: [1, 0.89, 1.06], vowels: ['o', 'e', 'uh'], fs: 0.92, slide: 0.95, greet: ['e', 'o'], greetFall: true },
     area: 'star', x: 300, color: '#2c3e50', // 1.6.0: the finale is on Mill Mountain
     lines: [
-      "Matthew Rose. You climbed a mountain in the rain to watch my city go dark.",
-      "Every block that owed me, I collected. Wren owed a little more. She's in the switch house. Quite safe, for now.",
+      "Matthew Rose. Eleven years, and you still come when I call. You climbed a mountain in the rain to watch my city go dark.",
+      "Every block that owed me, I collected. Wren owed a little more. Her mother's loan, kid. You carried the envelope.",
+      "She's in the switch house. Quite safe, for now.",
       "At midnight the Star goes out. When it comes back on, Roanoke answers to Boone Holdings. Walk away, or stand in the dark with her."
     ],
     waitLines: [
+      "You quit on me once, at Dee's counter. I kept your ten dollars.",
       "Matthew Rose. Lovely rain. Go home. We'll talk properly once you've done a little more homework."
     ],
     doneLines: [
@@ -181,7 +188,8 @@ export const NPC_DEFS = [
     lines: [
       "I carried envelopes for Vera Lisk. Never opened one. Turns out that doesn't count for much in court.",
       "Cam Ortiz testified. Brave guy. He looked at me like he was sorry I got caught in it. I'm sorry too.",
-      "Vera's files? Never found. She said once that paper burns but people remember. I think she meant it as a warning."
+      "Vera's files? Never found. She said once that paper burns but people remember. I think she meant it as a warning.",
+      "I carried Vera's lamp the night she lost her first files. 2015. I was nineteen."
     ]
   },
   {
@@ -189,9 +197,10 @@ export const NPC_DEFS = [
     voice: { wave: 'triangle', f0: 300, rate: 0.08, len: 0.06, steps: [1, 1.12, 1.26], vowels: ['e', 'a', 'o'], fs: 1.12, greet: ['e', 'a'] },
     area: 'pr_library', x: 360, color: '#d67828',
     lines: [
-      "Shh. Library voice. I kept the books for Boone Holdings for six years. Now I keep these. Better company.",
+      "Shh. Library voice. I kept the books for Boone Holdings for eleven years. Signed on the day it opened. Now I keep these. Better company.",
       "The Foreman's ledger, the one with Wren's name? I'm the one who told the prosecutors where to look. I sleep a little better now.",
-      "Someone donated a box of old Roanoke papers. Early nineties. Check the return cart in the back. Silas keeps asking for one issue."
+      "Someone donated a box of old Roanoke papers. Spring 2015. Check the return cart in the back. Silas keeps asking for one issue.",
+      "The day the company opened, a boy was busing tables at Dee's. Silas watched him the whole time."
     ]
   },
   {
@@ -201,7 +210,8 @@ export const NPC_DEFS = [
     lines: [
       "I ran the Foreman's tool truck. Gas cans, crowbars, all of it. I'm not proud. Just honest now.",
       "Building birdhouses for the Community Center. June Whitaker sent the plans. Said every block needs somewhere soft to land.",
-      "Mort Kessler, the Foreman, he's in the other wing. Won't come to shop class. Says hammers are beneath him. Ha."
+      "Mort Kessler, the Foreman, he's in the other wing. Won't come to shop class. Says hammers are beneath him. Ha.",
+      "I drove the Foreman's truck till the night Boone bought it. Same truck. New boss."
     ]
   },
   {
@@ -211,7 +221,8 @@ export const NPC_DEFS = [
     lines: [
       "I wore a badge in the Rail Yards. I waved the Boone trucks through. Took the envelope every Friday.",
       "Hank Pettigrew's notes put me here. Old man wrote down every plate number for two years. I'd shake his hand if he'd let me.",
-      "Sergeant Reyes cuffed Boone on the mountain. She's the real thing. The city's lucky some of us never took the money."
+      "Sergeant Reyes cuffed Boone on the mountain. She's the real thing. The city's lucky some of us never took the money.",
+      "I took Boone's first envelope in 2015. Second shift. Hank Pettigrew watched me take it."
     ]
   },
   {
@@ -220,6 +231,7 @@ export const NPC_DEFS = [
     area: 'pr_block', x: 1260, color: '#30486e',
     lines: ["Matthew Rose. Visiting hours. How thoughtful."]   // the real conversation is the branching tree in js/prison.js
   },
+  MARCUS_NPC // JACK-STORY
 ];
 
 export const OUTFITS = {

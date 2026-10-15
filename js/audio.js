@@ -1010,11 +1010,24 @@ export function talk(npcId, text, greetFirst = false) {
   safe(() => {
     stopTalk();
     talkOut = ac.createGain(); talkOut.connect(eng.sfxIn);
+    // 1.9.0: tap the talk bus so portraits / cutscene poses can open their mouths on the blips (talkLevel())
+    try { talkTap = ac.createAnalyser(); talkTap.fftSize = 256; talkOut.connect(talkTap); } catch (_) { talkTap = null; }
     let t = ac.currentTime + 0.02;
     if (greetFirst) t += eng.greet(npcId, t, talkOut) + 0.06;
     eng.talk(npcId, text, t, talkOut);
     stats.talk++; stats.lastTalk = npcId;
   });
+}
+let talkTap = null, tapBuf = null;
+/** 1.9.0: 0..1 loudness of the dialogue talk blips right now (0 when silent / muted / no audio). */
+export function talkLevel() {
+  if (!talkTap || !talkOut) return 0;
+  try {
+    if (!tapBuf || tapBuf.length !== talkTap.fftSize) tapBuf = new Float32Array(talkTap.fftSize);
+    talkTap.getFloatTimeDomainData(tapBuf);
+    let m = 0; for (let i = 0; i < tapBuf.length; i++) m = Math.max(m, Math.abs(tapBuf[i]));
+    return Math.min(1, m * 4);
+  } catch (_) { return 0; }
 }
 export function stopTalk() {
   if (!talkOut || !ac) return;
