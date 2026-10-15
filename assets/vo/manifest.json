@@ -1,0 +1,5817 @@
+{
+ "version": 1,
+ "format": {
+  "ogg": "opus 32k mono 48kHz",
+  "m4a": "aac-lc 48k mono 48kHz",
+  "loudness": "-16 LUFS / -1.5 dBTP"
+ },
+ "lines": {
+  "npc.dee.lines.02": {
+   "char": "dee",
+   "speaker": "dee",
+   "scene": "npc.dee",
+   "text": "I called the police. They say she's a runaway. Wren? She'd never leave her flowers.",
+   "file": "dee/npc.dee.lines.02",
+   "durationMs": 4785,
+   "source": "js/npcs.js:11",
+   "hash": "77dba2a2d09da41c"
+  },
+  "npc.dee.lines.04": {
+   "char": "dee",
+   "speaker": "dee",
+   "scene": "npc.dee",
+   "text": "Priya at Valley Pages keeps a list. Go see her.",
+   "file": "dee/npc.dee.lines.04",
+   "durationMs": 3271,
+   "source": "js/npcs.js:13",
+   "hash": "06a60d7992775861"
+  },
+  "npc.dee.doneLines.01": {
+   "char": "dee",
+   "speaker": "dee",
+   "scene": "npc.dee",
+   "text": "Priya's at Valley Pages, next street over to the right. Bring Wren home, Matthew. Please.",
+   "file": "dee/npc.dee.doneLines.01",
+   "durationMs": 5575,
+   "source": "js/npcs.js:16",
+   "hash": "362afaac61817ac0"
+  },
+  "npc.priya.lines.03": {
+   "char": "priya",
+   "speaker": "priya",
+   "scene": "npc.priya",
+   "text": "Every one of them owed Boone Holdings. Silas Boone's front company. Then come the fires, the 'accidents', the shops that sell cheap.",
+   "file": "priya/npc.priya.lines.03",
+   "durationMs": 12273,
+   "source": "js/npcs.js:27",
+   "hash": "001e63a19068fab6"
+  },
+  "npc.priya.lines.04": {
+   "char": "priya",
+   "speaker": "priya",
+   "scene": "npc.priya",
+   "text": "The Foreman's crew sets the fires. Vera Lisk keeps files on anyone who talks. And the trucks go through the Rail Yards. Hank sees everything there.",
+   "file": "priya/npc.priya.lines.04",
+   "durationMs": 16903,
+   "source": "js/npcs.js:28",
+   "hash": "00dbb31e889771d2"
+  },
+  "npc.priya.waitLines.01": {
+   "char": "priya",
+   "speaker": "priya",
+   "scene": "npc.priya",
+   "text": "Sorry, we're closed early. Too many shops burning lately. Dee keeps texting about you. Talk to her first? The diner's just left of here.",
+   "file": "priya/npc.priya.waitLines.01",
+   "durationMs": 11527,
+   "source": "js/npcs.js:31",
+   "hash": "066a7008adf5d3ad"
+  },
+  "npc.priya.doneLines.01": {
+   "char": "priya",
+   "speaker": "priya",
+   "scene": "npc.priya",
+   "text": "Hank hangs around the Rail Yards, past the gym. Don't trust a badge out there, Matthew. Not tonight.",
+   "file": "priya/npc.priya.doneLines.01",
+   "durationMs": 8860,
+   "source": "js/npcs.js:34",
+   "hash": "fbe1c38a58ebc278"
+  },
+  "npc.hank.lines.03": {
+   "char": "hank",
+   "speaker": "hank",
+   "scene": "npc.hank",
+   "text": "Last night they loaded spools of cable and a work order for the Mill Mountain Star. Tomorrow's the city's anniversary.",
+   "file": "hank/npc.hank.lines.03",
+   "durationMs": 7175,
+   "source": "js/npcs.js:45",
+   "hash": "3b1076e2e052ea35"
+  },
+  "npc.hank.lines.04": {
+   "char": "hank",
+   "speaker": "hank",
+   "scene": "npc.hank",
+   "text": "He's going to black out the Star, kid. And I saw a girl with flowers on her coat in the back of that truck. They took her up the mountain.",
+   "file": "hank/npc.hank.lines.04",
+   "durationMs": 8945,
+   "source": "js/npcs.js:46",
+   "hash": "15ae1832efeab5e3"
+  },
+  "npc.hank.waitLines.01": {
+   "char": "hank",
+   "speaker": "hank",
+   "scene": "npc.hank",
+   "text": "Rail yard's no place for sightseeing, kid. Patrol cars out tonight. Come back when you've got a real reason to ask.",
+   "file": "hank/npc.hank.waitLines.01",
+   "durationMs": 8344,
+   "source": "js/npcs.js:49",
+   "hash": "0577bac71d44d2d4"
+  },
+  "npc.hank.doneLines.01": {
+   "char": "hank",
+   "speaker": "hank",
+   "scene": "npc.hank",
+   "text": "Silas Boone is up at the Star. Midnight, kid. Get your friend back before the lights go out.",
+   "file": "hank/npc.hank.doneLines.01",
+   "durationMs": 7175,
+   "source": "js/npcs.js:52",
+   "hash": "f0e97d6f80eaa77a"
+  },
+  "npc.june.lines.01": {
+   "char": "june",
+   "speaker": "june",
+   "scene": "npc.june",
+   "text": "Rough night? Community Center's open. Half the block sleeps here since the fires.",
+   "file": "june/npc.june.lines.01",
+   "durationMs": 5084,
+   "source": "js/npcs.js:61",
+   "hash": "d0389dded5ee5701"
+  },
+  "npc.june.lines.02": {
+   "char": "june",
+   "speaker": "june",
+   "scene": "npc.june",
+   "text": "Drop flyers for Wren at Elmwood, or help set cots. Soft landings matter.",
+   "file": "june/npc.june.lines.02",
+   "durationMs": 4807,
+   "source": "js/npcs.js:62",
+   "hash": "b970eae790f47bf3"
+  },
+  "npc.june.lines.03": {
+   "char": "june",
+   "speaker": "june",
+   "scene": "npc.june",
+   "text": "You're doing fine, Matthew. Come back if the city feels too dark.",
+   "file": "june/npc.june.lines.03",
+   "durationMs": 3932,
+   "source": "js/npcs.js:63",
+   "hash": "9ee1bbfd1e9109ff"
+  },
+  "npc.june.doneLines.01": {
+   "char": "june",
+   "speaker": "june",
+   "scene": "npc.june",
+   "text": "Cots are set, Wren's flyers are out. Thanks, Matthew. Door's always open.",
+   "file": "june/npc.june.doneLines.01",
+   "durationMs": 4935,
+   "source": "js/npcs.js:66",
+   "hash": "79052daf7ef7e6ef"
+  },
+  "npc.tessa.lines.01": {
+   "char": "tessa",
+   "speaker": "tessa",
+   "scene": "npc.tessa",
+   "text": "Yo. Gear's stashed around Star City. Hoodie near the Star path, jacket by the rails.",
+   "file": "tessa/npc.tessa.lines.01",
+   "durationMs": 4807,
+   "source": "js/npcs.js:75",
+   "hash": "3b75fd588173722f"
+  },
+  "npc.tessa.lines.02": {
+   "char": "tessa",
+   "speaker": "tessa",
+   "scene": "npc.tessa",
+   "text": "Street rumor: a rideshare keeps circling Jefferson right before a shop catches fire.",
+   "file": "tessa/npc.tessa.lines.02",
+   "durationMs": 4103,
+   "source": "js/npcs.js:76",
+   "hash": "ee6905b964dda9d7"
+  },
+  "npc.tessa.lines.03": {
+   "char": "tessa",
+   "speaker": "tessa",
+   "scene": "npc.tessa",
+   "text": "Collect the gear. Stay out of the rain. And don't trust anyone in a Boone Holdings jacket.",
+   "file": "tessa/npc.tessa.lines.03",
+   "durationMs": 4560,
+   "source": "js/npcs.js:77",
+   "hash": "a5244a87797d1660"
+  },
+  "npc.tessa.doneLines.01": {
+   "char": "tessa",
+   "speaker": "tessa",
+   "scene": "npc.tessa",
+   "text": "Stuff's stashed all over town — check the far ends of every street. Some fits, some just cool junk. Go get 'em.",
+   "file": "tessa/npc.tessa.doneLines.01",
+   "durationMs": 6151,
+   "source": "js/npcs.js:80",
+   "hash": "973d9b0ccae5f382"
+  },
+  "npc.coach.lines.02": {
+   "char": "coach",
+   "speaker": "coach",
+   "scene": "npc.coach",
+   "text": "Boone's people burned the pharmacy on Campbell. Somebody has to carry it.",
+   "file": "coach/npc.coach.lines.02",
+   "durationMs": 4209,
+   "source": "js/npcs.js:90",
+   "hash": "a03422307cf0e3a0"
+  },
+  "npc.coach.lines.03": {
+   "char": "coach",
+   "speaker": "coach",
+   "scene": "npc.coach",
+   "text": "Keep your feet moving. Trouble hates a moving target.",
+   "file": "coach/npc.coach.lines.03",
+   "durationMs": 3036,
+   "source": "js/npcs.js:91",
+   "hash": "d6ebb9e05d25d6b6"
+  },
+  "npc.coach.activeLines.01": {
+   "char": "coach",
+   "speaker": "coach",
+   "scene": "npc.coach",
+   "text": "Package goes to the River Bridge — right past the Rail Yards. Move those feet!",
+   "file": "coach/npc.coach.activeLines.01",
+   "durationMs": 4529,
+   "source": "js/npcs.js:94",
+   "hash": "d5d6e1c5c60ce83a"
+  },
+  "npc.coach.doneLines.01": {
+   "char": "coach",
+   "speaker": "coach",
+   "scene": "npc.coach",
+   "text": "Delivered on time? Knew you had hustle. Gym's open whenever.",
+   "file": "coach/npc.coach.doneLines.01",
+   "durationMs": 3441,
+   "source": "js/npcs.js:97",
+   "hash": "7ea0e1905a52eb38"
+  },
+  "npc.cam.lines.01": {
+   "char": "cam",
+   "speaker": "cam",
+   "scene": "npc.cam",
+   "text": "Need a lift? Wait. Wrong pin again. A woman named Vera Lisk keeps sending me the wrong pins.",
+   "file": "cam/npc.cam.lines.01",
+   "durationMs": 7028,
+   "source": "js/npcs.js:106",
+   "hash": "c1a7175084adc454"
+  },
+  "npc.cam.lines.02": {
+   "char": "cam",
+   "speaker": "cam",
+   "scene": "npc.cam",
+   "text": "She has photos of my brother's bad night. Says she'll mail them to his boss unless I drive where she says.",
+   "file": "cam/npc.cam.lines.02",
+   "durationMs": 6321,
+   "source": "js/npcs.js:107",
+   "hash": "b63835f92551691f"
+  },
+  "npc.cam.lines.04": {
+   "char": "cam",
+   "speaker": "cam",
+   "scene": "npc.cam",
+   "text": "Every pin lands on a shop that burns the next day. I'm done driving for her, Matthew. Tell the right people.",
+   "file": "cam/npc.cam.lines.04",
+   "durationMs": 6876,
+   "source": "js/npcs.js:109",
+   "hash": "ad1f9f3371f6203c"
+  },
+  "npc.cam.doneLines.01": {
+   "char": "cam",
+   "speaker": "cam",
+   "scene": "npc.cam",
+   "text": "Last pin Vera sent says Mill Mountain, midnight. I'm not going. You shouldn't either. But you will, huh?",
+   "file": "cam/npc.cam.doneLines.01",
+   "durationMs": 5361,
+   "source": "js/npcs.js:112",
+   "hash": "d5abf8d9901ae70c"
+  },
+  "npc.wren.doneLines.01": {
+   "char": "wren",
+   "speaker": "wren",
+   "scene": "npc.wren",
+   "text": "Purse is back, petals are fine. You came up that mountain for me. You're a good egg, Matthew.",
+   "file": "wren/npc.wren.doneLines.01",
+   "durationMs": 5276,
+   "source": "js/npcs.js:122",
+   "hash": "e18d85faa6a94e5b"
+  },
+  "npc.silas.lines.03": {
+   "char": "silas_boone",
+   "speaker": "silas",
+   "scene": "npc.silas",
+   "text": "She's in the switch house. Quite safe, for now.",
+   "file": "silas_boone/npc.silas.lines.03",
+   "durationMs": 3066,
+   "source": "js/npcs.js:132",
+   "hash": "6efa3fdce4ebaff9"
+  },
+  "npc.silas.lines.04": {
+   "char": "silas_boone",
+   "speaker": "silas",
+   "scene": "npc.silas",
+   "text": "At midnight the Star goes out. When it comes back on, Roanoke answers to Boone Holdings. Walk away, or stand in the dark with her.",
+   "file": "silas_boone/npc.silas.lines.04",
+   "durationMs": 7879,
+   "source": "js/npcs.js:133",
+   "hash": "1afe97c3a328e7d1"
+  },
+  "npc.silas.waitLines.02": {
+   "char": "silas_boone",
+   "speaker": "silas",
+   "scene": "npc.silas",
+   "text": "Matthew Rose. Lovely rain. Go home. We'll talk properly once you've done a little more homework.",
+   "file": "silas_boone/npc.silas.waitLines.02",
+   "durationMs": 6535,
+   "source": "js/npcs.js:137",
+   "hash": "bf59f2108b3ac7ad"
+  },
+  "npc.silas.doneLines.01": {
+   "char": "silas_boone",
+   "speaker": "silas",
+   "scene": "npc.silas",
+   "text": "The lights always come back on, Matthew. So do I.",
+   "file": "silas_boone/npc.silas.doneLines.01",
+   "durationMs": 3633,
+   "source": "js/npcs.js:140",
+   "hash": "1cd86e5d757fe21b"
+  },
+  "npc.ellis.lines.01": {
+   "char": "ellis",
+   "speaker": "ellis",
+   "scene": "npc.ellis",
+   "text": "Visitor badge, please. Matthew Rose? Huh. Half this building knows your name. The other half wishes they didn't.",
+   "file": "ellis/npc.ellis.lines.01",
+   "durationMs": 6474,
+   "source": "js/npcs.js:149",
+   "hash": "2ad503ea3cc0f776"
+  },
+  "npc.ellis.lines.02": {
+   "char": "ellis",
+   "speaker": "ellis",
+   "scene": "npc.ellis",
+   "text": "Visiting hours run till the lights flicker twice. Cell Block C is through the right door. Mess hall, library, workshop and the yard after that.",
+   "file": "ellis/npc.ellis.lines.02",
+   "durationMs": 8340,
+   "source": "js/npcs.js:150",
+   "hash": "e3bf53394dab2348"
+  },
+  "npc.ellis.lines.03": {
+   "char": "ellis",
+   "speaker": "ellis",
+   "scene": "npc.ellis",
+   "text": "No contraband, no fighting, no feeding the yard pigeons. And if you're here for Boone: C-14. He's been expecting you.",
+   "file": "ellis/npc.ellis.lines.03",
+   "durationMs": 7226,
+   "source": "js/npcs.js:151",
+   "hash": "7ce2c93684eec96a"
+  },
+  "npc.ramos.lines.01": {
+   "char": "ramos",
+   "speaker": "ramos",
+   "scene": "npc.ramos",
+   "text": "Cell Block C. Two tiers, ninety-six bunks and one man who still irons his blues.",
+   "file": "ramos/npc.ramos.lines.01",
+   "durationMs": 5214,
+   "source": "js/npcs.js:159",
+   "hash": "b9b5969884df3200"
+  },
+  "npc.ramos.lines.02": {
+   "char": "ramos",
+   "speaker": "ramos",
+   "scene": "npc.ramos",
+   "text": "I worked the Rail Yards beat before this job. Didn't take a dime from Boone trucks. Got moved out here for it. Funny how it worked out.",
+   "file": "ramos/npc.ramos.lines.02",
+   "durationMs": 7710,
+   "source": "js/npcs.js:160",
+   "hash": "534e2e0ad9d550f0"
+  },
+  "npc.ramos.lines.03": {
+   "char": "ramos",
+   "speaker": "ramos",
+   "scene": "npc.ramos",
+   "text": "Boone's at the far end, C-14. Keep your hands where I can see them and you'll be fine.",
+   "file": "ramos/npc.ramos.lines.03",
+   "durationMs": 4367,
+   "source": "js/npcs.js:161",
+   "hash": "b3b743b41d4969bf"
+  },
+  "npc.quay.lines.01": {
+   "char": "quay",
+   "speaker": "quay",
+   "scene": "npc.quay",
+   "text": "Twenty-two years in Block C. Long enough to tell a man's footsteps from the end of the hall. Yours are new.",
+   "file": "quay/npc.quay.lines.01",
+   "durationMs": 8512,
+   "source": "js/npcs.js:169",
+   "hash": "1e10c04675507a6c"
+  },
+  "npc.quay.lines.02": {
+   "char": "quay",
+   "speaker": "quay",
+   "scene": "npc.quay",
+   "text": "Boone came in like he owned the place. Asked the guards to call him Mister. They didn't.",
+   "file": "quay/npc.quay.lines.02",
+   "durationMs": 5916,
+   "source": "js/npcs.js:170",
+   "hash": "801296037942d6a0"
+  },
+  "npc.quay.lines.03": {
+   "char": "quay",
+   "speaker": "quay",
+   "scene": "npc.quay",
+   "text": "He reads every night. Same old newspaper, folded soft as cloth. Library's got the rest of that stack, if you're curious.",
+   "file": "quay/npc.quay.lines.03",
+   "durationMs": 10140,
+   "source": "js/npcs.js:171",
+   "hash": "9bec29582333c440"
+  },
+  "npc.reed.lines.01": {
+   "char": "reed",
+   "speaker": "reed",
+   "scene": "npc.reed",
+   "text": "Painted a star on the River Bridge pier. Wrong wall, wrong night. Eight months.",
+   "file": "reed/npc.reed.lines.01",
+   "durationMs": 4224,
+   "source": "js/npcs.js:179",
+   "hash": "dbe65b7ebef9b95b"
+  },
+  "npc.reed.lines.02": {
+   "char": "reed",
+   "speaker": "reed",
+   "scene": "npc.reed",
+   "text": "You know Wren? Flower lady? She used to slip me zinnias to sketch. Tell her the drawings are getting good.",
+   "file": "reed/npc.reed.lines.02",
+   "durationMs": 5398,
+   "source": "js/npcs.js:180",
+   "hash": "73a0e34aa606c58f"
+  },
+  "npc.reed.lines.03": {
+   "char": "reed",
+   "speaker": "reed",
+   "scene": "npc.reed",
+   "text": "Boone's guys tried to recruit me to tag 'final notice' on shop doors. I said no. Best bad decision I ever made.",
+   "file": "reed/npc.reed.lines.03",
+   "durationMs": 6742,
+   "source": "js/npcs.js:181",
+   "hash": "a8d8c7db88d74965"
+  },
+  "npc.mina.lines.01": {
+   "char": "mina",
+   "speaker": "mina",
+   "scene": "npc.mina",
+   "text": "I carried envelopes for Vera Lisk. Never opened one. Turns out that doesn't count for much in court.",
+   "file": "mina/npc.mina.lines.01",
+   "durationMs": 6114,
+   "source": "js/npcs.js:189",
+   "hash": "16875415d044a32d"
+  },
+  "npc.mina.lines.02": {
+   "char": "mina",
+   "speaker": "mina",
+   "scene": "npc.mina",
+   "text": "Cam Ortiz testified. Brave guy. He looked at me like he was sorry I got caught in it. I'm sorry too.",
+   "file": "mina/npc.mina.lines.02",
+   "durationMs": 5937,
+   "source": "js/npcs.js:190",
+   "hash": "62f83f57adb39cbd"
+  },
+  "npc.mina.lines.03": {
+   "char": "mina",
+   "speaker": "mina",
+   "scene": "npc.mina",
+   "text": "Vera's files? Never found. She said once that paper burns but people remember. I think she meant it as a warning.",
+   "file": "mina/npc.mina.lines.03",
+   "durationMs": 5959,
+   "source": "js/npcs.js:191",
+   "hash": "39b097f6690db962"
+  },
+  "npc.dora.lines.02": {
+   "char": "dora",
+   "speaker": "dora",
+   "scene": "npc.dora",
+   "text": "The Foreman's ledger, the one with Wren's name? I'm the one who told the prosecutors where to look. I sleep a little better now.",
+   "file": "dora/npc.dora.lines.02",
+   "durationMs": 8519,
+   "source": "js/npcs.js:201",
+   "hash": "9a0c0748ac4cf23b"
+  },
+  "npc.otto.lines.01": {
+   "char": "otto",
+   "speaker": "otto",
+   "scene": "npc.otto",
+   "text": "I ran the Foreman's tool truck. Gas cans, crowbars, all of it. I'm not proud. Just honest now.",
+   "file": "otto/npc.otto.lines.01",
+   "durationMs": 5574,
+   "source": "js/npcs.js:211",
+   "hash": "d77741a9a13b3b5b"
+  },
+  "npc.otto.lines.02": {
+   "char": "otto",
+   "speaker": "otto",
+   "scene": "npc.otto",
+   "text": "Building birdhouses for the Community Center. June Whitaker sent the plans. Said every block needs somewhere soft to land.",
+   "file": "otto/npc.otto.lines.02",
+   "durationMs": 8796,
+   "source": "js/npcs.js:212",
+   "hash": "78227e0780e2bee7"
+  },
+  "npc.otto.lines.03": {
+   "char": "otto",
+   "speaker": "otto",
+   "scene": "npc.otto",
+   "text": "Mort Kessler, the Foreman, he's in the other wing. Won't come to shop class. Says hammers are beneath him. Ha.",
+   "file": "otto/npc.otto.lines.03",
+   "durationMs": 7196,
+   "source": "js/npcs.js:213",
+   "hash": "bc1ef666135cb23e"
+  },
+  "npc.bart.lines.01": {
+   "char": "bart",
+   "speaker": "bart",
+   "scene": "npc.bart",
+   "text": "I wore a badge in the Rail Yards. I waved the Boone trucks through. Took the envelope every Friday.",
+   "file": "bart/npc.bart.lines.01",
+   "durationMs": 5809,
+   "source": "js/npcs.js:222",
+   "hash": "67a7e9d22f9e34d1"
+  },
+  "npc.bart.lines.02": {
+   "char": "bart",
+   "speaker": "bart",
+   "scene": "npc.bart",
+   "text": "Hank Pettigrew's notes put me here. Old man wrote down every plate number for two years. I'd shake his hand if he'd let me.",
+   "file": "bart/npc.bart.lines.02",
+   "durationMs": 8011,
+   "source": "js/npcs.js:223",
+   "hash": "353ebc36366afb5c"
+  },
+  "npc.bart.lines.03": {
+   "char": "bart",
+   "speaker": "bart",
+   "scene": "npc.bart",
+   "text": "Sergeant Reyes cuffed Boone on the mountain. She's the real thing. The city's lucky some of us never took the money.",
+   "file": "bart/npc.bart.lines.03",
+   "durationMs": 6513,
+   "source": "js/npcs.js:224",
+   "hash": "1fa124f8ea8fb5e5"
+  },
+  "npc.silas_prison.lines.01": {
+   "char": "silas_boone",
+   "speaker": "silas_prison",
+   "scene": "npc.silas_prison",
+   "text": "Matthew Rose. Visiting hours. How thoughtful.",
+   "file": "silas_boone/npc.silas_prison.lines.01",
+   "durationMs": 3153,
+   "source": "js/npcs.js:232",
+   "hash": "bc690e9b3f5a7e63"
+  },
+  "mission.side_diner.offer.01": {
+   "char": "dee",
+   "speaker": "dee",
+   "scene": "mission.side_diner",
+   "text": "Matthew, before you head to Priya's: trouble. The Foreman's crew burned the hardware store last week. Tonight they're coming for my diner.",
+   "file": "dee/mission.side_diner.offer.01",
+   "durationMs": 7708,
+   "source": "js/missions.js:63",
+   "hash": "ca329dc7b4765ab4"
+  },
+  "mission.side_diner.offer.02": {
+   "char": "dee",
+   "speaker": "dee",
+   "scene": "mission.side_diner",
+   "text": "They've got gas cans and a 'final notice' from Boone Holdings. Keep them off my door for three rounds and the apron's yours.",
+   "file": "dee/mission.side_diner.offer.02",
+   "durationMs": 7132,
+   "source": "js/missions.js:64",
+   "hash": "02dbd717f18fd43f"
+  },
+  "mission.side_diner.active.01": {
+   "char": "dee",
+   "speaker": "dee",
+   "scene": "mission.side_diner",
+   "text": "Keep 'em off my door! Hit the ones with the cans first!",
+   "file": "dee/mission.side_diner.active.01",
+   "durationMs": 3249,
+   "source": "js/missions.js:66",
+   "hash": "706d55048841174d"
+  },
+  "mission.side_snatch.offer.01": {
+   "char": "wren",
+   "speaker": "wren",
+   "scene": "mission.side_snatch",
+   "text": "Hey! HEY! That guy in the orange just grabbed my purse off the flower cart! My Boone Holdings receipts are in there!",
+   "file": "wren/mission.side_snatch.offer.01",
+   "durationMs": 7089,
+   "source": "js/missions.js:76",
+   "hash": "4129a5498ff2e22d"
+  },
+  "mission.side_snatch.offer.02": {
+   "char": "wren",
+   "speaker": "wren",
+   "scene": "mission.side_snatch",
+   "text": "He's heading east toward the diner. He gets winded every few seconds. Catch him and land one hit!",
+   "file": "wren/mission.side_snatch.offer.02",
+   "durationMs": 5809,
+   "source": "js/missions.js:77",
+   "hash": "87ff485f5cee7719"
+  },
+  "mission.side_snatch.active.01": {
+   "char": "wren",
+   "speaker": "wren",
+   "scene": "mission.side_snatch",
+   "text": "He went that way — east! Go go go!",
+   "file": "wren/mission.side_snatch.active.01",
+   "durationMs": 2356,
+   "source": "js/missions.js:79",
+   "hash": "1b438792ddc1fe56"
+  },
+  "mission.side_skate.offer.01": {
+   "char": "tessa",
+   "speaker": "tessa",
+   "scene": "mission.side_skate",
+   "text": "Okay so. I posted a video of Boone's guys hanging around the shop. It got a LOT of views.",
+   "file": "tessa/mission.side_skate.offer.01",
+   "durationMs": 5809,
+   "source": "js/missions.js:89",
+   "hash": "25037dffdfcccc04"
+  },
+  "mission.side_skate.offer.02": {
+   "char": "tessa",
+   "speaker": "tessa",
+   "scene": "mission.side_skate",
+   "text": "Now a whole crew's rolling up in the rain. Hold the bowl for forty seconds and they'll back off. Probably.",
+   "file": "tessa/mission.side_skate.offer.02",
+   "durationMs": 6193,
+   "source": "js/missions.js:90",
+   "hash": "dfd17a681eb351a5"
+  },
+  "mission.side_skate.active.01": {
+   "char": "tessa",
+   "speaker": "tessa",
+   "scene": "mission.side_skate",
+   "text": "Just stay standing! Forty seconds! You got this!",
+   "file": "tessa/mission.side_skate.active.01",
+   "durationMs": 2695,
+   "source": "js/missions.js:92",
+   "hash": "e19bc1d96e9ddcd3"
+  },
+  "mission.side_potluck.offer.01": {
+   "char": "june",
+   "speaker": "june",
+   "scene": "mission.side_potluck",
+   "text": "Matthew! Families who lost their shops to the fires are sleeping here tonight, and I am three things short.",
+   "file": "june/mission.side_potluck.offer.01",
+   "durationMs": 6257,
+   "source": "js/missions.js:107",
+   "hash": "5ab797a7f40aa37b"
+  },
+  "mission.side_potluck.offer.02": {
+   "char": "june",
+   "speaker": "june",
+   "scene": "mission.side_potluck",
+   "text": "Dee promised a pie, Priya's lending books for the kids, and Tessa has string lights so it isn't so dark. Could you fetch them?",
+   "file": "june/mission.side_potluck.offer.02",
+   "durationMs": 8583,
+   "source": "js/missions.js:108",
+   "hash": "8b85e24c772be7e3"
+  },
+  "mission.side_potluck.active.01": {
+   "char": "june",
+   "speaker": "june",
+   "scene": "mission.side_potluck",
+   "text": "Pie from Dee, books from Priya, lights from Tessa. Then back to me, hon.",
+   "file": "june/mission.side_potluck.active.01",
+   "durationMs": 5127,
+   "source": "js/missions.js:110",
+   "hash": "93a6966559c3d6c6"
+  },
+  "mission.side_potluck.item_pie": {
+   "char": "dee",
+   "speaker": "dee",
+   "scene": "mission.side_potluck",
+   "text": "One peach pie for June. Hold it level, Matthew — LEVEL.",
+   "file": "dee/mission.side_potluck.item_pie",
+   "durationMs": 3484,
+   "source": "js/missions.js:101",
+   "hash": "22e56c7ff27ffdbc"
+  },
+  "mission.side_potluck.item_books": {
+   "char": "priya",
+   "speaker": "priya",
+   "scene": "mission.side_potluck",
+   "text": "A box of large-print mysteries for the reading corner. Tell June the third one has a twist.",
+   "file": "priya/mission.side_potluck.item_books",
+   "durationMs": 8199,
+   "source": "js/missions.js:102",
+   "hash": "abe06f246aa412de"
+  },
+  "mission.side_potluck.item_lights": {
+   "char": "tessa",
+   "speaker": "tessa",
+   "scene": "mission.side_potluck",
+   "text": "String lights! I only tangled them a little. Okay, a lot.",
+   "file": "tessa/mission.side_potluck.item_lights",
+   "durationMs": 2912,
+   "source": "js/missions.js:103",
+   "hash": "8afeccdeb562f4c1"
+  },
+  "mission.side_spar.offer.01": {
+   "char": "coach",
+   "speaker": "coach",
+   "scene": "mission.side_spar",
+   "text": "Delivery was quick. But can you take a punch? Better question — can you NOT take one?",
+   "file": "coach/mission.side_spar.offer.01",
+   "durationMs": 5895,
+   "source": "js/missions.js:120",
+   "hash": "f9853f92e4069540"
+  },
+  "mission.side_spar.offer.02": {
+   "char": "coach",
+   "speaker": "coach",
+   "scene": "mission.side_spar",
+   "text": "Six sparring partners, light gloves. Get tagged too many times and we start over. Win, and the old varsity jacket's yours.",
+   "file": "coach/mission.side_spar.offer.02",
+   "durationMs": 8839,
+   "source": "js/missions.js:121",
+   "hash": "ffb8433abd6505d3"
+  },
+  "mission.side_spar.active.01": {
+   "char": "coach",
+   "speaker": "coach",
+   "scene": "mission.side_spar",
+   "text": "Hands up! Move your feet! Don't get tagged!",
+   "file": "coach/mission.side_spar.active.01",
+   "durationMs": 2183,
+   "source": "js/missions.js:123",
+   "hash": "14ab1a0468258282"
+  },
+  "mission.side_night.offer.01": {
+   "char": "hank",
+   "speaker": "hank",
+   "scene": "mission.side_night",
+   "text": "I'm telling the state inspector about those patrol cars. He's waiting at the River Bridge, away from local badges.",
+   "file": "hank/mission.side_night.offer.01",
+   "durationMs": 8049,
+   "source": "js/missions.js:133",
+   "hash": "2362e81d37cde668"
+  },
+  "mission.side_night.offer.02": {
+   "char": "hank",
+   "speaker": "hank",
+   "scene": "mission.side_night",
+   "text": "These knees don't move fast, and Boone's people know my face. Walk me down to the bridge and keep them off me.",
+   "file": "hank/mission.side_night.offer.02",
+   "durationMs": 8025,
+   "source": "js/missions.js:134",
+   "hash": "3c21cc34fe806894"
+  },
+  "mission.side_night.active.01": {
+   "char": "hank",
+   "speaker": "hank",
+   "scene": "mission.side_night",
+   "text": "Easy, kid. Bridge is past the yards, to the right. I'm right behind you.",
+   "file": "hank/mission.side_night.active.01",
+   "durationMs": 5233,
+   "source": "js/missions.js:136",
+   "hash": "857f3a9bc1d563ff"
+  },
+  "mission.side_marcus_pages.item_page_priya": {
+   "char": "priya",
+   "speaker": "priya",
+   "scene": "mission.side_marcus_pages",
+   "text": "A page of times and initials. One says 'S.B.' a lot. Old pages, too. 2015.",
+   "file": "priya/mission.side_marcus_pages.item_page_priya",
+   "durationMs": 8668,
+   "source": "js/marcus.js:51",
+   "hash": "2141b8d3ceb64cd7"
+  },
+  "mission.side_marcus_pages.item_page_hank": {
+   "char": "hank",
+   "speaker": "hank",
+   "scene": "mission.side_marcus_pages",
+   "text": "Bridge log. Same careful hand as the rail yard gate sheets, way back.",
+   "file": "hank/mission.side_marcus_pages.item_page_hank",
+   "durationMs": 4764,
+   "source": "js/marcus.js:52",
+   "hash": "333f3db10a4cd7aa"
+  },
+  "mission.side_marcus_pages.item_page_dee": {
+   "char": "dee",
+   "speaker": "dee",
+   "scene": "mission.side_marcus_pages",
+   "text": "Coffee ring on it. That's mine, sorry, hon.",
+   "file": "dee/mission.side_marcus_pages.item_page_dee",
+   "durationMs": 2652,
+   "source": "js/marcus.js:53",
+   "hash": "c29bb26d9c7cfcb0"
+  },
+  "main.linesFor.fetch_done": {
+   "char": "june",
+   "speaker": "june",
+   "scene": "mission.side_potluck",
+   "text": "You found everything! Matthew, this potluck is going to be perfect.",
+   "file": "june/main.linesFor.fetch_done",
+   "durationMs": 4188,
+   "source": "js/main.js:501",
+   "hash": "c4520507fd9ad7ba"
+  },
+  "main.linesFor.busy.dee": {
+   "char": "dee",
+   "speaker": "dee",
+   "scene": "npc.dee",
+   "text": "Looks like you've got your hands full. Finish that first, then come see me.",
+   "file": "dee/main.linesFor.busy.dee",
+   "durationMs": 4892,
+   "source": "js/main.js:504",
+   "hash": "1192a769e4dd8dbd"
+  },
+  "main.linesFor.busy.wren": {
+   "char": "wren",
+   "speaker": "wren",
+   "scene": "npc.wren",
+   "text": "Looks like you've got your hands full. Finish that first, then come see me.",
+   "file": "wren/main.linesFor.busy.wren",
+   "durationMs": 4465,
+   "source": "js/main.js:504",
+   "hash": "80ae02c75c9e83f9"
+  },
+  "main.linesFor.busy.tessa": {
+   "char": "tessa",
+   "speaker": "tessa",
+   "scene": "npc.tessa",
+   "text": "Looks like you've got your hands full. Finish that first, then come see me.",
+   "file": "tessa/main.linesFor.busy.tessa",
+   "durationMs": 3622,
+   "source": "js/main.js:504",
+   "hash": "27f696e39daac509"
+  },
+  "main.linesFor.busy.june": {
+   "char": "june",
+   "speaker": "june",
+   "scene": "npc.june",
+   "text": "Looks like you've got your hands full. Finish that first, then come see me.",
+   "file": "june/main.linesFor.busy.june",
+   "durationMs": 5959,
+   "source": "js/main.js:504",
+   "hash": "bd3ff24104818ea2"
+  },
+  "main.linesFor.busy.coach": {
+   "char": "coach",
+   "speaker": "coach",
+   "scene": "npc.coach",
+   "text": "Looks like you've got your hands full. Finish that first, then come see me.",
+   "file": "coach/main.linesFor.busy.coach",
+   "durationMs": 4167,
+   "source": "js/main.js:504",
+   "hash": "000e97f2841c4c3b"
+  },
+  "main.linesFor.busy.hank": {
+   "char": "hank",
+   "speaker": "hank",
+   "scene": "npc.hank",
+   "text": "Looks like you've got your hands full. Finish that first, then come see me.",
+   "file": "hank/main.linesFor.busy.hank",
+   "durationMs": 4955,
+   "source": "js/main.js:504",
+   "hash": "f2efa84b61d76a0b"
+  },
+  "main.linesFor.busy.marcus": {
+   "char": "marcus_hale",
+   "speaker": "marcus",
+   "scene": "npc.marcus",
+   "text": "Looks like you've got your hands full. Finish that first, then come see me.",
+   "file": "marcus_hale/main.linesFor.busy.marcus",
+   "durationMs": 4145,
+   "source": "js/main.js:504",
+   "hash": "39c312a133b4013b"
+  },
+  "dlc.m1.s0.01": {
+   "char": "lou",
+   "speaker": "lou",
+   "scene": "dlc.m1",
+   "text": "Evening, Mr. Boone. Paper's late. So's everybody else tonight.",
+   "file": "lou/dlc.m1.s0.01",
+   "durationMs": 4423,
+   "source": "js/dlc_silas.js:104",
+   "hash": "d3ea41d88f9922b0"
+  },
+  "dlc.m1.s0.02": {
+   "char": "silas_boone",
+   "speaker": "silas",
+   "scene": "dlc.m1",
+   "text": "Lou. Who's the new crew leaning on your stand?",
+   "file": "silas_boone/dlc.m1.s0.02",
+   "durationMs": 2614,
+   "source": "js/dlc_silas.js:105",
+   "hash": "d8cc905c638c3439"
+  },
+  "dlc.m1.s0.03": {
+   "char": "lou",
+   "speaker": "lou",
+   "scene": "dlc.m1",
+   "text": "Calls themselves the Foreman's boys. Want 'rent' for the corner, or the stand catches fire. Here they come now.",
+   "file": "lou/dlc.m1.s0.03",
+   "durationMs": 6663,
+   "source": "js/dlc_silas.js:106",
+   "hash": "d1d42b4eed26791c"
+  },
+  "dlc.m1.s0.04": {
+   "char": "silas_boone",
+   "speaker": "silas",
+   "scene": "dlc.m1",
+   "text": "Then let's have a polite word with them. Watch the technique, Lou.",
+   "file": "silas_boone/dlc.m1.s0.04",
+   "durationMs": 4010,
+   "source": "js/dlc_silas.js:107",
+   "hash": "7c60be8dcb045850"
+  },
+  "dlc.m1.s3.01": {
+   "char": "lou",
+   "speaker": "lou",
+   "scene": "dlc.m1",
+   "text": "Didn't know a coat that nice could move like that. Thank you, Mr. Boone. Truly.",
+   "file": "lou/dlc.m1.s3.01",
+   "durationMs": 5191,
+   "source": "js/dlc_silas.js:115",
+   "hash": "6d611ee44cbe69d0"
+  },
+  "dlc.m1.s3.02": {
+   "char": "silas_boone",
+   "speaker": "silas",
+   "scene": "dlc.m1",
+   "text": "Everyone has something in them, Lou. The trick is knowing what.",
+   "file": "silas_boone/dlc.m1.s3.02",
+   "durationMs": 4849,
+   "source": "js/dlc_silas.js:116",
+   "hash": "7dcc1f3d7dacb4de"
+  },
+  "dlc.m1.s3.03": {
+   "char": "lou",
+   "speaker": "lou",
+   "scene": "dlc.m1",
+   "text": "You'd run this street better than the Foreman ever could. Folks would pay you to keep them safe.",
+   "file": "lou/dlc.m1.s3.03",
+   "durationMs": 5340,
+   "source": "js/dlc_silas.js:117",
+   "hash": "25ce13a6da2babfa"
+  },
+  "dlc.m1.s3.04": {
+   "char": "silas_boone",
+   "speaker": "silas",
+   "scene": "dlc.m1",
+   "text": "Would they, now. Pay me. I'd never thought of it that way.",
+   "file": "silas_boone/dlc.m1.s3.04",
+   "durationMs": 3569,
+   "source": "js/dlc_silas.js:118",
+   "hash": "4900d2eb786a4308"
+  },
+  "dlc.m1.s3.05": {
+   "char": "lou",
+   "speaker": "lou",
+   "scene": "dlc.m1",
+   "text": "Word is the Foreman lends money to half the shops. The courier at Valley Pages carries his list.",
+   "file": "lou/dlc.m1.s3.05",
+   "durationMs": 5724,
+   "source": "js/dlc_silas.js:119",
+   "hash": "0eb0c981f6b10308"
+  },
+  "dlc.m2.s0.02": {
+   "char": "silas_boone",
+   "speaker": "silas",
+   "scene": "dlc.m2",
+   "text": "Then I'm early for tomorrow. The Foreman's boys will come here next. I could keep them away. For a small monthly fee.",
+   "file": "silas_boone/dlc.m2.s0.02",
+   "durationMs": 7431,
+   "source": "js/dlc_silas.js:126",
+   "hash": "093d8e45430faac2"
+  },
+  "dlc.m2.s0.03": {
+   "char": "priya",
+   "speaker": "priya",
+   "scene": "dlc.m2",
+   "text": "That's the same thing they offer. You just say it nicer.",
+   "file": "priya/dlc.m2.s0.03",
+   "durationMs": 5127,
+   "source": "js/dlc_silas.js:127",
+   "hash": "7ca5765e29b3d952"
+  },
+  "dlc.m2.s0.04": {
+   "char": "silas_boone",
+   "speaker": "silas",
+   "scene": "dlc.m2",
+   "text": "Of course. I only ever offer.",
+   "file": "silas_boone/dlc.m2.s0.04",
+   "durationMs": 2016,
+   "source": "js/dlc_silas.js:128",
+   "hash": "7bec3d5ffbae3e2b"
+  },
+  "dlc.m2.s0.05": {
+   "char": "priya",
+   "speaker": "priya",
+   "scene": "dlc.m2",
+   "text": "And that is exactly what worries me. Good night, Mr. Boone.",
+   "file": "priya/dlc.m2.s0.05",
+   "durationMs": 5127,
+   "source": "js/dlc_silas.js:129",
+   "hash": "273ccc590472d1a3"
+  },
+  "dlc.m2.s2.01": {
+   "char": "ivy",
+   "speaker": "ivy",
+   "scene": "dlc.m2",
+   "text": "They grabbed my clipboard! It's the Foreman's collection list. Every shop that owes him.",
+   "file": "ivy/dlc.m2.s2.01",
+   "durationMs": 4061,
+   "source": "js/dlc_silas.js:132",
+   "hash": "698b65cc62a33d76"
+  },
+  "dlc.m2.s2.02": {
+   "char": "silas_boone",
+   "speaker": "silas",
+   "scene": "dlc.m2",
+   "text": "And here it is, back in your hands. Mostly.",
+   "file": "silas_boone/dlc.m2.s2.02",
+   "durationMs": 2575,
+   "source": "js/dlc_silas.js:133",
+   "hash": "560b27b213a83528"
+  },
+  "dlc.m2.s2.03": {
+   "char": "ivy",
+   "speaker": "ivy",
+   "scene": "dlc.m2",
+   "text": "Wait… the page with all the names is missing.",
+   "file": "ivy/dlc.m2.s2.03",
+   "durationMs": 2567,
+   "source": "js/dlc_silas.js:134",
+   "hash": "ed6533a5d6439a81"
+  },
+  "dlc.m2.s2.04": {
+   "char": "silas_boone",
+   "speaker": "silas",
+   "scene": "dlc.m2",
+   "text": "Pages go missing in this town. His freight comes through the Rail Yards… second shift, wasn't it?",
+   "file": "silas_boone/dlc.m2.s2.04",
+   "durationMs": 6961,
+   "source": "js/dlc_silas.js:135",
+   "hash": "2fe76f880f97b206"
+  },
+  "dlc.m2.s2.05": {
+   "char": "ivy",
+   "speaker": "ivy",
+   "scene": "dlc.m2",
+   "text": "How did you — never mind. I didn't say anything.",
+   "file": "ivy/dlc.m2.s2.05",
+   "durationMs": 2275,
+   "source": "js/dlc_silas.js:136",
+   "hash": "69079d55d217a489"
+  },
+  "dlc.m3.s0.01": {
+   "char": "gus",
+   "speaker": "gus",
+   "scene": "dlc.m3",
+   "text": "New on nights. They said a man in a long coat might come by.",
+   "file": "gus/dlc.m3.s0.01",
+   "durationMs": 3356,
+   "source": "js/dlc_silas.js:148",
+   "hash": "e44daff321101adb"
+  },
+  "dlc.m3.s0.02": {
+   "char": "silas_boone",
+   "speaker": "silas",
+   "scene": "dlc.m3",
+   "text": "They were right. Who's moving freight at this hour, and who's letting them?",
+   "file": "silas_boone/dlc.m3.s0.02",
+   "durationMs": 4124,
+   "source": "js/dlc_silas.js:149",
+   "hash": "9eeb238403bdbfee"
+  },
+  "dlc.m3.s0.03": {
+   "char": "gus",
+   "speaker": "gus",
+   "scene": "dlc.m3",
+   "text": "The Foreman's outfit. Two patrol cars park by the gate and look the other way. Listen —",
+   "file": "gus/dlc.m3.s0.03",
+   "durationMs": 4935,
+   "source": "js/dlc_silas.js:150",
+   "hash": "ce1b26f4f8cd3d27"
+  },
+  "dlc.m3.s0.04": {
+   "char": "silas_boone",
+   "speaker": "silas",
+   "scene": "dlc.m3",
+   "text": "I hear it. Stay behind the switch house, Gus.",
+   "file": "silas_boone/dlc.m3.s0.04",
+   "durationMs": 2946,
+   "source": "js/dlc_silas.js:151",
+   "hash": "039cf56112de0bec"
+  },
+  "dlc.m3.s2.02": {
+   "char": "silas_boone",
+   "speaker": "silas",
+   "scene": "dlc.m3",
+   "text": "A badge is just a man with a price, Gus. Now they look the other way for me.",
+   "file": "silas_boone/dlc.m3.s2.02",
+   "durationMs": 5191,
+   "source": "js/dlc_silas.js:155",
+   "hash": "2577d81dfa69110b"
+  },
+  "dlc.m3.s2.05": {
+   "char": "gus",
+   "speaker": "gus",
+   "scene": "dlc.m3",
+   "text": "Every night-shift lantern gets initials. What do I paint on yours?",
+   "file": "gus/dlc.m3.s2.05",
+   "durationMs": 4188,
+   "source": "js/dlc_silas.js:158",
+   "hash": "307e509f4b3c3e4a"
+  },
+  "dlc.m3.s2.06": {
+   "char": "silas_boone",
+   "speaker": "silas",
+   "scene": "dlc.m3",
+   "text": "S.B. Second shift.",
+   "file": "silas_boone/dlc.m3.s2.06",
+   "durationMs": 1147,
+   "source": "js/dlc_silas.js:159",
+   "hash": "522cd957f381d875"
+  },
+  "dlc.m3.s2.07": {
+   "char": "gus",
+   "speaker": "gus",
+   "scene": "dlc.m3",
+   "text": "'S.B. — 2nd shift.' There you go. Mind the bridge, somebody's been signaling from it.",
+   "file": "gus/dlc.m3.s2.07",
+   "durationMs": 4721,
+   "source": "js/dlc_silas.js:160",
+   "hash": "204b3ff67544deb3"
+  },
+  "dlc.m4.s1.01": {
+   "char": "vera_lisk",
+   "speaker": "vera",
+   "scene": "dlc.m4",
+   "text": "That lamp's for my friends, Mr. Boone. I keep files on everyone in this town. Even you.",
+   "file": "vera_lisk/dlc.m4.s1.01",
+   "durationMs": 5105,
+   "source": "js/dlc_silas.js:168",
+   "hash": "92b482d493a37452"
+  },
+  "dlc.m4.s1.02": {
+   "char": "silas_boone",
+   "speaker": "silas",
+   "scene": "dlc.m4",
+   "text": "Then you know I'm worth listening to. Shall we discuss it?",
+   "file": "silas_boone/dlc.m4.s1.02",
+   "durationMs": 4529,
+   "source": "js/dlc_silas.js:169",
+   "hash": "907078f896653bf1"
+  },
+  "dlc.m4.s1.03": {
+   "char": "vera_lisk",
+   "speaker": "vera",
+   "scene": "dlc.m4",
+   "text": "The Foreman said you talk too much.",
+   "file": "vera_lisk/dlc.m4.s1.03",
+   "durationMs": 1841,
+   "source": "js/dlc_silas.js:170",
+   "hash": "9f2d361977fb2d17"
+  },
+  "dlc.m4.s1.04": {
+   "char": "silas_boone",
+   "speaker": "silas",
+   "scene": "dlc.m4",
+   "text": "The Foreman is right more often than he knows.",
+   "file": "silas_boone/dlc.m4.s1.04",
+   "durationMs": 3036,
+   "source": "js/dlc_silas.js:171",
+   "hash": "3b5549ab98015705"
+  },
+  "dlc.m5.s1.01": {
+   "char": "foreman_kessler",
+   "speaker": "foreman",
+   "scene": "dlc.m5",
+   "text": "Boone. You took my list, my cops and my lieutenant in one night.",
+   "file": "foreman_kessler/dlc.m5.s1.01",
+   "durationMs": 3974,
+   "source": "js/dlc_silas.js:184",
+   "hash": "9dd449b487a6f1ff"
+  },
+  "dlc.m5.s1.02": {
+   "char": "silas_boone",
+   "speaker": "silas",
+   "scene": "dlc.m5",
+   "text": "And you've been answering my questions, Mr. Kessler. Mostly with your fists.",
+   "file": "silas_boone/dlc.m5.s1.02",
+   "durationMs": 4562,
+   "source": "js/dlc_silas.js:185",
+   "hash": "7500ee620b1b377a"
+  },
+  "dlc.m5.s1.03": {
+   "char": "foreman_kessler",
+   "speaker": "foreman",
+   "scene": "dlc.m5",
+   "text": "This city's not yours.",
+   "file": "foreman_kessler/dlc.m5.s1.03",
+   "durationMs": 2033,
+   "source": "js/dlc_silas.js:186",
+   "hash": "c6595135fe9857c8"
+  },
+  "dlc.m5.s1.04": {
+   "char": "silas_boone",
+   "speaker": "silas",
+   "scene": "dlc.m5",
+   "text": "Not yet. Shall we?",
+   "file": "silas_boone/dlc.m5.s1.04",
+   "durationMs": 1133,
+   "source": "js/dlc_silas.js:187",
+   "hash": "2651f8314f18ed30"
+  },
+  "dlc.m5.s3.01": {
+   "char": "foreman_kessler",
+   "speaker": "foreman",
+   "scene": "dlc.m5",
+   "text": "Who do you even work for?",
+   "file": "foreman_kessler/dlc.m5.s3.01",
+   "durationMs": 2278,
+   "source": "js/dlc_silas.js:190",
+   "hash": "f5ad9aae342b598f"
+  },
+  "dlc.m5.s3.02": {
+   "char": "silas_boone",
+   "speaker": "silas",
+   "scene": "dlc.m5",
+   "text": "As of tonight, Mr. Kessler, you work for me. Keep the whistle. Keep the matches, too.",
+   "file": "silas_boone/dlc.m5.s3.02",
+   "durationMs": 5188,
+   "source": "js/dlc_silas.js:191",
+   "hash": "fb129567efa587aa"
+  },
+  "dlc.m5.s3.05": {
+   "char": "silas_boone",
+   "speaker": "silas",
+   "scene": "dlc.m5",
+   "text": "Look at it. The whole city looks up at that Star. One day they'll look up and think of me.",
+   "file": "silas_boone/dlc.m5.s3.05",
+   "durationMs": 5393,
+   "source": "js/dlc_silas.js:194",
+   "hash": "b42377fcca9cc436"
+  },
+  "dlc.m6.s0.01": {
+   "char": "pip",
+   "speaker": "pip",
+   "scene": "dlc.m6",
+   "text": "Package for you, Mr. Boone. The papers from the city office. No questions, like you said.",
+   "file": "pip/dlc.m6.s0.01",
+   "durationMs": 4401,
+   "source": "js/dlc_silas.js:201",
+   "hash": "df45035652b8c2e1"
+  },
+  "dlc.m6.s0.02": {
+   "char": "silas_boone",
+   "speaker": "silas",
+   "scene": "dlc.m6",
+   "text": "Questions are my department, Pip. Off you go.",
+   "file": "silas_boone/dlc.m6.s0.02",
+   "durationMs": 4545,
+   "source": "js/dlc_silas.js:202",
+   "hash": "4579561cddb314af"
+  },
+  "dlc.m6.s2.04": {
+   "char": "silas_boone",
+   "speaker": "silas",
+   "scene": "dlc.m6",
+   "text": "Then someone should buy up her debts. Someone kind.",
+   "file": "silas_boone/dlc.m6.s2.04",
+   "durationMs": 3190,
+   "source": "js/dlc_silas.js:210",
+   "hash": "bfe298dbbbdb6023"
+  },
+  "dlc.m6.s3.01": {
+   "char": "silas_boone",
+   "speaker": "silas",
+   "scene": "dlc.m6",
+   "text": "Boone Holdings. Lending, property, protection. Very fair terms.",
+   "file": "silas_boone/dlc.m6.s3.01",
+   "durationMs": 4158,
+   "source": "js/dlc_silas.js:212",
+   "hash": "e1d46b835d52277e"
+  },
+  "dlc.m6.s3.02": {
+   "char": "silas_boone",
+   "speaker": "silas",
+   "scene": "dlc.m6",
+   "text": "The Foreman's ledger goes in the folder… and every name in it now owes me.",
+   "file": "silas_boone/dlc.m6.s3.02",
+   "durationMs": 5340,
+   "source": "js/dlc_silas.js:213",
+   "hash": "ab8cf65a7c5f774a"
+  },
+  "dlc.idle.lou.01": {
+   "char": "lou",
+   "speaker": "lou",
+   "scene": "dlc.idle",
+   "text": "Quiet night, Mr. Boone. Quiet-ish.",
+   "file": "lou/dlc.idle.lou.01",
+   "durationMs": 2311,
+   "source": "js/dlc_silas.js:477",
+   "hash": "7e0bc3ed10dfeba8"
+  },
+  "dlc.idle.priya.01": {
+   "char": "priya",
+   "speaker": "priya",
+   "scene": "dlc.idle",
+   "text": "Still closed, Mr. Boone.",
+   "file": "priya/dlc.idle.priya.01",
+   "durationMs": 2140,
+   "source": "js/dlc_silas.js:478",
+   "hash": "cf63ead19fdff650"
+  },
+  "dlc.idle.ivy.01": {
+   "char": "ivy",
+   "speaker": "ivy",
+   "scene": "dlc.idle",
+   "text": "I just deliver things. I don't read them. Not anymore.",
+   "file": "ivy/dlc.idle.ivy.01",
+   "durationMs": 3120,
+   "source": "js/dlc_silas.js:479",
+   "hash": "74e3b7b626e4b89e"
+  },
+  "dlc.idle.gus.01": {
+   "char": "gus",
+   "speaker": "gus",
+   "scene": "dlc.idle",
+   "text": "Lantern suits you.",
+   "file": "gus/dlc.idle.gus.01",
+   "durationMs": 1201,
+   "source": "js/dlc_silas.js:480",
+   "hash": "1d70d927408636da"
+  },
+  "dlc.idle.pip.01": {
+   "char": "pip",
+   "speaker": "pip",
+   "scene": "dlc.idle",
+   "text": "Can't talk, got deliveries.",
+   "file": "pip/dlc.idle.pip.01",
+   "durationMs": 1287,
+   "source": "js/dlc_silas.js:481",
+   "hash": "e3a0989e06f66118"
+  },
+  "dlc.idle.dee.01": {
+   "char": "dee",
+   "speaker": "dee",
+   "scene": "dlc.idle",
+   "text": "Kitchen closes at ten, hon.",
+   "file": "dee/dlc.idle.dee.01",
+   "durationMs": 1671,
+   "source": "js/dlc_silas.js:482",
+   "hash": "5adb35b6b125b577"
+  },
+  "dlc.idle.cam.01": {
+   "char": "cam",
+   "speaker": "cam",
+   "scene": "dlc.idle",
+   "text": "App keeps sending me to the wrong pin. Need a ride, sir?",
+   "file": "cam/dlc.idle.cam.01",
+   "durationMs": 3236,
+   "source": "js/dlc_silas.js:483",
+   "hash": "0a9c03a6449380eb"
+  },
+  "dlc.idle.cam.02": {
+   "char": "silas_boone",
+   "speaker": "silas",
+   "scene": "dlc.idle",
+   "text": "Not tonight. I like it right here.",
+   "file": "silas_boone/dlc.idle.cam.02",
+   "durationMs": 2328,
+   "source": "js/dlc_silas.js:483",
+   "hash": "d6a19d430745da65"
+  },
+  "prison.arrest.01": {
+   "char": "reyes",
+   "speaker": "reyes",
+   "scene": "prison.arrest",
+   "text": "Roanoke Police! Nobody move. Matthew Rose? Stay where you are, son. You've done enough for one night.",
+   "file": "reyes/prison.arrest.01",
+   "durationMs": 6264,
+   "source": "js/prison.js:14",
+   "hash": "d8f953f0995a79d1"
+  },
+  "prison.arrest.02": {
+   "char": "reyes",
+   "speaker": "reyes",
+   "scene": "prison.arrest",
+   "text": "Silas Boone, you're under arrest for kidnapping, arson, extortion and bribing officers of this city. The ones on your payroll are already in the back of a van.",
+   "file": "reyes/prison.arrest.02",
+   "durationMs": 9514,
+   "source": "js/prison.js:15",
+   "hash": "95784782f44bf9bb"
+  },
+  "prison.arrest.03": {
+   "char": "okafor",
+   "speaker": "okafor",
+   "scene": "prison.arrest",
+   "text": "Hands behind your back, Mr. Boone. Slowly.",
+   "file": "okafor/prison.arrest.03",
+   "durationMs": 2751,
+   "source": "js/prison.js:16",
+   "hash": "d5673d9925a9afc8"
+  },
+  "prison.arrest.04": {
+   "char": "silas_boone",
+   "speaker": "silas",
+   "scene": "prison.arrest",
+   "text": "No need for the bracelets, officer. I always walk out on my own two feet.",
+   "file": "silas_boone/prison.arrest.04",
+   "durationMs": 4954,
+   "source": "js/prison.js:17",
+   "hash": "d998c7adcaf67f63"
+  },
+  "prison.arrest.05": {
+   "char": "okafor",
+   "speaker": "okafor",
+   "scene": "prison.arrest",
+   "text": "Not tonight you don't.",
+   "file": "okafor/prison.arrest.05",
+   "durationMs": 1717,
+   "source": "js/prison.js:18",
+   "hash": "ee72d86c8f7aa02b"
+  },
+  "prison.arrest.06": {
+   "char": "reyes",
+   "speaker": "reyes",
+   "scene": "prison.arrest",
+   "text": "Hank Pettigrew's notes. Priya's list. Cam's pins. Tessa's video. Every name you buried, Boone. This city kept the receipts.",
+   "file": "reyes/prison.arrest.06",
+   "durationMs": 7044,
+   "source": "js/prison.js:19",
+   "hash": "2bf998bd2e56bab7"
+  },
+  "prison.arrest.08": {
+   "char": "silas_boone",
+   "speaker": "silas",
+   "scene": "prison.arrest",
+   "text": "Matthew. Enjoy the light while it lasts.",
+   "file": "silas_boone/prison.arrest.08",
+   "durationMs": 2175,
+   "source": "js/prison.js:21",
+   "hash": "57cffd56f8283eac"
+  },
+  "prison.arrest.09": {
+   "char": "reyes",
+   "speaker": "reyes",
+   "scene": "prison.arrest",
+   "text": "Take him down the mountain, Ben. And somebody get Miss Calloway a blanket.",
+   "file": "reyes/prison.arrest.09",
+   "durationMs": 4124,
+   "source": "js/prison.js:22",
+   "hash": "1362c031ea8bf6e2"
+  },
+  "prison.silas.start.01": {
+   "char": "silas_boone",
+   "speaker": "silas_prison",
+   "scene": "prison.silas",
+   "text": "Matthew Rose. Visiting hours. How thoughtful. Forgive the decor; the previous tenant had no taste either.",
+   "file": "silas_boone/prison.silas.start.01",
+   "durationMs": 6897,
+   "source": "js/prison.js:66",
+   "hash": "fb12eb541710634e"
+  },
+  "prison.silas.start.02": {
+   "char": "silas_boone",
+   "speaker": "silas_prison",
+   "scene": "prison.silas",
+   "text": "They gave me the blues, a cot and a window that looks at a wall. I've had worse offices.",
+   "file": "silas_boone/prison.silas.start.02",
+   "durationMs": 5476,
+   "source": "js/prison.js:67",
+   "hash": "83e21586abf45f40"
+  },
+  "prison.choice.why": {
+   "char": "matthew",
+   "speaker": "matthew",
+   "scene": "prison.silas",
+   "text": "Why did you do it?",
+   "file": "matthew/prison.choice.why",
+   "durationMs": 1374,
+   "source": "js/prison.js:70",
+   "hash": "02e5df03f4596a7a"
+  },
+  "prison.choice.vera": {
+   "char": "matthew",
+   "speaker": "matthew",
+   "scene": "prison.silas",
+   "text": "Where is Vera Lisk?",
+   "file": "matthew/prison.choice.vera",
+   "durationMs": 1428,
+   "source": "js/prison.js:71",
+   "hash": "91c5552ab2651af3"
+  },
+  "prison.choice.regret": {
+   "char": "matthew",
+   "speaker": "matthew",
+   "scene": "prison.silas",
+   "text": "Do you regret any of it?",
+   "file": "matthew/prison.choice.regret",
+   "durationMs": 1271,
+   "source": "js/prison.js:72",
+   "hash": "f2002302c49d3aaf"
+  },
+  "prison.choice.paper": {
+   "char": "matthew",
+   "speaker": "matthew",
+   "scene": "prison.silas",
+   "text": "I found an old newspaper in the library.",
+   "file": "matthew/prison.choice.paper",
+   "durationMs": 2495,
+   "source": "js/prison.js:73",
+   "hash": "abc1fde61053c48e"
+  },
+  "prison.choice.bye": {
+   "char": "matthew",
+   "speaker": "matthew",
+   "scene": "prison.silas",
+   "text": "Goodbye, Silas.",
+   "file": "matthew/prison.choice.bye",
+   "durationMs": 1192,
+   "source": "js/prison.js:74",
+   "hash": "f83c67720e51e338"
+  },
+  "prison.silas.why.01": {
+   "char": "silas_boone",
+   "speaker": "silas_prison",
+   "scene": "prison.silas",
+   "text": "Why. Everyone asks why, as if the answer would fit on a postcard.",
+   "file": "silas_boone/prison.silas.why.01",
+   "durationMs": 4423,
+   "source": "js/prison.js:79",
+   "hash": "7d8bbdafced5cce3"
+  },
+  "prison.silas.why.03": {
+   "char": "silas_boone",
+   "speaker": "silas_prison",
+   "scene": "prison.silas",
+   "text": "So I learned the rules: everyone owes someone. I just made sure, sooner or later, they all owed me.",
+   "file": "silas_boone/prison.silas.why.03",
+   "durationMs": 5801,
+   "source": "js/prison.js:81",
+   "hash": "8d00a2344cfcb027"
+  },
+  "prison.choice.wren": {
+   "char": "matthew",
+   "speaker": "matthew",
+   "scene": "prison.silas",
+   "text": "Wren never owed you anything real.",
+   "file": "matthew/prison.choice.wren",
+   "durationMs": 1979,
+   "source": "js/prison.js:85",
+   "hash": "be691f5d1d7c5ce2"
+  },
+  "prison.silas.wren.01": {
+   "char": "silas_boone",
+   "speaker": "silas_prison",
+   "scene": "prison.silas",
+   "text": "No. She owed three loan sharks forty dollars apiece and she still gave flowers away for free.",
+   "file": "silas_boone/prison.silas.wren.01",
+   "durationMs": 6385,
+   "source": "js/prison.js:91",
+   "hash": "5fa8f52c5a6d2b0f"
+  },
+  "prison.silas.wren.02": {
+   "char": "silas_boone",
+   "speaker": "silas_prison",
+   "scene": "prison.silas",
+   "text": "I took her because you cared about her, Matthew. That was the mistake. People who care are very hard to buy.",
+   "file": "silas_boone/prison.silas.wren.02",
+   "durationMs": 6382,
+   "source": "js/prison.js:92",
+   "hash": "c1d6ac25b76cc128"
+  },
+  "prison.silas.wren.03": {
+   "char": "silas_boone",
+   "speaker": "silas_prison",
+   "scene": "prison.silas",
+   "text": "Tell her... no. Tell her nothing. She's earned a quiet life.",
+   "file": "silas_boone/prison.silas.wren.03",
+   "durationMs": 3461,
+   "source": "js/prison.js:93",
+   "hash": "fdc86840e679e371"
+  },
+  "prison.silas.vera.01": {
+   "char": "silas_boone",
+   "speaker": "silas_prison",
+   "scene": "prison.silas",
+   "text": "Vera. Ah. The police turned the city upside down and found three empty filing cabinets and a very nice umbrella.",
+   "file": "silas_boone/prison.silas.vera.01",
+   "durationMs": 6942,
+   "source": "js/prison.js:99",
+   "hash": "11e092366e30e593"
+  },
+  "prison.silas.vera.02": {
+   "char": "silas_boone",
+   "speaker": "silas_prison",
+   "scene": "prison.silas",
+   "text": "Vera Lisk never needed me, Matthew. She needed my secrets. I suspect she still has them.",
+   "file": "silas_boone/prison.silas.vera.02",
+   "durationMs": 5870,
+   "source": "js/prison.js:100",
+   "hash": "1372e597df7821f2"
+  },
+  "prison.silas.vera.03": {
+   "char": "silas_boone",
+   "speaker": "silas_prison",
+   "scene": "prison.silas",
+   "text": "If you see her, give her my regards. Then check your pockets.",
+   "file": "silas_boone/prison.silas.vera.03",
+   "durationMs": 3930,
+   "source": "js/prison.js:101",
+   "hash": "58b456f6b1561196"
+  },
+  "prison.silas.regret.01": {
+   "char": "silas_boone",
+   "speaker": "silas_prison",
+   "scene": "prison.silas",
+   "text": "Regret is a luxury for people with free time. I appear to have twenty-five years of it.",
+   "file": "silas_boone/prison.silas.regret.01",
+   "durationMs": 5553,
+   "source": "js/prison.js:107",
+   "hash": "1e85289753053e6f"
+  },
+  "prison.silas.regret.02": {
+   "char": "silas_boone",
+   "speaker": "silas_prison",
+   "scene": "prison.silas",
+   "text": "Do I regret the Star? No. For one minute the whole city looked up and thought of me.",
+   "file": "silas_boone/prison.silas.regret.02",
+   "durationMs": 5194,
+   "source": "js/prison.js:108",
+   "hash": "6992347062ec7742"
+  },
+  "prison.silas.regret.03": {
+   "char": "silas_boone",
+   "speaker": "silas_prison",
+   "scene": "prison.silas",
+   "text": "Do I regret losing to a young man in a white polo? ...Ask me again in a few years.",
+   "file": "silas_boone/prison.silas.regret.03",
+   "durationMs": 5660,
+   "source": "js/prison.js:109",
+   "hash": "9018919b559fccda"
+  },
+  "prison.silas.paper.02": {
+   "char": "silas_boone",
+   "speaker": "silas_prison",
+   "scene": "prison.silas",
+   "text": "The Foreman's boys came to collect 'rent' for Lou's corner. I had a polite word with them. The paper called me a good neighbor.",
+   "file": "silas_boone/prison.silas.paper.02",
+   "durationMs": 8287,
+   "source": "js/prison.js:116",
+   "hash": "63c87de054264d17"
+  },
+  "prison.silas.paper.04": {
+   "char": "silas_boone",
+   "speaker": "silas_prison",
+   "scene": "prison.silas",
+   "text": "Keep it. Some stories are better told by someone else.",
+   "file": "silas_boone/prison.silas.paper.04",
+   "durationMs": 3228,
+   "source": "js/prison.js:118",
+   "hash": "ed4a29dc38dca797"
+  },
+  "prison.silas.start_short.01": {
+   "char": "silas_boone",
+   "speaker": "silas_prison",
+   "scene": "prison.silas",
+   "text": "What else, Matthew? I'm not going anywhere.",
+   "file": "silas_boone/prison.silas.start_short.01",
+   "durationMs": 2948,
+   "source": "js/prison.js:123",
+   "hash": "b418b882a9f5af49"
+  },
+  "prison.silas.bye.01": {
+   "char": "silas_boone",
+   "speaker": "silas_prison",
+   "scene": "prison.silas",
+   "text": "Goodbye, Matthew Rose. Mind the rain on your way out.",
+   "file": "silas_boone/prison.silas.bye.01",
+   "durationMs": 3547,
+   "source": "js/prison.js:128",
+   "hash": "bb54f3f3c7cd8e74"
+  },
+  "prison.silas.bye.02": {
+   "char": "silas_boone",
+   "speaker": "silas_prison",
+   "scene": "prison.silas",
+   "text": "And Matthew? The lights always come back on. Remember who turned them off.",
+   "file": "silas_boone/prison.silas.bye.02",
+   "durationMs": 4562,
+   "source": "js/prison.js:129",
+   "hash": "9782b01a06fb2be2"
+  },
+  "bark.dee.dee_g1": {
+   "char": "dee",
+   "speaker": "dee",
+   "scene": "bark.dee",
+   "text": "Morning, Matthew! Coffee's hot and the grill's hotter.",
+   "file": "dee/bark.dee.dee_g1",
+   "durationMs": 2929,
+   "source": "js/barks.js:17",
+   "hash": "73c67b3023708d1a"
+  },
+  "bark.dee.dee_g2": {
+   "char": "dee",
+   "speaker": "dee",
+   "scene": "bark.dee",
+   "text": "There's my favorite regular. Booth's open, hon.",
+   "file": "dee/bark.dee.dee_g2",
+   "durationMs": 2844,
+   "source": "js/barks.js:18",
+   "hash": "2f14d18a0957d663"
+  },
+  "bark.dee.dee_g3": {
+   "char": "dee",
+   "speaker": "dee",
+   "scene": "bark.dee",
+   "text": "Matthew! You eat today? Don't lie to me.",
+   "file": "dee/bark.dee.dee_g3",
+   "durationMs": 2268,
+   "source": "js/barks.js:19",
+   "hash": "1320009e548cf1eb"
+  },
+  "bark.dee.dee_i1": {
+   "char": "dee",
+   "speaker": "dee",
+   "scene": "bark.dee",
+   "text": "Order up! ...Oh, that's just me talking to myself.",
+   "file": "dee/bark.dee.dee_i1",
+   "durationMs": 3100,
+   "source": "js/barks.js:21",
+   "hash": "bbf706cf7dc10e59"
+  },
+  "bark.dee.dee_i2": {
+   "char": "dee",
+   "speaker": "dee",
+   "scene": "bark.dee",
+   "text": "Wren used to bring me zinnias for the counter.",
+   "file": "dee/bark.dee.dee_i2",
+   "durationMs": 2332,
+   "source": "js/barks.js:22",
+   "hash": "563af59dcf05a6e3"
+  },
+  "bark.dee.dee_f1": {
+   "char": "dee",
+   "speaker": "dee",
+   "scene": "bark.dee",
+   "text": "Go on, hon. Be careful out there.",
+   "file": "dee/bark.dee.dee_f1",
+   "durationMs": 2055,
+   "source": "js/barks.js:24",
+   "hash": "23e3ef8be3e6e79e"
+  },
+  "bark.dee.dee_f2": {
+   "char": "dee",
+   "speaker": "dee",
+   "scene": "bark.dee",
+   "text": "Don't be a stranger, Matthew.",
+   "file": "dee/bark.dee.dee_f2",
+   "durationMs": 1628,
+   "source": "js/barks.js:25",
+   "hash": "f2110a564b6dcc5a"
+  },
+  "bark.dee.dee_o1": {
+   "char": "dee",
+   "speaker": "dee",
+   "scene": "bark.dee",
+   "text": "Ooh, new threads? Very downtown chic.",
+   "file": "dee/bark.dee.dee_o1",
+   "durationMs": 2161,
+   "source": "js/barks.js:27",
+   "hash": "ec0c2b14b68d1ed1"
+  },
+  "bark.dee.dee_o2": {
+   "char": "dee",
+   "speaker": "dee",
+   "scene": "bark.dee",
+   "text": "Look at you! Spin around, let me see.",
+   "file": "dee/bark.dee.dee_o2",
+   "durationMs": 2119,
+   "source": "js/barks.js:28",
+   "hash": "90e9924821f20bd5"
+  },
+  "bark.dee.dee_o3": {
+   "char": "dee",
+   "speaker": "dee",
+   "scene": "bark.dee",
+   "text": "Is that... a Boone suit? Take that off my floor.",
+   "file": "dee/bark.dee.dee_o3",
+   "durationMs": 3185,
+   "source": "js/barks.js:29",
+   "hash": "4a0fd200ffb33ccd"
+  },
+  "bark.dee.dee_s1": {
+   "char": "dee",
+   "speaker": "dee",
+   "scene": "bark.dee",
+   "text": "Priya keeps the list. Valley Pages, hon. Go.",
+   "file": "dee/bark.dee.dee_s1",
+   "durationMs": 3079,
+   "source": "js/barks.js:31",
+   "hash": "288aaa2a2a46d800"
+  },
+  "bark.dee.dee_s2": {
+   "char": "dee",
+   "speaker": "dee",
+   "scene": "bark.dee",
+   "text": "Heard you ran those boys off Campbell Ave. Thank you.",
+   "file": "dee/bark.dee.dee_s2",
+   "durationMs": 3249,
+   "source": "js/barks.js:32",
+   "hash": "5721ebe9fd3761a2"
+  },
+  "bark.dee.dee_s3": {
+   "char": "dee",
+   "speaker": "dee",
+   "scene": "bark.dee",
+   "text": "The Star's back on. And Wren's home. Pie's free.",
+   "file": "dee/bark.dee.dee_s3",
+   "durationMs": 2842,
+   "source": "js/barks.js:33",
+   "hash": "963c33a2e0d1575e"
+  },
+  "bark.dee.dee_w1": {
+   "char": "dee",
+   "speaker": "dee",
+   "scene": "bark.dee",
+   "text": "Rain again? Come in before you drip on my floor.",
+   "file": "dee/bark.dee.dee_w1",
+   "durationMs": 2929,
+   "source": "js/barks.js:34",
+   "hash": "347a25ab9f1c2f0a"
+  },
+  "bark.dee.dee_x1": {
+   "char": "dee",
+   "speaker": "dee",
+   "scene": "bark.dee",
+   "text": "Not in front of my diner! ...Nice hook, though.",
+   "file": "dee/bark.dee.dee_x1",
+   "durationMs": 2823,
+   "source": "js/barks.js:35",
+   "hash": "69a3f2ab50602bdc"
+  },
+  "bark.dee.dee_l1": {
+   "char": "dee",
+   "speaker": "dee",
+   "scene": "bark.dee",
+   "text": "You look rough, hon. Sit down, I'll fix you a plate.",
+   "file": "dee/bark.dee.dee_l1",
+   "durationMs": 2993,
+   "source": "js/barks.js:36",
+   "hash": "fb390e34919e6fc0"
+  },
+  "bark.priya.pri_g1": {
+   "char": "priya",
+   "speaker": "priya",
+   "scene": "bark.priya",
+   "text": "Matthew. Close the door behind you, please.",
+   "file": "priya/bark.priya.pri_g1",
+   "durationMs": 3135,
+   "source": "js/barks.js:40",
+   "hash": "6c3d7c55943c6680"
+  },
+  "bark.priya.pri_g2": {
+   "char": "priya",
+   "speaker": "priya",
+   "scene": "bark.priya",
+   "text": "Back already? I flagged three more names.",
+   "file": "priya/bark.priya.pri_g2",
+   "durationMs": 3441,
+   "source": "js/barks.js:41",
+   "hash": "270d46c3234b0f0a"
+  },
+  "bark.priya.pri_g3": {
+   "char": "priya",
+   "speaker": "priya",
+   "scene": "bark.priya",
+   "text": "Quiet voice, please. The walls have Boone ears.",
+   "file": "priya/bark.priya.pri_g3",
+   "durationMs": 4103,
+   "source": "js/barks.js:42",
+   "hash": "56d7a58a05a6b2e5"
+  },
+  "bark.priya.pri_i1": {
+   "char": "priya",
+   "speaker": "priya",
+   "scene": "bark.priya",
+   "text": "Eleven names. I keep counting like it'll change.",
+   "file": "priya/bark.priya.pri_i1",
+   "durationMs": 3847,
+   "source": "js/barks.js:44",
+   "hash": "b24f9869ac5e013f"
+  },
+  "bark.priya.pri_i2": {
+   "char": "priya",
+   "speaker": "priya",
+   "scene": "bark.priya",
+   "text": "Shelving mysteries. Feels a little on the nose.",
+   "file": "priya/bark.priya.pri_i2",
+   "durationMs": 3121,
+   "source": "js/barks.js:45",
+   "hash": "746f9376a5d870b3"
+  },
+  "bark.priya.pri_f1": {
+   "char": "priya",
+   "speaker": "priya",
+   "scene": "bark.priya",
+   "text": "Watch the corners. Write down what you see.",
+   "file": "priya/bark.priya.pri_f1",
+   "durationMs": 3505,
+   "source": "js/barks.js:47",
+   "hash": "e07932b13364677b"
+  },
+  "bark.priya.pri_f2": {
+   "char": "priya",
+   "speaker": "priya",
+   "scene": "bark.priya",
+   "text": "Go. And don't trust a badge tonight.",
+   "file": "priya/bark.priya.pri_f2",
+   "durationMs": 3121,
+   "source": "js/barks.js:48",
+   "hash": "83c2a1d4a30083d4"
+  },
+  "bark.priya.pri_o1": {
+   "char": "priya",
+   "speaker": "priya",
+   "scene": "bark.priya",
+   "text": "New look? Good. Harder to recognize.",
+   "file": "priya/bark.priya.pri_o1",
+   "durationMs": 2417,
+   "source": "js/barks.js:50",
+   "hash": "43a8a30a6af4707a"
+  },
+  "bark.priya.pri_o2": {
+   "char": "priya",
+   "speaker": "priya",
+   "scene": "bark.priya",
+   "text": "That jacket has a whole backstory, I can tell.",
+   "file": "priya/bark.priya.pri_o2",
+   "durationMs": 3719,
+   "source": "js/barks.js:51",
+   "hash": "7404a0f936653f70"
+  },
+  "bark.priya.pri_o3": {
+   "char": "priya",
+   "speaker": "priya",
+   "scene": "bark.priya",
+   "text": "A Boone suit. That's... a choice, Matthew.",
+   "file": "priya/bark.priya.pri_o3",
+   "durationMs": 3079,
+   "source": "js/barks.js:52",
+   "hash": "f976297303c717cd"
+  },
+  "bark.priya.pri_s1": {
+   "char": "priya",
+   "speaker": "priya",
+   "scene": "bark.priya",
+   "text": "Hank at the Rail Yards. He sees every truck.",
+   "file": "priya/bark.priya.pri_s1",
+   "durationMs": 3889,
+   "source": "js/barks.js:54",
+   "hash": "cb06658953eb24f1"
+  },
+  "bark.priya.pri_s2": {
+   "char": "priya",
+   "speaker": "priya",
+   "scene": "bark.priya",
+   "text": "Names are coming off my list. One by one.",
+   "file": "priya/bark.priya.pri_s2",
+   "durationMs": 4017,
+   "source": "js/barks.js:55",
+   "hash": "dfa34e9a9eb07eb9"
+  },
+  "bark.priya.pri_w1": {
+   "char": "priya",
+   "speaker": "priya",
+   "scene": "bark.priya",
+   "text": "Rain's good for business. Nobody wants to leave.",
+   "file": "priya/bark.priya.pri_w1",
+   "durationMs": 2929,
+   "source": "js/barks.js:56",
+   "hash": "d5358184a0352de8"
+  },
+  "bark.priya.pri_x1": {
+   "char": "priya",
+   "speaker": "priya",
+   "scene": "bark.priya",
+   "text": "I'm writing that down. All of it.",
+   "file": "priya/bark.priya.pri_x1",
+   "durationMs": 1762,
+   "source": "js/barks.js:57",
+   "hash": "db8fc4d588c71a6a"
+  },
+  "bark.priya.pri_l1": {
+   "char": "priya",
+   "speaker": "priya",
+   "scene": "bark.priya",
+   "text": "You're bleeding on the poetry section. Sit.",
+   "file": "priya/bark.priya.pri_l1",
+   "durationMs": 2573,
+   "source": "js/barks.js:58",
+   "hash": "5fa7b49de514669a"
+  },
+  "bark.hank.hnk_g1": {
+   "char": "hank",
+   "speaker": "hank",
+   "scene": "bark.hank",
+   "text": "Evening, kid. Mind the third rail.",
+   "file": "hank/bark.hank.hnk_g1",
+   "durationMs": 3228,
+   "source": "js/barks.js:62",
+   "hash": "d59d4be4eb9238ac"
+  },
+  "bark.hank.hnk_g2": {
+   "char": "hank",
+   "speaker": "hank",
+   "scene": "bark.hank",
+   "text": "You again. Good. I like company that listens.",
+   "file": "hank/bark.hank.hnk_g2",
+   "durationMs": 3847,
+   "source": "js/barks.js:63",
+   "hash": "f52e9a789b8dfe43"
+  },
+  "bark.hank.hnk_g3": {
+   "char": "hank",
+   "speaker": "hank",
+   "scene": "bark.hank",
+   "text": "Kid. Keep your voice down near the yard.",
+   "file": "hank/bark.hank.hnk_g3",
+   "durationMs": 2460,
+   "source": "js/barks.js:64",
+   "hash": "f1a37fdcfe5a15c4"
+  },
+  "bark.hank.hnk_i1": {
+   "char": "hank",
+   "speaker": "hank",
+   "scene": "bark.hank",
+   "text": "Forty years on these tracks. Never seen it this bad.",
+   "file": "hank/bark.hank.hnk_i1",
+   "durationMs": 3655,
+   "source": "js/barks.js:66",
+   "hash": "1eb7523c5677458a"
+  },
+  "bark.hank.hnk_i2": {
+   "char": "hank",
+   "speaker": "hank",
+   "scene": "bark.hank",
+   "text": "Hear that? Boone truck. Right on schedule.",
+   "file": "hank/bark.hank.hnk_i2",
+   "durationMs": 2844,
+   "source": "js/barks.js:67",
+   "hash": "3931c998c1b6de65"
+  },
+  "bark.hank.hnk_f1": {
+   "char": "hank",
+   "speaker": "hank",
+   "scene": "bark.hank",
+   "text": "Go on. Stay off the main road.",
+   "file": "hank/bark.hank.hnk_f1",
+   "durationMs": 1876,
+   "source": "js/barks.js:69",
+   "hash": "50796632f0c3ad17"
+  },
+  "bark.hank.hnk_f2": {
+   "char": "hank",
+   "speaker": "hank",
+   "scene": "bark.hank",
+   "text": "Watch for the patrol cars, kid.",
+   "file": "hank/bark.hank.hnk_f2",
+   "durationMs": 2588,
+   "source": "js/barks.js:70",
+   "hash": "1e434ea7f8305c4f"
+  },
+  "bark.hank.hnk_o1": {
+   "char": "hank",
+   "speaker": "hank",
+   "scene": "bark.hank",
+   "text": "New coat? Good. Nights get cold up here.",
+   "file": "hank/bark.hank.hnk_o1",
+   "durationMs": 3207,
+   "source": "js/barks.js:72",
+   "hash": "671ee4d17644f061"
+  },
+  "bark.hank.hnk_o2": {
+   "char": "hank",
+   "speaker": "hank",
+   "scene": "bark.hank",
+   "text": "Ha. You look like a brakeman's nephew.",
+   "file": "hank/bark.hank.hnk_o2",
+   "durationMs": 2695,
+   "source": "js/barks.js:73",
+   "hash": "33c7d3742c7b699d"
+  },
+  "bark.hank.hnk_o3": {
+   "char": "hank",
+   "speaker": "hank",
+   "scene": "bark.hank",
+   "text": "Boone's suit? Kid, they'll shoot first.",
+   "file": "hank/bark.hank.hnk_o3",
+   "durationMs": 2695,
+   "source": "js/barks.js:74",
+   "hash": "62d0ed8b8745599c"
+  },
+  "bark.hank.hnk_s1": {
+   "char": "hank",
+   "speaker": "hank",
+   "scene": "bark.hank",
+   "text": "Midnight, kid. The Star. Don't be late.",
+   "file": "hank/bark.hank.hnk_s1",
+   "durationMs": 4828,
+   "source": "js/barks.js:76",
+   "hash": "3a30a00314b71e7d"
+  },
+  "bark.hank.hnk_s2": {
+   "char": "hank",
+   "speaker": "hank",
+   "scene": "bark.hank",
+   "text": "State inspector's got my notes now.",
+   "file": "hank/bark.hank.hnk_s2",
+   "durationMs": 2460,
+   "source": "js/barks.js:77",
+   "hash": "fe625557a527d81c"
+  },
+  "bark.hank.hnk_s3": {
+   "char": "hank",
+   "speaker": "hank",
+   "scene": "bark.hank",
+   "text": "Star's lit. Best thing I've seen in years.",
+   "file": "hank/bark.hank.hnk_s3",
+   "durationMs": 3079,
+   "source": "js/barks.js:78",
+   "hash": "aa63691fda2c3a13"
+  },
+  "bark.hank.hnk_w1": {
+   "char": "hank",
+   "speaker": "hank",
+   "scene": "bark.hank",
+   "text": "Six days of rain. Rails get slick, kid.",
+   "file": "hank/bark.hank.hnk_w1",
+   "durationMs": 4060,
+   "source": "js/barks.js:79",
+   "hash": "6e8598c91ec2fa4b"
+  },
+  "bark.hank.hnk_x1": {
+   "char": "hank",
+   "speaker": "hank",
+   "scene": "bark.hank",
+   "text": "Hah! Like the old days at the roundhouse.",
+   "file": "hank/bark.hank.hnk_x1",
+   "durationMs": 3015,
+   "source": "js/barks.js:80",
+   "hash": "46625a16fcff6adf"
+  },
+  "bark.hank.hnk_l1": {
+   "char": "hank",
+   "speaker": "hank",
+   "scene": "bark.hank",
+   "text": "You're limping, kid. Sit on that crate a spell.",
+   "file": "hank/bark.hank.hnk_l1",
+   "durationMs": 3185,
+   "source": "js/barks.js:81",
+   "hash": "04770a41dd3f664b"
+  },
+  "bark.june.jun_g1": {
+   "char": "june",
+   "speaker": "june",
+   "scene": "bark.june",
+   "text": "Matthew! Come in, there's soup on.",
+   "file": "june/bark.june.jun_g1",
+   "durationMs": 2055,
+   "source": "js/barks.js:85",
+   "hash": "72b2903a6a8d7797"
+  },
+  "bark.june.jun_g2": {
+   "char": "june",
+   "speaker": "june",
+   "scene": "bark.june",
+   "text": "Oh good, a friendly face. We need those.",
+   "file": "june/bark.june.jun_g2",
+   "durationMs": 2969,
+   "source": "js/barks.js:86",
+   "hash": "803f6db350e36cd5"
+  },
+  "bark.june.jun_g3": {
+   "char": "june",
+   "speaker": "june",
+   "scene": "bark.june",
+   "text": "Hey you. Door's always open here.",
+   "file": "june/bark.june.jun_g3",
+   "durationMs": 2291,
+   "source": "js/barks.js:87",
+   "hash": "aa879299f26fb3c0"
+  },
+  "bark.june.jun_i1": {
+   "char": "june",
+   "speaker": "june",
+   "scene": "bark.june",
+   "text": "Forty cots, thirty-eight blankets. I'll figure it out.",
+   "file": "june/bark.june.jun_i1",
+   "durationMs": 3356,
+   "source": "js/barks.js:89",
+   "hash": "2dcbc00373cf15cd"
+  },
+  "bark.june.jun_i2": {
+   "char": "june",
+   "speaker": "june",
+   "scene": "bark.june",
+   "text": "Soft landings matter. I keep telling folks that.",
+   "file": "june/bark.june.jun_i2",
+   "durationMs": 3292,
+   "source": "js/barks.js:90",
+   "hash": "27d5edc974569b31"
+  },
+  "bark.june.jun_f1": {
+   "char": "june",
+   "speaker": "june",
+   "scene": "bark.june",
+   "text": "Come back if the city feels too dark.",
+   "file": "june/bark.june.jun_f1",
+   "durationMs": 2242,
+   "source": "js/barks.js:92",
+   "hash": "783f67ddacaaa948"
+  },
+  "bark.june.jun_f2": {
+   "char": "june",
+   "speaker": "june",
+   "scene": "bark.june",
+   "text": "Take care of yourself, okay?",
+   "file": "june/bark.june.jun_f2",
+   "durationMs": 1815,
+   "source": "js/barks.js:93",
+   "hash": "93d14c0566048125"
+  },
+  "bark.june.jun_o1": {
+   "char": "june",
+   "speaker": "june",
+   "scene": "bark.june",
+   "text": "Love the new look! Very you.",
+   "file": "june/bark.june.jun_o1",
+   "durationMs": 2277,
+   "source": "js/barks.js:95",
+   "hash": "ff7b4b88d01dfb77"
+  },
+  "bark.june.jun_o2": {
+   "char": "june",
+   "speaker": "june",
+   "scene": "bark.june",
+   "text": "Ooh, fancy. Want to model for the flyers?",
+   "file": "june/bark.june.jun_o2",
+   "durationMs": 2908,
+   "source": "js/barks.js:96",
+   "hash": "de266083f749b1c1"
+  },
+  "bark.june.jun_o3": {
+   "char": "june",
+   "speaker": "june",
+   "scene": "bark.june",
+   "text": "That suit makes the kids nervous, Matthew.",
+   "file": "june/bark.june.jun_o3",
+   "durationMs": 2462,
+   "source": "js/barks.js:97",
+   "hash": "bef6dec31a8dca61"
+  },
+  "bark.june.jun_s1": {
+   "char": "june",
+   "speaker": "june",
+   "scene": "bark.june",
+   "text": "Thanks for the cots. Folks slept well.",
+   "file": "june/bark.june.jun_s1",
+   "durationMs": 2524,
+   "source": "js/barks.js:99",
+   "hash": "e222d71905577c55"
+  },
+  "bark.june.jun_s2": {
+   "char": "june",
+   "speaker": "june",
+   "scene": "bark.june",
+   "text": "The potluck saved us. Truly.",
+   "file": "june/bark.june.jun_s2",
+   "durationMs": 2196,
+   "source": "js/barks.js:100",
+   "hash": "247e4a46798aa24c"
+  },
+  "bark.june.jun_s3": {
+   "char": "june",
+   "speaker": "june",
+   "scene": "bark.june",
+   "text": "People are going home, Matthew. Home!",
+   "file": "june/bark.june.jun_s3",
+   "durationMs": 2332,
+   "source": "js/barks.js:101",
+   "hash": "2a573f607c5dbb7e"
+  },
+  "bark.june.jun_w1": {
+   "char": "june",
+   "speaker": "june",
+   "scene": "bark.june",
+   "text": "Rain again. Grab a towel by the door.",
+   "file": "june/bark.june.jun_w1",
+   "durationMs": 2609,
+   "source": "js/barks.js:102",
+   "hash": "8d71459406492a22"
+  },
+  "bark.june.jun_x1": {
+   "char": "june",
+   "speaker": "june",
+   "scene": "bark.june",
+   "text": "Everyone okay? Nobody's hurt? Okay. Breathe.",
+   "file": "june/bark.june.jun_x1",
+   "durationMs": 2703,
+   "source": "js/barks.js:103",
+   "hash": "17af436e31c7104a"
+  },
+  "bark.june.jun_l1": {
+   "char": "june",
+   "speaker": "june",
+   "scene": "bark.june",
+   "text": "Sit down. First aid kit's right here.",
+   "file": "june/bark.june.jun_l1",
+   "durationMs": 2218,
+   "source": "js/barks.js:104",
+   "hash": "58b467fd73243b49"
+  },
+  "bark.tessa.tes_g1": {
+   "char": "tessa",
+   "speaker": "tessa",
+   "scene": "bark.tessa",
+   "text": "Yo, Matthew! Watch this kickflip. ...Okay, almost.",
+   "file": "tessa/bark.tessa.tes_g1",
+   "durationMs": 3077,
+   "source": "js/barks.js:108",
+   "hash": "fa05a205cd31f840"
+  },
+  "bark.tessa.tes_g2": {
+   "char": "tessa",
+   "speaker": "tessa",
+   "scene": "bark.tessa",
+   "text": "Sup. Shop's dead but the vibes are alive.",
+   "file": "tessa/bark.tessa.tes_g2",
+   "durationMs": 2239,
+   "source": "js/barks.js:109",
+   "hash": "a31bf1c6b366b653"
+  },
+  "bark.tessa.tes_g3": {
+   "char": "tessa",
+   "speaker": "tessa",
+   "scene": "bark.tessa",
+   "text": "Ayy, it's the guy! Wait, I forgot your name.",
+   "file": "tessa/bark.tessa.tes_g3",
+   "durationMs": 2518,
+   "source": "js/barks.js:110",
+   "hash": "0a1fa6203ef493e9"
+  },
+  "bark.tessa.tes_i1": {
+   "char": "tessa",
+   "speaker": "tessa",
+   "scene": "bark.tessa",
+   "text": "I could ollie that rail. I just choose not to.",
+   "file": "tessa/bark.tessa.tes_i1",
+   "durationMs": 2663,
+   "source": "js/barks.js:112",
+   "hash": "202c488e5cf6ecb0"
+  },
+  "bark.tessa.tes_i2": {
+   "char": "tessa",
+   "speaker": "tessa",
+   "scene": "bark.tessa",
+   "text": "Bearings need oil. Like, a lot of oil.",
+   "file": "tessa/bark.tessa.tes_i2",
+   "durationMs": 2225,
+   "source": "js/barks.js:113",
+   "hash": "c16d8436d55c1dd4"
+  },
+  "bark.tessa.tes_f1": {
+   "char": "tessa",
+   "speaker": "tessa",
+   "scene": "bark.tessa",
+   "text": "Later! Stay rad. Or whatever.",
+   "file": "tessa/bark.tessa.tes_f1",
+   "durationMs": 1799,
+   "source": "js/barks.js:115",
+   "hash": "7322d00e1e4a3587"
+  },
+  "bark.tessa.tes_f2": {
+   "char": "tessa",
+   "speaker": "tessa",
+   "scene": "bark.tessa",
+   "text": "Peace. Don't trip on a curb.",
+   "file": "tessa/bark.tessa.tes_f2",
+   "durationMs": 1593,
+   "source": "js/barks.js:116",
+   "hash": "94028d0566b71ea1"
+  },
+  "bark.tessa.tes_o1": {
+   "char": "tessa",
+   "speaker": "tessa",
+   "scene": "bark.tessa",
+   "text": "Okay, that fit goes hard.",
+   "file": "tessa/bark.tessa.tes_o1",
+   "durationMs": 1454,
+   "source": "js/barks.js:118",
+   "hash": "fca55b51bb08d008"
+  },
+  "bark.tessa.tes_o2": {
+   "char": "tessa",
+   "speaker": "tessa",
+   "scene": "bark.tessa",
+   "text": "Thrifted? Respect. Total respect.",
+   "file": "tessa/bark.tessa.tes_o2",
+   "durationMs": 2129,
+   "source": "js/barks.js:119",
+   "hash": "f3cee3758304651f"
+  },
+  "bark.tessa.tes_o3": {
+   "char": "tessa",
+   "speaker": "tessa",
+   "scene": "bark.tessa",
+   "text": "Dude. You look like a supervillain. Sick.",
+   "file": "tessa/bark.tessa.tes_o3",
+   "durationMs": 2173,
+   "source": "js/barks.js:120",
+   "hash": "16f9de0c5b6e2d94"
+  },
+  "bark.tessa.tes_s1": {
+   "char": "tessa",
+   "speaker": "tessa",
+   "scene": "bark.tessa",
+   "text": "My video's got like ten thousand views. Boone's done.",
+   "file": "tessa/bark.tessa.tes_s1",
+   "durationMs": 3143,
+   "source": "js/barks.js:122",
+   "hash": "ccb34a9bfc6276dd"
+  },
+  "bark.tessa.tes_s2": {
+   "char": "tessa",
+   "speaker": "tessa",
+   "scene": "bark.tessa",
+   "text": "You found the gear! Told you it was out there.",
+   "file": "tessa/bark.tessa.tes_s2",
+   "durationMs": 2332,
+   "source": "js/barks.js:123",
+   "hash": "ab681473299eddf9"
+  },
+  "bark.tessa.tes_w1": {
+   "char": "tessa",
+   "speaker": "tessa",
+   "scene": "bark.tessa",
+   "text": "Rain ruins grip tape. Rain ruins everything.",
+   "file": "tessa/bark.tessa.tes_w1",
+   "durationMs": 2353,
+   "source": "js/barks.js:124",
+   "hash": "7eb033b6cce92686"
+  },
+  "bark.tessa.tes_x1": {
+   "char": "tessa",
+   "speaker": "tessa",
+   "scene": "bark.tessa",
+   "text": "Yo! I should've filmed that!",
+   "file": "tessa/bark.tessa.tes_x1",
+   "durationMs": 1641,
+   "source": "js/barks.js:125",
+   "hash": "ebd38b98807456e1"
+  },
+  "bark.tessa.tes_l1": {
+   "char": "tessa",
+   "speaker": "tessa",
+   "scene": "bark.tessa",
+   "text": "Bro, you look like you ate the pavement.",
+   "file": "tessa/bark.tessa.tes_l1",
+   "durationMs": 2012,
+   "source": "js/barks.js:126",
+   "hash": "5f239ee5716f51dc"
+  },
+  "bark.coach.coa_g1": {
+   "char": "coach",
+   "speaker": "coach",
+   "scene": "bark.coach",
+   "text": "Matthew! Shoulders back, chin up!",
+   "file": "coach/bark.coach.coa_g1",
+   "durationMs": 1863,
+   "source": "js/barks.js:130",
+   "hash": "9e8bfd7e74b94e43"
+  },
+  "bark.coach.coa_g2": {
+   "char": "coach",
+   "speaker": "coach",
+   "scene": "bark.coach",
+   "text": "There he is. You stretching? Stretch.",
+   "file": "coach/bark.coach.coa_g2",
+   "durationMs": 2012,
+   "source": "js/barks.js:131",
+   "hash": "86b1bdb12d20c817"
+  },
+  "bark.coach.coa_g3": {
+   "char": "coach",
+   "speaker": "coach",
+   "scene": "bark.coach",
+   "text": "Good to see you moving, kid.",
+   "file": "coach/bark.coach.coa_g3",
+   "durationMs": 2012,
+   "source": "js/barks.js:132",
+   "hash": "74514862a660675d"
+  },
+  "bark.coach.coa_i1": {
+   "char": "coach",
+   "speaker": "coach",
+   "scene": "bark.coach",
+   "text": "Twenty more. Come on. ...I'm talking to myself.",
+   "file": "coach/bark.coach.coa_i1",
+   "durationMs": 2481,
+   "source": "js/barks.js:134",
+   "hash": "1728e8b6a1361184"
+  },
+  "bark.coach.coa_i2": {
+   "char": "coach",
+   "speaker": "coach",
+   "scene": "bark.coach",
+   "text": "Hydrate. I don't care who you are. Hydrate.",
+   "file": "coach/bark.coach.coa_i2",
+   "durationMs": 2396,
+   "source": "js/barks.js:135",
+   "hash": "b43aff6cbfcd4563"
+  },
+  "bark.coach.coa_f1": {
+   "char": "coach",
+   "speaker": "coach",
+   "scene": "bark.coach",
+   "text": "Keep your feet moving!",
+   "file": "coach/bark.coach.coa_f1",
+   "durationMs": 1613,
+   "source": "js/barks.js:137",
+   "hash": "e64d30ca929d5de8"
+  },
+  "bark.coach.coa_f2": {
+   "char": "coach",
+   "speaker": "coach",
+   "scene": "bark.coach",
+   "text": "Go get 'em. Hands up, always.",
+   "file": "coach/bark.coach.coa_f2",
+   "durationMs": 1649,
+   "source": "js/barks.js:138",
+   "hash": "4638a3311aed9e3c"
+  },
+  "bark.coach.coa_o1": {
+   "char": "coach",
+   "speaker": "coach",
+   "scene": "bark.coach",
+   "text": "New gear? Looks fast. Prove it.",
+   "file": "coach/bark.coach.coa_o1",
+   "durationMs": 1905,
+   "source": "js/barks.js:140",
+   "hash": "e847a72c620bce38"
+  },
+  "bark.coach.coa_o2": {
+   "char": "coach",
+   "speaker": "coach",
+   "scene": "bark.coach",
+   "text": "Nice. Can you throw a hook in that?",
+   "file": "coach/bark.coach.coa_o2",
+   "durationMs": 1756,
+   "source": "js/barks.js:141",
+   "hash": "96841d18c4eecea6"
+  },
+  "bark.coach.coa_o3": {
+   "char": "coach",
+   "speaker": "coach",
+   "scene": "bark.coach",
+   "text": "A suit's no good in a clinch, kid.",
+   "file": "coach/bark.coach.coa_o3",
+   "durationMs": 2027,
+   "source": "js/barks.js:142",
+   "hash": "788cfd88835d0521"
+  },
+  "bark.coach.coa_s1": {
+   "char": "coach",
+   "speaker": "coach",
+   "scene": "bark.coach",
+   "text": "Medicine made it. Knew you had hustle.",
+   "file": "coach/bark.coach.coa_s1",
+   "durationMs": 2076,
+   "source": "js/barks.js:144",
+   "hash": "2ceb9ffacd4596b2"
+  },
+  "bark.coach.coa_s2": {
+   "char": "coach",
+   "speaker": "coach",
+   "scene": "bark.coach",
+   "text": "Good spar. You drop that left hand, though.",
+   "file": "coach/bark.coach.coa_s2",
+   "durationMs": 2161,
+   "source": "js/barks.js:145",
+   "hash": "a419fa40b3a1602b"
+  },
+  "bark.coach.coa_w1": {
+   "char": "coach",
+   "speaker": "coach",
+   "scene": "bark.coach",
+   "text": "Rain's just free cardio. Keep going.",
+   "file": "coach/bark.coach.coa_w1",
+   "durationMs": 2076,
+   "source": "js/barks.js:146",
+   "hash": "70221476d5697377"
+  },
+  "bark.coach.coa_x1": {
+   "char": "coach",
+   "speaker": "coach",
+   "scene": "bark.coach",
+   "text": "Good footwork! Now finish strong!",
+   "file": "coach/bark.coach.coa_x1",
+   "durationMs": 2012,
+   "source": "js/barks.js:147",
+   "hash": "8a0a7676b3e5187d"
+  },
+  "bark.coach.coa_l1": {
+   "char": "coach",
+   "speaker": "coach",
+   "scene": "bark.coach",
+   "text": "You're gassed. Breathe in through the nose.",
+   "file": "coach/bark.coach.coa_l1",
+   "durationMs": 1820,
+   "source": "js/barks.js:148",
+   "hash": "d1aa15de17564784"
+  },
+  "bark.cam.cam_g1": {
+   "char": "cam",
+   "speaker": "cam",
+   "scene": "bark.cam",
+   "text": "Need a lift? Kidding. My car's a crime scene.",
+   "file": "cam/bark.cam.cam_g1",
+   "durationMs": 2418,
+   "source": "js/barks.js:152",
+   "hash": "1bbb9352fec4d17a"
+  },
+  "bark.cam.cam_g2": {
+   "char": "cam",
+   "speaker": "cam",
+   "scene": "bark.cam",
+   "text": "Hey, Matthew. Phone hasn't buzzed in an hour.",
+   "file": "cam/bark.cam.cam_g2",
+   "durationMs": 2497,
+   "source": "js/barks.js:153",
+   "hash": "bc8f64f4e4e6f718"
+  },
+  "bark.cam.cam_g3": {
+   "char": "cam",
+   "speaker": "cam",
+   "scene": "bark.cam",
+   "text": "Oh, it's you. Good. I thought it was Vera.",
+   "file": "cam/bark.cam.cam_g3",
+   "durationMs": 2106,
+   "source": "js/barks.js:154",
+   "hash": "4bcad70e3d25f7ed"
+  },
+  "bark.cam.cam_i1": {
+   "char": "cam",
+   "speaker": "cam",
+   "scene": "bark.cam",
+   "text": "Four-point-nine stars. Ruined by one bad pin.",
+   "file": "cam/bark.cam.cam_i1",
+   "durationMs": 2846,
+   "source": "js/barks.js:156",
+   "hash": "9507988619dff11a"
+  },
+  "bark.cam.cam_i2": {
+   "char": "cam",
+   "speaker": "cam",
+   "scene": "bark.cam",
+   "text": "I keep checking the mirror. Habit now.",
+   "file": "cam/bark.cam.cam_i2",
+   "durationMs": 1923,
+   "source": "js/barks.js:157",
+   "hash": "da0e3fc3c96b78e1"
+  },
+  "bark.cam.cam_f1": {
+   "char": "cam",
+   "speaker": "cam",
+   "scene": "bark.cam",
+   "text": "Stay safe. Don't take any wrong pins.",
+   "file": "cam/bark.cam.cam_f1",
+   "durationMs": 2043,
+   "source": "js/barks.js:159",
+   "hash": "ba1a856a31ac724c"
+  },
+  "bark.cam.cam_f2": {
+   "char": "cam",
+   "speaker": "cam",
+   "scene": "bark.cam",
+   "text": "Later. Tell the right people, okay?",
+   "file": "cam/bark.cam.cam_f2",
+   "durationMs": 1775,
+   "source": "js/barks.js:160",
+   "hash": "4bad4ad80ce15e70"
+  },
+  "bark.cam.cam_o1": {
+   "char": "cam",
+   "speaker": "cam",
+   "scene": "bark.cam",
+   "text": "New look? You'd get five stars in that.",
+   "file": "cam/bark.cam.cam_o1",
+   "durationMs": 1909,
+   "source": "js/barks.js:162",
+   "hash": "96a2aa7f9333979b"
+  },
+  "bark.cam.cam_o2": {
+   "char": "cam",
+   "speaker": "cam",
+   "scene": "bark.cam",
+   "text": "Nice threads. Very rideshare-ready.",
+   "file": "cam/bark.cam.cam_o2",
+   "durationMs": 1804,
+   "source": "js/barks.js:163",
+   "hash": "ffb9613c64cdabc3"
+  },
+  "bark.cam.cam_o3": {
+   "char": "cam",
+   "speaker": "cam",
+   "scene": "bark.cam",
+   "text": "Is that Boone's suit? Please don't.",
+   "file": "cam/bark.cam.cam_o3",
+   "durationMs": 1864,
+   "source": "js/barks.js:164",
+   "hash": "3dcc3ac906c548c3"
+  },
+  "bark.cam.cam_s1": {
+   "char": "cam",
+   "speaker": "cam",
+   "scene": "bark.cam",
+   "text": "I'm out. No more pins. Thanks to you.",
+   "file": "cam/bark.cam.cam_s1",
+   "durationMs": 1895,
+   "source": "js/barks.js:166",
+   "hash": "bb1570bf72deabb1"
+  },
+  "bark.cam.cam_s2": {
+   "char": "cam",
+   "speaker": "cam",
+   "scene": "bark.cam",
+   "text": "Vera's phone went quiet. Best sound ever.",
+   "file": "cam/bark.cam.cam_s2",
+   "durationMs": 2341,
+   "source": "js/barks.js:167",
+   "hash": "604d89815db5dedf"
+  },
+  "bark.cam.cam_w1": {
+   "char": "cam",
+   "speaker": "cam",
+   "scene": "bark.cam",
+   "text": "Surge pricing in the rain. Not tonight.",
+   "file": "cam/bark.cam.cam_w1",
+   "durationMs": 2072,
+   "source": "js/barks.js:168",
+   "hash": "c24c8e05b03ef942"
+  },
+  "bark.cam.cam_x1": {
+   "char": "cam",
+   "speaker": "cam",
+   "scene": "bark.cam",
+   "text": "Okay. I did not see that. Or I did. Wow.",
+   "file": "cam/bark.cam.cam_x1",
+   "durationMs": 2870,
+   "source": "js/barks.js:169",
+   "hash": "e97566ebd379f3db"
+  },
+  "bark.cam.cam_l1": {
+   "char": "cam",
+   "speaker": "cam",
+   "scene": "bark.cam",
+   "text": "Want me to drive you to urgent care?",
+   "file": "cam/bark.cam.cam_l1",
+   "durationMs": 1849,
+   "source": "js/barks.js:170",
+   "hash": "f94e3dec93354043"
+  },
+  "bark.wren.wre_g1": {
+   "char": "wren",
+   "speaker": "wren",
+   "scene": "bark.wren",
+   "text": "Matthew! Zinnias, two for five. For you, free.",
+   "file": "wren/bark.wren.wre_g1",
+   "durationMs": 3079,
+   "source": "js/barks.js:174",
+   "hash": "6d7d180187f4ed70"
+  },
+  "bark.wren.wre_g2": {
+   "char": "wren",
+   "speaker": "wren",
+   "scene": "bark.wren",
+   "text": "Hi! Smell these. No, really, smell them.",
+   "file": "wren/bark.wren.wre_g2",
+   "durationMs": 2515,
+   "source": "js/barks.js:175",
+   "hash": "274fa90efa558259"
+  },
+  "bark.wren.wre_g3": {
+   "char": "wren",
+   "speaker": "wren",
+   "scene": "bark.wren",
+   "text": "There's my good egg.",
+   "file": "wren/bark.wren.wre_g3",
+   "durationMs": 1009,
+   "source": "js/barks.js:176",
+   "hash": "33e9cec4b64f5e79"
+  },
+  "bark.wren.wre_i1": {
+   "char": "wren",
+   "speaker": "wren",
+   "scene": "bark.wren",
+   "text": "Marigolds for luck. Daisies for no reason.",
+   "file": "wren/bark.wren.wre_i1",
+   "durationMs": 2908,
+   "source": "js/barks.js:178",
+   "hash": "723130b6245347ec"
+  },
+  "bark.wren.wre_i2": {
+   "char": "wren",
+   "speaker": "wren",
+   "scene": "bark.wren",
+   "text": "The market smells like rain and petals.",
+   "file": "wren/bark.wren.wre_i2",
+   "durationMs": 2311,
+   "source": "js/barks.js:179",
+   "hash": "93b9b7aed2a3838c"
+  },
+  "bark.wren.wre_f1": {
+   "char": "wren",
+   "speaker": "wren",
+   "scene": "bark.wren",
+   "text": "Bye! Come back before I close.",
+   "file": "wren/bark.wren.wre_f1",
+   "durationMs": 1863,
+   "source": "js/barks.js:181",
+   "hash": "b0dd1c5bbf385f14"
+  },
+  "bark.wren.wre_f2": {
+   "char": "wren",
+   "speaker": "wren",
+   "scene": "bark.wren",
+   "text": "Take a flower for the road!",
+   "file": "wren/bark.wren.wre_f2",
+   "durationMs": 1355,
+   "source": "js/barks.js:182",
+   "hash": "35d0b23615dc1d2c"
+  },
+  "bark.wren.wre_o1": {
+   "char": "wren",
+   "speaker": "wren",
+   "scene": "bark.wren",
+   "text": "Ooh! That color needs a carnation.",
+   "file": "wren/bark.wren.wre_o1",
+   "durationMs": 1969,
+   "source": "js/barks.js:184",
+   "hash": "fbce96b20f0d76d9"
+  },
+  "bark.wren.wre_o2": {
+   "char": "wren",
+   "speaker": "wren",
+   "scene": "bark.wren",
+   "text": "You clean up nice, Matthew.",
+   "file": "wren/bark.wren.wre_o2",
+   "durationMs": 1456,
+   "source": "js/barks.js:185",
+   "hash": "bbb28f8863dbde59"
+  },
+  "bark.wren.wre_o3": {
+   "char": "wren",
+   "speaker": "wren",
+   "scene": "bark.wren",
+   "text": "That suit. Matthew, I've seen it up close.",
+   "file": "wren/bark.wren.wre_o3",
+   "durationMs": 2631,
+   "source": "js/barks.js:186",
+   "hash": "3ff63d8e21e39f44"
+  },
+  "bark.wren.wre_s1": {
+   "char": "wren",
+   "speaker": "wren",
+   "scene": "bark.wren",
+   "text": "You came up the mountain for me. I won't forget.",
+   "file": "wren/bark.wren.wre_s1",
+   "durationMs": 2993,
+   "source": "js/barks.js:188",
+   "hash": "4fa2da0cfdf0cf04"
+  },
+  "bark.wren.wre_s2": {
+   "char": "wren",
+   "speaker": "wren",
+   "scene": "bark.wren",
+   "text": "My purse is back! Petals and all.",
+   "file": "wren/bark.wren.wre_s2",
+   "durationMs": 2076,
+   "source": "js/barks.js:189",
+   "hash": "f9b8b79815de3cdd"
+  },
+  "bark.wren.wre_w1": {
+   "char": "wren",
+   "speaker": "wren",
+   "scene": "bark.wren",
+   "text": "Rain's good for the flowers. Bad for my hair.",
+   "file": "wren/bark.wren.wre_w1",
+   "durationMs": 2865,
+   "source": "js/barks.js:190",
+   "hash": "3dd9c57c16393783"
+  },
+  "bark.wren.wre_x1": {
+   "char": "wren",
+   "speaker": "wren",
+   "scene": "bark.wren",
+   "text": "Matthew! Are you okay? Who were they?",
+   "file": "wren/bark.wren.wre_x1",
+   "durationMs": 2268,
+   "source": "js/barks.js:191",
+   "hash": "6243d790810c2a14"
+  },
+  "bark.wren.wre_l1": {
+   "char": "wren",
+   "speaker": "wren",
+   "scene": "bark.wren",
+   "text": "You're hurt! Here, sit by the cart.",
+   "file": "wren/bark.wren.wre_l1",
+   "durationMs": 1863,
+   "source": "js/barks.js:192",
+   "hash": "57db31f3719bd99c"
+  },
+  "bark.marcus.mar_g1": {
+   "char": "marcus_hale",
+   "speaker": "marcus",
+   "scene": "bark.marcus",
+   "text": "Evening. Mind the grate, it bites ankles.",
+   "file": "marcus_hale/bark.marcus.mar_g1",
+   "durationMs": 2523,
+   "source": "js/barks.js:196",
+   "hash": "d0276c0596f36871"
+  },
+  "bark.marcus.mar_g2": {
+   "char": "marcus_hale",
+   "speaker": "marcus",
+   "scene": "bark.marcus",
+   "text": "Matthew Rose. Crossed at 9:14 last Tuesday.",
+   "file": "marcus_hale/bark.marcus.mar_g2",
+   "durationMs": 3271,
+   "source": "js/barks.js:197",
+   "hash": "78f874f4df0d6dc9"
+  },
+  "bark.marcus.mar_g3": {
+   "char": "marcus_hale",
+   "speaker": "marcus",
+   "scene": "bark.marcus",
+   "text": "You again. I'll put you down as a regular.",
+   "file": "marcus_hale/bark.marcus.mar_g3",
+   "durationMs": 2332,
+   "source": "js/barks.js:198",
+   "hash": "cf239c18b1f8fe95"
+  },
+  "bark.marcus.mar_i1": {
+   "char": "marcus_hale",
+   "speaker": "marcus",
+   "scene": "bark.marcus",
+   "text": "Lamp glass won't polish itself. Mostly.",
+   "file": "marcus_hale/bark.marcus.mar_i1",
+   "durationMs": 2801,
+   "source": "js/barks.js:200",
+   "hash": "234bb67c0862206b"
+  },
+  "bark.marcus.mar_i2": {
+   "char": "marcus_hale",
+   "speaker": "marcus",
+   "scene": "bark.marcus",
+   "text": "Near thirty years on this bridge. Still squeaks.",
+   "file": "marcus_hale/bark.marcus.mar_i2",
+   "durationMs": 2695,
+   "source": "js/barks.js:201",
+   "hash": "834267584a6f0a48"
+  },
+  "bark.marcus.mar_f1": {
+   "char": "marcus_hale",
+   "speaker": "marcus",
+   "scene": "bark.marcus",
+   "text": "Go on. I'll log you out.",
+   "file": "marcus_hale/bark.marcus.mar_f1",
+   "durationMs": 1457,
+   "source": "js/barks.js:203",
+   "hash": "34fb804178369c65"
+  },
+  "bark.marcus.mar_f2": {
+   "char": "marcus_hale",
+   "speaker": "marcus",
+   "scene": "bark.marcus",
+   "text": "Watch the river side. Railing's loose.",
+   "file": "marcus_hale/bark.marcus.mar_f2",
+   "durationMs": 2332,
+   "source": "js/barks.js:204",
+   "hash": "db27acd62289811c"
+  },
+  "bark.marcus.mar_o1": {
+   "char": "marcus_hale",
+   "speaker": "marcus",
+   "scene": "bark.marcus",
+   "text": "New jacket. Noted. Everything gets noted.",
+   "file": "marcus_hale/bark.marcus.mar_o1",
+   "durationMs": 2759,
+   "source": "js/barks.js:206",
+   "hash": "991fc040d07d7055"
+  },
+  "bark.marcus.mar_o2": {
+   "char": "marcus_hale",
+   "speaker": "marcus",
+   "scene": "bark.marcus",
+   "text": "That suit. I've seen it cross before. Long ago.",
+   "file": "marcus_hale/bark.marcus.mar_o2",
+   "durationMs": 2673,
+   "source": "js/barks.js:207",
+   "hash": "f0b73ed6763498ed"
+  },
+  "bark.marcus.mar_s1": {
+   "char": "marcus_hale",
+   "speaker": "marcus",
+   "scene": "bark.marcus",
+   "text": "Coach's medicine made it across. Good work.",
+   "file": "marcus_hale/bark.marcus.mar_s1",
+   "durationMs": 2780,
+   "source": "js/barks.js:209",
+   "hash": "911825b838293f51"
+  },
+  "bark.marcus.mar_s2": {
+   "char": "marcus_hale",
+   "speaker": "marcus",
+   "scene": "bark.marcus",
+   "text": "Star's lit again. Bridge looks better for it.",
+   "file": "marcus_hale/bark.marcus.mar_s2",
+   "durationMs": 2759,
+   "source": "js/barks.js:210",
+   "hash": "9f8e1e4e2b9d9b78"
+  },
+  "bark.marcus.mar_s3": {
+   "char": "marcus_hale",
+   "speaker": "marcus",
+   "scene": "bark.marcus",
+   "text": "Lamps held all night. First time this month.",
+   "file": "marcus_hale/bark.marcus.mar_s3",
+   "durationMs": 2652,
+   "source": "js/barks.js:211",
+   "hash": "e900c3df6cc18c65"
+  },
+  "bark.marcus.mar_s4": {
+   "char": "marcus_hale",
+   "speaker": "marcus",
+   "scene": "bark.marcus",
+   "text": "My pages, back in order. Thank you, Matthew.",
+   "file": "marcus_hale/bark.marcus.mar_s4",
+   "durationMs": 2481,
+   "source": "js/barks.js:212",
+   "hash": "89e4d49eee2297f9"
+  },
+  "bark.marcus.mar_s5": {
+   "char": "marcus_hale",
+   "speaker": "marcus",
+   "scene": "bark.marcus",
+   "text": "Water's down. The bridge owes you one.",
+   "file": "marcus_hale/bark.marcus.mar_s5",
+   "durationMs": 2289,
+   "source": "js/barks.js:213",
+   "hash": "21313b447e967b76"
+  },
+  "bark.marcus.mar_w1": {
+   "char": "marcus_hale",
+   "speaker": "marcus",
+   "scene": "bark.marcus",
+   "text": "River's high. Six days of rain does that.",
+   "file": "marcus_hale/bark.marcus.mar_w1",
+   "durationMs": 2631,
+   "source": "js/barks.js:214",
+   "hash": "8236520be3c07cf9"
+  },
+  "bark.marcus.mar_x1": {
+   "char": "marcus_hale",
+   "speaker": "marcus",
+   "scene": "bark.marcus",
+   "text": "That's going in the book. Both sides.",
+   "file": "marcus_hale/bark.marcus.mar_x1",
+   "durationMs": 2140,
+   "source": "js/barks.js:215",
+   "hash": "07b60aaa870ab573"
+  },
+  "bark.marcus.mar_l1": {
+   "char": "marcus_hale",
+   "speaker": "marcus",
+   "scene": "bark.marcus",
+   "text": "Sit on the bollard a minute. Breathe.",
+   "file": "marcus_hale/bark.marcus.mar_l1",
+   "durationMs": 1969,
+   "source": "js/barks.js:216",
+   "hash": "62df191b81d0397c"
+  },
+  "bark.silas.sln_g1": {
+   "char": "silas_boone",
+   "speaker": "silas",
+   "scene": "bark.silas",
+   "text": "Evening, son. Kind of you to come all this way.",
+   "file": "silas_boone/bark.silas.sln_g1",
+   "durationMs": 2752,
+   "source": "js/barks.js:220",
+   "hash": "df3890afadc1c017"
+  },
+  "bark.silas.sln_g2": {
+   "char": "silas_boone",
+   "speaker": "silas",
+   "scene": "bark.silas",
+   "text": "Matthew Rose. Your mama know you're out?",
+   "file": "silas_boone/bark.silas.sln_g2",
+   "durationMs": 2602,
+   "source": "js/barks.js:221",
+   "hash": "bc86d75307c14a8f"
+  },
+  "bark.silas.sln_g3": {
+   "char": "silas_boone",
+   "speaker": "silas",
+   "scene": "bark.silas",
+   "text": "Come closer. I don't bite. Not first.",
+   "file": "silas_boone/bark.silas.sln_g3",
+   "durationMs": 2551,
+   "source": "js/barks.js:222",
+   "hash": "71d07df48b776520"
+  },
+  "bark.silas.sln_i1": {
+   "char": "silas_boone",
+   "speaker": "silas",
+   "scene": "bark.silas",
+   "text": "Pretty view. Shame about the lights.",
+   "file": "silas_boone/bark.silas.sln_i1",
+   "durationMs": 2187,
+   "source": "js/barks.js:224",
+   "hash": "99a78d1eb3423ed0"
+  },
+  "bark.silas.sln_i2": {
+   "char": "silas_boone",
+   "speaker": "silas",
+   "scene": "bark.silas",
+   "text": "Midnight's coming, son. It always does.",
+   "file": "silas_boone/bark.silas.sln_i2",
+   "durationMs": 2737,
+   "source": "js/barks.js:225",
+   "hash": "3ad162e7b8e7ba57"
+  },
+  "bark.silas.sln_f1": {
+   "char": "silas_boone",
+   "speaker": "silas",
+   "scene": "bark.silas",
+   "text": "Run along. The mountain will wait.",
+   "file": "silas_boone/bark.silas.sln_f1",
+   "durationMs": 2390,
+   "source": "js/barks.js:226",
+   "hash": "ab663c0a1d8d416e"
+  },
+  "bark.silas.sln_o1": {
+   "char": "silas_boone",
+   "speaker": "silas",
+   "scene": "bark.silas",
+   "text": "Dressed up for me? I'm touched.",
+   "file": "silas_boone/bark.silas.sln_o1",
+   "durationMs": 2088,
+   "source": "js/barks.js:228",
+   "hash": "101e21a9c707da34"
+  },
+  "bark.silas.sln_o2": {
+   "char": "silas_boone",
+   "speaker": "silas",
+   "scene": "bark.silas",
+   "text": "My suit. Fits you poorly, son.",
+   "file": "silas_boone/bark.silas.sln_o2",
+   "durationMs": 2095,
+   "source": "js/barks.js:229",
+   "hash": "a28b41164885b2f1"
+  },
+  "bark.silas.sln_w1": {
+   "char": "silas_boone",
+   "speaker": "silas",
+   "scene": "bark.silas",
+   "text": "Six days of rain. Washes a town clean.",
+   "file": "silas_boone/bark.silas.sln_w1",
+   "durationMs": 3335,
+   "source": "js/barks.js:230",
+   "hash": "b696515bb17da0de"
+  },
+  "bark.silas.sln_l1": {
+   "char": "silas_boone",
+   "speaker": "silas",
+   "scene": "bark.silas",
+   "text": "Bruised already? We haven't begun.",
+   "file": "silas_boone/bark.silas.sln_l1",
+   "durationMs": 2327,
+   "source": "js/barks.js:231",
+   "hash": "c66497675b56ab36"
+  },
+  "bark.dlc_dee.dd_g1": {
+   "char": "dee",
+   "speaker": "dlc_dee",
+   "scene": "bark.dlc_dee",
+   "text": "Mr. Boone. Coffee's... on the house, I guess.",
+   "file": "dee/bark.dlc_dee.dd_g1",
+   "durationMs": 2823,
+   "source": "js/barks.js:235",
+   "hash": "53bb102f94ace584"
+  },
+  "bark.dlc_dee.dd_g2": {
+   "char": "dee",
+   "speaker": "dlc_dee",
+   "scene": "bark.dlc_dee",
+   "text": "Back again? I paid this month.",
+   "file": "dee/bark.dlc_dee.dd_g2",
+   "durationMs": 1799,
+   "source": "js/barks.js:235",
+   "hash": "61f229419512ab0e"
+  },
+  "bark.dlc_dee.dd_f1": {
+   "char": "dee",
+   "speaker": "dlc_dee",
+   "scene": "bark.dlc_dee",
+   "text": "Have a good night, Mr. Boone.",
+   "file": "dee/bark.dlc_dee.dd_f1",
+   "durationMs": 1841,
+   "source": "js/barks.js:235",
+   "hash": "f427005d6662c20f"
+  },
+  "bark.dlc_priya.dp_g1": {
+   "char": "priya",
+   "speaker": "dlc_priya",
+   "scene": "bark.dlc_priya",
+   "text": "We're closing. ...For you, I suppose not.",
+   "file": "priya/bark.dlc_priya.dp_g1",
+   "durationMs": 2401,
+   "source": "js/barks.js:236",
+   "hash": "9efdb625ca5e6dc5"
+  },
+  "bark.dlc_priya.dp_g2": {
+   "char": "priya",
+   "speaker": "dlc_priya",
+   "scene": "bark.dlc_priya",
+   "text": "Mr. Boone. Looking for anything in particular?",
+   "file": "priya/bark.dlc_priya.dp_g2",
+   "durationMs": 3825,
+   "source": "js/barks.js:236",
+   "hash": "d3226d4b30c6b59b"
+  },
+  "bark.dlc_priya.dp_f1": {
+   "char": "priya",
+   "speaker": "dlc_priya",
+   "scene": "bark.dlc_priya",
+   "text": "Mind the step on your way out.",
+   "file": "priya/bark.dlc_priya.dp_f1",
+   "durationMs": 1614,
+   "source": "js/barks.js:236",
+   "hash": "466063e95924511f"
+  },
+  "bark.dlc_cam.dc_g1": {
+   "char": "cam",
+   "speaker": "dlc_cam",
+   "scene": "bark.dlc_cam",
+   "text": "Uh, hi. I'm off the clock. Really.",
+   "file": "cam/bark.dlc_cam.dc_g1",
+   "durationMs": 1877,
+   "source": "js/barks.js:237",
+   "hash": "9009948f1c5105f8"
+  },
+  "bark.dlc_cam.dc_g2": {
+   "char": "cam",
+   "speaker": "dlc_cam",
+   "scene": "bark.dlc_cam",
+   "text": "Need a ride? I mean... no charge.",
+   "file": "cam/bark.dlc_cam.dc_g2",
+   "durationMs": 1852,
+   "source": "js/barks.js:237",
+   "hash": "0ad7775f62d523e3"
+  },
+  "bark.dlc_cam.dc_f1": {
+   "char": "cam",
+   "speaker": "dlc_cam",
+   "scene": "bark.dlc_cam",
+   "text": "Okay. Bye. Drive safe. I mean, walk safe.",
+   "file": "cam/bark.dlc_cam.dc_f1",
+   "durationMs": 2311,
+   "source": "js/barks.js:237",
+   "hash": "22dbb192f0453896"
+  },
+  "bark.dlc_marcus.dm_g1": {
+   "char": "marcus_hale_young",
+   "speaker": "dlc_marcus",
+   "scene": "bark.dlc_marcus",
+   "text": "Bridge closes at two. Sir.",
+   "file": "marcus_hale_young/bark.dlc_marcus.dm_g1",
+   "durationMs": 1628,
+   "source": "js/barks.js:239",
+   "hash": "2241d7bd3671fdec"
+  },
+  "bark.dlc_marcus.dm_g2": {
+   "char": "marcus_hale_young",
+   "speaker": "dlc_marcus",
+   "scene": "bark.dlc_marcus",
+   "text": "Evening, Mr. Boone. Nice night for a walk.",
+   "file": "marcus_hale_young/bark.dlc_marcus.dm_g2",
+   "durationMs": 2545,
+   "source": "js/barks.js:239",
+   "hash": "412f78c8297f2b7f"
+  },
+  "bark.dlc_marcus.dm_f1": {
+   "char": "marcus_hale_young",
+   "speaker": "dlc_marcus",
+   "scene": "bark.dlc_marcus",
+   "text": "Safe crossing. I'll write you down.",
+   "file": "marcus_hale_young/bark.dlc_marcus.dm_f1",
+   "durationMs": 1884,
+   "source": "js/barks.js:240",
+   "hash": "3c97ad6513046610"
+  },
+  "bark.dlc_marcus.dm_x1": {
+   "char": "marcus_hale_young",
+   "speaker": "dlc_marcus",
+   "scene": "bark.dlc_marcus",
+   "text": "...I didn't see anything. Officially.",
+   "file": "marcus_hale_young/bark.dlc_marcus.dm_x1",
+   "durationMs": 1735,
+   "source": "js/barks.js:241",
+   "hash": "b0a8b3916e0dc2af"
+  },
+  "bark.lou.lou_g1": {
+   "char": "lou",
+   "speaker": "lou",
+   "scene": "bark.lou",
+   "text": "Evening edition, Silas. Read all about you.",
+   "file": "lou/bark.lou.lou_g1",
+   "durationMs": 2838,
+   "source": "js/barks.js:243",
+   "hash": "38fc26ac0cd2bcd1"
+  },
+  "bark.lou.lou_g2": {
+   "char": "lou",
+   "speaker": "lou",
+   "scene": "bark.lou",
+   "text": "Papers are wet, coffee's cold. Welcome.",
+   "file": "lou/bark.lou.lou_g2",
+   "durationMs": 3036,
+   "source": "js/barks.js:243",
+   "hash": "bc467169b04d4d8e"
+  },
+  "bark.lou.lou_f1": {
+   "char": "lou",
+   "speaker": "lou",
+   "scene": "bark.lou",
+   "text": "Watch the docks tonight, Silas.",
+   "file": "lou/bark.lou.lou_f1",
+   "durationMs": 2115,
+   "source": "js/barks.js:243",
+   "hash": "a5035ad38f292105"
+  },
+  "bark.lou.lou_x1": {
+   "char": "lou",
+   "speaker": "lou",
+   "scene": "bark.lou",
+   "text": "That'll make the morning paper.",
+   "file": "lou/bark.lou.lou_x1",
+   "durationMs": 1777,
+   "source": "js/barks.js:243",
+   "hash": "aab3b8f3717eaf0b"
+  },
+  "bark.ivy.ivy_g1": {
+   "char": "ivy",
+   "speaker": "ivy",
+   "scene": "bark.ivy",
+   "text": "Boone! I got your envelope. Mostly dry.",
+   "file": "ivy/bark.ivy.ivy_g1",
+   "durationMs": 2295,
+   "source": "js/barks.js:244",
+   "hash": "d0ae086640275494"
+  },
+  "bark.ivy.ivy_g2": {
+   "char": "ivy",
+   "speaker": "ivy",
+   "scene": "bark.ivy",
+   "text": "Make it quick, I'm double-parked. On a bike.",
+   "file": "ivy/bark.ivy.ivy_g2",
+   "durationMs": 2161,
+   "source": "js/barks.js:244",
+   "hash": "ead6778bea71e2be"
+  },
+  "bark.ivy.ivy_f1": {
+   "char": "ivy",
+   "speaker": "ivy",
+   "scene": "bark.ivy",
+   "text": "Later! I'm gone in sixty seconds.",
+   "file": "ivy/bark.ivy.ivy_f1",
+   "durationMs": 1607,
+   "source": "js/barks.js:244",
+   "hash": "4d2593c57bb36498"
+  },
+  "bark.gus.gus_g1": {
+   "char": "gus",
+   "speaker": "gus",
+   "scene": "bark.gus",
+   "text": "Mr. Boone. Ledger's right where you left it.",
+   "file": "gus/bark.gus.gus_g1",
+   "durationMs": 2503,
+   "source": "js/barks.js:245",
+   "hash": "bb6a0bc1fc1b0b0d"
+  },
+  "bark.gus.gus_g2": {
+   "char": "gus",
+   "speaker": "gus",
+   "scene": "bark.gus",
+   "text": "Night shift. Just me and the forklifts.",
+   "file": "gus/bark.gus.gus_g2",
+   "durationMs": 2268,
+   "source": "js/barks.js:245",
+   "hash": "c88e3f1ad869f98e"
+  },
+  "bark.gus.gus_f1": {
+   "char": "gus",
+   "speaker": "gus",
+   "scene": "bark.gus",
+   "text": "I didn't see you. Never do.",
+   "file": "gus/bark.gus.gus_f1",
+   "durationMs": 1607,
+   "source": "js/barks.js:245",
+   "hash": "0fcc0e95f1f5c6fc"
+  },
+  "bark.pip.pip_g1": {
+   "char": "pip",
+   "speaker": "pip",
+   "scene": "bark.pip",
+   "text": "Mister Boone! Got a job for me?",
+   "file": "pip/bark.pip.pip_g1",
+   "durationMs": 1735,
+   "source": "js/barks.js:246",
+   "hash": "300653c208a0ffd8"
+  },
+  "bark.pip.pip_g2": {
+   "char": "pip",
+   "speaker": "pip",
+   "scene": "bark.pip",
+   "text": "I ran the whole way. Twice!",
+   "file": "pip/bark.pip.pip_g2",
+   "durationMs": 1500,
+   "source": "js/barks.js:246",
+   "hash": "0eef33d676b083bf"
+  },
+  "bark.pip.pip_f1": {
+   "char": "pip",
+   "speaker": "pip",
+   "scene": "bark.pip",
+   "text": "Bye! I'll be fast, I promise!",
+   "file": "pip/bark.pip.pip_f1",
+   "durationMs": 1457,
+   "source": "js/barks.js:246",
+   "hash": "d1cc46870aa70825"
+  },
+  "bark.pip.pip_x1": {
+   "char": "pip",
+   "speaker": "pip",
+   "scene": "bark.pip",
+   "text": "Whoa! Teach me that!",
+   "file": "pip/bark.pip.pip_x1",
+   "durationMs": 1095,
+   "source": "js/barks.js:246",
+   "hash": "7eee695e9c39d659"
+  },
+  "bark.thug_slick.ts_sp1": {
+   "char": "thug_a",
+   "speaker": "thug_slick",
+   "scene": "bark.thug_slick",
+   "text": "Hey! You're on the wrong block, pal.",
+   "file": "thug_a/bark.thug_slick.ts_sp1",
+   "durationMs": 1830,
+   "source": "js/barks.js:250",
+   "hash": "026efb564c2ffb40"
+  },
+  "bark.thug_slick.ts_sp2": {
+   "char": "thug_a",
+   "speaker": "thug_slick",
+   "scene": "bark.thug_slick",
+   "text": "Well, well. Look who's lost.",
+   "file": "thug_a/bark.thug_slick.ts_sp2",
+   "durationMs": 1544,
+   "source": "js/barks.js:250",
+   "hash": "73be6e5d1dad2283"
+  },
+  "bark.thug_slick.ts_t1": {
+   "char": "thug_a",
+   "speaker": "thug_slick",
+   "scene": "bark.thug_slick",
+   "text": "C'mon, hero. That all you got?",
+   "file": "thug_a/bark.thug_slick.ts_t1",
+   "durationMs": 1904,
+   "source": "js/barks.js:251",
+   "hash": "8c5599ffee528f45"
+  },
+  "bark.thug_slick.ts_t2": {
+   "char": "thug_a",
+   "speaker": "thug_slick",
+   "scene": "bark.thug_slick",
+   "text": "Nice shirt. Shame about the face.",
+   "file": "thug_a/bark.thug_slick.ts_t2",
+   "durationMs": 1840,
+   "source": "js/barks.js:251",
+   "hash": "bcb5b002cea4db52"
+  },
+  "bark.thug_slick.ts_h1": {
+   "char": "thug_a",
+   "speaker": "thug_slick",
+   "scene": "bark.thug_slick",
+   "text": "Ow! Lucky shot!",
+   "file": "thug_a/bark.thug_slick.ts_h1",
+   "durationMs": 1185,
+   "source": "js/barks.js:252",
+   "hash": "099998d0ca4b909b"
+  },
+  "bark.thug_slick.ts_h2": {
+   "char": "thug_a",
+   "speaker": "thug_slick",
+   "scene": "bark.thug_slick",
+   "text": "Hey! Not the jacket!",
+   "file": "thug_a/bark.thug_slick.ts_h2",
+   "durationMs": 1280,
+   "source": "js/barks.js:252",
+   "hash": "10909211f83e08dd"
+  },
+  "bark.thug_slick.ts_k1": {
+   "char": "thug_a",
+   "speaker": "thug_slick",
+   "scene": "bark.thug_slick",
+   "text": "Ugh... stay down, stay down...",
+   "file": "thug_a/bark.thug_slick.ts_k1",
+   "durationMs": 1575,
+   "source": "js/barks.js:253",
+   "hash": "6049827c979a7868"
+  },
+  "bark.thug_slick.ts_k2": {
+   "char": "thug_a",
+   "speaker": "thug_slick",
+   "scene": "bark.thug_slick",
+   "text": "I'm good. Just resting. On the street.",
+   "file": "thug_a/bark.thug_slick.ts_k2",
+   "durationMs": 1975,
+   "source": "js/barks.js:253",
+   "hash": "821a4f5b1f53d410"
+  },
+  "bark.thug_slick.ts_ko1": {
+   "char": "thug_a",
+   "speaker": "thug_slick",
+   "scene": "bark.thug_slick",
+   "text": "He dropped Benny! Get him!",
+   "file": "thug_a/bark.thug_slick.ts_ko1",
+   "durationMs": 1635,
+   "source": "js/barks.js:254",
+   "hash": "936129214de75d5e"
+  },
+  "bark.thug_slick.ts_ko2": {
+   "char": "thug_a",
+   "speaker": "thug_slick",
+   "scene": "bark.thug_slick",
+   "text": "Okay, that one's on you, pal.",
+   "file": "thug_a/bark.thug_slick.ts_ko2",
+   "durationMs": 1841,
+   "source": "js/barks.js:254",
+   "hash": "884c25163ea12c57"
+  },
+  "bark.thug_slick.ts_l1": {
+   "char": "thug_a",
+   "speaker": "thug_slick",
+   "scene": "bark.thug_slick",
+   "text": "Forget this, I ain't paid enough!",
+   "file": "thug_a/bark.thug_slick.ts_l1",
+   "durationMs": 1764,
+   "source": "js/barks.js:255",
+   "hash": "38cff5f67e575df7"
+  },
+  "bark.thug_slick.ts_l2": {
+   "char": "thug_a",
+   "speaker": "thug_slick",
+   "scene": "bark.thug_slick",
+   "text": "Where'd everybody go?!",
+   "file": "thug_a/bark.thug_slick.ts_l2",
+   "durationMs": 1472,
+   "source": "js/barks.js:255",
+   "hash": "18e2b8d8ba01dbba"
+  },
+  "bark.thug_hot.th_sp1": {
+   "char": "thug_c",
+   "speaker": "thug_hot",
+   "scene": "bark.thug_hot",
+   "text": "That's him! Boone wants him gone!",
+   "file": "thug_c/bark.thug_hot.th_sp1",
+   "durationMs": 2302,
+   "source": "js/barks.js:258",
+   "hash": "d67624c5a2e89912"
+  },
+  "bark.thug_hot.th_sp2": {
+   "char": "thug_c",
+   "speaker": "thug_hot",
+   "scene": "bark.thug_hot",
+   "text": "Oi! You! Hold it right there!",
+   "file": "thug_c/bark.thug_hot.th_sp2",
+   "durationMs": 1569,
+   "source": "js/barks.js:258",
+   "hash": "9ece415d4870fe63"
+  },
+  "bark.thug_hot.th_t1": {
+   "char": "thug_c",
+   "speaker": "thug_hot",
+   "scene": "bark.thug_hot",
+   "text": "I'm gonna fold you like a lawn chair!",
+   "file": "thug_c/bark.thug_hot.th_t1",
+   "durationMs": 1948,
+   "source": "js/barks.js:259",
+   "hash": "082773fb16c260e0"
+  },
+  "bark.thug_hot.th_t2": {
+   "char": "thug_c",
+   "speaker": "thug_hot",
+   "scene": "bark.thug_hot",
+   "text": "Swing all you want. I'm still here!",
+   "file": "thug_c/bark.thug_hot.th_t2",
+   "durationMs": 1841,
+   "source": "js/barks.js:259",
+   "hash": "764bf8ff0a308065"
+  },
+  "bark.thug_hot.th_h1": {
+   "char": "thug_c",
+   "speaker": "thug_hot",
+   "scene": "bark.thug_hot",
+   "text": "Argh! That stung!",
+   "file": "thug_c/bark.thug_hot.th_h1",
+   "durationMs": 1201,
+   "source": "js/barks.js:260",
+   "hash": "c9a928f8d2a71d13"
+  },
+  "bark.thug_hot.th_h2": {
+   "char": "thug_c",
+   "speaker": "thug_hot",
+   "scene": "bark.thug_hot",
+   "text": "You'll pay for that one!",
+   "file": "thug_c/bark.thug_hot.th_h2",
+   "durationMs": 1314,
+   "source": "js/barks.js:260",
+   "hash": "4b545b6aa9956cac"
+  },
+  "bark.thug_hot.th_k1": {
+   "char": "thug_c",
+   "speaker": "thug_hot",
+   "scene": "bark.thug_hot",
+   "text": "Cheap shot! Totally cheap!",
+   "file": "thug_c/bark.thug_hot.th_k1",
+   "durationMs": 1585,
+   "source": "js/barks.js:261",
+   "hash": "3a76d478a89fd33f"
+  },
+  "bark.thug_hot.th_k2": {
+   "char": "thug_c",
+   "speaker": "thug_hot",
+   "scene": "bark.thug_hot",
+   "text": "Gimme a second... the sky's spinning.",
+   "file": "thug_c/bark.thug_hot.th_k2",
+   "durationMs": 1991,
+   "source": "js/barks.js:261",
+   "hash": "54e85ff6590fb17c"
+  },
+  "bark.thug_hot.th_ko1": {
+   "char": "thug_c",
+   "speaker": "thug_hot",
+   "scene": "bark.thug_hot",
+   "text": "Get up, man! Get up!",
+   "file": "thug_c/bark.thug_hot.th_ko1",
+   "durationMs": 1321,
+   "source": "js/barks.js:262",
+   "hash": "fed5fe1df5ca64b2"
+  },
+  "bark.thug_hot.th_ko2": {
+   "char": "thug_c",
+   "speaker": "thug_hot",
+   "scene": "bark.thug_hot",
+   "text": "Oh, now I'm mad!",
+   "file": "thug_c/bark.thug_hot.th_ko2",
+   "durationMs": 903,
+   "source": "js/barks.js:262",
+   "hash": "5f7425b00517726f"
+  },
+  "bark.thug_hot.th_l1": {
+   "char": "thug_c",
+   "speaker": "thug_hot",
+   "scene": "bark.thug_hot",
+   "text": "I'm telling the Foreman!",
+   "file": "thug_c/bark.thug_hot.th_l1",
+   "durationMs": 1502,
+   "source": "js/barks.js:263",
+   "hash": "8549e3926f724d8b"
+  },
+  "bark.thug_hot.th_l2": {
+   "char": "thug_c",
+   "speaker": "thug_hot",
+   "scene": "bark.thug_hot",
+   "text": "You got lucky! Real lucky!",
+   "file": "thug_c/bark.thug_hot.th_l2",
+   "durationMs": 1598,
+   "source": "js/barks.js:263",
+   "hash": "af1040f55560ef35"
+  },
+  "bark.thug_grunt.tg_sp1": {
+   "char": "thug_b",
+   "speaker": "thug_grunt",
+   "scene": "bark.thug_grunt",
+   "text": "Hm. Fresh meat.",
+   "file": "thug_b/bark.thug_grunt.tg_sp1",
+   "durationMs": 1594,
+   "source": "js/barks.js:266",
+   "hash": "f260002df53d7def"
+  },
+  "bark.thug_grunt.tg_sp2": {
+   "char": "thug_b",
+   "speaker": "thug_grunt",
+   "scene": "bark.thug_grunt",
+   "text": "Boss said nobody walks through here.",
+   "file": "thug_b/bark.thug_grunt.tg_sp2",
+   "durationMs": 2097,
+   "source": "js/barks.js:266",
+   "hash": "7e5c0e12010eb8b0"
+  },
+  "bark.thug_grunt.tg_t1": {
+   "char": "thug_b",
+   "speaker": "thug_grunt",
+   "scene": "bark.thug_grunt",
+   "text": "You hit like my grandma. She hits hard.",
+   "file": "thug_b/bark.thug_grunt.tg_t1",
+   "durationMs": 3404,
+   "source": "js/barks.js:267",
+   "hash": "f4617a56b8932e49"
+  },
+  "bark.thug_grunt.tg_t2": {
+   "char": "thug_b",
+   "speaker": "thug_grunt",
+   "scene": "bark.thug_grunt",
+   "text": "Big talk. Small punches.",
+   "file": "thug_b/bark.thug_grunt.tg_t2",
+   "durationMs": 1813,
+   "source": "js/barks.js:267",
+   "hash": "769d6c52a8903dc1"
+  },
+  "bark.thug_grunt.tg_h1": {
+   "char": "thug_b",
+   "speaker": "thug_grunt",
+   "scene": "bark.thug_grunt",
+   "text": "Oof.",
+   "file": "thug_b/bark.thug_grunt.tg_h1",
+   "durationMs": 817,
+   "source": "js/barks.js:268",
+   "hash": "7bf01fa4c8ce5404"
+  },
+  "bark.thug_grunt.tg_h2": {
+   "char": "thug_b",
+   "speaker": "thug_grunt",
+   "scene": "bark.thug_grunt",
+   "text": "Huh. Felt that.",
+   "file": "thug_b/bark.thug_grunt.tg_h2",
+   "durationMs": 1220,
+   "source": "js/barks.js:268",
+   "hash": "a6b8f52292a3034d"
+  },
+  "bark.thug_grunt.tg_k1": {
+   "char": "thug_b",
+   "speaker": "thug_grunt",
+   "scene": "bark.thug_grunt",
+   "text": "...ow.",
+   "file": "thug_b/bark.thug_grunt.tg_k1",
+   "durationMs": 728,
+   "source": "js/barks.js:269",
+   "hash": "7b56e36491731190"
+  },
+  "bark.thug_grunt.tg_k2": {
+   "char": "thug_b",
+   "speaker": "thug_grunt",
+   "scene": "bark.thug_grunt",
+   "text": "I'll just... lie here.",
+   "file": "thug_b/bark.thug_grunt.tg_k2",
+   "durationMs": 1607,
+   "source": "js/barks.js:269",
+   "hash": "886b3816b69a755d"
+  },
+  "bark.thug_grunt.tg_ko1": {
+   "char": "thug_b",
+   "speaker": "thug_grunt",
+   "scene": "bark.thug_grunt",
+   "text": "Man down. Great.",
+   "file": "thug_b/bark.thug_grunt.tg_ko1",
+   "durationMs": 1415,
+   "source": "js/barks.js:270",
+   "hash": "5282dd9909517c30"
+  },
+  "bark.thug_grunt.tg_ko2": {
+   "char": "thug_b",
+   "speaker": "thug_grunt",
+   "scene": "bark.thug_grunt",
+   "text": "That was my ride home.",
+   "file": "thug_b/bark.thug_grunt.tg_ko2",
+   "durationMs": 1379,
+   "source": "js/barks.js:270",
+   "hash": "3f8a822ad7c68879"
+  },
+  "bark.thug_grunt.tg_l1": {
+   "char": "thug_b",
+   "speaker": "thug_grunt",
+   "scene": "bark.thug_grunt",
+   "text": "Nope. I'm going home.",
+   "file": "thug_b/bark.thug_grunt.tg_l1",
+   "durationMs": 1498,
+   "source": "js/barks.js:271",
+   "hash": "0ef15182b1ca7dcd"
+  },
+  "bark.thug_grunt.tg_l2": {
+   "char": "thug_b",
+   "speaker": "thug_grunt",
+   "scene": "bark.thug_grunt",
+   "text": "Not worth it. Not for this pay.",
+   "file": "thug_b/bark.thug_grunt.tg_l2",
+   "durationMs": 2268,
+   "source": "js/barks.js:271",
+   "hash": "4f346a7cce46740d"
+  },
+  "bark.crew.cr_sp1": {
+   "char": "thug_b",
+   "speaker": "crew",
+   "scene": "bark.crew",
+   "text": "It's Boone! Foreman said he'd come.",
+   "file": "thug_b/bark.crew.cr_sp1",
+   "durationMs": 1969,
+   "source": "js/barks.js:274",
+   "hash": "67e2016b1cdf5968"
+  },
+  "bark.crew.cr_sp2": {
+   "char": "thug_b",
+   "speaker": "crew",
+   "scene": "bark.crew",
+   "text": "Fancy suit. Wrong yard, old man.",
+   "file": "thug_b/bark.crew.cr_sp2",
+   "durationMs": 1884,
+   "source": "js/barks.js:274",
+   "hash": "c734f81598b344a7"
+  },
+  "bark.crew.cr_t1": {
+   "char": "thug_b",
+   "speaker": "crew",
+   "scene": "bark.crew",
+   "text": "Your money's no good here, Boone.",
+   "file": "thug_b/bark.crew.cr_t1",
+   "durationMs": 1948,
+   "source": "js/barks.js:275",
+   "hash": "f9ba3754ddd20e90"
+  },
+  "bark.crew.cr_t2": {
+   "char": "thug_b",
+   "speaker": "crew",
+   "scene": "bark.crew",
+   "text": "The Foreman runs these docks now!",
+   "file": "thug_b/bark.crew.cr_t2",
+   "durationMs": 2096,
+   "source": "js/barks.js:275",
+   "hash": "6840555104f2953d"
+  },
+  "bark.crew.cr_h1": {
+   "char": "thug_b",
+   "speaker": "crew",
+   "scene": "bark.crew",
+   "text": "Ow! He fights dirty!",
+   "file": "thug_b/bark.crew.cr_h1",
+   "durationMs": 1719,
+   "source": "js/barks.js:276",
+   "hash": "baa9879fbd24b496"
+  },
+  "bark.crew.cr_h2": {
+   "char": "thug_b",
+   "speaker": "crew",
+   "scene": "bark.crew",
+   "text": "Whoa, the old man's got hands!",
+   "file": "thug_b/bark.crew.cr_h2",
+   "durationMs": 1841,
+   "source": "js/barks.js:276",
+   "hash": "116a50e1df7d3ecc"
+  },
+  "bark.crew.cr_k1": {
+   "char": "thug_b",
+   "speaker": "crew",
+   "scene": "bark.crew",
+   "text": "My back... my whole back...",
+   "file": "thug_b/bark.crew.cr_k1",
+   "durationMs": 1711,
+   "source": "js/barks.js:277",
+   "hash": "1a09a6bff7cc6513"
+  },
+  "bark.crew.cr_k2": {
+   "char": "thug_b",
+   "speaker": "crew",
+   "scene": "bark.crew",
+   "text": "Somebody blow the whistle...",
+   "file": "thug_b/bark.crew.cr_k2",
+   "durationMs": 1658,
+   "source": "js/barks.js:277",
+   "hash": "d657c25b8dd6ec00"
+  },
+  "bark.crew.cr_ko1": {
+   "char": "thug_b",
+   "speaker": "crew",
+   "scene": "bark.crew",
+   "text": "He took out Dale! Swarm him!",
+   "file": "thug_b/bark.crew.cr_ko1",
+   "durationMs": 1871,
+   "source": "js/barks.js:278",
+   "hash": "e496e2da3a87e565"
+  },
+  "bark.crew.cr_ko2": {
+   "char": "thug_b",
+   "speaker": "crew",
+   "scene": "bark.crew",
+   "text": "Hey, careful! That's our guy!",
+   "file": "thug_b/bark.crew.cr_ko2",
+   "durationMs": 1841,
+   "source": "js/barks.js:278",
+   "hash": "4c985c59b91db652"
+  },
+  "bark.crew.cr_l1": {
+   "char": "thug_b",
+   "speaker": "crew",
+   "scene": "bark.crew",
+   "text": "Union break! I'm on break!",
+   "file": "thug_b/bark.crew.cr_l1",
+   "durationMs": 1856,
+   "source": "js/barks.js:279",
+   "hash": "cc9a716227d2aa74"
+  },
+  "bark.crew.cr_l2": {
+   "char": "thug_b",
+   "speaker": "crew",
+   "scene": "bark.crew",
+   "text": "Tell the Foreman I tried!",
+   "file": "thug_b/bark.crew.cr_l2",
+   "durationMs": 1735,
+   "source": "js/barks.js:279",
+   "hash": "6f0fbef89ee0ba96"
+  },
+  "bark.silas_boss.sb_in1": {
+   "char": "silas_boone",
+   "speaker": "silas_boss",
+   "scene": "bark.silas_boss",
+   "text": "Evening, son. Let's settle this like gentlemen.",
+   "file": "silas_boone/bark.silas_boss.sb_in1",
+   "durationMs": 3046,
+   "source": "js/barks.js:284",
+   "hash": "5e139831c6ac98ba"
+  },
+  "bark.silas_boss.sb_in2": {
+   "char": "silas_boone",
+   "speaker": "silas_boss",
+   "scene": "bark.silas_boss",
+   "text": "You climbed a mountain to lose. Admirable.",
+   "file": "silas_boone/bark.silas_boss.sb_in2",
+   "durationMs": 2680,
+   "source": "js/barks.js:284",
+   "hash": "325ca331a6bb04c4"
+  },
+  "bark.silas_boss.sb_t1": {
+   "char": "silas_boone",
+   "speaker": "silas_boss",
+   "scene": "bark.silas_boss",
+   "text": "Manners, Matthew. Your mama raised you better.",
+   "file": "silas_boone/bark.silas_boss.sb_t1",
+   "durationMs": 2990,
+   "source": "js/barks.js:286",
+   "hash": "99038de9cd589c0a"
+  },
+  "bark.silas_boss.sb_t2": {
+   "char": "silas_boone",
+   "speaker": "silas_boss",
+   "scene": "bark.silas_boss",
+   "text": "I own this city. You're renting a sidewalk.",
+   "file": "silas_boone/bark.silas_boss.sb_t2",
+   "durationMs": 2517,
+   "source": "js/barks.js:287",
+   "hash": "60be12330ba1647c"
+  },
+  "bark.silas_boss.sb_t3": {
+   "char": "silas_boone",
+   "speaker": "silas_boss",
+   "scene": "bark.silas_boss",
+   "text": "Swing again. I'll wait.",
+   "file": "silas_boone/bark.silas_boss.sb_t3",
+   "durationMs": 1782,
+   "source": "js/barks.js:288",
+   "hash": "f7b445012ca57ef4"
+  },
+  "bark.silas_boss.sb_p1": {
+   "char": "silas_boone",
+   "speaker": "silas_boss",
+   "scene": "bark.silas_boss",
+   "text": "Well now. You do have some fight in you.",
+   "file": "silas_boone/bark.silas_boss.sb_p1",
+   "durationMs": 2520,
+   "source": "js/barks.js:289",
+   "hash": "b320a244a52ae6cc"
+  },
+  "bark.silas_boss.sb_p2": {
+   "char": "silas_boone",
+   "speaker": "silas_boss",
+   "scene": "bark.silas_boss",
+   "text": "Enough playing. Lights out, son.",
+   "file": "silas_boone/bark.silas_boss.sb_p2",
+   "durationMs": 2040,
+   "source": "js/barks.js:289",
+   "hash": "a368c7faf68c3a22"
+  },
+  "bark.silas_boss.sb_h1": {
+   "char": "silas_boone",
+   "speaker": "silas_boss",
+   "scene": "bark.silas_boss",
+   "text": "Hm. Not bad.",
+   "file": "silas_boone/bark.silas_boss.sb_h1",
+   "durationMs": 1486,
+   "source": "js/barks.js:290",
+   "hash": "985c630aa95dd584"
+  },
+  "bark.silas_boss.sb_h2": {
+   "char": "silas_boone",
+   "speaker": "silas_boss",
+   "scene": "bark.silas_boss",
+   "text": "That'll cost you.",
+   "file": "silas_boone/bark.silas_boss.sb_h2",
+   "durationMs": 1463,
+   "source": "js/barks.js:290",
+   "hash": "451d2e21828696a9"
+  },
+  "bark.silas_boss.sb_l1": {
+   "char": "silas_boone",
+   "speaker": "silas_boss",
+   "scene": "bark.silas_boss",
+   "text": "Rest a spell. This town was mine long before you.",
+   "file": "silas_boone/bark.silas_boss.sb_l1",
+   "durationMs": 3228,
+   "source": "js/barks.js:291",
+   "hash": "c6973e22582a4bde"
+  },
+  "bark.silas_boss.sb_d1": {
+   "char": "silas_boone",
+   "speaker": "silas_boss",
+   "scene": "bark.silas_boss",
+   "text": "Fine work... but Roanoke always remembers.",
+   "file": "silas_boone/bark.silas_boss.sb_d1",
+   "durationMs": 2869,
+   "source": "js/barks.js:292",
+   "hash": "f1cac58f3c7bd86b"
+  },
+  "bark.silas_boss.sb_d2": {
+   "char": "silas_boone",
+   "speaker": "silas_boss",
+   "scene": "bark.silas_boss",
+   "text": "Well. Someone pass me my hat.",
+   "file": "silas_boone/bark.silas_boss.sb_d2",
+   "durationMs": 2131,
+   "source": "js/barks.js:292",
+   "hash": "10de64893897b61d"
+  },
+  "bark.vera.ve_in1": {
+   "char": "vera_lisk",
+   "speaker": "vera",
+   "scene": "bark.vera",
+   "text": "Silas. I have a file on you, too.",
+   "file": "vera_lisk/bark.vera.ve_in1",
+   "durationMs": 2097,
+   "source": "js/barks.js:295",
+   "hash": "686c4726f8661d9c"
+  },
+  "bark.vera.ve_in2": {
+   "char": "vera_lisk",
+   "speaker": "vera",
+   "scene": "bark.vera",
+   "text": "You want the lamp? Come and take it.",
+   "file": "vera_lisk/bark.vera.ve_in2",
+   "durationMs": 1991,
+   "source": "js/barks.js:295",
+   "hash": "34eaf4d05c2b82b2"
+  },
+  "bark.vera.ve_t1": {
+   "char": "vera_lisk",
+   "speaker": "vera",
+   "scene": "bark.vera",
+   "text": "Everyone talks eventually. Even you.",
+   "file": "vera_lisk/bark.vera.ve_t1",
+   "durationMs": 2481,
+   "source": "js/barks.js:297",
+   "hash": "71f92377d14f9e0c"
+  },
+  "bark.vera.ve_t2": {
+   "char": "vera_lisk",
+   "speaker": "vera",
+   "scene": "bark.vera",
+   "text": "I keep photos. You're not photogenic.",
+   "file": "vera_lisk/bark.vera.ve_t2",
+   "durationMs": 2588,
+   "source": "js/barks.js:298",
+   "hash": "956807b1c50846a7"
+  },
+  "bark.vera.ve_t3": {
+   "char": "vera_lisk",
+   "speaker": "vera",
+   "scene": "bark.vera",
+   "text": "Careful. I bruise, then I remember.",
+   "file": "vera_lisk/bark.vera.ve_t3",
+   "durationMs": 1991,
+   "source": "js/barks.js:299",
+   "hash": "6cc35ee793d8b47e"
+  },
+  "bark.vera.ve_p1": {
+   "char": "vera_lisk",
+   "speaker": "vera",
+   "scene": "bark.vera",
+   "text": "Fine. No more polite blackmail.",
+   "file": "vera_lisk/bark.vera.ve_p1",
+   "durationMs": 1884,
+   "source": "js/barks.js:300",
+   "hash": "d2a61a9a699ec25c"
+  },
+  "bark.vera.ve_p2": {
+   "char": "vera_lisk",
+   "speaker": "vera",
+   "scene": "bark.vera",
+   "text": "You just made my list, Boone.",
+   "file": "vera_lisk/bark.vera.ve_p2",
+   "durationMs": 1841,
+   "source": "js/barks.js:300",
+   "hash": "9fda575cb6c82df5"
+  },
+  "bark.vera.ve_h1": {
+   "char": "vera_lisk",
+   "speaker": "vera",
+   "scene": "bark.vera",
+   "text": "My blazer!",
+   "file": "vera_lisk/bark.vera.ve_h1",
+   "durationMs": 647,
+   "source": "js/barks.js:301",
+   "hash": "731a302110d9c51f"
+  },
+  "bark.vera.ve_h2": {
+   "char": "vera_lisk",
+   "speaker": "vera",
+   "scene": "bark.vera",
+   "text": "That's going in the file.",
+   "file": "vera_lisk/bark.vera.ve_h2",
+   "durationMs": 1410,
+   "source": "js/barks.js:301",
+   "hash": "209f9eeddca92ed8"
+  },
+  "bark.vera.ve_l1": {
+   "char": "vera_lisk",
+   "speaker": "vera",
+   "scene": "bark.vera",
+   "text": "Tired, Silas? Sit. Let's talk terms.",
+   "file": "vera_lisk/bark.vera.ve_l1",
+   "durationMs": 2481,
+   "source": "js/barks.js:302",
+   "hash": "30128fc312121314"
+  },
+  "bark.vera.ve_d1": {
+   "char": "vera_lisk",
+   "speaker": "vera",
+   "scene": "bark.vera",
+   "text": "Keep the lamp. I kept copies.",
+   "file": "vera_lisk/bark.vera.ve_d1",
+   "durationMs": 1841,
+   "source": "js/barks.js:303",
+   "hash": "2bbc4611fe770b40"
+  },
+  "bark.vera.ve_d2": {
+   "char": "vera_lisk",
+   "speaker": "vera",
+   "scene": "bark.vera",
+   "text": "This isn't over. It's archived.",
+   "file": "vera_lisk/bark.vera.ve_d2",
+   "durationMs": 1927,
+   "source": "js/barks.js:303",
+   "hash": "ed09647c13a80f88"
+  },
+  "bark.foreman.fo_in1": {
+   "char": "foreman_kessler",
+   "speaker": "foreman",
+   "scene": "bark.foreman",
+   "text": "Whistle's blown, Boone. Shift's over.",
+   "file": "foreman_kessler/bark.foreman.fo_in1",
+   "durationMs": 2783,
+   "source": "js/barks.js:306",
+   "hash": "537aa8ca79e6faa1"
+  },
+  "bark.foreman.fo_in2": {
+   "char": "foreman_kessler",
+   "speaker": "foreman",
+   "scene": "bark.foreman",
+   "text": "My yard. My rules. My crew.",
+   "file": "foreman_kessler/bark.foreman.fo_in2",
+   "durationMs": 2327,
+   "source": "js/barks.js:306",
+   "hash": "6a37a83e97d2667f"
+  },
+  "bark.foreman.fo_t1": {
+   "char": "foreman_kessler",
+   "speaker": "foreman",
+   "scene": "bark.foreman",
+   "text": "I've lifted girders heavier than you.",
+   "file": "foreman_kessler/bark.foreman.fo_t1",
+   "durationMs": 2726,
+   "source": "js/barks.js:308",
+   "hash": "3e2d62a9e2088cdf"
+  },
+  "bark.foreman.fo_t2": {
+   "char": "foreman_kessler",
+   "speaker": "foreman",
+   "scene": "bark.foreman",
+   "text": "Hard hats on, boys. Boone's here.",
+   "file": "foreman_kessler/bark.foreman.fo_t2",
+   "durationMs": 2698,
+   "source": "js/barks.js:309",
+   "hash": "47d92ae143687a77"
+  },
+  "bark.foreman.fo_t3": {
+   "char": "foreman_kessler",
+   "speaker": "foreman",
+   "scene": "bark.foreman",
+   "text": "Fancy shoes don't grip on oil, Boone.",
+   "file": "foreman_kessler/bark.foreman.fo_t3",
+   "durationMs": 3113,
+   "source": "js/barks.js:310",
+   "hash": "bb811e2ca0159409"
+  },
+  "bark.foreman.fo_p1": {
+   "char": "foreman_kessler",
+   "speaker": "foreman",
+   "scene": "bark.foreman",
+   "text": "Overtime it is, then!",
+   "file": "foreman_kessler/bark.foreman.fo_p1",
+   "durationMs": 2168,
+   "source": "js/barks.js:311",
+   "hash": "0c4eba664994566b"
+  },
+  "bark.foreman.fo_p2": {
+   "char": "foreman_kessler",
+   "speaker": "foreman",
+   "scene": "bark.foreman",
+   "text": "Now you've made me sweat.",
+   "file": "foreman_kessler/bark.foreman.fo_p2",
+   "durationMs": 1946,
+   "source": "js/barks.js:311",
+   "hash": "04da242e03a5571e"
+  },
+  "bark.foreman.fo_h1": {
+   "char": "foreman_kessler",
+   "speaker": "foreman",
+   "scene": "bark.foreman",
+   "text": "Grr! Lucky swing!",
+   "file": "foreman_kessler/bark.foreman.fo_h1",
+   "durationMs": 2181,
+   "source": "js/barks.js:312",
+   "hash": "e4d8ab2dd2132959"
+  },
+  "bark.foreman.fo_h2": {
+   "char": "foreman_kessler",
+   "speaker": "foreman",
+   "scene": "bark.foreman",
+   "text": "That all you got, suit?",
+   "file": "foreman_kessler/bark.foreman.fo_h2",
+   "durationMs": 2417,
+   "source": "js/barks.js:312",
+   "hash": "09a9c9c3b4003aa2"
+  },
+  "bark.foreman.fo_l1": {
+   "char": "foreman_kessler",
+   "speaker": "foreman",
+   "scene": "bark.foreman",
+   "text": "You're done, old man. Clock out.",
+   "file": "foreman_kessler/bark.foreman.fo_l1",
+   "durationMs": 2708,
+   "source": "js/barks.js:313",
+   "hash": "3032f964fd89c17f"
+  },
+  "bark.foreman.fo_d1": {
+   "char": "foreman_kessler",
+   "speaker": "foreman",
+   "scene": "bark.foreman",
+   "text": "Fine... the yard's yours... for now.",
+   "file": "foreman_kessler/bark.foreman.fo_d1",
+   "durationMs": 2377,
+   "source": "js/barks.js:314",
+   "hash": "cdd55445f3b1898b"
+  },
+  "bark.foreman.fo_d2": {
+   "char": "foreman_kessler",
+   "speaker": "foreman",
+   "scene": "bark.foreman",
+   "text": "Somebody... call... the union...",
+   "file": "foreman_kessler/bark.foreman.fo_d2",
+   "durationMs": 1994,
+   "source": "js/barks.js:314",
+   "hash": "f23980e96ccfea32"
+  },
+  "vo_matthew_young_dlc1_m1_kid_l01": {
+   "char": "matthew_young",
+   "speaker": "matthew_young",
+   "scene": "dlc1_m1_kid",
+   "text": "That was— you just— they ran.",
+   "file": "matthew_young/vo_matthew_young_dlc1_m1_kid_l01",
+   "durationMs": 1646,
+   "source": "js/scenes_silas.js:45",
+   "hash": "26731ffd37c91801",
+   "delivery": "breathless, awed",
+   "speedMul": 1.07
+  },
+  "vo_silas_dlc1_m1_kid_l02": {
+   "char": "silas_boone",
+   "speaker": "silas",
+   "scene": "dlc1_m1_kid",
+   "text": "They walked briskly. Name?",
+   "file": "silas_boone/vo_silas_dlc1_m1_kid_l02",
+   "durationMs": 1692,
+   "source": "js/scenes_silas.js:53",
+   "hash": "3f1759c97e7b3e96",
+   "delivery": "dry, amused",
+   "speedMul": 1
+  },
+  "vo_matthew_young_dlc1_m1_kid_l03": {
+   "char": "matthew_young",
+   "speaker": "matthew_young",
+   "scene": "dlc1_m1_kid",
+   "text": "Matthew. Matthew Rose.",
+   "file": "matthew_young/vo_matthew_young_dlc1_m1_kid_l03",
+   "durationMs": 1576,
+   "source": "js/scenes_silas.js:61",
+   "hash": "c97f2dd45d60a54a",
+   "delivery": "shy, straightening up",
+   "speedMul": 1
+  },
+  "vo_silas_dlc1_m1_kid_l04": {
+   "char": "silas_boone",
+   "speaker": "silas",
+   "scene": "dlc1_m1_kid",
+   "text": "Go home, Matthew Rose. Nights belong to men like them. For now.",
+   "file": "silas_boone/vo_silas_dlc1_m1_kid_l04",
+   "durationMs": 4559,
+   "source": "js/scenes_silas.js:69",
+   "hash": "08c53044a6d838de",
+   "delivery": "kind, with a hint of plan",
+   "speedMul": 1
+  },
+  "vo_matthew_young_dlc1_m2_errand_l01": {
+   "char": "matthew_young",
+   "speaker": "matthew_young",
+   "scene": "dlc1_m2_errand",
+   "text": "Is Priya right? About you?",
+   "file": "matthew_young/vo_matthew_young_dlc1_m2_errand_l01",
+   "durationMs": 1566,
+   "source": "js/scenes_silas.js:104",
+   "hash": "ef370275d18b9d30",
+   "delivery": "testing, half-joking",
+   "speedMul": 1
+  },
+  "vo_silas_dlc1_m2_errand_l02": {
+   "char": "silas_boone",
+   "speaker": "silas",
+   "scene": "dlc1_m2_errand",
+   "text": "Priya is right about most things. An errand, kid. Dee's Diner, the counter. Don't open it.",
+   "file": "silas_boone/vo_silas_dlc1_m2_errand_l02",
+   "durationMs": 6235,
+   "source": "js/scenes_silas.js:112",
+   "hash": "af49477b263d9e8c",
+   "delivery": "warm, smooth",
+   "speedMul": 1
+  },
+  "vo_matthew_young_dlc1_m2_errand_l03": {
+   "char": "matthew_young",
+   "speaker": "matthew_young",
+   "scene": "dlc1_m2_errand",
+   "text": "Ten bucks? For walking two blocks?",
+   "file": "matthew_young/vo_matthew_young_dlc1_m2_errand_l03",
+   "durationMs": 1905,
+   "source": "js/scenes_silas.js:120",
+   "hash": "b3a03506859b9cdb",
+   "delivery": "delighted",
+   "speedMul": 1.07
+  },
+  "vo_silas_dlc1_m2_errand_l04": {
+   "char": "silas_boone",
+   "speaker": "silas",
+   "scene": "dlc1_m2_errand",
+   "text": "For not opening it.",
+   "file": "silas_boone/vo_silas_dlc1_m2_errand_l04",
+   "durationMs": 1706,
+   "source": "js/scenes_silas.js:128",
+   "hash": "e3496b0aa4e6e0e0",
+   "delivery": "soft, a little cold",
+   "speedMul": 0.94
+  },
+  "vo_vera_dlc1_m4_vera_after_l01": {
+   "char": "vera_lisk",
+   "speaker": "vera",
+   "scene": "dlc1_m4_vera_after",
+   "text": "Fine. Take the files. He's at the Star. Go and lose there.",
+   "file": "vera_lisk/vo_vera_dlc1_m4_vera_after_l01",
+   "durationMs": 3249,
+   "source": "js/scenes_silas.js:175",
+   "hash": "74e3deaed9ca40e4",
+   "delivery": "winded, still sharp",
+   "speedMul": 1
+  },
+  "vo_silas_dlc1_m4_vera_after_l02": {
+   "char": "silas_boone",
+   "speaker": "silas",
+   "scene": "dlc1_m4_vera_after",
+   "text": "Keep your files, Ms. Lisk. Keep making them. From tonight, you make them for me.",
+   "file": "silas_boone/vo_silas_dlc1_m4_vera_after_l02",
+   "durationMs": 5304,
+   "source": "js/scenes_silas.js:183",
+   "hash": "dfb5a7df7739ebe0",
+   "delivery": "warm, unhurried",
+   "speedMul": 1.07
+  },
+  "vo_silas_dlc1_m4_vera_after_l03": {
+   "char": "silas_boone",
+   "speaker": "silas",
+   "scene": "dlc1_m4_vera_after",
+   "text": "…My lantern. It went under the rail. Leave it. Lanterns are for being found.",
+   "file": "silas_boone/vo_silas_dlc1_m4_vera_after_l03",
+   "durationMs": 5367,
+   "source": "js/scenes_silas.js:191",
+   "hash": "14d7c7459e999d62",
+   "delivery": "quiet, almost amused",
+   "speedMul": 0.94
+  },
+  "vo_marcus_young_dlc1_m4_marcus_l01": {
+   "char": "marcus_hale_young",
+   "speaker": "marcus_young",
+   "scene": "dlc1_m4_marcus",
+   "text": "Evening. The lady with the green lamp's been up here three nights running. I log her. Don't tell her.",
+   "file": "marcus_hale_young/vo_marcus_young_dlc1_m4_marcus_l01",
+   "durationMs": 5127,
+   "source": "js/scenes_silas.js:236",
+   "hash": "65c94f754006d897",
+   "delivery": "dry, friendly",
+   "speedMul": 1
+  },
+  "vo_silas_dlc1_m4_marcus_l02": {
+   "char": "silas_boone",
+   "speaker": "silas",
+   "scene": "dlc1_m4_marcus",
+   "text": "Your secret is safe with me, Mr. …?",
+   "file": "silas_boone/vo_silas_dlc1_m4_marcus_l02",
+   "durationMs": 2338,
+   "source": "js/scenes_silas.js:244",
+   "hash": "b1472253e0aa872c",
+   "delivery": "courteous",
+   "speedMul": 1
+  },
+  "vo_marcus_young_dlc1_m4_marcus_l03": {
+   "char": "marcus_hale_young",
+   "speaker": "marcus_young",
+   "scene": "dlc1_m4_marcus",
+   "text": "Hale. Bridge tender.",
+   "file": "marcus_hale_young/vo_marcus_young_dlc1_m4_marcus_l03",
+   "durationMs": 1287,
+   "source": "js/scenes_silas.js:252",
+   "hash": "17461f859db236d4",
+   "delivery": "plain",
+   "speedMul": 1
+  },
+  "vo_marcus_young_dlc1_m4_marcus_l04": {
+   "char": "marcus_hale_young",
+   "speaker": "marcus_young",
+   "scene": "dlc1_m4_marcus",
+   "text": "Quiet now. Lamps are lit. Whatever went under the rail can stay there.",
+   "file": "marcus_hale_young/vo_marcus_young_dlc1_m4_marcus_l04",
+   "durationMs": 3996,
+   "source": "js/scenes_silas.js:260",
+   "hash": "25d766a0100cd934",
+   "delivery": "after the fight; calm, hiding something",
+   "speedMul": 1
+  },
+  "vo_matthew_young_dlc1_m6_quit_l01": {
+   "char": "matthew_young",
+   "speaker": "matthew_young",
+   "scene": "dlc1_m6_quit",
+   "text": "That's Wren's mom. You bought her loan?",
+   "file": "matthew_young/vo_matthew_young_dlc1_m6_quit_l01",
+   "durationMs": 2076,
+   "source": "js/scenes_silas.js:295",
+   "hash": "a3def62377246f99",
+   "delivery": "hurt, disbelieving",
+   "speedMul": 1
+  },
+  "vo_silas_dlc1_m6_quit_l02": {
+   "char": "silas_boone",
+   "speaker": "silas",
+   "scene": "dlc1_m6_quit",
+   "text": "I bought her time, kid. Someone kind had to.",
+   "file": "silas_boone/vo_silas_dlc1_m6_quit_l02",
+   "durationMs": 3237,
+   "source": "js/scenes_silas.js:303",
+   "hash": "d18d571c36c21ffe",
+   "delivery": "gentle, reasonable",
+   "speedMul": 1
+  },
+  "vo_matthew_young_dlc1_m6_quit_l03": {
+   "char": "matthew_young",
+   "speaker": "matthew_young",
+   "scene": "dlc1_m6_quit",
+   "text": "Here's your money. All of it. I don't run your envelopes anymore.",
+   "file": "matthew_young/vo_matthew_young_dlc1_m6_quit_l03",
+   "durationMs": 3630,
+   "source": "js/scenes_silas.js:311",
+   "hash": "29e562bdfa32527b",
+   "delivery": "shaky but firm",
+   "speedMul": 1
+  },
+  "vo_silas_dlc1_m6_quit_l04": {
+   "char": "silas_boone",
+   "speaker": "silas",
+   "scene": "dlc1_m6_quit",
+   "text": "Everyone runs my envelopes eventually. Do your homework, Matthew.",
+   "file": "silas_boone/vo_silas_dlc1_m6_quit_l04",
+   "durationMs": 4277,
+   "source": "js/scenes_silas.js:319",
+   "hash": "663f5e2fc05f65fa",
+   "delivery": "calm; the first crack of a grudge",
+   "speedMul": 1
+  },
+  "vo_foreman_dlc1_finale_l01": {
+   "char": "foreman_kessler",
+   "speaker": "foreman",
+   "scene": "dlc1_finale",
+   "text": "Pharmacy on Campbell says it won't pay.",
+   "file": "foreman_kessler/vo_foreman_dlc1_finale_l01",
+   "durationMs": 2932,
+   "source": "js/scenes_silas.js:378",
+   "hash": "ca17d4b2c073f05d",
+   "delivery": "gruff, reporting",
+   "speedMul": 1
+  },
+  "vo_silas_dlc1_finale_l02": {
+   "char": "silas_boone",
+   "speaker": "silas",
+   "scene": "dlc1_finale",
+   "text": "Then write it down, Mr. Kessler. Everyone pays eventually. We're a patient company.",
+   "file": "silas_boone/vo_silas_dlc1_finale_l02",
+   "durationMs": 5881,
+   "source": "js/scenes_silas.js:386",
+   "hash": "283d2ce3898651e7",
+   "delivery": "pleasant; a threat",
+   "speedMul": 1
+  },
+  "vo_silas_dlc1_finale_l03": {
+   "char": "silas_boone",
+   "speaker": "silas",
+   "scene": "dlc1_finale",
+   "text": "This was Lou's corner. I stood here and kept it safe. Now I keep all of them.",
+   "file": "silas_boone/vo_silas_dlc1_finale_l03",
+   "durationMs": 5314,
+   "source": "js/scenes_silas.js:394",
+   "hash": "eb2704a40122345f",
+   "delivery": "quiet, satisfied",
+   "speedMul": 0.94
+  },
+  "vo_marcus_main_marcus_intro_l01": {
+   "char": "marcus_hale",
+   "speaker": "marcus",
+   "scene": "main_marcus_intro",
+   "text": "Bridge closes to foot traffic at two. You've got time.",
+   "file": "marcus_hale/vo_marcus_main_marcus_intro_l01",
+   "durationMs": 3228,
+   "source": "js/marcus.js:14",
+   "hash": "03781b7982d08044",
+   "delivery": "steady, dry, kind",
+   "speedMul": 1
+  },
+  "vo_marcus_main_marcus_intro_l02": {
+   "char": "marcus_hale",
+   "speaker": "marcus",
+   "scene": "main_marcus_intro",
+   "text": "Crossed east Tuesday, nine-forty, with a bucket of zinnias. Didn't cross back. I write everybody down.",
+   "file": "marcus_hale/vo_marcus_main_marcus_intro_l02",
+   "durationMs": 6385,
+   "source": "js/marcus.js:15",
+   "hash": "74d13e959d5a8468",
+   "delivery": "steady, dry, kind",
+   "speedMul": 1
+  },
+  "vo_marcus_main_marcus_intro_l03": {
+   "char": "marcus_hale",
+   "speaker": "marcus",
+   "scene": "main_marcus_intro",
+   "text": "Used to see you cross this bridge with envelopes. Sixteen, I'd guess. You stopped. Good.",
+   "file": "marcus_hale/vo_marcus_main_marcus_intro_l03",
+   "durationMs": 5105,
+   "source": "js/marcus.js:16",
+   "hash": "89c9299362e39bc2",
+   "delivery": "steady, dry, kind",
+   "speedMul": 1
+  },
+  "vo_marcus_main_marcus_intro_l04": {
+   "char": "marcus_hale",
+   "speaker": "marcus",
+   "scene": "main_marcus_intro",
+   "text": "Lamps don't light themselves, and neither do people. Come back when you've got a minute. I could use a hand.",
+   "file": "marcus_hale/vo_marcus_main_marcus_intro_l04",
+   "durationMs": 6897,
+   "source": "js/marcus.js:17",
+   "hash": "16612767b6a740b6",
+   "delivery": "steady, dry, kind",
+   "speedMul": 1
+  },
+  "vo_marcus_main_marcus_idle_l01": {
+   "char": "marcus_hale",
+   "speaker": "marcus",
+   "scene": "main_marcus_idle",
+   "text": "Evening. Bridge is quiet. Find your friend first, son. The lamps will keep.",
+   "file": "marcus_hale/vo_marcus_main_marcus_idle_l01",
+   "durationMs": 4444,
+   "source": "js/marcus.js:20",
+   "hash": "df55dcbb33c3faa1",
+   "delivery": "quiet",
+   "speedMul": 0.94
+  },
+  "vo_marcus_main_marcus_idle_l02": {
+   "char": "marcus_hale",
+   "speaker": "marcus",
+   "scene": "main_marcus_idle",
+   "text": "Somebody's been signaling off this rail again. Green, this time of year.",
+   "file": "marcus_hale/vo_marcus_main_marcus_idle_l02",
+   "durationMs": 4188,
+   "source": "js/marcus.js:23",
+   "hash": "9445aecfaba4dac0",
+   "delivery": "quiet",
+   "speedMul": 0.94
+  },
+  "vo_marcus_main_marcus_idle_l03": {
+   "char": "marcus_hale",
+   "speaker": "marcus",
+   "scene": "main_marcus_idle",
+   "text": "Some things you lock up and leave in the dark, Matthew. Until it's time.",
+   "file": "marcus_hale/vo_marcus_main_marcus_idle_l03",
+   "durationMs": 4231,
+   "source": "js/marcus.js:24",
+   "hash": "426fdf4bbb7dfdca",
+   "delivery": "quiet",
+   "speedMul": 0.94
+  },
+  "vo_marcus_main_marcus_side_l01": {
+   "char": "marcus_hale",
+   "speaker": "marcus",
+   "scene": "main_marcus_side",
+   "text": "They want this bridge dark, so Boone trucks can cross without being counted. I've kept it lit near thirty years.",
+   "file": "marcus_hale/vo_marcus_main_marcus_side_l01",
+   "durationMs": 5959,
+   "source": "js/marcus.js:38",
+   "hash": "152e8f307b8756f8",
+   "delivery": "working; calm under pressure",
+   "speedMul": 1
+  },
+  "vo_marcus_main_marcus_side_l02": {
+   "char": "marcus_hale",
+   "speaker": "marcus",
+   "scene": "main_marcus_side",
+   "text": "Give me forty seconds. I'll mend the glass, you keep them off the rail.",
+   "file": "marcus_hale/vo_marcus_main_marcus_side_l02",
+   "durationMs": 3761,
+   "source": "js/marcus.js:39",
+   "hash": "5c6e490041bf7608",
+   "delivery": "working; calm under pressure",
+   "speedMul": 1
+  },
+  "vo_marcus_main_marcus_side_l03": {
+   "char": "marcus_hale",
+   "speaker": "marcus",
+   "scene": "main_marcus_side",
+   "text": "Forty seconds. Cracks hold better if you fill them. Keep them off me.",
+   "file": "marcus_hale/vo_marcus_main_marcus_side_l03",
+   "durationMs": 4657,
+   "source": "js/marcus.js:41",
+   "hash": "ad96abd69850c5c2",
+   "delivery": "working; calm under pressure",
+   "speedMul": 1
+  },
+  "vo_marcus_main_marcus_side_l04": {
+   "char": "marcus_hale",
+   "speaker": "marcus",
+   "scene": "main_marcus_side",
+   "text": "Storm took my night logbook off the booth. Pages all over town.",
+   "file": "marcus_hale/vo_marcus_main_marcus_side_l04",
+   "durationMs": 4103,
+   "source": "js/marcus.js:57",
+   "hash": "da0e8c8680b56a8b",
+   "delivery": "working; calm under pressure",
+   "speedMul": 1
+  },
+  "vo_marcus_main_marcus_side_l05": {
+   "char": "marcus_hale",
+   "speaker": "marcus",
+   "scene": "main_marcus_side",
+   "text": "Priya, Hank and Dee each picked one up. Would you bring them back? Mind the torn one.",
+   "file": "marcus_hale/vo_marcus_main_marcus_side_l05",
+   "durationMs": 5724,
+   "source": "js/marcus.js:58",
+   "hash": "956878c363009920",
+   "delivery": "working; calm under pressure",
+   "speedMul": 1
+  },
+  "vo_marcus_main_marcus_side_l06": {
+   "char": "marcus_hale",
+   "speaker": "marcus",
+   "scene": "main_marcus_side",
+   "text": "Priya, Hank and Dee. Then back to the bridge.",
+   "file": "marcus_hale/vo_marcus_main_marcus_side_l06",
+   "durationMs": 3015,
+   "source": "js/marcus.js:60",
+   "hash": "f1c76163801be958",
+   "delivery": "working; calm under pressure",
+   "speedMul": 1
+  },
+  "vo_marcus_main_marcus_side_l07": {
+   "char": "marcus_hale",
+   "speaker": "marcus",
+   "scene": "main_marcus_side",
+   "text": "Every page. Thank you, Matthew. A man's memory is only as good as his paper.",
+   "file": "marcus_hale/vo_marcus_main_marcus_side_l07",
+   "durationMs": 4231,
+   "source": "js/marcus.js:49",
+   "hash": "455fd21dd6da7594",
+   "delivery": "working; calm under pressure",
+   "speedMul": 1
+  },
+  "vo_marcus_main_marcus_side_l08": {
+   "char": "marcus_hale",
+   "speaker": "marcus",
+   "scene": "main_marcus_side",
+   "text": "Flood gauge is down the Blackriver steps. My brother kept a boathouse down there.",
+   "file": "marcus_hale/vo_marcus_main_marcus_side_l08",
+   "durationMs": 5105,
+   "source": "js/marcus.js:70",
+   "hash": "74dd1d3b29c2a4de",
+   "delivery": "working; calm under pressure",
+   "speedMul": 1
+  },
+  "vo_marcus_main_marcus_side_l09": {
+   "char": "marcus_hale",
+   "speaker": "marcus",
+   "scene": "main_marcus_side",
+   "text": "The Foreman's crew tails me whenever I go. Keep them busy while I read the water.",
+   "file": "marcus_hale/vo_marcus_main_marcus_side_l09",
+   "durationMs": 5532,
+   "source": "js/marcus.js:71",
+   "hash": "7227abd0c356d563",
+   "delivery": "working; calm under pressure",
+   "speedMul": 1
+  },
+  "vo_marcus_main_marcus_side_l10": {
+   "char": "marcus_hale",
+   "speaker": "marcus",
+   "scene": "main_marcus_side",
+   "text": "Thirty-five seconds. Water's coming up fast tonight.",
+   "file": "marcus_hale/vo_marcus_main_marcus_side_l10",
+   "durationMs": 3271,
+   "source": "js/marcus.js:73",
+   "hash": "58371124fc4b5a70",
+   "delivery": "working; calm under pressure",
+   "speedMul": 1
+  },
+  "vo_silas_main_silas_history_l01": {
+   "char": "silas_boone",
+   "speaker": "silas",
+   "scene": "main_silas_history",
+   "text": "Matthew Rose. Eleven years, and you still come when I call. You climbed a mountain in the rain to watch my city go dark.",
+   "file": "silas_boone/vo_silas_main_silas_history_l01",
+   "durationMs": 7025,
+   "source": "js/npcs.js:130",
+   "hash": "da197ed3ad98b606",
+   "delivery": "courteous; old grudge under it",
+   "speedMul": 1
+  },
+  "vo_silas_main_silas_history_l02": {
+   "char": "silas_boone",
+   "speaker": "silas",
+   "scene": "main_silas_history",
+   "text": "Every block that owed me, I collected. Wren owed a little more. Her mother's loan, kid. You carried the envelope.",
+   "file": "silas_boone/vo_silas_main_silas_history_l02",
+   "durationMs": 6791,
+   "source": "js/npcs.js:131",
+   "hash": "a3febdb5055953cb",
+   "delivery": "courteous; old grudge under it",
+   "speedMul": 1
+  },
+  "vo_silas_main_silas_history_l03": {
+   "char": "silas_boone",
+   "speaker": "silas",
+   "scene": "main_silas_history",
+   "text": "You quit on me once, at Dee's counter. I kept your ten dollars.",
+   "file": "silas_boone/vo_silas_main_silas_history_l03",
+   "durationMs": 3887,
+   "source": "js/npcs.js:136",
+   "hash": "fe395bc389b75128",
+   "delivery": "courteous; old grudge under it",
+   "speedMul": 1
+  },
+  "vo_silas_main_silas_history_l04": {
+   "char": "silas_boone",
+   "speaker": "silas",
+   "scene": "main_silas_history",
+   "text": "I taught you to walk two blocks without opening an envelope, kid. Look what you opened.",
+   "file": "silas_boone/vo_silas_main_silas_history_l04",
+   "durationMs": 5105,
+   "source": "js/prison.js:20",
+   "hash": "72fea616623b68a8",
+   "delivery": "courteous; old grudge under it",
+   "speedMul": 1
+  },
+  "vo_silas_main_silas_history_l05": {
+   "char": "silas_boone",
+   "speaker": "silas",
+   "scene": "main_silas_history",
+   "text": "Eleven years ago I worked second shift in this city. I watched good people get pushed around by men who simply wanted more. I decided I would never be the one pushed.",
+   "file": "silas_boone/vo_silas_main_silas_history_l05",
+   "durationMs": 10865,
+   "source": "js/prison.js:80",
+   "hash": "495ef03b53d9ea28",
+   "delivery": "courteous; old grudge under it",
+   "speedMul": 1
+  },
+  "vo_silas_main_silas_history_l06": {
+   "char": "silas_boone",
+   "speaker": "silas",
+   "scene": "main_silas_history",
+   "text": "You were the only one who ever handed the money back, kid.",
+   "file": "silas_boone/vo_silas_main_silas_history_l06",
+   "durationMs": 4225,
+   "source": "js/prison.js:82",
+   "hash": "37a5247dbcb6ea74",
+   "delivery": "courteous; old grudge under it",
+   "speedMul": 1
+  },
+  "vo_silas_main_silas_history_l07": {
+   "char": "silas_boone",
+   "speaker": "silas",
+   "scene": "main_silas_history",
+   "text": "Where did you... Lou Badger's newsstand. Jefferson Street. Spring of 2015. You were there, picking up your papers.",
+   "file": "silas_boone/vo_silas_main_silas_history_l07",
+   "durationMs": 7985,
+   "source": "js/prison.js:115",
+   "hash": "444b1b038cd250d1",
+   "delivery": "courteous; old grudge under it",
+   "speedMul": 1
+  },
+  "vo_silas_main_silas_history_l08": {
+   "char": "silas_boone",
+   "speaker": "silas",
+   "scene": "main_silas_history",
+   "text": "Lou said folks would pay me to keep them safe. That was the night I started counting. I kept that clipping in my coat for eleven years, Matthew. Somewhere along the way I forgot why.",
+   "file": "silas_boone/vo_silas_main_silas_history_l08",
+   "durationMs": 12039,
+   "source": "js/prison.js:117",
+   "hash": "40be28d24f058746",
+   "delivery": "courteous; old grudge under it",
+   "speedMul": 1
+  },
+  "vo_dee_main_dee_history_l01": {
+   "char": "dee",
+   "speaker": "dee",
+   "scene": "main_dee_history",
+   "text": "Matthew. Sit down, hon. Your old booth. Wren never came back from closing her cart last night.",
+   "file": "dee/vo_dee_main_dee_history_l01",
+   "durationMs": 6300,
+   "source": "js/npcs.js:10",
+   "hash": "3e06617f78c8f410",
+   "delivery": "worried, motherly",
+   "speedMul": 1
+  },
+  "vo_dee_main_dee_history_l02": {
+   "char": "dee",
+   "speaker": "dee",
+   "scene": "main_dee_history",
+   "text": "She owed money to Boone Holdings, same as half this street. Same man who used to tip you twenty for a coffee run.",
+   "file": "dee/vo_dee_main_dee_history_l02",
+   "durationMs": 7047,
+   "source": "js/npcs.js:12",
+   "hash": "7552f52a9d71a5b8",
+   "delivery": "worried, motherly",
+   "speedMul": 1
+  },
+  "vo_priya_main_priya_history_l01": {
+   "char": "priya",
+   "speaker": "priya",
+   "scene": "main_priya_history",
+   "text": "Matthew. You got tall. Dee texted. Close the door. Here's my list: eleven people gone since spring.",
+   "file": "priya/vo_priya_main_priya_history_l01",
+   "durationMs": 8471,
+   "source": "js/npcs.js:25",
+   "hash": "651fd5f3601b7e67",
+   "delivery": "brisk, regretful",
+   "speedMul": 1
+  },
+  "vo_priya_main_priya_history_l02": {
+   "char": "priya",
+   "speaker": "priya",
+   "scene": "main_priya_history",
+   "text": "I told you at sixteen what that man was. I should've told everyone.",
+   "file": "priya/vo_priya_main_priya_history_l02",
+   "durationMs": 5831,
+   "source": "js/npcs.js:26",
+   "hash": "4761eca3c461c43d",
+   "delivery": "brisk, regretful",
+   "speedMul": 1
+  },
+  "vo_hank_main_hank_history_l01": {
+   "char": "hank",
+   "speaker": "hank",
+   "scene": "main_hank_history",
+   "text": "Boone trucks roll through here every night, and two patrol cars wave them on. Eleven years they've been on his payroll, kid.",
+   "file": "hank/vo_hank_main_hank_history_l01",
+   "durationMs": 8604,
+   "source": "js/npcs.js:43",
+   "hash": "d3a7a64a5de3a332",
+   "delivery": "gruff",
+   "speedMul": 1
+  },
+  "vo_hank_main_hank_history_l02": {
+   "char": "hank",
+   "speaker": "hank",
+   "scene": "main_hank_history",
+   "text": "I said no to his envelope once, back in 2015. Cost me my nights.",
+   "file": "hank/vo_hank_main_hank_history_l02",
+   "durationMs": 5916,
+   "source": "js/npcs.js:44",
+   "hash": "ba2be856776c7f2c",
+   "delivery": "gruff",
+   "speedMul": 1
+  },
+  "vo_coach_main_coach_history_l01": {
+   "char": "coach",
+   "speaker": "coach",
+   "scene": "main_coach_history",
+   "text": "Matthew! Need a courier who can hustle. Medicine for the folks camped by the River Bridge. Better than the errands you used to run, kid.",
+   "file": "coach/vo_coach_main_coach_history_l01",
+   "durationMs": 8433,
+   "source": "js/npcs.js:89",
+   "hash": "5649930a7b05279b",
+   "delivery": "energetic",
+   "speedMul": 1
+  },
+  "vo_cam_main_cam_history_l01": {
+   "char": "cam",
+   "speaker": "cam",
+   "scene": "main_cam_history",
+   "text": "She's had my plate since my first year driving. 2015. Said she never forgets a car.",
+   "file": "cam/vo_cam_main_cam_history_l01",
+   "durationMs": 6232,
+   "source": "js/npcs.js:108",
+   "hash": "bae3a5d6359e20b9",
+   "delivery": "nervous",
+   "speedMul": 1.07
+  },
+  "vo_wren_main_wren_history_l01": {
+   "char": "wren",
+   "speaker": "wren",
+   "scene": "main_wren_history",
+   "text": "Matthew! Fresh zinnias, two for five. Boone's men came by again. Mom's loan never dies. Walk with me after close?",
+   "file": "wren/vo_wren_main_wren_history_l01",
+   "durationMs": 7601,
+   "source": "js/npcs.js:121",
+   "hash": "714331edc15dfe4a",
+   "delivery": "bright, tired underneath",
+   "speedMul": 1.01
+  },
+  "vo_mina_main_prison_seeds_l01": {
+   "char": "mina",
+   "speaker": "mina",
+   "scene": "main_prison_seeds",
+   "text": "I carried Vera's lamp the night she lost her first files. 2015. I was nineteen.",
+   "file": "mina/vo_mina_main_prison_seeds_l01",
+   "durationMs": 5361,
+   "source": "js/npcs.js:192",
+   "hash": "370e6b313be67019",
+   "delivery": "low",
+   "speedMul": 0.94
+  },
+  "vo_dora_main_prison_seeds_l01": {
+   "char": "dora",
+   "speaker": "dora",
+   "scene": "main_prison_seeds",
+   "text": "Shh. Library voice. I kept the books for Boone Holdings for eleven years. Signed on the day it opened. Now I keep these. Better company.",
+   "file": "dora/vo_dora_main_prison_seeds_l01",
+   "durationMs": 8156,
+   "source": "js/npcs.js:200",
+   "hash": "e641a39e368242d5",
+   "delivery": "precise, hushed",
+   "speedMul": 0.94
+  },
+  "vo_dora_main_prison_seeds_l02": {
+   "char": "dora",
+   "speaker": "dora",
+   "scene": "main_prison_seeds",
+   "text": "Someone donated a box of old Roanoke papers. Spring 2015. Check the return cart in the back. Silas keeps asking for one issue.",
+   "file": "dora/vo_dora_main_prison_seeds_l02",
+   "durationMs": 10737,
+   "source": "js/npcs.js:202",
+   "hash": "f23e529e95686551",
+   "delivery": "precise, hushed",
+   "speedMul": 0.94
+  },
+  "vo_dora_main_prison_seeds_l03": {
+   "char": "dora",
+   "speaker": "dora",
+   "scene": "main_prison_seeds",
+   "text": "The day the company opened, a boy was busing tables at Dee's. Silas watched him the whole time.",
+   "file": "dora/vo_dora_main_prison_seeds_l03",
+   "durationMs": 5980,
+   "source": "js/npcs.js:203",
+   "hash": "84385c1602d9d392",
+   "delivery": "precise, hushed",
+   "speedMul": 0.94
+  },
+  "vo_otto_main_prison_seeds_l01": {
+   "char": "otto",
+   "speaker": "otto",
+   "scene": "main_prison_seeds",
+   "text": "I drove the Foreman's truck till the night Boone bought it. Same truck. New boss.",
+   "file": "otto/vo_otto_main_prison_seeds_l01",
+   "durationMs": 5703,
+   "source": "js/npcs.js:214",
+   "hash": "9a66a3e39341e63a",
+   "delivery": "rough",
+   "speedMul": 1
+  },
+  "vo_bart_main_prison_seeds_l01": {
+   "char": "bart",
+   "speaker": "bart",
+   "scene": "main_prison_seeds",
+   "text": "I took Boone's first envelope in 2015. Second shift. Hank Pettigrew watched me take it.",
+   "file": "bart/vo_bart_main_prison_seeds_l01",
+   "durationMs": 6257,
+   "source": "js/npcs.js:225",
+   "hash": "2248b9fdb2065d33",
+   "delivery": "ashamed",
+   "speedMul": 1
+  },
+  "vo_priya_dlc1_m2_offer_l01": {
+   "char": "priya",
+   "speaker": "priya",
+   "scene": "dlc1_m2_offer",
+   "text": "Mr. Boone. We're closed. Eyes on the page, Matthew.",
+   "file": "priya/vo_priya_dlc1_m2_offer_l01",
+   "durationMs": 3460,
+   "source": "js/dlc_silas.js:125",
+   "hash": "fb9cfd03a3cc437b",
+   "delivery": "clipped",
+   "speedMul": 1
+  },
+  "vo_gus_dlc1_m3_yard_l01": {
+   "char": "gus",
+   "speaker": "gus",
+   "scene": "dlc1_m3_yard",
+   "text": "The crate's gone. And Officer Holley and his partner just drove off with an envelope. Yours?",
+   "file": "gus/vo_gus_dlc1_m3_yard_l01",
+   "durationMs": 5809,
+   "source": "js/dlc_silas.js:154",
+   "hash": "99e2941ed3f48ee2",
+   "delivery": "uneasy",
+   "speedMul": 1
+  },
+  "vo_gus_dlc1_m3_yard_l02": {
+   "char": "gus",
+   "speaker": "gus",
+   "scene": "dlc1_m3_yard",
+   "text": "Hank Pettigrew from the day crew wouldn't touch your envelope. Said so to your face.",
+   "file": "gus/vo_gus_dlc1_m3_yard_l02",
+   "durationMs": 4465,
+   "source": "js/dlc_silas.js:156",
+   "hash": "322e12c80174e9a6",
+   "delivery": "half-proud",
+   "speedMul": 1
+  },
+  "vo_silas_dlc1_m3_yard_l01": {
+   "char": "silas_boone",
+   "speaker": "silas",
+   "scene": "dlc1_m3_yard",
+   "text": "Then Hank can have the day shift. Nights are mine.",
+   "file": "silas_boone/vo_silas_dlc1_m3_yard_l01",
+   "durationMs": 3161,
+   "source": "js/dlc_silas.js:157",
+   "hash": "18ceb138626a34d0",
+   "delivery": "light, final",
+   "speedMul": 1
+  },
+  "vo_otto_dlc1_m5_star_l01": {
+   "char": "otto",
+   "speaker": "otto",
+   "scene": "dlc1_m5_star",
+   "text": "Truck's still running, Mr. Boone. Who do I drive for now?",
+   "file": "otto/vo_otto_dlc1_m5_star_l01",
+   "durationMs": 4572,
+   "source": "js/dlc_silas.js:192",
+   "hash": "e71507b3a0c8aab3",
+   "delivery": "wary",
+   "speedMul": 1
+  },
+  "vo_silas_dlc1_m5_star_l01": {
+   "char": "silas_boone",
+   "speaker": "silas",
+   "scene": "dlc1_m5_star",
+   "text": "The winning side, Mr. Pike. It pays better.",
+   "file": "silas_boone/vo_silas_dlc1_m5_star_l01",
+   "durationMs": 3355,
+   "source": "js/dlc_silas.js:193",
+   "hash": "a21260e154120afb",
+   "delivery": "smooth",
+   "speedMul": 1
+  },
+  "vo_dora_dlc1_m6_books_l01": {
+   "char": "dora",
+   "speaker": "dora",
+   "scene": "dlc1_m6_books",
+   "text": "Dora Keene. I kept the books for Roanoke Mutual until it folded. I hear you're hiring.",
+   "file": "dora/vo_dora_dlc1_m6_books_l01",
+   "durationMs": 4807,
+   "source": "js/dlc_silas.js:204",
+   "hash": "09844e07748eceee",
+   "delivery": "businesslike",
+   "speedMul": 1
+  },
+  "vo_silas_dlc1_m6_books_l01": {
+   "char": "silas_boone",
+   "speaker": "silas",
+   "scene": "dlc1_m6_books",
+   "text": "I'm founding, Ms. Keene. Hiring comes after. Bring a pen.",
+   "file": "silas_boone/vo_silas_dlc1_m6_books_l01",
+   "durationMs": 3883,
+   "source": "js/dlc_silas.js:205",
+   "hash": "c87e2fff67668d9d",
+   "delivery": "pleased",
+   "speedMul": 1
+  },
+  "vo_dee_dlc1_m6_counter_l01": {
+   "char": "dee",
+   "speaker": "dee",
+   "scene": "dlc1_m6_counter",
+   "text": "Evening! Table, or to-go? Matthew, table four.",
+   "file": "dee/vo_dee_dlc1_m6_counter_l01",
+   "durationMs": 3100,
+   "source": "js/dlc_silas.js:207",
+   "hash": "12a49a436635c2d8",
+   "delivery": "busy, cheerful",
+   "speedMul": 1
+  },
+  "vo_silas_dlc1_m6_counter_l01": {
+   "char": "silas_boone",
+   "speaker": "silas",
+   "scene": "dlc1_m6_counter",
+   "text": "Just a coffee. Busy street. Who runs the flower cart?",
+   "file": "silas_boone/vo_silas_dlc1_m6_counter_l01",
+   "durationMs": 3697,
+   "source": "js/dlc_silas.js:208",
+   "hash": "061eb8b4bc125487",
+   "delivery": "casual",
+   "speedMul": 1
+  },
+  "vo_dee_dlc1_m6_counter_l02": {
+   "char": "dee",
+   "speaker": "dee",
+   "scene": "dlc1_m6_counter",
+   "text": "Rosa Calloway. Her girl Wren helps after school. Rosa borrowed from the Foreman to keep that cart going. Poor thing owes everybody.",
+   "file": "dee/vo_dee_dlc1_m6_counter_l02",
+   "durationMs": 8220,
+   "source": "js/dlc_silas.js:209",
+   "hash": "4cd1b90e5834867d",
+   "delivery": "sympathetic",
+   "speedMul": 1
+  },
+  "vo_silas_dlc1_m6_ledger_l01": {
+   "char": "silas_boone",
+   "speaker": "silas",
+   "scene": "dlc1_m6_ledger",
+   "text": "Rosa Calloway. Lou Badger. Dee Morales. Let's see what a city does when it owes one man.",
+   "file": "silas_boone/vo_silas_dlc1_m6_ledger_l01",
+   "durationMs": 5515,
+   "source": "js/dlc_silas.js:214",
+   "hash": "9c2ccac0cac79cc3",
+   "delivery": "quiet relish",
+   "speedMul": 0.94
+  },
+  "vo_matthew_young_dlc1_idle_l01": {
+   "char": "matthew_young",
+   "speaker": "matthew_young",
+   "scene": "dlc1_idle",
+   "text": "Mr. Boone tips better than anyone. Dee says that's how you know to worry.",
+   "file": "matthew_young/vo_matthew_young_dlc1_idle_l01",
+   "durationMs": 4380,
+   "source": "js/dlc_silas.js:485",
+   "hash": "2ff27b91d5efb04d",
+   "delivery": "teen, wry",
+   "speedMul": 1
+  },
+  "vo_matthew_young_dlc1_idle_l02": {
+   "char": "matthew_young",
+   "speaker": "matthew_young",
+   "scene": "dlc1_idle",
+   "text": "I should get home. My mom worries.",
+   "file": "matthew_young/vo_matthew_young_dlc1_idle_l02",
+   "durationMs": 2076,
+   "source": "js/dlc_silas.js:485",
+   "hash": "683129d25fb6fc6a",
+   "delivery": "teen",
+   "speedMul": 1
+  },
+  "vo_rosa_dlc1_idle_l01": {
+   "char": "rosa",
+   "speaker": "rosa",
+   "scene": "dlc1_idle",
+   "text": "Zinnias, two for five. Wren picked them. Don't tell her I said they're the best ones.",
+   "file": "rosa/vo_rosa_dlc1_idle_l01",
+   "durationMs": 4721,
+   "source": "js/dlc_silas.js:486",
+   "hash": "f3f8e1b63cf71022",
+   "delivery": "warm",
+   "speedMul": 1
+  },
+  "vo_dora_dlc1_idle_l01": {
+   "char": "dora",
+   "speaker": "dora",
+   "scene": "dlc1_idle",
+   "text": "Debits on the left, Mr. Boone. People on the right.",
+   "file": "dora/vo_dora_dlc1_idle_l01",
+   "durationMs": 3420,
+   "source": "js/dlc_silas.js:487",
+   "hash": "45a21534d28f67ff",
+   "delivery": "dry",
+   "speedMul": 1
+  },
+  "vo_mina_dlc1_idle_l01": {
+   "char": "mina",
+   "speaker": "mina",
+   "scene": "dlc1_idle",
+   "text": "Ms. Lisk dropped her bundle when she fell. I can't find it anywhere.",
+   "file": "mina/vo_mina_dlc1_idle_l01",
+   "durationMs": 3903,
+   "source": "js/dlc_silas.js:488",
+   "hash": "c9a477755c02a0a8",
+   "delivery": "anxious",
+   "speedMul": 1
+  },
+  "vo_silas_dlc1_idle_l01": {
+   "char": "silas_boone",
+   "speaker": "silas",
+   "scene": "dlc1_idle",
+   "text": "Things go missing on bridges, Ms. Solis.",
+   "file": "silas_boone/vo_silas_dlc1_idle_l01",
+   "durationMs": 2516,
+   "source": "js/dlc_silas.js:488",
+   "hash": "0045478a94f5d4ad",
+   "delivery": "smooth",
+   "speedMul": 1
+  },
+  "vo_bart_dlc1_idle_l01": {
+   "char": "bart",
+   "speaker": "bart",
+   "scene": "dlc1_idle",
+   "text": "Didn't see a thing, Mr. Boone. Never do on second shift.",
+   "file": "bart/vo_bart_dlc1_idle_l01",
+   "durationMs": 3228,
+   "source": "js/dlc_silas.js:489",
+   "hash": "e48170b0ca16afe4",
+   "delivery": "nervous",
+   "speedMul": 1.07
+  },
+  "vo_otto_dlc1_idle_l01": {
+   "char": "otto",
+   "speaker": "otto",
+   "scene": "dlc1_idle",
+   "text": "Same truck. New boss. That's all I know.",
+   "file": "otto/vo_otto_dlc1_idle_l01",
+   "durationMs": 2417,
+   "source": "js/dlc_silas.js:490",
+   "hash": "e367a124c2c9f276",
+   "delivery": "flat",
+   "speedMul": 1
+  },
+  "vo_marcus_young_dlc1_idle_l01": {
+   "char": "marcus_hale_young",
+   "speaker": "marcus_young",
+   "scene": "dlc1_idle",
+   "text": "Mind the rail. It eats things.",
+   "file": "marcus_hale_young/vo_marcus_young_dlc1_idle_l01",
+   "durationMs": 1713,
+   "source": "js/dlc_silas.js:493",
+   "hash": "87a4cffecd1fd121",
+   "delivery": "dry",
+   "speedMul": 1
+  }
+ },
+ "slots": {
+  "marcus_hale_masked": {
+   "lines": [],
+   "cast": "marcus_hale.masked",
+   "note": "No masked lines exist (none marked in voice_lines.csv). Friendly, unmasked side-mission NPC in the main game; younger in the prequel. The masked variant (cast.masked) belongs to a FUTURE DLC, not the prequel. Unmasked Marcus (marcus_hale) and young Marcus (marcus_hale_young) lines are voiced; add masked lines when that DLC is written, then run regen.py."
+  }
+ },
+ "skipped": [
+  {
+   "id": "mission.side_diner.winLines",
+   "source": "js/missions.js:67",
+   "why": "toast narration (third person), not spoken"
+  },
+  {
+   "id": "mission.side_snatch.winLines",
+   "source": "js/missions.js:80",
+   "why": "toast narration (third person), not spoken"
+  },
+  {
+   "id": "mission.side_skate.winLines",
+   "source": "js/missions.js:93",
+   "why": "toast narration (third person), not spoken"
+  },
+  {
+   "id": "mission.side_potluck.winLines",
+   "source": "js/missions.js:111",
+   "why": "toast narration (third person), not spoken"
+  },
+  {
+   "id": "mission.side_spar.winLines",
+   "source": "js/missions.js:124",
+   "why": "toast narration (third person), not spoken"
+  },
+  {
+   "id": "mission.side_night.winLines",
+   "source": "js/missions.js:137",
+   "why": "toast narration (third person), not spoken"
+  },
+  {
+   "id": "mission.side_marcus_lamps.offer.spread",
+   "source": "js/marcus.js:37",
+   "why": "spread of NPC lines: reuses those clips (same speaker+text)"
+  },
+  {
+   "id": "mission.side_marcus_lamps.winLines",
+   "source": "js/marcus.js:42",
+   "why": "toast narration (third person), not spoken"
+  },
+  {
+   "id": "mission.side_marcus_pages.winLines",
+   "source": "js/marcus.js:61",
+   "why": "toast narration (third person), not spoken"
+  },
+  {
+   "id": "mission.side_marcus_water.winLines",
+   "source": "js/marcus.js:74",
+   "why": "toast narration (third person), not spoken"
+  },
+  {
+   "id": "scene.card",
+   "source": "js/scenes_silas.js:417",
+   "why": "title card, not spoken"
+  },
+  {
+   "id": "prison.choice.why.start_short",
+   "source": "js/prison.js:86",
+   "why": "UI menu label, not dialogue"
+  },
+  {
+   "id": "prison.choice.wren.start_short",
+   "source": "js/prison.js:95",
+   "why": "UI menu label, not dialogue"
+  },
+  {
+   "id": "prison.choice.vera.start_short",
+   "source": "js/prison.js:103",
+   "why": "UI menu label, not dialogue"
+  },
+  {
+   "id": "prison.choice.regret.start_short",
+   "source": "js/prison.js:111",
+   "why": "UI menu label, not dialogue"
+  },
+  {
+   "id": "prison.choice.paper.start_short",
+   "source": "js/prison.js:120",
+   "why": "UI menu label, not dialogue"
+  },
+  {
+   "id": "prison.keepsake",
+   "source": "js/prison.js:53",
+   "why": "item description shown in dialogue box, not spoken"
+  }
+ ],
+ "superseded": [
+  {
+   "old": "dlc.m1.s2.01",
+   "by": "vo_matthew_young_dlc1_m1_kid_l01",
+   "source": "js/dlc_silas.js:110"
+  },
+  {
+   "old": "dlc.m1.s2.02",
+   "by": "vo_silas_dlc1_m1_kid_l02",
+   "source": "js/dlc_silas.js:111"
+  },
+  {
+   "old": "dlc.m1.s2.03",
+   "by": "vo_matthew_young_dlc1_m1_kid_l03",
+   "source": "js/dlc_silas.js:112"
+  },
+  {
+   "old": "dlc.m1.s2.04",
+   "by": "vo_silas_dlc1_m1_kid_l04",
+   "source": "js/dlc_silas.js:113"
+  },
+  {
+   "old": "dlc.m2.s3.01",
+   "by": "vo_matthew_young_dlc1_m2_errand_l01",
+   "source": "js/dlc_silas.js:138"
+  },
+  {
+   "old": "dlc.m2.s3.02",
+   "by": "vo_silas_dlc1_m2_errand_l02",
+   "source": "js/dlc_silas.js:139"
+  },
+  {
+   "old": "dlc.m2.s3.03",
+   "by": "vo_matthew_young_dlc1_m2_errand_l03",
+   "source": "js/dlc_silas.js:140"
+  },
+  {
+   "old": "dlc.m2.s3.04",
+   "by": "vo_silas_dlc1_m2_errand_l04",
+   "source": "js/dlc_silas.js:141"
+  },
+  {
+   "old": "dlc.m4.s3.01",
+   "by": "vo_vera_dlc1_m4_vera_after_l01",
+   "source": "js/dlc_silas.js:174"
+  },
+  {
+   "old": "dlc.m4.s3.02",
+   "by": "vo_silas_dlc1_m4_vera_after_l02",
+   "source": "js/dlc_silas.js:175"
+  },
+  {
+   "old": "dlc.m4.s3.03",
+   "by": "vo_silas_dlc1_m4_vera_after_l03",
+   "source": "js/dlc_silas.js:176"
+  },
+  {
+   "old": "dlc.idle.marcus_young.01",
+   "by": "vo_marcus_young_dlc1_m4_marcus_l01",
+   "source": "js/dlc_silas.js:491"
+  },
+  {
+   "old": "dlc.idle.marcus_young.02",
+   "by": "vo_silas_dlc1_m4_marcus_l02",
+   "source": "js/dlc_silas.js:492"
+  },
+  {
+   "old": "dlc.idle.marcus_young.03",
+   "by": "vo_marcus_young_dlc1_m4_marcus_l03",
+   "source": "js/dlc_silas.js:492"
+  },
+  {
+   "old": "dlc.idle.marcus_young.04a",
+   "by": "vo_marcus_young_dlc1_m4_marcus_l04",
+   "source": "js/dlc_silas.js:493"
+  },
+  {
+   "old": "dlc.m6.s4.01",
+   "by": "vo_matthew_young_dlc1_m6_quit_l01",
+   "source": "js/dlc_silas.js:217"
+  },
+  {
+   "old": "dlc.m6.s4.02",
+   "by": "vo_silas_dlc1_m6_quit_l02",
+   "source": "js/dlc_silas.js:218"
+  },
+  {
+   "old": "dlc.m6.s4.03",
+   "by": "vo_matthew_young_dlc1_m6_quit_l03",
+   "source": "js/dlc_silas.js:219"
+  },
+  {
+   "old": "dlc.m6.s4.04",
+   "by": "vo_silas_dlc1_m6_quit_l04",
+   "source": "js/dlc_silas.js:220"
+  },
+  {
+   "old": "dlc.finale_lines.01",
+   "by": "vo_foreman_dlc1_finale_l01",
+   "source": "js/dlc_silas.js:229"
+  },
+  {
+   "old": "dlc.finale_lines.02",
+   "by": "vo_silas_dlc1_finale_l02",
+   "source": "js/dlc_silas.js:230"
+  },
+  {
+   "old": "dlc.finale_lines.03",
+   "by": "vo_silas_dlc1_finale_l03",
+   "source": "js/dlc_silas.js:231"
+  },
+  {
+   "old": "npc.marcus.lines.01",
+   "by": "vo_marcus_main_marcus_intro_l01",
+   "source": "js/marcus.js:14"
+  },
+  {
+   "old": "npc.marcus.lines.02",
+   "by": "vo_marcus_main_marcus_intro_l02",
+   "source": "js/marcus.js:15"
+  },
+  {
+   "old": "npc.marcus.lines.03",
+   "by": "vo_marcus_main_marcus_intro_l03",
+   "source": "js/marcus.js:16"
+  },
+  {
+   "old": "npc.marcus.lines.04",
+   "by": "vo_marcus_main_marcus_intro_l04",
+   "source": "js/marcus.js:17"
+  },
+  {
+   "old": "npc.marcus.waitLines.01",
+   "by": "vo_marcus_main_marcus_idle_l01",
+   "source": "js/marcus.js:20"
+  },
+  {
+   "old": "npc.marcus.doneLines.01",
+   "by": "vo_marcus_main_marcus_idle_l02",
+   "source": "js/marcus.js:23"
+  },
+  {
+   "old": "npc.marcus.doneLines.02",
+   "by": "vo_marcus_main_marcus_idle_l03",
+   "source": "js/marcus.js:24"
+  },
+  {
+   "old": "mission.side_marcus_lamps.offer.02",
+   "by": "vo_marcus_main_marcus_side_l01",
+   "source": "js/marcus.js:38"
+  },
+  {
+   "old": "mission.side_marcus_lamps.offer.03",
+   "by": "vo_marcus_main_marcus_side_l02",
+   "source": "js/marcus.js:39"
+  },
+  {
+   "old": "mission.side_marcus_lamps.active.01",
+   "by": "vo_marcus_main_marcus_side_l03",
+   "source": "js/marcus.js:41"
+  },
+  {
+   "old": "mission.side_marcus_pages.offer.01",
+   "by": "vo_marcus_main_marcus_side_l04",
+   "source": "js/marcus.js:57"
+  },
+  {
+   "old": "mission.side_marcus_pages.offer.02",
+   "by": "vo_marcus_main_marcus_side_l05",
+   "source": "js/marcus.js:58"
+  },
+  {
+   "old": "mission.side_marcus_pages.active.01",
+   "by": "vo_marcus_main_marcus_side_l06",
+   "source": "js/marcus.js:60"
+  },
+  {
+   "old": "mission.side_marcus_pages.doneLine",
+   "by": "vo_marcus_main_marcus_side_l07",
+   "source": "js/marcus.js:49"
+  },
+  {
+   "old": "mission.side_marcus_water.offer.01",
+   "by": "vo_marcus_main_marcus_side_l08",
+   "source": "js/marcus.js:70"
+  },
+  {
+   "old": "mission.side_marcus_water.offer.02",
+   "by": "vo_marcus_main_marcus_side_l09",
+   "source": "js/marcus.js:71"
+  },
+  {
+   "old": "mission.side_marcus_water.active.01",
+   "by": "vo_marcus_main_marcus_side_l10",
+   "source": "js/marcus.js:73"
+  },
+  {
+   "old": "npc.silas.lines.01",
+   "by": "vo_silas_main_silas_history_l01",
+   "source": "js/npcs.js:130"
+  },
+  {
+   "old": "npc.silas.lines.02",
+   "by": "vo_silas_main_silas_history_l02",
+   "source": "js/npcs.js:131"
+  },
+  {
+   "old": "npc.silas.waitLines.01",
+   "by": "vo_silas_main_silas_history_l03",
+   "source": "js/npcs.js:136"
+  },
+  {
+   "old": "prison.arrest.07",
+   "by": "vo_silas_main_silas_history_l04",
+   "source": "js/prison.js:20"
+  },
+  {
+   "old": "prison.silas.why.02",
+   "by": "vo_silas_main_silas_history_l05",
+   "source": "js/prison.js:80"
+  },
+  {
+   "old": "prison.silas.why.04",
+   "by": "vo_silas_main_silas_history_l06",
+   "source": "js/prison.js:82"
+  },
+  {
+   "old": "prison.silas.paper.01",
+   "by": "vo_silas_main_silas_history_l07",
+   "source": "js/prison.js:115"
+  },
+  {
+   "old": "prison.silas.paper.03",
+   "by": "vo_silas_main_silas_history_l08",
+   "source": "js/prison.js:117"
+  },
+  {
+   "old": "npc.dee.lines.01",
+   "by": "vo_dee_main_dee_history_l01",
+   "source": "js/npcs.js:10"
+  },
+  {
+   "old": "npc.dee.lines.03",
+   "by": "vo_dee_main_dee_history_l02",
+   "source": "js/npcs.js:12"
+  },
+  {
+   "old": "npc.priya.lines.01",
+   "by": "vo_priya_main_priya_history_l01",
+   "source": "js/npcs.js:25"
+  },
+  {
+   "old": "npc.priya.lines.02",
+   "by": "vo_priya_main_priya_history_l02",
+   "source": "js/npcs.js:26"
+  },
+  {
+   "old": "npc.hank.lines.01",
+   "by": "vo_hank_main_hank_history_l01",
+   "source": "js/npcs.js:43"
+  },
+  {
+   "old": "npc.hank.lines.02",
+   "by": "vo_hank_main_hank_history_l02",
+   "source": "js/npcs.js:44"
+  },
+  {
+   "old": "npc.coach.lines.01",
+   "by": "vo_coach_main_coach_history_l01",
+   "source": "js/npcs.js:89"
+  },
+  {
+   "old": "npc.cam.lines.03",
+   "by": "vo_cam_main_cam_history_l01",
+   "source": "js/npcs.js:108"
+  },
+  {
+   "old": "npc.wren.lines.01",
+   "by": "vo_wren_main_wren_history_l01",
+   "source": "js/npcs.js:121"
+  },
+  {
+   "old": "npc.mina.lines.04",
+   "by": "vo_mina_main_prison_seeds_l01",
+   "source": "js/npcs.js:192"
+  },
+  {
+   "old": "npc.dora.lines.01",
+   "by": "vo_dora_main_prison_seeds_l01",
+   "source": "js/npcs.js:200"
+  },
+  {
+   "old": "npc.dora.lines.03",
+   "by": "vo_dora_main_prison_seeds_l02",
+   "source": "js/npcs.js:202"
+  },
+  {
+   "old": "npc.dora.lines.04",
+   "by": "vo_dora_main_prison_seeds_l03",
+   "source": "js/npcs.js:203"
+  },
+  {
+   "old": "npc.otto.lines.04",
+   "by": "vo_otto_main_prison_seeds_l01",
+   "source": "js/npcs.js:214"
+  },
+  {
+   "old": "npc.bart.lines.04",
+   "by": "vo_bart_main_prison_seeds_l01",
+   "source": "js/npcs.js:225"
+  },
+  {
+   "old": "dlc.m2.s0.01",
+   "by": "vo_priya_dlc1_m2_offer_l01",
+   "source": "js/dlc_silas.js:125"
+  },
+  {
+   "old": "dlc.m3.s2.01",
+   "by": "vo_gus_dlc1_m3_yard_l01",
+   "source": "js/dlc_silas.js:154"
+  },
+  {
+   "old": "dlc.m3.s2.03",
+   "by": "vo_gus_dlc1_m3_yard_l02",
+   "source": "js/dlc_silas.js:156"
+  },
+  {
+   "old": "dlc.m3.s2.04",
+   "by": "vo_silas_dlc1_m3_yard_l01",
+   "source": "js/dlc_silas.js:157"
+  },
+  {
+   "old": "dlc.m5.s3.03",
+   "by": "vo_otto_dlc1_m5_star_l01",
+   "source": "js/dlc_silas.js:192"
+  },
+  {
+   "old": "dlc.m5.s3.04",
+   "by": "vo_silas_dlc1_m5_star_l01",
+   "source": "js/dlc_silas.js:193"
+  },
+  {
+   "old": "dlc.m6.s1.01",
+   "by": "vo_dora_dlc1_m6_books_l01",
+   "source": "js/dlc_silas.js:204"
+  },
+  {
+   "old": "dlc.m6.s1.02",
+   "by": "vo_silas_dlc1_m6_books_l01",
+   "source": "js/dlc_silas.js:205"
+  },
+  {
+   "old": "dlc.m6.s2.01",
+   "by": "vo_dee_dlc1_m6_counter_l01",
+   "source": "js/dlc_silas.js:207"
+  },
+  {
+   "old": "dlc.m6.s2.02",
+   "by": "vo_silas_dlc1_m6_counter_l01",
+   "source": "js/dlc_silas.js:208"
+  },
+  {
+   "old": "dlc.m6.s2.03",
+   "by": "vo_dee_dlc1_m6_counter_l02",
+   "source": "js/dlc_silas.js:209"
+  },
+  {
+   "old": "dlc.m6.s3.03",
+   "by": "vo_silas_dlc1_m6_ledger_l01",
+   "source": "js/dlc_silas.js:214"
+  },
+  {
+   "old": "dlc.idle.matthew_young.01a",
+   "by": "vo_matthew_young_dlc1_idle_l01",
+   "source": "js/dlc_silas.js:485"
+  },
+  {
+   "old": "dlc.idle.matthew_young.01b",
+   "by": "vo_matthew_young_dlc1_idle_l02",
+   "source": "js/dlc_silas.js:485"
+  },
+  {
+   "old": "dlc.idle.rosa.01",
+   "by": "vo_rosa_dlc1_idle_l01",
+   "source": "js/dlc_silas.js:486"
+  },
+  {
+   "old": "dlc.idle.dora.01",
+   "by": "vo_dora_dlc1_idle_l01",
+   "source": "js/dlc_silas.js:487"
+  },
+  {
+   "old": "dlc.idle.mina.01",
+   "by": "vo_mina_dlc1_idle_l01",
+   "source": "js/dlc_silas.js:488"
+  },
+  {
+   "old": "dlc.idle.mina.02",
+   "by": "vo_silas_dlc1_idle_l01",
+   "source": "js/dlc_silas.js:488"
+  },
+  {
+   "old": "dlc.idle.bart.01",
+   "by": "vo_bart_dlc1_idle_l01",
+   "source": "js/dlc_silas.js:489"
+  },
+  {
+   "old": "dlc.idle.otto.01",
+   "by": "vo_otto_dlc1_idle_l01",
+   "source": "js/dlc_silas.js:490"
+  },
+  {
+   "old": "dlc.idle.marcus_young.04b",
+   "by": "vo_marcus_young_dlc1_idle_l01",
+   "source": "js/dlc_silas.js:493"
+  }
+ ]
+}

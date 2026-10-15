@@ -17,6 +17,7 @@ export const ARREST_LINES = [
   { id: 'silas', name: 'Silas Boone', text: "No need for the bracelets, officer. I always walk out on my own two feet." },
   { id: 'okafor', name: 'Officer Ben Okafor', text: "Not tonight you don't." },
   { id: 'reyes', name: 'Sgt. Dana Reyes', text: "Hank Pettigrew's notes. Priya's list. Cam's pins. Tessa's video. Every name you buried, Boone. This city kept the receipts." },
+  { id: 'silas', name: 'Silas Boone', text: "I taught you to walk two blocks without opening an envelope, kid. Look what you opened." }, // JACK-STORY
   { id: 'silas', name: 'Silas Boone', text: "Matthew. Enjoy the light while it lasts." },
   { id: 'reyes', name: 'Sgt. Dana Reyes', text: "Take him down the mountain, Ben. And somebody get Miss Calloway a blanket." }
 ];
@@ -50,8 +51,8 @@ export function prisonSpot(stateBag, areaId, x) {
 }
 
 export const KEEPSAKE = {
-  name: 'The Evening Paper (last spring)',
-  text: "A Roanoke evening paper from last spring, folded soft. Page 3: 'SECOND-SHIFT STRANGER RUNS OFF RENT COLLECTORS AT JEFFERSON NEWSSTAND.' A man in a pressed navy coat stands beside newsstand owner Lou Badger. The caption calls him a good neighbor. His name is Silas Boone.",
+  name: 'The Evening Paper (spring 2015)', // JACK-STORY
+  text: "A yellowed Roanoke evening paper from spring 2015, eleven years old and folded soft. Page 3: 'SECOND-SHIFT STRANGER RUNS OFF RENT COLLECTORS AT JEFFERSON NEWSSTAND.' A man in a pressed navy coat stands beside newsstand owner Lou Badger. The caption calls him a good neighbor. His name is Silas Boone. At the edge of the photo, a teenage boy is picking up his papers: you.",
   score: 1000
 };
 
@@ -76,8 +77,9 @@ export const SILAS_TREE = {
   why: {
     lines: [
       "Why. Everyone asks why, as if the answer would fit on a postcard.",
-      "Last spring I worked second shift in this city. I watched good people get pushed around by men who simply wanted more. I decided I would never be the one pushed.",
-      "So I learned the rules: everyone owes someone. I just made sure, sooner or later, they all owed me."
+      "Eleven years ago I worked second shift in this city. I watched good people get pushed around by men who simply wanted more. I decided I would never be the one pushed.",
+      "So I learned the rules: everyone owes someone. I just made sure, sooner or later, they all owed me.",
+      "You were the only one who ever handed the money back, kid." // JACK-STORY
     ],
     choices: [
       { label: 'Wren never owed you anything real.', to: 'wren' },
@@ -110,9 +112,9 @@ export const SILAS_TREE = {
   },
   paper: {
     lines: [
-      "Where did you... Lou Badger's newsstand. Jefferson Street. Last spring.",
+      "Where did you... Lou Badger's newsstand. Jefferson Street. Spring of 2015. You were there, picking up your papers.",
       "The Foreman's boys came to collect 'rent' for Lou's corner. I had a polite word with them. The paper called me a good neighbor.",
-      "Lou said folks would pay me to keep them safe. That was the night I started counting. I kept that clipping in my coat all year, Matthew. Somewhere along the way I forgot why.",
+      "Lou said folks would pay me to keep them safe. That was the night I started counting. I kept that clipping in my coat for eleven years, Matthew. Somewhere along the way I forgot why.",
       "Keep it. Some stories are better told by someone else."
     ],
     choices: [{ label: 'Ask something else.', to: 'start_short' }, { label: 'Goodbye, Silas.', to: 'bye' }]

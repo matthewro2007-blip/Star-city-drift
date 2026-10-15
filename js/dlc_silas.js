@@ -4,17 +4,18 @@
  * Story, cast, missions, collectibles, its OWN save slot (localStorage 'starCityDrift_dlc_silas'; the
  * main v4 save is never read-modified here), night grade and HUD portrait. main.js owns the loop and
  * calls into the controller from createDlc(api). Canon (1.6.0 "The Star Goes Dark"): /workspace/scd2/dlc/CANON_NOTES.md:
- *  - Last spring: how Silas went from protecting one corner to owning the Foreman's crew, Vera Lisk's
- *    files and the bought patrol cars, and founded Boone Holdings with the Foreman's debt ledger.
- *  - Silas never properly meets Matthew (Matthew only walks into frame, far off, in the closing scene).
- *  - Silas ends alive, free and standing downtown at x 700, golden hour, Cam at x 520.
- *  - Wren Calloway's debt is in the ledger: the seed of the main campaign. The "S.B. — 2nd shift" lantern stays by the bridge.
- *  - Dee doesn't know his name; Priya and Hank's world knows him as "Mr. Boone". He never openly commands
- *    the alley crews. He fights with his overhead / lunge / jump-slam art (silas_boss).
+ *  JACK-STORY rework (DRAFT, pending Matthew's approval; /workspace/samples/scenes/prequel_rework.md):
+ *  - Spring 2015, eleven years before the main game: Silas Boone's villain origin. He goes from protecting one
+ *    corner to owning the Foreman's crew, Vera Lisk's people and the bought patrol cars, and founds Boone Holdings.
+ *  - Teenage Matthew Rose (~16) is a recurring NPC (m1, m2, m6), never playable. Silas learns his name in m1.
+ *  - Rosa Calloway (Wren's mother) holds the cart loan; Wren inherits it later. No lead-in to the main game:
+ *    the closing scene is a villain beat, then an "Eleven years later." card.
+ *  - He fights with his overhead / lunge / jump-slam art (silas_boss).
  */
 import { registerTalkVoices } from './audio.js';
 import * as Sprites from './sprites.js';
 import { onSilasMove } from './silas_moves.js';
+import { registerSilasScenes } from './scenes_silas.js'; // JACK-STORY: 2015 cutscenes (scene player data)
 
 export const DLC_SAVE_KEY = 'starCityDrift_dlc_silas';
 const DLC_SAVE_V = 1;
@@ -44,11 +45,19 @@ registerTalkVoices({
   gus: { wave: 'triangle', f0: 175, rate: 0.085, len: 0.07, steps: [1, 1.1, 0.95], vowels: ['a', 'u', 'o'], fs: 1.0, greet: ['a', 'u'] },
   pip: { wave: 'square', f0: 410, rate: 0.045, len: 0.035, steps: [1, 1.25, 1.5, 1.33], vowels: ['i', 'ae', 'e'], fs: 1.3, greet: ['ae', 'i'] },
   vera: { wave: 'triangle', f0: 245, rate: 0.08, len: 0.06, steps: [1, 0.9, 1.12], vowels: ['e', 'a', 'o'], fs: 1.1, grit: 0.1, greet: ['e', 'a'] },
-  foreman: { wave: 'sawtooth', f0: 88, rate: 0.12, len: 0.1, steps: [1, 0.9, 1.05], vowels: ['o', 'uh', 'a'], fs: 0.82, grit: 0.45, greet: ['uh', 'o'], greetFall: true }
+  foreman: { wave: 'sawtooth', f0: 88, rate: 0.12, len: 0.1, steps: [1, 0.9, 1.05], vowels: ['o', 'uh', 'a'], fs: 0.82, grit: 0.45, greet: ['uh', 'o'], greetFall: true },
+  // JACK-STORY: 2015 rework cast (procedural voices)
+  matthew_young: { wave: 'square', f0: 300, rate: 0.06, len: 0.05, steps: [1, 1.12, 1.26], vowels: ['a', 'e', 'o'], fs: 1.1, greet: ['e', 'a'] },
+  rosa: { wave: 'sine', f0: 290, rate: 0.08, len: 0.06, steps: [1, 1.12, 1.33], vowels: ['o', 'a', 'e'], fs: 1.12, greet: ['o', 'a'] },
+  dora: { wave: 'triangle', f0: 300, rate: 0.08, len: 0.06, steps: [1, 1.12, 1.26], vowels: ['e', 'a', 'o'], fs: 1.12, greet: ['e', 'a'] },
+  mina: { wave: 'sine', f0: 380, rate: 0.065, len: 0.05, steps: [1, 1.12, 1.33], vowels: ['i', 'a', 'e'], fs: 1.22, greet: ['a', 'i'] },
+  bart: { wave: 'sawtooth', f0: 135, rate: 0.095, len: 0.075, steps: [1, 0.89, 1.0], vowels: ['o', 'a', 'uh'], fs: 0.9, grit: 0.15, greet: ['o', 'a'] },
+  otto: { wave: 'sawtooth', f0: 100, rate: 0.11, len: 0.09, steps: [1, 0.94, 1.06], vowels: ['uh', 'o', 'a'], fs: 0.82, grit: 0.4, greet: ['uh', 'a'] },
+  marcus_young: { wave: 'triangle', f0: 140, rate: 0.1, len: 0.08, steps: [1, 0.94, 1.06], vowels: ['o', 'uh', 'a'], fs: 0.9, greet: ['o', 'uh'] }
 });
 const SILAS = { id: 'silas', name: 'Silas Boone' };
 const S = (t) => ({ id: 'silas', name: 'Silas Boone', text: t });
-const L = (who, t) => ({ id: who.id, name: who.name, text: t });
+const L = (who, t) => ({ id: who.id, name: who.name, text: t, ...(who.key ? { key: who.key } : {}) }); // key: art / portrait key (2015 selves)
 
 const CAST = {
   lou: { id: 'lou', name: 'Lou Badger', role: 'Night newsstand', color: '#7a5a3a' },
@@ -57,9 +66,21 @@ const CAST = {
   gus: { id: 'gus', name: 'Gus Pell', role: 'Night dock clerk', color: '#b7950b' },
   pip: { id: 'pip', name: 'Pip', role: 'Courier kid', color: '#27ae60' },
   dee: { id: 'dee', name: 'Dee Morales', role: "Dee's Diner", color: '#d35400' },
-  cam: { id: 'cam', name: 'Cam Ortiz', role: 'Rideshare driver', color: '#f1c40f' }
+  cam: { id: 'cam', name: 'Cam Ortiz', role: 'Rideshare driver', color: '#f1c40f' },
+  // JACK-STORY: 2015 rework. TODO(Joe): NPC sheets (matthew_young = grey hoodie, cutscene/NPC only; rosa_calloway;
+  // dora_young; mina_young; bart_young; otto_young; marcus_young). Until then they draw as procedural bodies in `color`.
+  matthew_young: { id: 'matthew_young', name: 'Matthew Rose', role: 'Diner busboy, 16', color: '#8f959c' },
+  rosa: { id: 'rosa', name: 'Rosa Calloway', role: 'City Market flower cart', color: '#16a085' },
+  dora: { id: 'dora', key: 'dora_young', name: 'Dora Keene', role: 'Bookkeeper', color: '#7d6b91' }, // key: 2015 art (Joe, 1.9.0-cutscene)
+  mina: { id: 'mina', key: 'mina_young', name: 'Mina Solis', role: "Vera's courier", color: '#5dade2' },
+  bart: { id: 'bart', key: 'bart_young', name: 'Officer Bart Holley', role: 'Rail Yards patrol', color: '#34495e' },
+  otto: { id: 'otto', key: 'otto_young', name: 'Otto Pike', role: "The Foreman's truck", color: '#a04000' },
+  marcus_young: { id: 'marcus_young', name: 'Marcus Hale', role: 'River Bridge tender', color: '#8e2f2f' }
 };
-const NPC_X = { lou: ['downtown', 430], priya: ['pages', 380], ivy: ['pages', 760], gus: ['rails', 320], pip: ['diner', 980], dee: ['diner', 320], cam: ['downtown', 520] };
+const NPC_X = { lou: ['downtown', 430], priya: ['pages', 380], ivy: ['pages', 760], gus: ['rails', 320], pip: ['diner', 980], dee: ['diner', 320], cam: ['downtown', 520],
+  // JACK-STORY (teen Matthew moves per mission; see npcs())
+  matthew_young: ['downtown', 330], rosa: ['diner', 860], dora: ['diner', 640], mina: ['river', 400], bart: ['rails', 900], otto: ['star', 640], marcus_young: ['river', 820] };
+const MATTHEW_AT = { m1: ['downtown', 330], m2: ['pages', 520], m6: ['diner', 470] }; // JACK-STORY
 
 // ------------------------------------------------------------------ collectibles (prequel only; ids are dlc_*)
 const COLLECTIBLES = [
@@ -77,7 +98,7 @@ const COLLECTIBLES = [
  */
 export const MISSIONS = [
   { id: 'm1', title: 'Polite Introductions', area: 'downtown', night: true,
-    sub: 'Jefferson Street, after midnight, last spring. Somebody new is collecting "rent".',
+    sub: 'Jefferson Street, after midnight, spring 2015. Somebody new is collecting "rent".',
     steps: [
       { type: 'talk', npc: 'lou', obj: 'Talk to Lou at the night newsstand', lines: [
         L(CAST.lou, "Evening, Mr. Boone. Paper's late. So's everybody else tonight."),
@@ -85,6 +106,11 @@ export const MISSIONS = [
         L(CAST.lou, "Calls themselves the Foreman's boys. Want 'rent' for the corner, or the stand catches fire. Here they come now."),
         S("Then let's have a polite word with them. Watch the technique, Lou.")] },
       { type: 'tutorial', obj: 'Show the Foreman\'s boys all six moves', count: 3 },
+      { type: 'talk', npc: 'matthew_young', obj: 'Check on the kid by the newsstand', lines: [ // JACK-STORY
+        L(CAST.matthew_young, "That was— you just— they ran."),
+        S("They walked briskly. Name?"),
+        L(CAST.matthew_young, "Matthew. Matthew Rose."),
+        S("Go home, Matthew Rose. Nights belong to men like them. For now.")] },
       { type: 'talk', npc: 'lou', obj: 'Check on Lou', lines: [
         L(CAST.lou, "Didn't know a coat that nice could move like that. Thank you, Mr. Boone. Truly."),
         S("Everyone has something in them, Lou. The trick is knowing what."),
@@ -96,7 +122,7 @@ export const MISSIONS = [
     sub: 'Valley Pages. Priya Shah owes nobody, and Silas finds that interesting.',
     steps: [
       { type: 'talk', npc: 'priya', obj: 'Offer Priya your help at Valley Pages', lines: [
-        L(CAST.priya, "Mr. Boone. We're closed."),
+        L(CAST.priya, "Mr. Boone. We're closed. Eyes on the page, Matthew."),
         S("Then I'm early for tomorrow. The Foreman's boys will come here next. I could keep them away. For a small monthly fee."),
         L(CAST.priya, "That's the same thing they offer. You just say it nicer."),
         S("Of course. I only ever offer."),
@@ -107,7 +133,13 @@ export const MISSIONS = [
         S("And here it is, back in your hands. Mostly."),
         L(CAST.ivy, "Wait… the page with all the names is missing."),
         S("Pages go missing in this town. His freight comes through the Rail Yards… second shift, wasn't it?"),
-        L(CAST.ivy, "How did you — never mind. I didn't say anything.")] }
+        L(CAST.ivy, "How did you — never mind. I didn't say anything.")] },
+      { type: 'talk', npc: 'matthew_young', obj: 'The kid from Jefferson Street is outside Valley Pages', lines: [ // JACK-STORY
+        L(CAST.matthew_young, "Is Priya right? About you?"),
+        S("Priya is right about most things. An errand, kid. Dee's Diner, the counter. Don't open it."),
+        L(CAST.matthew_young, "Ten bucks? For walking two blocks?"),
+        S("For not opening it.")],
+        reward: 'Matthew runs his first envelope for Mr. Boone.' }
     ] },
   { id: 'm3', title: 'Second Shift', area: 'rails', night: true,
     sub: 'The Rail Yards after hours. Not Hank\'s old crew. Somebody with a foreman\'s whistle, and two patrol cars.',
@@ -119,8 +151,10 @@ export const MISSIONS = [
         S("I hear it. Stay behind the switch house, Gus.")] },
       { type: 'survive', obj: 'Hold the yard', sec: 40, color: '#d35400', toast: 'Dock hands! Hold the yard!' },
       { type: 'talk', npc: 'gus', obj: 'Talk to Gus', lines: [
-        L(CAST.gus, "The crate's gone. And those two officers just drove off with an envelope. Yours?"),
+        L(CAST.gus, "The crate's gone. And Officer Holley and his partner just drove off with an envelope. Yours?"), // JACK-STORY: Bart Holley
         S("A badge is just a man with a price, Gus. Now they look the other way for me."),
+        L(CAST.gus, "Hank Pettigrew from the day crew wouldn't touch your envelope. Said so to your face."),
+        S("Then Hank can have the day shift. Nights are mine."),
         L(CAST.gus, "Every night-shift lantern gets initials. What do I paint on yours?"),
         S("S.B. Second shift."),
         L(CAST.gus, "'S.B. — 2nd shift.' There you go. Mind the bridge, somebody's been signaling from it.")],
@@ -155,29 +189,49 @@ export const MISSIONS = [
       { type: 'scene', lines: [
         { id: 'foreman', name: 'Mort "The Foreman" Kessler', text: 'Who do you even work for?' },
         S("As of tonight, Mr. Kessler, you work for me. Keep the whistle. Keep the matches, too."),
+        L(CAST.otto, "Truck's still running, Mr. Boone. Who do I drive for now?"),
+        S("The winning side, Mr. Pike. It pays better."),
         S("Look at it. The whole city looks up at that Star. One day they'll look up and think of me.")],
         reward: 'The crews answer to Silas now. Dawn breaks over the Star.' }
     ] },
-  { id: 'm6', title: 'Curious Coincidence', area: 'diner', night: false,
+  { id: 'm6', title: 'Boone Holdings', area: 'diner', night: false, // JACK-STORY: rewritten (was "Curious Coincidence")
     sub: 'The next evening. Golden hour on Jefferson Street. Boone Holdings opens for business.',
     steps: [
       { type: 'talk', npc: 'pip', obj: "Meet Pip behind Dee's Diner", lines: [
         L(CAST.pip, "Package for you, Mr. Boone. The papers from the city office. No questions, like you said."),
         S("Questions are my department, Pip. Off you go.")] },
+      { type: 'talk', npc: 'dora', obj: 'Meet your bookkeeper', lines: [ // JACK-STORY
+        L(CAST.dora, "Dora Keene. I kept the books for Roanoke Mutual until it folded. I hear you're hiring."),
+        S("I'm founding, Ms. Keene. Hiring comes after. Bring a pen.")] },
       { type: 'talk', npc: 'dee', obj: 'Have a word at the counter', lines: [
-        L(CAST.dee, "Evening! Table, or to-go?"),
-        S("Just a coffee. Busy street. Who's the girl with the flower cart?"),
-        L(CAST.dee, "Wren? Sweet kid. Borrowed from the Foreman to keep that cart going. Poor thing owes everybody."),
+        L(CAST.dee, "Evening! Table, or to-go? Matthew, table four."),
+        S("Just a coffee. Busy street. Who runs the flower cart?"),
+        L(CAST.dee, "Rosa Calloway. Her girl Wren helps after school. Rosa borrowed from the Foreman to keep that cart going. Poor thing owes everybody."),
         S("Then someone should buy up her debts. Someone kind.")] },
       { type: 'use', area: 'diner', x: 560, label: 'Sign the company papers', obj: 'Sign the papers at the counter', lines: [
         S("Boone Holdings. Lending, property, protection. Very fair terms."),
         S("The Foreman's ledger goes in the folder… and every name in it now owes me."),
-        S("Wren Calloway. Lou Badger. Dee Morales. Let's see what a city does when it owes one man.")],
+        S("Rosa Calloway. Lou Badger. Dee Morales. Let's see what a city does when it owes one man.")],
         reward: "Boone Holdings is open. The Foreman's ledger is Silas's now." },
-      { type: 'goto', area: 'downtown', x: 700, obj: 'Take your spot on Jefferson Street' },
+      { type: 'talk', npc: 'matthew_young', obj: 'Matthew saw the folder', lines: [ // JACK-STORY
+        L(CAST.matthew_young, "That's Wren's mom. You bought her loan?"),
+        S("I bought her time, kid. Someone kind had to."),
+        L(CAST.matthew_young, "Here's your money. All of it. I don't run your envelopes anymore."),
+        S("Everyone runs my envelopes eventually. Do your homework, Matthew.")],
+        reward: 'Matthew Rose quits. Silas keeps the ten dollars.' },
+      { type: 'goto', area: 'downtown', x: 700, obj: "Take your spot at Lou's corner" },
       { type: 'finale' }
     ] }
 ];
+
+// JACK-STORY: 2015 rework closing beat (no Matthew walk-in, no lead-in to the main game)
+const FINALE_LINES = [
+  { id: 'foreman', name: 'Mort "The Foreman" Kessler', text: 'Pharmacy on Campbell says it won\'t pay.' },
+  S('Then write it down, Mr. Kessler. Everyone pays eventually. We\'re a patient company.'),
+  S('This was Lou\'s corner. I stood here and kept it safe. Now I keep all of them.')
+];
+const ENDING_TEXT = 'The Foreman\'s crew answers to a new boss. Vera Lisk works for Boone now; her old files went over the bridge rail that night, and nobody has seen them since. Two patrol cars look the other way. A lantern stenciled "S.B. — 2nd shift" waits under the River Bridge rail.\n\n' +
+  'Silas Boone straightens his gloves. The man who once stood up to the Foreman has become something worse.\n\nEleven years later.';
 
 const TUTORIAL = [
   ['jab', "Gentleman's Jab", 'punch ×3'],
@@ -355,9 +409,10 @@ export function createDlc(api) {
     get state() { return st; },
     missions: MISSIONS,
     collectibles: COLLECTIBLES,
-    newRun(difficulty) { st = fresh(difficulty); listen(); beginStep(); persist(); return st; },
+    newRun(difficulty) { registerSilasScenes(); st = fresh(difficulty); listen(); beginStep(); persist(); return st; },
     continueRun() {
       const d = dlcLoad(); if (!d || !d.run) return null;
+      registerSilasScenes(); // JACK-STORY
       const run = healRun(d.run);
       st = { ...fresh(run.difficulty), ...run }; listen(); beginStep();
       const s = stepDef(); if (s && s.type === 'tutorial') for (const k of run.tutorialDone) if (TUTORIAL.some((t) => t[0] === k)) done.add(k);
@@ -401,9 +456,18 @@ export function createDlc(api) {
           : id === 'gus' ? mid === 'm3' || mid === 'm4'
           : id === 'pip' ? mid === 'm6' && st.si === 0
           : id === 'dee' ? mid === 'm6'
-          : id === 'cam' ? mid === 'm6' || mid === 'end' : false;
+          : id === 'cam' ? mid === 'm6' || mid === 'end'
+          // JACK-STORY: 2015 rework cast
+          : id === 'matthew_young' ? false // placed below from MATTHEW_AT
+          : id === 'dora' ? mid === 'm6'
+          : id === 'rosa' ? mid === 'm6'
+          : id === 'bart' ? mid === 'm3'
+          : id === 'otto' ? mid === 'm5'
+          : id === 'mina' || id === 'marcus_young' ? mid === 'm4' : false;
         if (here) list.push({ ...CAST[id], area, x, dlc: true });
       }
+      const ma = MATTHEW_AT[m ? m.id : 'end']; // JACK-STORY: teen Matthew (NPC only)
+      if (ma && ma[0] === areaId && !(m.id === 'm6' && st.si > m.steps.findIndex((x) => x.npc === 'matthew_young'))) list.push({ ...CAST.matthew_young, area: ma[0], x: ma[1], dlc: true });
       return list;
     },
     linesFor(npc) {
@@ -416,10 +480,23 @@ export function createDlc(api) {
         gus: [L(CAST.gus, 'Lantern suits you.')],
         pip: [L(CAST.pip, 'Can\'t talk, got deliveries.')],
         dee: [L(CAST.dee, 'Kitchen closes at ten, hon.')],
-        cam: [L(CAST.cam, 'App keeps sending me to the wrong pin. Need a ride, sir?'), S('Not tonight. I like it right here.')]
+        cam: [L(CAST.cam, 'App keeps sending me to the wrong pin. Need a ride, sir?'), S('Not tonight. I like it right here.')],
+        // JACK-STORY: 2015 rework idles
+        matthew_young: [L(CAST.matthew_young, st && st.mi >= 2 ? "Mr. Boone tips better than anyone. Dee says that's how you know to worry." : 'I should get home. My mom worries.')],
+        rosa: [L(CAST.rosa, "Zinnias, two for five. Wren picked them. Don't tell her I said they're the best ones.")],
+        dora: [L(CAST.dora, 'Debits on the left, Mr. Boone. People on the right.')],
+        mina: [L(CAST.mina, "Ms. Lisk dropped her bundle when she fell. I can't find it anywhere."), S('Things go missing on bridges, Ms. Solis.')],
+        bart: [L(CAST.bart, "Didn't see a thing, Mr. Boone. Never do on second shift.")],
+        otto: [L(CAST.otto, "Same truck. New boss. That's all I know.")],
+        marcus_young: [L(CAST.marcus_young, "Evening. The lady with the green lamp's been up here three nights running. I log her. Don't tell her."),
+          S('Your secret is safe with me, Mr. …?'), L(CAST.marcus_young, 'Hale. Bridge tender.'),
+          L(CAST.marcus_young, st && st.si >= 3 ? 'Quiet now. Lamps are lit. Whatever went under the rail can stay there.' : 'Mind the rail. It eats things.')]
       };
       return idle[npc.id] || [L(npc, '…')];
     },
+    /** JACK-STORY: the 2015 closing villain beat (main.js finale hook) and the ending card text. */
+    finaleLines() { return FINALE_LINES; },
+    endingText() { return ENDING_TEXT; },
     /** After a dialogue with an NPC closes. */
     onTalkDone(npc) {
       if (!st) return;
@@ -492,7 +569,7 @@ export function createDlc(api) {
     /** Minimap destination. */
     dest() {
       const m = mission(), s = stepDef(); if (!m || !s) return { areaId: 'downtown', x: 700 };
-      if (s.type === 'talk') { const [a, x] = NPC_X[s.npc]; return { areaId: a, x }; }
+      if (s.type === 'talk') { const [a, x] = (s.npc === 'matthew_young' && MATTHEW_AT[m.id]) || NPC_X[s.npc]; return { areaId: a, x }; } // 1.9.0 fix: teen Matthew moves per mission (MATTHEW_AT), so the marker / warp follow him
       if (s.area) return { areaId: s.area, x: s.x || null };
       return { areaId: m.area, x: null };
     },

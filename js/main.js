@@ -23,8 +23,12 @@ import { getMatthewSprite, getNpcSprite, getEnemySprite, drawSprite, drawCollect
 import { createTitle } from './title.js';
 import { createOutfitsMenu } from './outfits_menu.js';
 import { getHeroFrame, drawHero, clearHeroCache, HERO_DRAW_H, HERO_SHADOW_W } from './hero.js';
-import { createFollowCamera } from './camera.js';
+import { createFollowCamera, cycleZoom, getZoomLevel, setZoomLevel } from './camera.js'; // 1.9.0: zoom levels (window.sorZoom)
+import { setVoiceHook, setSceneHooks, registerScene, playScene, skipScene, isScenePlaying, currentScene, updateScene, sceneActors, sceneLens, sceneFx, listScenes, getScene } from './scene_player.js'; // 1.9.0 scene player
+import { setTrafficPaused } from './world.js'; // 1.9.0: ambient sedan holds during scenes
 import { createPresenter, cheapPresentation } from './present.js';
+import { talkLevel } from './audio.js'; // 1.9.0: mouth flaps follow the talk blips
+import * as VO from './vo.js'; // VO-HOOK: voice-over (on demand)
 import { setMusic, sting, setPaused, setDialogueDuck, sfx, voice, talk, stopTalk, adjustFocusedSlider, mountAudioSettings, audioDebug, setRainAmbience } from './audio.js';
 // >>> DLC: Silas prequel (1.5.0) — shared Silas moveset, Silas's Suit art glue, prequel content + own save slot
 import { silasWorld, coldStare, silasAnimMap, silasCooldowns } from './silas_moves.js';
@@ -32,6 +36,8 @@ import { artOutfitFor, suitAnimMap, suitNeedsTint, tintedFrame, tintedCanvas, su
 import { createDlc, dlcHasRun, dlcCompleted, silasPortraitSrc, silasPlayerKey, drawNightGrade, MISSIONS as DLC_MISSIONS } from './dlc_silas.js';
 import { SILAS_MOVES, silasMoveRows } from './kits.js';
 import { GAME_VERSION } from './version.js';
+import { updateBarks, drawBarks, drawBarksScreen } from './barks.js'; // barks (Bob)
+import './zoom_ui.js'; // zoom UI (Bob): pause + touch zoom buttons; talks to the camera only via sor:zoom events
 // <<< DLC: Silas prequel
 
 /** true: player + title Matthew use the high-res procedural hero (hero.js); false: Joe's matthew_sheet.png. */
@@ -72,6 +78,15 @@ ctx.setTransform(SS, 0, 0, SS, 0, 0);
 ctx.imageSmoothingEnabled = false;
 const presenter = createPresenter(canvas, scene, W, H);
 const followCam = createFollowCamera();
+let lensZ = 1, CRISP = false; // 1.9.0 3x fix: lens render scale + crisp sprites at 3x
+VO.voReady(); // VO-HOOK: fetch manifest.json once (~130 KB, no clips)
+// VO-HOOK: music dips while VO plays (barks too). gameState is read lazily (declared below).
+VO.setDuckHandler((on) => setDialogueDuck(on || gameState.mode === 'dialogue'));
+/** 1.9.0: mouth open? A playing voice clip flaps at ~9 Hz; otherwise the procedural talk blips' loudness. */
+function mouthOpen() {
+  if (VO.isPlaying()) return Math.floor(performance.now() / 110) % 2 === 0;
+  return talkLevel() > 0.12;
+}
 
 const stateBag = {};
 const missions = createMissionSystem(stateBag);
@@ -401,11 +416,12 @@ function startGame(fromSave) {
 
 function maybeSpawnEncounter(force) {
   if (gameState.mode !== 'play') return;
+  if (isScenePlaying()) return; // 1.9.0: no fights start mid-scene
   const area = AREAS[gameState.areaId];
   if (!area.spawnCombat) return;
   if (hostilesAlive()) return;
   if (isDlc()) { // DLC: light night-time ambushes on the way; mission areas run their own fights
-    if (gameState.cutscene || !dlc.ambientFights() || gameState.areaId === dlc.missionArea() || gameState.areaId === 'star') return;
+    if (gameState.cutscene || isScenePlaying() || !dlc.ambientFights() || gameState.areaId === dlc.missionArea() || gameState.areaId === 'star') return;
     if (Math.random() > area.combatChance * 0.6) return;
     dlcApi.spawnCrew(2 + Math.min(2, gameState.wave) + getDifficulty().wave, { color: Math.random() < 0.5 ? '#7f8c8d' : '#c0392b', wave: Math.min(3, gameState.wave) });
     gameState.wave++;
@@ -492,7 +508,7 @@ function linesFor(npc) {
   if (sm && sm.offer) {
     if (stateBag.side && stateBag.side.id === sm.id) {
       return sm.kind === 'fetch' && fetchDone()
-        ? ["You found everything! Matthew, this potluck is going to be perfect."]
+        ? [sm.doneLine || "You found everything! Matthew, this potluck is going to be perfect."] // JACK-STORY: per-mission fetch return line
         : sm.active;
     }
     if (stateBag.side) return ["Looks like you've got your hands full. Finish that first, then come see me."];
@@ -508,6 +524,10 @@ function linesFor(npc) {
 function startDialogue(npc) {
   if (npc.id === 'silas_prison') { startSilasTalk(npc); return; } // 1.7.0: branching talk in cell C-14
   let lines = linesFor(npc);
+  if (isDlc() && !isScenePlaying()) { // 1.9.0: a prequel talk that is a registered scene (js/scenes_silas.js) plays as it
+    const sid = sceneForLines(lines);
+    if (sid && playScene(sid, { onDone: () => { dlc.onTalkDone(npc); updateHUD(); persist(); } })) return;
+  }
   gameState.fetchGive = null;
   const fm = sideMission();
   if (fm && fm.kind === 'fetch') {
@@ -518,7 +538,9 @@ function startDialogue(npc) {
   gameState.mode = 'dialogue';
   gameState.dialogueNpc = npc;
   gameState.dialogue = lines;
+  VO.preload(lines.map((l) => (l && typeof l === 'object' && l.voice) || VO.lineIdFor(typeof l === 'object' ? l.text : l, typeof l === 'object' ? l.id : npc.id)).filter(Boolean)); // VO-HOOK
   gameState.dialogueIdx = 0;
+  if (typeof SpriteLib.preloadPortraits === 'function') SpriteLib.preloadPortraits(lines.map((l) => [(l && l.key) || (l && l.id) || npc.key || npc.id, (l && l.expr) || 'neutral'])); // 1.9.0
   $('dialogue').classList.remove('hidden');
   showLine(npc, lines[0], true);
   $('interact-prompt').classList.add('hidden');
@@ -533,25 +555,48 @@ function showLine(npc, line, greet) {
   const castRole = obj && ARREST_COPS[line.id] ? ARREST_COPS[line.id].role : obj && line.id === npc.id ? npc.role : obj && line.id === 'silas' ? (isDlc() ? 'Second shift' : 'Boone Holdings') : null;
   $('dialogue-name').textContent = obj ? (castRole ? `${line.name} — ${castRole}` : line.name) : `${npc.name} — ${npc.role}`;
   $('dialogue-text').textContent = text;
-  talk(id, text, greet); // audio: greeting + this character's talk blips
+  // VO-HOOK: the line's clip (scene lines carry `voice`; others are looked up by text + speaker), else the old talk blips
+  const voId = (obj && line.voice) || VO.lineIdFor(text, id);
+  if (voId) { stopTalk(); VO.play(voId); } else { VO.stop(); talk(id, text, greet); }
+  dlgPortrait.line = obj ? line : { id: npc.id, key: npc.key }; dlgPortrait.src = ''; syncDialoguePortrait(); // 1.9.0
 }
+// >>> 1.9.0 dialogue portrait: sprites.js getPortrait(key, expr, open); the open-mouth frame follows talkLevel()
+const dlgPortrait = { line: null, src: '', el: null };
+function syncDialoguePortrait() {
+  const card = document.querySelector('#dialogue .dialogue-card');
+  if (!card || typeof SpriteLib.getPortrait !== 'function') return;
+  if (!dlgPortrait.el) {
+    const im = document.createElement('img'); im.id = 'dialogue-portrait'; im.alt = ''; im.className = 'hidden';
+    card.insertBefore(im, card.firstChild); dlgPortrait.el = im;
+  }
+  const l = gameState.mode === 'dialogue' ? dlgPortrait.line : null;
+  const key = l && (l.key || (gameState.dialogueNpc && gameState.dialogueNpc.id === l.id && gameState.dialogueNpc.key) || l.id);
+  const p = key ? SpriteLib.getPortrait(key, l.expr || 'neutral', mouthOpen(), 224) : null;
+  const src = p && p.img ? p.img.src : '';
+  if (src !== dlgPortrait.src) { dlgPortrait.src = src; if (src) dlgPortrait.el.src = src; }
+  dlgPortrait.el.classList.toggle('hidden', !src);
+  card.classList.toggle('has-portrait', !!src);
+}
+// <<< 1.9.0 dialogue portrait
 function updateDialogueButton() {
   const btn = $('dialogue-next');
   if (!btn || !gameState.dialogue) return;
   const lastLine = gameState.dialogueIdx >= gameState.dialogue.length - 1;
   const dev = getPromptDevice();
   const key = dev === 'touch' ? '' : dev === 'keyboard' ? ' (E)' : ` (${getPromptLabel('confirm')})`;
-  btn.textContent = (lastLine ? 'Close' : 'Continue') + key;
+  btn.textContent = (lastLine && !(gameState.sceneMoreLines && isScenePlaying()) ? 'Close' : 'Continue') + key; // 1.9.0
 }
 
 function advanceDialogue() {
   if (gameState.mode !== 'dialogue' || !gameState.dialogue) return;
   if (gameState.choice) { pickChoice(gameState.choice.focus); return; } // 1.7.0: Silas's cell talk
+  if (gameState.choiceVo) { VO.stop(); return; } // 1.9.0: skip Matthew's choice clip → Silas answers
   gameState.dialogueIdx++;
   if (gameState.dialogueIdx >= gameState.dialogue.length) {
     finishDialogue();
   } else {
     if (gameState.dialogueNpc) showLine(gameState.dialogueNpc, gameState.dialogue[gameState.dialogueIdx], false);
+    if (gameState.dialogueNpc && gameState.dialogueNpc.onLine) gameState.dialogueNpc.onLine(gameState.dialogueIdx); // 1.9.0 scene voice clips
     updateDialogueButton();
   }
 }
@@ -560,6 +605,7 @@ function finishDialogue() {
   if (gameState.mode !== 'dialogue') return;
   const npc = gameState.dialogueNpc;
   stopTalk();
+  VO.stop(); // VO-HOOK
   $('dialogue').classList.add('hidden');
   $('dialogue-next').classList.remove('pad-focus');
   gameState.mode = 'play';
@@ -575,8 +621,9 @@ function finishDialogue() {
     const it = gameState.fetchGive;
     gameState.fetchGive = null;
     if (!stateBag.fetchItems.includes(it.id)) stateBag.fetchItems.push(it.id);
-    const n = stateBag.fetchItems.length, total = stateBag.missions.side_potluck.items.length;
-    toast(`Got ${it.name} (${n}/${total})${n >= total ? ' — back to June!' : ''}`);
+    const fmi = sideMission() || stateBag.missions.side_potluck; // JACK-STORY: any fetch mission (Marcus's pages)
+    const n = stateBag.fetchItems.length, total = fmi.items.length;
+    toast(`Got ${it.name} (${n}/${total})${n >= total ? ` — back to ${fmi.returnTo || 'June'}!` : ''}`);
     updateHUD();
     persist();
     return;
@@ -640,7 +687,7 @@ function onProgress() {
 function hostilesAlive() { return gameState.enemies.some((e) => e.alive && !e.noLock); }
 function sideMission() { return stateBag.side ? stateBag.missions[stateBag.side.id] || null : null; }
 function fetchDone() {
-  const m = stateBag.missions.side_potluck;
+  const m = sideMission()?.kind === 'fetch' ? sideMission() : stateBag.missions.side_potluck; // JACK-STORY
   return m.items.every((it) => stateBag.fetchItems.includes(it.id));
 }
 const npcDef = (id) => NPC_DEFS.find((n) => n.id === id);
@@ -658,7 +705,7 @@ function sideObjective(m) {
     case 'escort': return `Hank ${Math.max(0, Math.ceil(s.hp))}/100 · ${s.ambush ? 'Fight off the ambush!' : 'Walk him to the River Bridge'}`;
     case 'fetch': {
       const left = m.items.filter((it) => !stateBag.fetchItems.includes(it.id));
-      return left.length ? `Fetch: ${left.map((it) => `${it.name} (${npcDef(it.npc).name.split(' ')[0]})`).join(', ')}` : 'Bring everything back to June';
+      return left.length ? `Fetch: ${left.map((it) => `${it.name} (${npcDef(it.npc).name.split(' ')[0]})`).join(', ')}` : `Bring everything back to ${m.returnTo || 'June'}`; // JACK-STORY
     }
     default: return m.desc;
   }
@@ -1123,7 +1170,7 @@ function handleMenu(inp) {
   const cur = btns.indexOf(document.activeElement);
   if (cur >= 0 && cur !== menuIdx) menuFocus(cur, el);
   // audio sliders: left / right change the volume instead of moving focus
-  if ((inp.navLeft || inp.navRight) && adjustFocusedSlider(inp.navRight ? 1 : -1)) { inp.navLeft = inp.navRight = false; }
+  if ((inp.navLeft || inp.navRight) && adjustFocusedSlider(inp.navRight ? 1 : -1)) { inp.navLeft = inp.navRight = false; VO.refreshVolume(); } // VO-HOOK
   const inGameMenu = el.id !== 'title-screen'; // title.js plays its own menu blips
   if (inp.navUp || inp.navLeft) { menuFocus(menuIdx - 1, el); if (inGameMenu) sfx('ui_move'); }
   else if (inp.navDown || inp.navRight) { menuFocus(menuIdx + 1, el); if (inGameMenu) sfx('ui_move'); }
@@ -1151,6 +1198,7 @@ function closeConfirm() {
 
 function pauseGame() {
   if (gameState.mode !== 'play') return;
+  if (isScenePlaying()) return; // 1.9.0: no pausing mid-scene (Esc / Start skip it instead)
   gameState.mode = 'pause';
   $('pause-screen').classList.remove('hidden');
   $('btn-save').textContent = 'Save Game';
@@ -1288,6 +1336,7 @@ const dlcApi = {
   },
   /** Scene / extra lines (no NPC to stand next to). */
   say(lines, onDone) {
+    if (!isScenePlaying()) { const sid = sceneForLines(lines); if (sid && playScene(sid, { onDone: () => { if (onDone) onDone(); } })) return; } // 1.9.0: a prequel talk with a scene plays as it
     const first = lines[0] || {};
     startDialogueRaw({ id: first.id || 'silas', name: first.name || 'Silas Boone', role: '', onDone }, lines);
   },
@@ -1304,7 +1353,9 @@ function startDialogueRaw(npc, lines) {
   gameState.mode = 'dialogue';
   gameState.dialogueNpc = npc;
   gameState.dialogue = lines;
+  VO.preload(lines.map((l) => (l && typeof l === 'object' && l.voice) || VO.lineIdFor(typeof l === 'object' ? l.text : l, typeof l === 'object' ? l.id : npc.id)).filter(Boolean)); // VO-HOOK
   gameState.dialogueIdx = 0;
+  if (typeof SpriteLib.preloadPortraits === 'function') SpriteLib.preloadPortraits(lines.map((l) => [(l && l.key) || (l && l.id) || npc.key || npc.id, (l && l.expr) || 'neutral'])); // 1.9.0
   $('dialogue').classList.remove('hidden');
   showLine(npc, lines[0], true);
   $('interact-prompt').classList.add('hidden');
@@ -1455,10 +1506,13 @@ function drawDlcSilas(cam) {
 function drawFinaleActor(a, cam) {
   const x = a.x - cam;
   if (a.kind === 'cast') { // 1.7.0 arrest: cast anim actors (cops, Silas, Wren)
-    const st = a.walking ? 'walk' : (gameState.mode === 'dialogue' && gameState.dialogue && gameState.dialogue[gameState.dialogueIdx]?.id === a.id ? 'talk' : 'idle_personality');
-    const f = animFrame(a.key, st, performance.now() + (a.phase || 0)) || animFrame(a.key, 'idle_personality', performance.now());
-    if (f) drawAnimFrame(f, x, a.y, a.facing, castScaleNpc(a.key));
-    else drawCastSprite(getNpcSprite(a.key, '#2c3e50', performance.now() / 1000), x, a.y, a.facing, castScaleNpc(a.key));
+    const st = a.walking ? 'walk' : (gameState.mode === 'dialogue' && gameState.dialogue && gameState.dialogue[gameState.dialogueIdx]?.id === a.id ? 'talk' : (a.state || 'idle_personality')); // 1.9.0: scene anim state
+    const sc = a.scale || castScaleNpc(a.key);
+    const speaking = gameState.mode === 'dialogue' && gameState.dialogue && gameState.dialogue[gameState.dialogueIdx]?.id === a.id;
+    const pf = a.pose && !a.walking && SpriteLib.getCutscenePose ? SpriteLib.getCutscenePose(a.key, a.pose, speaking && mouthOpen()) : null; // 1.9.0 scene pose
+    const f = pf || animFrame(a.key, st, performance.now() + (a.phase || 0)) || animFrame(a.key, 'idle_personality', performance.now()) || animFrame(a.key, 'idle', performance.now()); // Foreman: anim frame when no still
+    if (f) drawAnimFrame(f, x, a.y, a.facing, sc);
+    else drawCastSprite(getNpcSprite(a.key, '#2c3e50', performance.now() / 1000), x, a.y, a.facing, sc);
     return;
   }
   if (a.kind === 'matthew') {
@@ -1478,110 +1532,104 @@ function startFinale(onDone) {
   const band = getDepthBand();
   player.x = 700; player.y = clampDepth(Math.round((band.min + band.max) / 2)); player.facing = -1; player.vx = 0;
   player.attackType = null; player.attackTimer = 0; player.hitbox = null;
-  // 1.5.1: frame the shot from the camera Silas will have (facing left at x 700), so Matthew walks INTO view
-  followCam.cut();
-  const fr = syncCamera(0), L = fr.x, V = fr.viewW;
-  gameState.finaleActors = [
-    { kind: 'matthew', area: 'downtown', x: L - 40, y: band.max - 6, facing: 1, walking: true, t: 0, stopAt: Math.round(L + V * 0.2) },
-    { kind: 'thug', color: 'grey', area: 'downtown', x: Math.round(L + V - 70), y: band.min + 10, facing: -1, t: 0 },
-    { kind: 'thug', color: 'red', area: 'downtown', x: Math.round(L + V - 30), y: band.min + 26, facing: -1, t: 0.4 }
-  ];
   gameState.cutscene = { t: 0, phase: 'walk', onDone };
+  // 1.9.0: played by the scene player (js/scene_player.js); the frame is the camera Silas will have
+  // (facing left at x 700), so Matthew walks INTO view (1.5.1)
+  playScene('dlc_closing', { onDone: () => { const fn = onDone; gameState.cutscene = null; if (fn) fn(); } });
   toast('Golden hour, Jefferson Street.', true);
 }
-function updateCutscene(dt) {
-  const cs = gameState.cutscene;
-  if (!cs) return;
-  cs.t += dt;
-  for (const a of gameState.finaleActors) {
-    a.t += dt;
-    if (a.kind === 'matthew' && a.walking) { a.x += 70 * dt; if (a.x >= a.stopAt) { a.x = a.stopAt; a.walking = false; } }
-  }
-  player.facing = -1;
-  const mat = gameState.finaleActors.find((a) => a.kind === 'matthew');
-  if (cs.phase === 'walk' && ((mat && !mat.walking) || cs.t > 6)) {
-    cs.phase = 'talk';
-    dlcApi.say([
+/** 1.9.0: the DLC closing scene as data (was updateCutscene). */
+registerScene({
+  id: 'dlc_closing',
+  keepNpcs: ['cam'],
+  actors: (c) => {
+    const L = c.frame.x, V = c.frame.viewW, band = c.band;
+    return [
+      { kind: 'matthew', id: 'matthew', x: L - 40, y: band.max - 6, facing: 1, walking: false, t: 0, stopAt: Math.round(L + V * 0.2) },
+      { kind: 'thug', id: 'crew1', color: 'grey', x: Math.round(L + V - 70), y: band.min + 10, facing: -1, t: 0 },
+      { kind: 'thug', id: 'crew2', color: 'red', x: Math.round(L + V - 30), y: band.min + 26, facing: -1, t: 0.4 }
+    ];
+  },
+  steps: (c, A) => [
+    { kind: 'letterbox', to: 1, dur: 0.5, async: true },
+    { kind: 'moveActor', id: 'matthew', to: A[0].stopAt, speed: 70 },
+    { kind: 'call', fn: () => { if (gameState.cutscene) gameState.cutscene.phase = 'talk'; } },
+    { kind: 'lines', lines: [
       { id: 'silas', name: 'Silas Boone', text: 'An everyday guy in a white polo, buying zinnias from the girl at the flower cart. She owes three people money. Soon she\'ll owe only me.' },
       { id: 'silas', name: 'Silas Boone', text: 'Matthew Rose. Wren Calloway\'s friend. Write that name down, Pip.' },
       { id: 'silas', name: 'Silas Boone', text: 'Every name on this street is a debt, sooner or later. One day this whole city will look up at that Star and think of me.' }
-    ], () => { cs.phase = 'done'; cs.doneT = cs.t; });
-  } else if (cs.phase === 'done' && cs.t - cs.doneT > 0.8) {
-    const fn = cs.onDone;
-    gameState.cutscene = null;
-    if (fn) fn();
-  }
-}
+    ] },
+    { kind: 'call', fn: () => { if (gameState.cutscene) { gameState.cutscene.phase = 'done'; gameState.cutscene.doneT = gameState.cutscene.t; } } },
+    { kind: 'wait', dur: 0.8 }
+  ]
+});
+/** Kept for old call sites: the scene player drives the closing scene now. */
+function updateCutscene(dt) { if (gameState.cutscene) gameState.cutscene.t += dt; }
 
 // ---------- Bob's cards (#dlc-mission-card, #dlc-ending-screen) ----------
 let dlcCardDone = null;
 // ===================== 1.7.0 "Locked Up": the arrest, Cinder Hollow use-spots, Silas in cell C-14 =====================
 /** Boss down → honest police arrive in the rain, cuff Silas, walk him off; then the court + prison cards → ending. */
 function startArrest(bossX, bossY) {
-  const band = getDepthBand(), areaId = gameState.areaId;
   gameState.enemies = []; gameState.combatLock = false;
   player.vx = 0; player.attackType = null; player.attackTimer = 0; player.hitbox = null;
-  followCam.cut();
-  const fr = syncCamera(0), L = fr.x, V = fr.viewW;
-  const sx = Math.round(Math.max(L + 260, Math.min(L + V - 90, bossX ?? player.x + 110)));
-  const sy = clampDepth(Math.round(bossY ?? player.y));
-  player.facing = sx >= player.x ? 1 : -1;
-  if (Math.abs(player.x - sx) < 70) player.x = sx + 90 < L + V - 30 ? sx + 90 : sx - 90;
-  const wy = band.min + 4;
-  gameState.finaleActors = [
-    { kind: 'cast', id: 'silas', key: 'silas', area: areaId, x: sx, y: sy, facing: player.x > sx ? 1 : -1 },
-    { kind: 'cast', id: 'reyes', key: 'reyes', area: areaId, x: L - 50, y: Math.max(band.min + 10, sy - 14), facing: 1, walking: true, stopAt: sx - 150, phase: 300 },
-    { kind: 'cast', id: 'okafor', key: 'okafor', area: areaId, x: L - 120, y: Math.min(band.max - 4, sy + 12), facing: 1, walking: true, stopAt: sx - 80, phase: 700 },
-    { kind: 'cast', id: 'wren', key: 'wren', area: areaId, x: Math.round(Math.min(L + V - 40, Math.max(player.x, sx) + 120)), y: wy, facing: -1, phase: 200 }
-  ];
-  gameState.arrest = { t: 0, phase: 'arrive', sx, sy };
+  gameState.arrest = { t: 0, phase: 'arrive', bossX, bossY };
+  playScene('arrest', { onDone: () => { // 1.9.0: scene player; court + prison cards follow (or straight to the ending)
+    const A = gameState.arrest; if (!A) return;
+    A.phase = 'court'; gameState.finaleActors = [];
+    if (A.direct) endArrest();
+    else showDlcCard(SENTENCING_CARD, () => showDlcCard(PRISON_CARD, () => endArrest()));
+  } });
   toast('Sirens on the mountain road. Blue and red through the rain.', true);
   sfx('denied');
 }
 function arrestActor(id) { return gameState.finaleActors.find((a) => a.id === id); }
-function walkActor(a, dt, speed) {
-  if (!a || !a.walking || a.stopAt == null) return true;
-  const d = a.stopAt - a.x;
-  if (Math.abs(d) <= speed * dt) { a.x = a.stopAt; a.walking = false; return true; }
-  a.facing = d > 0 ? 1 : -1; a.x += Math.sign(d) * speed * dt; return false;
-}
-function updateArrest(dt) {
-  const A = gameState.arrest; if (!A) return;
-  A.t += dt;
-  const reyes = arrestActor('reyes'), okafor = arrestActor('okafor'), silas = arrestActor('silas');
-  if (A.phase === 'arrive') {
-    const r = walkActor(reyes, dt, 110), o = walkActor(okafor, dt, 110);
-    if ((r && o) || A.t > 5) {
-      if (reyes) { reyes.walking = false; reyes.x = reyes.stopAt; reyes.facing = 1; }
-      if (okafor) { okafor.walking = false; okafor.x = okafor.stopAt; okafor.facing = 1; }
-      A.phase = 'talk1';
-      dlcApi.say(ARREST_LINES.slice(0, 3), () => { A.phase = 'cuff'; A.ct = A.t; if (okafor) { okafor.walking = true; okafor.stopAt = A.sx - 40; } });
-    }
-  } else if (A.phase === 'cuff') {
-    walkActor(okafor, dt, 90);
-    if (!A.cuffed && A.t - A.ct > 0.6) {
-      A.cuffed = true;
-      if (silas) { silas.key = 'silas_cuffed'; silas.facing = -1; }
-      sfx('block'); sfx('pickup', { delay: 0.12 }); // metal click of the cuffs
-      rumble(0.3, 0.3, 120);
-    }
-    if (A.t - A.ct > 1.6) {
-      A.phase = 'talk2';
-      dlcApi.say(ARREST_LINES.slice(3), () => {
-        A.phase = 'leave'; A.lt = A.t;
-        for (const a of [okafor, silas]) if (a) { a.walking = true; a.stopAt = a.x - 900; a.facing = -1; }
-        if (reyes) reyes.facing = -1;
-      });
-    }
-  } else if (A.phase === 'leave') {
-    walkActor(okafor, dt, 70); walkActor(silas, dt, 70);
-    if (A.t - A.lt > 3.4) {
-      A.phase = 'court';
-      gameState.finaleActors = [];
-      showDlcCard(SENTENCING_CARD, () => showDlcCard(PRISON_CARD, () => endArrest()));
-    }
+/** 1.9.0: the 1.7.0 arrest as scene data. Phases (gameState.arrest.phase) stay arrive → talk1 → cuff → talk2 → leave → court. */
+registerScene({
+  id: 'arrest',
+  actors: (c) => {
+    const A = gameState.arrest, band = c.band, L = c.frame.x, V = c.frame.viewW;
+    const sx = Math.round(Math.max(L + 260, Math.min(L + V - 90, A.bossX ?? player.x + 110)));
+    const sy = clampDepth(Math.round(A.bossY ?? player.y));
+    A.sx = sx; A.sy = sy;
+    player.facing = sx >= player.x ? 1 : -1;
+    if (Math.abs(player.x - sx) < 70) player.x = sx + 90 < L + V - 30 ? sx + 90 : sx - 90;
+    return [
+      { kind: 'cast', id: 'silas', key: 'silas', x: sx, y: sy, facing: player.x > sx ? 1 : -1 },
+      { kind: 'cast', id: 'reyes', key: 'reyes', x: L - 50, y: Math.max(band.min + 10, sy - 14), facing: 1, walking: true, stopAt: sx - 150, phase: 300 },
+      { kind: 'cast', id: 'okafor', key: 'okafor', x: L - 120, y: Math.min(band.max - 4, sy + 12), facing: 1, walking: true, stopAt: sx - 80, phase: 700 },
+      { kind: 'cast', id: 'wren', key: 'wren', x: Math.round(Math.min(L + V - 40, Math.max(player.x, sx) + 120)), y: band.min + 4, facing: -1, phase: 200 }
+    ];
+  },
+  steps: (c, act) => {
+    const A = gameState.arrest, sx = A.sx, ph = (p) => ({ kind: 'call', fn: () => { if (gameState.arrest) { gameState.arrest.phase = p; gameState.arrest.pt = gameState.arrest.t; } } });
+    return [
+      { kind: 'letterbox', to: 1, dur: 0.5, async: true },
+      { kind: 'moveActor', id: 'reyes', to: sx - 150, speed: 110, async: true },
+      { kind: 'moveActor', id: 'okafor', to: sx - 80, speed: 110 },
+      { kind: 'anim', id: 'reyes', facing: 1 }, { kind: 'anim', id: 'okafor', facing: 1 },
+      ph('talk1'),
+      { kind: 'lines', lines: ARREST_LINES.slice(0, 3) },
+      ph('cuff'),
+      { kind: 'moveActor', id: 'okafor', to: sx - 40, speed: 90, async: true },
+      { kind: 'wait', dur: 0.6 },
+      { kind: 'anim', id: 'silas', key: 'silas_cuffed', facing: -1 },
+      { kind: 'call', onSkip: false, fn: () => { sfx('block'); sfx('pickup', { delay: 0.12 }); rumble(0.3, 0.3, 120); } }, // metal click of the cuffs
+      { kind: 'wait', dur: 1.0 },
+      ph('talk2'),
+      { kind: 'lines', lines: ARREST_LINES.slice(3) },
+      { kind: 'anim', id: 'wren', facing: player.x < (act.find((a) => a.id === 'wren')?.x ?? 0) ? -1 : 1 },
+      { kind: 'lines', lines: [{ id: 'wren', name: 'Wren Calloway', text: "He kept saying you'd come. Like he knew you." }] }, // JACK-STORY: Wren's rescue line (connections_map.md)
+      ph('leave'),
+      { kind: 'anim', id: 'reyes', facing: -1 },
+      { kind: 'moveActor', id: 'okafor', to: sx - 40 - 900, speed: 70, async: true },
+      { kind: 'moveActor', id: 'silas', to: sx - 900, speed: 70, async: true },
+      { kind: 'wait', dur: 3.4 }
+    ];
   }
-}
+});
+/** Kept for old call sites: the arrest clock (police lights fade in on it). */
+function updateArrest(dt) { if (gameState.arrest) gameState.arrest.t += dt; }
 function endArrest() {
   gameState.arrest = null;
   gameState.finaleActors = [];
@@ -1590,6 +1638,7 @@ function endArrest() {
 /** Debug / tests: jump straight past the arrest to the ending (same end state). */
 function skipArrest() {
   if (!gameState.arrest) return false;
+  if (isScenePlaying() && currentScene().id === 'arrest') { gameState.arrest.direct = true; skipScene(); return true; } // 1.9.0
   gameState.arrest.phase = 'court';
   if (gameState.mode === 'dialogue') { stopTalk(); $('dialogue').classList.add('hidden'); gameState.mode = 'play'; gameState.dialogue = null; gameState.dialogueNpc = null; }
   if (gameState.mode === 'card') { $('dlc-mission-card').classList.add('hidden'); clearMenuFocus(); dlcCardDone = null; gameState.mode = 'play'; }
@@ -1736,10 +1785,17 @@ function pickChoice(i) {
   const c = C.list[i];
   hideChoices();
   sfx('ui_move');
-  gameState.mode = 'play';
-  playSilasNode(c.to);
+  // 1.9.0 fix (VO-HOOK M5): stay in 'dialogue' while Matthew's choice clip plays, so the player can't walk off or
+  // re-open the talk mid-clip; his line shows in the box and E / Enter / Cross skips the clip (VO.stop resolves play()).
+  const tok = {}; gameState.choiceVo = tok;
+  gameState.mode = 'dialogue'; gameState.dialogue = [c.label]; gameState.dialogueIdx = 0;
+  gameState.dialogueNpc = { id: 'matthew', name: 'Matthew Rose', role: '', onDone: null };
+  dlgPortrait.line = { id: 'matthew' };
+  $('dialogue-name').textContent = 'Matthew Rose'; $('dialogue-text').textContent = c.label;
+  VO.play(`prison.choice.${c.to}`).then(() => { if (gameState.choiceVo !== tok) return; gameState.choiceVo = null; playSilasNode(c.to); }); // VO-HOOK: Matthew speaks his choice ("Ask something else." has no clip → at once)
 }
 function endSilasTalk() {
+  if (gameState.choiceVo) { gameState.choiceVo = null; VO.stop(); } // 1.9.0: closing mid choice clip
   hideChoices();
   gameState.silasTalk = null;
   if (gameState.mode === 'dialogue') { stopTalk(); $('dialogue').classList.add('hidden'); gameState.mode = 'play'; gameState.dialogue = null; gameState.dialogueNpc = null; input.flush(); input.focusGame(); }
@@ -1797,7 +1853,8 @@ function showDlcEnding() {
   gameState.ended = true;
   $('dlc-ending-eyebrow').textContent = 'Prequel Ending · Second Shift';
   $('dlc-ending-title').textContent = 'Before the Star';
-  $('dlc-ending-text').textContent = 'The Foreman\'s crew answers to a new boss. Vera Lisk\'s files sit in a new safe. Two patrol cars look the other way.\n' +
+  // JACK-STORY: the 2015 rework's ending + 'Eleven years later.' card come from js/dlc_silas.js
+  $('dlc-ending-text').textContent = (dlc && dlc.endingText && dlc.endingText()) || 'The Foreman\'s crew answers to a new boss. Vera Lisk\'s files sit in a new safe. Two patrol cars look the other way.\n' +
     'A lantern stenciled "S.B. — 2nd shift" waits under the River Bridge rail, and a crate of Boone Holdings paperwork rolled out of the Rail Yards.\n' +
     'Across Jefferson Street, Matthew Rose buys zinnias from a friend whose name is already in Silas\'s ledger.\n\n' +
     'Silas Boone straightens his gloves. The man who once stood up to the Foreman has become something worse. Lovely evening.';
@@ -2028,6 +2085,7 @@ refreshTitleButtons();
 const title = createTitle({ focusMenu: (i) => menuFocus(i, $('title-screen')) });
 // audio: Music / SFX sliders + mute at the bottom of the pause menu (same widget as the title Controls panel)
 if ($('pause-screen')) mountAudioSettings($('pause-screen').querySelector('.overlay-card'));
+if ($('pause-screen')) ['input', 'click'].forEach((ev) => $('pause-screen').addEventListener(ev, () => VO.refreshVolume())); // VO-HOOK: slider / mute → a playing line
 
 /** Device-aware prompts in the DOM (interact kbd, pause/desktop hints, dialogue button). */
 let promptSig = '';
@@ -2089,6 +2147,7 @@ function syncMusic(dt) {
 const pressBuffer = {};
 function step(dt) {
   tickToast(dt);
+  updateBarks(dt, { gameState, stateBag, player, npcs: npcsInArea, npcY: npcFeetY(), dlc: isDlc() }); // barks (Bob): polls state, silent outside play
   const inp = input.poll();
   refreshPrompts();
   syncMusic(dt);
@@ -2109,6 +2168,13 @@ function step(dt) {
     drawWorld(0);
     return;
   }
+  // >>> 1.9.0 scene player + zoom: scenes run in play + dialogue; Esc / Start / B skip (no pause mid-scene)
+  if (isScenePlaying() && (gameState.mode === 'play' || gameState.mode === 'dialogue')) {
+    if (inp.pausePressed || inp.backPressed) { skipScene(); input.flush(); drawWorld(dt); return; }
+    updateScene(dt);
+  }
+  if (inp.zoomPressed && gameState.mode === 'play' && !isScenePlaying()) { const z = cycleZoom(); toast(`Camera zoom ${z}x`); }
+  // <<< 1.9.0
   if (inp.pausePressed && gameState.mode === 'play') {
     pauseGame();
     drawWorld(0);
@@ -2125,6 +2191,7 @@ function step(dt) {
   if (gameState.mode === 'dialogue') {
     if (inp.backPressed) { if (gameState.silasTalk) endSilasTalk(); else finishDialogue(); } // Circle/B/Esc: close
     else if (inp.interactPressed || inp.confirmPressed) advanceDialogue(); // E/Enter/Cross/A/Square
+    syncDialoguePortrait(); // 1.9.0: mouth frame follows the talk blips
     drawWorld(dt);
     return;
   }
@@ -2166,7 +2233,7 @@ function step(dt) {
   }
 
   const area = AREAS[gameState.areaId];
-  if (gameState.cutscene || gameState.arrest) Object.assign(inp, NEUTRAL_INPUT); // DLC closing scene / 1.7.0 arrest: hands off
+  if (gameState.cutscene || gameState.arrest || isScenePlaying()) Object.assign(inp, NEUTRAL_INPUT); // DLC closing scene / 1.7.0 arrest / 1.9.0 scenes: hands off
 
   // v3: attack presses made during a hit-stop freeze are buffered, not dropped
   const BUFFERED = ['punchPressed', 'kickPressed', 'heavyPressed', 'specialPressed'];
@@ -2273,7 +2340,7 @@ function step(dt) {
 
   // Autosave
   gameState.saveTimer += dt;
-  if (gameState.saveTimer > 8 && !(getDifficulty().arcade && hostilesAlive())) { // Arcade: last save = pre-fight checkpoint
+  if (gameState.saveTimer > 8 && !isScenePlaying() && !(getDifficulty().arcade && hostilesAlive())) { // 1.9.0: never mid-scene // Arcade: last save = pre-fight checkpoint
     gameState.saveTimer = 0;
     persist();
   }
@@ -2326,7 +2393,7 @@ function drawCastSprite(spr, x, feetY, facing, scale) {
   const footPad = spr.height >= 192 ? Math.round(dh * (3 / 192)) : 0;
   const top = feetY - dh + footPad;
   ctx.save();
-  ctx.imageSmoothingEnabled = (spr.width || 0) > 144; // 1.8.0 HD stills (288x384) are drawn smoothed
+  ctx.imageSmoothingEnabled = !CRISP && (spr.width || 0) > 144; // 1.8.0 HD stills (288x384) are drawn smoothed (1.9.0: crisp at 3x)
   if (ctx.imageSmoothingEnabled) ctx.imageSmoothingQuality = 'high';
   if (facing < 0) {
     ctx.translate(Math.round(x), 0);
@@ -2412,7 +2479,7 @@ function drawMatthew(pose, outfitId, outfit, t, x, feetY, facing) {
     const footPad = spr.height >= 192 ? Math.round(dh * (3 / 192)) : 0;
     const top = feetY - dh + footPad;
     ctx.save();
-    ctx.imageSmoothingEnabled = (spr.width || 0) > 144; // 1.8.0 HD
+    ctx.imageSmoothingEnabled = !CRISP && (spr.width || 0) > 144; // 1.8.0 HD (1.9.0: crisp at 3x)
     if (ctx.imageSmoothingEnabled) ctx.imageSmoothingQuality = 'high';
     if (facing < 0) {
       ctx.translate(Math.round(x), 0);
@@ -2435,7 +2502,7 @@ function drawAnimFrame(f, x, feetY, facing, scale) {
   const dw = Math.round((f.dw != null ? f.dw : f.sw) * k), dh = Math.round((f.dh != null ? f.dh : f.sh) * k);
   const top = Math.round(feetY - feet * k);
   ctx.save();
-  ctx.imageSmoothingEnabled = !!f.smooth; // 1.8.0 HD: soft-alpha 2x art is drawn smoothed
+  ctx.imageSmoothingEnabled = !CRISP && !!f.smooth; // 1.8.0 HD: soft-alpha 2x art is drawn smoothed (1.9.0: crisp at 3x)
   if (f.smooth) ctx.imageSmoothingQuality = 'high';
   ctx.translate(Math.round(x), 0);
   if (facing < 0) ctx.scale(-1, 1);
@@ -2681,7 +2748,7 @@ function drawCollectibleItem(c, x, y) {
   g.addColorStop(0, `rgba(255,224,120,${0.5 * pulse})`); g.addColorStop(1, 'rgba(255,224,120,0)');
   ctx.fillStyle = g; ctx.beginPath(); ctx.arc(x, cy, 32, 0, Math.PI * 2); ctx.fill();
   ctx.save();
-  ctx.imageSmoothingEnabled = !!f.smooth;
+  ctx.imageSmoothingEnabled = !CRISP && !!f.smooth; // 1.9.0: crisp at 3x
   if (f.smooth) ctx.imageSmoothingQuality = 'high';
   ctx.drawImage(f.img, f.sx || 0, f.sy || 0, f.sw, f.sh, dx, dy, f.dw || f.sw, f.dh || f.sh);
   ctx.restore();
@@ -2692,16 +2759,141 @@ function drawCollectibleItem(c, x, y) {
 // <<< v3
 
 
+// >>> 1.9.0 scene player glue (js/scene_player.js holds the API; scenes are data)
+function drawLensLetterbox(fr, k) {
+  ctx.save(); ctx.translate(0, fr.y); drawLetterbox(ctx, fr.viewW, fr.viewH, k); ctx.restore();
+}
+/** Bystanders: 'near' (default) hides NPCs within 260 px of any actor or the lens; 'all'; 'none'. keepNpcs stay. */
+function sceneHidesNpc(n) {
+  if (!isScenePlaying()) return false;
+  const def = currentScene().def, mode = def.bystanders || 'near';
+  if (mode === 'none' || (def.keepNpcs || []).includes(n.id)) return false;
+  if (mode === 'all') return true;
+  const fr = followCam.frame, inLens = n.x > fr.x - 40 && n.x < fr.x + fr.viewW + 40;
+  return inLens || sceneActors().some((a) => Math.abs(a.x - n.x) < 260);
+}
+/** 1.9.0: put the player (stand-in for Silas / Matthew) on the scene's mark (def.playerMark {x, facing}), or step him
+ *  clear of any cast actor within 56 px, facing them. */
+function placeSceneStandIn(def, actors) {
+  const area = AREAS[gameState.areaId], W0 = area ? area.width : 2000;
+  const mark = def && def.playerMark;
+  if (mark && typeof mark.x === 'number') { player.x = mark.x; if (mark.facing) player.facing = mark.facing; return; }
+  const near = (actors || []).filter((a) => a && a.kind !== 'thug' && typeof a.x === 'number' && Math.abs(a.x - player.x) < 56);
+  if (!near.length) return;
+  const a = near[0], side = player.x >= a.x ? 1 : -1;
+  let x = a.x + side * 90; if (x < 40 || x > W0 - 40) x = a.x - side * 90;
+  player.x = Math.max(40, Math.min(W0 - 40, x)); player.facing = a.x > player.x ? 1 : -1;
+}
+function closeSceneLine() {
+  if (gameState.mode !== 'dialogue') return;
+  stopTalk(); VO.stop(); $('dialogue').classList.add('hidden');
+  gameState.mode = 'play'; gameState.dialogue = null; gameState.dialogueNpc = null; gameState.sceneMoreLines = false; input.flush();
+}
+setVoiceHook((clipId, info) => { if (!info || !info.text) VO.play(clipId); }); // VO-HOOK: dialogue lines are voiced in showLine (no double start)
+setSceneHooks({
+  build(def, vars) {
+    if (def.area && AREAS[def.area] && def.area !== gameState.areaId) { gameState.areaId = def.area; syncDepthBand(); }
+    if (def.clearEnemies !== false) { gameState.enemies = []; gameState.combatLock = false; }
+    followCam.cut();
+    const frame = syncCamera(0);
+    return { player, band: getDepthBand(), frame, areaId: gameState.areaId, area: AREAS[gameState.areaId], gameState, vars };
+  },
+  currentLens() { const f = followCam.frame; return { x: f.x + f.viewW / 2, zoom: f.zoom }; },
+  say(lines, done, onLine, info) {
+    const first = lines[0] || {};
+    gameState.sceneMoreLines = !!(info && info.moreLines); // 1.9.0: button says Continue until the scene's last line
+    startDialogueRaw({ id: first.id || 'silas', name: first.name || '', role: '', onDone: done, onLine }, lines);
+  },
+  advance() { advanceDialogue(); },
+  closeLine: closeSceneLine,
+  onStart(def, actors) {
+    placeSceneStandIn(def, actors); // 1.9.0: the player stand-in never overlaps a cast actor
+    gameState.finaleActors = actors; // drawn + read (tests) through the existing finale-actor lane
+    document.body.classList.add('sor-scene');
+    hideStoryIntro();
+  },
+  onEnd(def, skipped) {
+    document.body.classList.remove('sor-scene');
+    closeSceneLine();
+    followCam.cut();
+    if (skipped) toast('Scene skipped');
+  }
+});
+{ // cinematic mode CSS + touch Skip button (HUD, hint and touch controls step aside; dialogue + toast stay)
+  const st = document.createElement('style');
+  st.textContent = 'body.sor-scene #hud, body.sor-scene #desktop-hint, body.sor-scene #mobile-controls, body.sor-scene #interact-prompt { visibility: hidden !important; }'
+    + ' #btn-scene-skip { display: none; position: absolute; right: 14px; top: 14px; z-index: 40; padding: 6px 14px; font: 700 13px sans-serif; color: #ffd24a; background: rgba(10,10,14,0.72); border: 1px solid rgba(255,210,74,0.7); border-radius: 6px; pointer-events: auto; }'
+    + ' body.sor-scene #btn-scene-skip { display: block; }';
+  document.head.appendChild(st);
+  const b = document.createElement('button');
+  b.type = 'button'; b.id = 'btn-scene-skip'; b.textContent = 'Skip ▸▸'; b.setAttribute('aria-label', 'Skip scene');
+  const go = (e) => { e.preventDefault(); skipScene(); input.focusGame(); };
+  b.addEventListener('touchstart', go, { passive: false }); b.addEventListener('click', go);
+  ($('ui-layer') || document.body).appendChild(b);
+}
+/** Review demo (debug: __scd.playScene('demo_downtown_confront')): Matthew confronts Silas on Jefferson Street, ~20 s. */
+registerScene({
+  id: 'demo_downtown_confront', area: 'downtown', hidePlayer: true, bystanders: 'all', fade: 1,
+  camera: { x: 620, zoom: 1.34 },
+  actors: (c) => [
+    { kind: 'matthew', id: 'matthew', x: 420, y: c.band.max - 40, facing: 1, t: 0 },
+    { kind: 'cast', id: 'silas', key: 'silas', x: 1010, y: c.band.max - 52, facing: -1 }
+  ],
+  steps: [
+    { kind: 'letterbox', to: 1, dur: 0 },
+    { kind: 'fade', to: 0, dur: 1.0 },
+    { kind: 'moveActor', id: 'matthew', to: 830, speed: 80, async: true },
+    { kind: 'cameraPan', x: 880, dur: 4.6 },
+    { kind: 'wait', dur: 0.6 },
+    { kind: 'line', speaker: 'silas', name: 'Silas Boone', text: 'Matthew Rose. Jefferson Street suits you. Pity it\'s already mine.', voice: 'demo_silas_01', dur: 3.2 },
+    { kind: 'cameraZoom', zoom: 2.68, dur: 1.2 },
+    { kind: 'line', speaker: 'matthew', name: 'Matthew Rose', text: 'Wren\'s debt is paid, Silas. You don\'t get to collect twice.', voice: 'demo_matthew_01', dur: 3.2 },
+    { kind: 'line', speaker: 'silas', name: 'Silas Boone', text: 'Every name on this street is a debt. Yours just came due.', voice: 'demo_silas_02', dur: 3.0 },
+    { kind: 'cameraZoom', zoom: 1.34, dur: 1.0 },
+    { kind: 'fade', to: 1, dur: 1.0 },
+    { kind: 'letterbox', to: 0, dur: 0 },
+    { kind: 'fade', to: 0, dur: 0.4 }
+  ]
+});
+/**
+ * 1.9.0 scene triggers: a DLC talk / scene step whose lines are exactly a registered scene's lines (in order) plays
+ * that scene instead of the bare dialogue box (js/scenes_silas.js: dlc1_m1_kid, dlc1_m2_errand, dlc1_m4_vera_after,
+ * dlc1_m4_marcus (the late-night variant of his talk), dlc1_m6_quit). Same text, so mission flow is unchanged.
+ */
+function sceneLineTexts(def) {
+  if (!def || !Array.isArray(def.steps)) return null; // built-at-start scenes (arrest, closing) never auto-trigger
+  const out = [];
+  for (const st of def.steps) {
+    if (st.kind === 'line') out.push(st.text);
+    else if (st.kind === 'lines') for (const l of st.lines) out.push(l.text);
+  }
+  return out.length ? out : null;
+}
+function sceneForLines(lines) {
+  if (!isDlc() || !Array.isArray(lines) || !lines.length) return null;
+  const want = lines.map((l) => (l && l.text) || '');
+  for (const id of listScenes()) {
+    if (!/^dlc1_/.test(id)) continue;
+    const got = sceneLineTexts(getScene(id));
+    if (got && got.length === want.length && got.every((t, i) => t === want[i])) return id;
+  }
+  return null;
+}
+// <<< 1.9.0 scene player glue
+
 function syncCamera(dt) {
   const area = AREAS[gameState.areaId];
   const frame = followCam.update({
     playerX: player.x,
+    playerY: player.y, // 1.9.0: 2x / 3x keep head room above the feet
     facing: player.facing,
     areaWidth: area.width,
     areaId: gameState.areaId,
     screenW: W,
     screenH: H,
-    dt
+    dt,
+    enemies: gameState.enemies.filter((e) => e.alive), // 1.9.0: close lenses lean toward a nearby fight
+    override: sceneLens() // 1.9.0: a scene's cameraPan / cameraZoom (null = follow)
   });
   gameState.cameraX = frame.x; gameState.cameraViewW = frame.viewW; // 1.5.1: closing-scene framing + tests
   return frame;
@@ -2712,10 +2904,15 @@ function drawWorld(dt) {
   const camFrame = syncCamera(dt);
   const cam = camFrame.x;
   const viewW = camFrame.viewW;
-  ctx.setTransform(SS, 0, 0, SS, 0, 0);
+  // 1.9.0 3x fix: at 2x / 3x the lens is drawn straight into the full scene buffer (scale SS*zoom), so the
+  // HD art is sampled once at screen resolution instead of a small crop being upscaled (the blur). Level 1 keeps the crop.
+  lensZ = camFrame.zoom >= 1.9 ? camFrame.zoom : 1;
+  CRISP = lensZ >= 3.5; // 3x: nearest-neighbour sprites (crisp), 2x keeps Joe's smoothed HD draw
+  ctx.setTransform(SS * lensZ, 0, 0, SS * lensZ, 0, lensZ > 1 ? -camFrame.y * SS * lensZ : 0);
   ctx.imageSmoothingEnabled = false;
   ctx.clearRect(0, 0, W, H);
   setStarDark(!isDlc() && storyBlackout()); // 1.6.0: anniversary-night blackout
+  setTrafficPaused(isScenePlaying()); // 1.9.0: the ambient sedan holds still during scenes
   drawBackground(ctx, area, cam, viewW, H, dt); // dt drives the ambient sedan (0 = frozen while paused)
 
   // Collectibles
@@ -2729,12 +2926,13 @@ function drawWorld(dt) {
   // Sort draw by depth (y)
   const drawList = [];
   for (const n of npcsInArea()) {
+    if (sceneHidesNpc(n)) continue; // 1.9.0: bystanders step out of a scene
     drawList.push({ type: 'npc', y: npcFeetY(), n });
   }
   for (const e of gameState.enemies) {
     if (e.alive || e.stun > 0 || e.koT > 0) drawList.push({ type: 'enemy', y: e.y, e });
   }
-  drawList.push({ type: 'player', y: player.y });
+  if (!(isScenePlaying() && currentScene().def.hidePlayer)) drawList.push({ type: 'player', y: player.y }); // 1.9.0
   for (const a of gameState.finaleActors) if (a.area === gameState.areaId) drawList.push({ type: 'actor', y: a.y, a }); // DLC closing scene
   drawList.sort((a, b) => a.y - b.y);
 
@@ -2746,15 +2944,20 @@ function drawWorld(dt) {
     else drawGroundShadow(ctx, player.x - cam, player.y, isDlc() ? NPC_DRAW_W * BOSS_SCALE : CHAR_DRAW_W);
   }
 
+  const fighters = lensZ > 1 ? [player.x, ...gameState.enemies.filter((e) => e.alive).map((e) => e.x)] : null;
   for (const item of drawList) {
+    // 1.9.0 3x fix: at 2x / 3x a bystander standing over Matthew or a foe fades to 0.15 (never the one he talks to)
+    const fadeNpc = fighters && item.type === 'npc' && !(gameState.dialogueNpc === item.n) && !isScenePlaying() && fighters.some((fx) => Math.abs(fx - item.n.x) < 80);
+    if (fadeNpc) { ctx.save(); ctx.globalAlpha = 0.15; }
     if (item.type === 'npc') {
       const n = item.n;
       const spr = getNpcSprite(n.id, n.color, performance.now() / 1000);
       const sx = n.x - cam;
       // >>> v3 anim states: talk while in dialogue with this NPC, idle_personality otherwise
       const nState = gameState.mode === 'dialogue' && gameState.dialogueNpc === n ? 'talk' : 'idle_personality';
-      const naf = animFrame(n.id, nState, performance.now());
-      const nh = naf ? drawAnimFrame(naf, sx, item.y, 1, castScaleNpc(n.id)) : drawCastSprite(spr, sx, item.y, 1, castScaleNpc(n.id));
+      const nk = n.key || n.id; // 1.9.0: art key (the 2015 selves: dora_young …)
+      const naf = animFrame(nk, nState, performance.now()) || animFrame(nk, 'idle', performance.now()); // Foreman: no still → his anim frame
+      const nh = naf ? drawAnimFrame(naf, sx, item.y, 1, castScaleNpc(n.id)) : drawCastSprite(n.key ? getNpcSprite(nk, n.color, performance.now() / 1000) : spr, sx, item.y, 1, castScaleNpc(n.id));
       // <<< v3
       // nametag (sits just above the scaled frame; ty = tag top)
       ctx.font = 'bold 11px sans-serif';
@@ -2811,6 +3014,7 @@ function drawWorld(dt) {
       if (player.stamina < 100 && player.alive) drawStaminaPip(px, player.y);
       // <<< v3
     }
+    if (fadeNpc) ctx.restore();
   }
   drawKitFx(cam); // 1.4.0: Spiral footballs, Star Yank line, flashes / rings / sparks / callouts (over the cast)
 
@@ -2826,8 +3030,16 @@ function drawWorld(dt) {
     else drawWeather(ctx, viewW, H, nowS, { groundY: getDepthBand().min, blackout: !isDlc() && storyBlackout(), frozen: !dt, lights: getSceneLights(), cheap: cheapPresentation() });
   }
   if (!isDlc()) {
-    if ((gameState.mode === 'dialogue' && gameState.dialogueNpc?.id === 'silas') || gameState.arrest) drawLetterbox(ctx, viewW, H);
+    if (((gameState.mode === 'dialogue' && gameState.dialogueNpc?.id === 'silas') || gameState.arrest) && !isScenePlaying()) drawLensLetterbox(camFrame, 1); // 1.9.0: inside the visible lens
     if (gameState.arrest && gameState.arrest.phase !== 'court') drawPoliceLights(viewW, H);
+  }
+
+  drawBarks(ctx, camFrame, gameState.areaId, gameState.mode); // barks (Bob): speech bubble over the cast + weather, under the DOM HUD
+
+  if (isScenePlaying()) { // 1.9.0 scene letterbox + fade, inside the cropped lens (camFrame.y .. +viewH)
+    const fx = sceneFx();
+    if (fx.letterbox > 0) drawLensLetterbox(camFrame, fx.letterbox);
+    if (fx.fade > 0) { ctx.fillStyle = `rgba(0,0,0,${Math.min(1, fx.fade)})`; ctx.fillRect(0, camFrame.y, viewW, camFrame.viewH); }
   }
 
   // HUD minimap (DOM canvas, not the game canvas)
@@ -2848,13 +3060,15 @@ function drawWorld(dt) {
     if (banner.textContent !== bt) banner.textContent = bt;
   }
 
+  ctx.setTransform(SS, 0, 0, SS, 0, 0); CRISP = false;
   presenter.present({
     mode: 'world',
-    cameraY: camFrame.y,
-    viewW: camFrame.viewW,
-    viewH: camFrame.viewH,
+    cameraY: lensZ > 1 ? 0 : camFrame.y, // 1.9.0: the lens already fills the buffer at 2x / 3x
+    viewW: lensZ > 1 ? W : camFrame.viewW,
+    viewH: lensZ > 1 ? H : camFrame.viewH,
     grade: getWeather()
   });
+  drawBarksScreen(canvas); // barks (Bob): bubble on the presented canvas, constant size at every zoom
 }
 
 /** Title backdrop: animated Roanoke skyline (title.js) + Matthew heroic idle vs a Silas silhouette. */
@@ -3046,6 +3260,7 @@ if (DEBUG) {
     startDlc: (cont = false, diff = 'normal') => { if (gameState.mode !== 'title') showTitle(); gameState.pendingDifficulty = diff; startDlc(cont); },
     quitDlc: () => quitDlcToTitle(),
     showTitle: () => showTitle(),
+    booted: () => booted, // 1.9.0: tests wait for boot (the title is reset when sprites finish loading)
     startMain: (fromSave = true) => { if (gameState.mode !== 'title') showTitle(); startGame(fromSave); },
     silasCooldowns: () => silasCooldowns(player),
     silasHooks: () => silasHooks(),
@@ -3057,6 +3272,12 @@ if (DEBUG) {
     // 1.7.0 "Locked Up"
     arrest: () => gameState.arrest ? { phase: gameState.arrest.phase, actors: gameState.finaleActors.map((x) => ({ id: x.id, key: x.key, x: Math.round(x.x), walking: !!x.walking })) } : null,
     skipArrest: () => skipArrest(),
+    // 1.9.0 scene player + zoom (tests)
+    playScene: (id, o) => playScene(id, o), skipScene: () => skipScene(), listScenes: () => listScenes(),
+    scene: () => { const c = currentScene(); return c ? { id: c.id, t: c.t, step: c.step, fx: { ...c.fx }, cam: c.cam && { ...c.cam }, actors: c.actors.map((a) => ({ id: a.id, x: Math.round(a.x), walking: !!a.walking, key: a.key })) } : null; },
+    zoom: { get: getZoomLevel, set: setZoomLevel, cycle: cycleZoom },
+    cameraFrame: () => ({ ...followCam.frame }),
+    spawnFight(n = 2) { gameState.enemies = spawnWave(AREAS[gameState.areaId], n, gameState.wave++, player.x); gameState.combatLock = true; return gameState.enemies.length; },
     sceneSize: () => ({ ss: SS, w: scene.width, h: scene.height, dropped: autoRes.dropped }), // 1.8.0 HD
     startArrest: (x, y) => startArrest(x, y),
     travel: (areaId, x = 200) => travelTo(areaId, x, 1),

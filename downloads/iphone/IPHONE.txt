@@ -1,4 +1,4 @@
-STREETS OF ROANOKE 1.8.0 ON AN IPHONE
+STREETS OF ROANOKE 1.9.0 ON AN IPHONE
 =====================================
 
 There are two ways to play on an iPhone or iPad. Option A is the easiest and is what
@@ -13,12 +13,12 @@ OPTION A (EASIEST, RECOMMENDED): ADD IT TO YOUR HOME SCREEN FROM SAFARI
   No Apple ID, no computer, nothing to re-sign. Works on every iPhone and iPad.
 
 OPTION B: SIDELOAD THE .IPA (FOR PEOPLE WHO WANT A "REAL" APP)
-  Streets-of-Roanoke-1.8.0.ipa is NOT signed and is not on the App Store. You sign it
+  Streets-of-Roanoke-1.9.0.ipa is NOT signed and is not on the App Store. You sign it
   yourself with your own Apple ID, using a free tool on a Mac or Windows PC:
     - AltStore   https://altstore.io        (installs AltServer on your computer)
     - Sideloadly https://sideloadly.io      (drag the .ipa in, enter your Apple ID)
-  1. Download Streets-of-Roanoke-1.8.0.ipa (about 150 MB) from the GitHub Release:
-     https://github.com/matthewro2007-blip/Star-city-drift/releases/download/ios-v1.8.0/Streets-of-Roanoke-1.8.0.ipa
+  1. Download Streets-of-Roanoke-1.9.0.ipa from the GitHub Release:
+     https://github.com/matthewro2007-blip/Star-city-drift/releases/download/ios-v1.9.0/Streets-of-Roanoke-1.9.0.ipa
   2. Connect your iPhone to the computer with a cable and trust the computer.
   3. In AltStore or Sideloadly, pick the .ipa and sign in with your Apple ID.
   4. On the iPhone: Settings > General > VPN & Device Management > your Apple ID > Trust.
