@@ -20,6 +20,8 @@ There is also an unsigned iPhone app, [Streets-of-Roanoke-1.8.0.ipa](https://git
 
 ## Android APK
 
+**How to install, step by step (phone or PC):** [HOW-TO-INSTALL.md](downloads/android/HOW-TO-INSTALL.md). The same guide is on the website: [how-to-install.html](https://matthewro2007-blip.github.io/Star-city-drift/downloads/android/how-to-install.html).
+
 The v1.8.0 Android package (`Streets-of-Roanoke-1.8.0-debug.apk`, about 130 MB) is over GitHub's 100 MB file limit, so it is split into six parts. Download all six into the same folder:
 
 - [Streets-of-Roanoke-1.8.0-apk.7z.001](downloads/android/Streets-of-Roanoke-1.8.0-apk.7z.001)
@@ -61,7 +63,7 @@ The app auto-updates when online. It downloads only the files that changed. Offl
 There are three ways to play on a Chromebook. Full steps are in [CHROMEBOOK.txt](downloads/chromebook/CHROMEBOOK.txt).
 
 - **Easiest (recommended): install the web app.** Open the game in Chrome and click **Install** in the address bar (or three-dot menu → Cast, save, and share → Install page as app). It works offline, updates itself, and runs on every Chromebook, including ARM.
-- **Android APK:** only for Chromebooks with Google Play turned on. Installing a downloaded APK needs ChromeOS developer mode, so use the web app or the Linux app instead.
+- **Android APK:** only for Chromebooks with Google Play turned on. Installing a downloaded APK needs ChromeOS developer mode, so use the web app or the Linux app instead. Phone install steps are in [HOW-TO-INSTALL.md](downloads/android/HOW-TO-INSTALL.md) ([website copy](https://matthewro2007-blip.github.io/Star-city-drift/downloads/android/how-to-install.html)).
 - **Linux app (.deb), Intel/AMD Chromebooks:** turn on Linux under **Settings → Advanced → Developers**. Download all 11 parts into the same folder:
 
   - [Streets-of-Roanoke-1.8.0-chromebook-linux-x64.7z.001](downloads/chromebook/Streets-of-Roanoke-1.8.0-chromebook-linux-x64.7z.001)

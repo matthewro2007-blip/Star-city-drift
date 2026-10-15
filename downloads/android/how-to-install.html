@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>How to install Streets of Roanoke on Android</title>
+  <meta name="description" content="Download all six parts of the Streets of Roanoke 1.8.0 Android app and install it on a phone, or with a PC." />
+  <style>
+    :root {
+      --bg: #0a0e18;
+      --bg-2: #141a28;
+      --card: #171e2e;
+      --line: rgba(255, 210, 74, 0.28);
+      --gold: #ffd24a;
+      --gold-deep: #e0a020;
+      --text: #e8eef8;
+      --muted: #b7c3d6;
+      --link: #ffe08a;
+      --danger: #ffb4a8;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background:
+        radial-gradient(ellipse at 50% -10%, #3a2414 0%, transparent 42%),
+        var(--bg);
+      color: var(--text);
+      font: 17px/1.55 "Segoe UI", system-ui, sans-serif;
+    }
+    a { color: var(--link); }
+    a:hover { color: #fff6d0; }
+    .wrap { max-width: 760px; margin: 0 auto; padding: 28px 18px 64px; }
+    header { text-align: center; margin-bottom: 28px; }
+    .star { color: var(--gold); font-size: 28px; text-shadow: 0 0 12px rgba(255, 210, 74, 0.7); }
+    .eyebrow {
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--gold);
+      font-size: 12px;
+      margin: 6px 0 8px;
+    }
+    h1 {
+      font-family: Impact, "Arial Black", "Segoe UI Black", system-ui, sans-serif;
+      font-weight: 900;
+      font-style: italic;
+      letter-spacing: 0.02em;
+      line-height: 0.95;
+      font-size: clamp(32px, 8vw, 52px);
+      margin: 0 0 10px;
+      background: linear-gradient(180deg, #fff6c8 0%, #ffd24a 45%, #ff8a2a 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    .lede { color: var(--muted); margin: 0 auto; max-width: 40em; }
+    nav.jump {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: center;
+      margin: 22px 0 8px;
+    }
+    nav.jump a {
+      text-decoration: none;
+      border: 1px solid var(--line);
+      background: rgba(255, 210, 74, 0.08);
+      color: var(--gold);
+      border-radius: 999px;
+      padding: 8px 14px;
+      font-size: 15px;
+    }
+    h2 {
+      font-size: 1.45rem;
+      margin: 36px 0 10px;
+      color: #fff8e4;
+    }
+    h3 { font-size: 1.12rem; margin: 26px 0 8px; color: var(--gold); }
+    p { margin: 0 0 12px; }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 16px 16px 8px;
+      margin: 14px 0 18px;
+    }
+    ol.steps { margin: 8px 0 0; padding: 0; list-style: none; counter-reset: step; }
+    ol.steps > li {
+      counter-increment: step;
+      position: relative;
+      padding: 0 0 16px 46px;
+      margin: 0;
+    }
+    ol.steps > li::before {
+      content: counter(step);
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--gold);
+      color: #1a1204;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    ul { margin: 8px 0 14px; padding-left: 1.2em; }
+    li { margin: 0 0 8px; }
+    .parts { list-style: none; padding: 0; margin: 0; }
+    .parts li { margin: 0; border-top: 1px solid rgba(255,255,255,0.06); }
+    .parts li:first-child { border-top: 0; }
+    .parts a {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      text-decoration: none;
+      padding: 12px 4px;
+      min-height: 48px;
+    }
+    .parts a span.name { color: var(--link); word-break: break-all; }
+    .parts a span.size { color: var(--muted); white-space: nowrap; font-size: 14px; }
+    code, .file {
+      font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+      font-size: 0.92em;
+      color: #fff1c2;
+    }
+    .note {
+      border-left: 3px solid var(--gold-deep);
+      background: var(--bg-2);
+      padding: 10px 12px;
+      border-radius: 0 10px 10px 0;
+      color: var(--muted);
+      margin: 12px 0;
+    }
+    .warn { border-left-color: #e07060; }
+    footer {
+      margin-top: 36px;
+      color: var(--muted);
+      font-size: 14px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="star" aria-hidden="true">★</div>
+      <div class="eyebrow">Streets of Roanoke 1.8.0</div>
+      <h1>Install on Android</h1>
+      <p class="lede">The app is one file, <span class="file">Streets-of-Roanoke-1.8.0-debug.apk</span>, about 130 MB. That is over GitHub's 100 MB limit, so it ships as <strong>six parts</strong>. Download all six, keep the names exactly as they are, and leave them in the <strong>same folder</strong>. Then unpack part 1. The unpacker reads the other five by itself.</p>
+      <nav class="jump" aria-label="Choose a route">
+        <a href="#parts">The six parts</a>
+        <a href="#phone">A. Phone only</a>
+        <a href="#pc">B. With a PC</a>
+        <a href="#trouble">Troubleshooting</a>
+      </nav>
+    </header>
+
+    <h2 id="parts">The six parts</h2>
+    <p>Tap each link. If the file starts saving, let it finish. If GitHub opens a file page instead, tap the <strong>Download</strong> button (the down arrow) or the <strong>Raw</strong> button.</p>
+    <div class="card">
+      <ol class="parts">
+        <li><a href="https://github.com/matthewro2007-blip/Star-city-drift/raw/main/downloads/android/Streets-of-Roanoke-1.8.0-apk.7z.001"><span class="name">1. Streets-of-Roanoke-1.8.0-apk.7z.001</span><span class="size">about 22 MB</span></a></li>
+        <li><a href="https://github.com/matthewro2007-blip/Star-city-drift/raw/main/downloads/android/Streets-of-Roanoke-1.8.0-apk.7z.002"><span class="name">2. Streets-of-Roanoke-1.8.0-apk.7z.002</span><span class="size">about 22 MB</span></a></li>
+        <li><a href="https://github.com/matthewro2007-blip/Star-city-drift/raw/main/downloads/android/Streets-of-Roanoke-1.8.0-apk.7z.003"><span class="name">3. Streets-of-Roanoke-1.8.0-apk.7z.003</span><span class="size">about 22 MB</span></a></li>
+        <li><a href="https://github.com/matthewro2007-blip/Star-city-drift/raw/main/downloads/android/Streets-of-Roanoke-1.8.0-apk.7z.004"><span class="name">4. Streets-of-Roanoke-1.8.0-apk.7z.004</span><span class="size">about 22 MB</span></a></li>
+        <li><a href="https://github.com/matthewro2007-blip/Star-city-drift/raw/main/downloads/android/Streets-of-Roanoke-1.8.0-apk.7z.005"><span class="name">5. Streets-of-Roanoke-1.8.0-apk.7z.005</span><span class="size">about 22 MB</span></a></li>
+        <li><a href="https://github.com/matthewro2007-blip/Star-city-drift/raw/main/downloads/android/Streets-of-Roanoke-1.8.0-apk.7z.006"><span class="name">6. Streets-of-Roanoke-1.8.0-apk.7z.006</span><span class="size">about 13 MB</span></a></li>
+      </ol>
+    </div>
+    <p>After unpacking, the app file is named <span class="file">Streets-of-Roanoke-1.8.0-debug.apk</span>. That is the file you install. Do not try to install a <span class="file">.7z.00</span> part.</p>
+
+    <h2 id="phone">A. On the phone only</h2>
+    <p>You need the free <a href="https://play.google.com/store/apps/details?id=ru.zdevs.zarchiver">ZArchiver</a> app from the Play Store. It unpacks the six parts. Chrome cannot do that by itself.</p>
+    <ol class="steps">
+      <li>Tap the link for part 1 above. If the file starts saving, let it finish. If GitHub opens a file page instead, tap the <strong>Download</strong> button (the down arrow) or the <strong>Raw</strong> button. The phone puts the file in the <strong>Downloads</strong> folder.</li>
+      <li>Do the same for parts 2, 3, 4, 5, and 6. Open each file, then tap <strong>Download</strong> or <strong>Raw</strong>. All six must land in the same Downloads folder. Do not rename them, and do not move some of them somewhere else.</li>
+      <li>Open the Files app (or Downloads) and count. You should see <span class="file">Streets-of-Roanoke-1.8.0-apk.7z.001</span> through <span class="file">Streets-of-Roanoke-1.8.0-apk.7z.006</span>.</li>
+      <li>Install <a href="https://play.google.com/store/apps/details?id=ru.zdevs.zarchiver">ZArchiver</a> from the Play Store. It is free. Open it when it finishes.</li>
+      <li>In ZArchiver, go to <strong>Internal storage → Download</strong> (some phones say <strong>Downloads</strong>). Tap <span class="file">Streets-of-Roanoke-1.8.0-apk.7z.001</span>.</li>
+      <li>Tap <strong>Extract</strong>. Leave the destination as the same folder and confirm. ZArchiver reads <span class="file">.002</span> through <span class="file">.006</span> on its own. Wait until it says it is done. A new file appears: <span class="file">Streets-of-Roanoke-1.8.0-debug.apk</span>.</li>
+      <li>Tap that <span class="file">.apk</span>. If Android says the phone is not allowed to install unknown apps, tap <strong>Settings</strong> and turn on <strong>Install unknown apps</strong> (sometimes called <strong>Allow from this source</strong>) for <strong>ZArchiver</strong>, or for <strong>Chrome</strong> if the browser is the app that asked. Press Back, then tap the <span class="file">.apk</span> again.</li>
+      <li>Tap <strong>Install</strong>. When it finishes, tap <strong>Open</strong>. Streets of Roanoke is on your home screen or app drawer.</li>
+    </ol>
+    <p class="note">The six part files can be deleted after the app is installed. Keep the <span class="file">.apk</span> if you want a spare copy.</p>
+
+    <h2 id="pc">B. With a PC</h2>
+    <p>Use this if the phone downloads keep failing, or if you would rather unpack on a computer.</p>
+    <ol class="steps">
+      <li>On the computer, make one new folder and download all six parts into it. Use the six links above. On each GitHub file page, click the <strong>Download</strong> button (the down arrow) or <strong>Raw</strong>. The names must stay <span class="file">Streets-of-Roanoke-1.8.0-apk.7z.001</span> through <span class="file">.006</span>, all in that same folder.</li>
+      <li>Install <a href="https://www.7-zip.org/">7-Zip</a> if it is not already installed. (Windows: the 64-bit installer. Mac and Linux can use the 7-Zip / p7zip app the same way: open the <span class="file">.001</span> file and extract here.)</li>
+      <li>In the folder, right-click <span class="file">Streets-of-Roanoke-1.8.0-apk.7z.001</span> and choose <strong>7-Zip → Extract Here</strong>. 7-Zip reads <span class="file">.002</span> through <span class="file">.006</span> by itself. When it finishes you have <span class="file">Streets-of-Roanoke-1.8.0-debug.apk</span> in that folder.</li>
+      <li>Copy only that <span class="file">.apk</span> to the phone.
+        <ul>
+          <li><strong>USB:</strong> plug the phone into the computer, choose <strong>File transfer</strong> on the phone, and copy the <span class="file">.apk</span> into the phone's <strong>Download</strong> folder.</li>
+          <li><strong>Google Drive:</strong> on the computer, upload the <span class="file">.apk</span> to Drive. On the phone, open the Drive app, find the file, and download it.</li>
+        </ul>
+      </li>
+      <li>On the phone, open Files or Drive and tap <span class="file">Streets-of-Roanoke-1.8.0-debug.apk</span>. If Android asks, turn on <strong>Install unknown apps</strong> for the app that opened it (Files, Drive, or Chrome), then go back and tap the <span class="file">.apk</span> again.</li>
+      <li>Tap <strong>Install</strong>, then <strong>Open</strong>.</li>
+    </ol>
+
+    <h2 id="trouble">Troubleshooting</h2>
+
+    <h3>Only part 1 downloaded, or a missing-part error</h3>
+    <p>ZArchiver or 7-Zip says it cannot find the next volume, "Unexpected end of archive", "Missing volume", or something similar. Part 1 is not the whole app. The other five parts have to sit beside it.</p>
+    <ul>
+      <li>Count the files. You need <span class="file">.001</span>, <span class="file">.002</span>, <span class="file">.003</span>, <span class="file">.004</span>, <span class="file">.005</span>, and <span class="file">.006</span> in one folder, with those exact names.</li>
+      <li>Compare sizes with the list above. A part that is much smaller did not finish. Delete that file and download it again from its link.</li>
+      <li>Do not rename <span class="file">.001</span> to <span class="file">.zip</span> or <span class="file">.7z</span>. Do not extract a part other than <span class="file">.001</span>.</li>
+      <li>On a phone, a second try sometimes saves <span class="file">Streets-of-Roanoke-1.8.0-apk.7z.001 (1)</span>. That copy is not part of the set. Delete the broken download and keep one complete set in Downloads.</li>
+      <li>Start the extract again from <span class="file">Streets-of-Roanoke-1.8.0-apk.7z.001</span> only, after all six files are in that folder.</li>
+    </ul>
+
+    <h3>"App not installed"</h3>
+    <p>Android got as far as the <span class="file">.apk</span> and then stopped with <strong>App not installed</strong>.</p>
+    <ul>
+      <li>An older Streets of Roanoke or Star City Drift app is already installed, and it was <strong>signed differently</strong>, so Android will not replace it. Uninstall the old copy first: <strong>Settings → Apps → Streets of Roanoke</strong> (or <strong>Star City Drift</strong>) → <strong>Uninstall</strong>. Then tap <span class="file">Streets-of-Roanoke-1.8.0-debug.apk</span> again. Uninstalling removes that old app's saved data, so only do this when install-over fails.</li>
+      <li>Free about <strong>400 MB</strong> of storage. The download is about 130 MB, and Android needs extra room to unpack the app. Check <strong>Settings → Storage</strong>, remove files you do not need, and tap Install again.</li>
+      <li>You have to install <span class="file">Streets-of-Roanoke-1.8.0-debug.apk</span>. Tapping a <span class="file">.7z.001</span> file will not install the game.</li>
+    </ul>
+
+    <h3>Play Protect warning</h3>
+    <p>Google Play Protect may warn you, or say the app was blocked, because this app did not come from the Play Store. Tap <strong>More details</strong>, then <strong>Install anyway</strong>. This is the Streets of Roanoke 1.8.0 build published with the game.</p>
+
+    <h3>Saves and later updates</h3>
+    <p>When this version installs over an older Streets of Roanoke app, your old saves carry over. You do not start the story again.</p>
+    <p>After the app is on the phone, later game updates install themselves when you are online. You do not download the six parts again for a normal update.</p>
+
+    <footer>
+      <a href="https://matthewro2007-blip.github.io/Star-city-drift/">Play Streets of Roanoke in the browser</a>
+    </footer>
+  </div>
+</body>
+</html>
