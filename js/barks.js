@@ -281,6 +281,24 @@ export const BARKS = {
     last_one: [{ id: 'cr_l1', text: "Union break! I'm on break!" }, { id: 'cr_l2', text: "Tell the Foreman I tried!" }]
   },
 
+  // 2.0.1 Blackriver (2028): Cinder Hollow correctional officers (all pr_* areas) + the Lockkeeper's people outside the walls
+  co_guard: {
+    spot: [{ id: 'co_sp1', text: "C-14's out of his cell! Lock it down!" }, { id: 'co_sp2', text: "Boone! On the floor, hands where I can see 'em!" }, { id: 'co_sp3', text: "Control, we've got a runner in Block C!" }],
+    taunt: [{ id: 'co_t1', text: "Two years in, Boone. You want ten more?" }, { id: 'co_t2', text: "Nobody walks out of Cinder Hollow. Nobody." }, { id: 'co_t3', text: "Nice jumpsuit. Orange is your color." }],
+    hurt: [{ id: 'co_h1', text: "Ow! Old man still swings!" }, { id: 'co_h2', text: "That's assault on an officer, Boone!" }],
+    knocked_down: [{ id: 'co_k1', text: "Officer down... it's me, I'm the officer..." }, { id: 'co_k2', text: "Somebody hit the alarm..." }],
+    kill_ko: [{ id: 'co_ko1', text: "He dropped Delaney! Call it in!" }, { id: 'co_ko2', text: "Man down in Block C! Send backup!" }],
+    last_one: [{ id: 'co_l1', text: "I'm not paid enough for this. I'm calling Control." }, { id: 'co_l2', text: "Fine, run! The dogs'll find you by morning." }]
+  },
+  lk_crew: {
+    spot: [{ id: 'lk_sp1', text: "That's him. Boone. The one the Lockkeeper's been asking about." }, { id: 'lk_sp2', text: "Escaped con in a red suit. Can't miss him." }],
+    taunt: [{ id: 'lk_t1', text: "Every door in this city has a key. He's got all of 'em." }, { id: 'lk_t2', text: "You were the big man once, Boone. That was 2026." }],
+    hurt: [{ id: 'lk_h1', text: "Ow! Somebody tell Voss!" }, { id: 'lk_h2', text: "He's faster than he looks!" }],
+    knocked_down: [{ id: 'lk_k1', text: "Nobody said he could still fight..." }],
+    kill_ko: [{ id: 'lk_ko1', text: "He got Teddy! Close in!" }],
+    last_one: [{ id: 'lk_l1', text: "Forget this. The Lockkeeper can collect him himself." }, { id: 'lk_l2', text: "I'm out. Tell Voss I quit." }]
+  },
+
   // ---------------- bosses ----------------
   silas_boss: {
     intro: [{ id: 'sb_in1', text: "Evening, son. Let's settle this like gentlemen." }, { id: 'sb_in2', text: "You climbed a mountain to lose. Admirable." }],
@@ -292,6 +310,21 @@ export const BARKS = {
     hurt: [{ id: 'sb_h1', text: "Hm. Not bad." }, { id: 'sb_h2', text: "That'll cost you." }],
     player_low_hp: [{ id: 'sb_l1', text: "Rest a spell. This town was mine long before you." }],
     defeat: [{ id: 'sb_d1', text: "Fine work... but Roanoke always remembers." }, { id: 'sb_d2', text: "Well. Someone pass me my hat." }]
+  },
+  voss: {
+    intro: [{ id: 'vo_in1', text: "Silas Boone. They told me you'd be shorter." }, { id: 'vo_in2', text: "Every lock clicks open eventually, old man. So do you." }],
+    taunt: [{ id: 'vo_t1', text: "I'm a tumbler, Boone. I turn. I always turn." }, { id: 'vo_t2', text: "The Lockkeeper says hello. That's the polite part." }, { id: 'vo_t3', text: "Out two days and already you're bleeding money." }],
+    phase: [{ id: 'vo_p1', text: "Okay. Gloves off. Keys out." }],
+    hurt: [{ id: 'vo_h1', text: "Hey! That's my good scarf!" }],
+    player_low_hp: [{ id: 'vo_l1', text: "Stay down. Go back to your cell where it's warm." }],
+    defeat: [{ id: 'vo_d1', text: "You won't find him. He finds you." }, { id: 'vo_d2', text: "Fine... fine. The rail yard. Midnight. He'll be waiting." }]
+  },
+  lockkeeper: {
+    intro: [{ id: 'lk_in1', text: "You never did lock your doors, Silas." }, { id: 'lk_in2', text: "Every key in Star City passes through my hands." }],
+    taunt: [{ id: 'lk_bt1', text: "You built this city's locks. I built the keys." }, { id: 'lk_bt2', text: "Two years is a long time to think. Did you learn anything?" }],
+    phase: [{ id: 'lk_bp1', text: "Enough. Let's see what's under the suit." }],
+    hurt: [{ id: 'lk_bh1', text: "Hm. Still sharp." }],
+    defeat: [{ id: 'lk_bd1', text: "Take the ring. You'll still need the door." }]
   },
   vera: {
     intro: [{ id: 've_in1', text: "Silas. I have a file on you, too." }, { id: 've_in2', text: "You want the lamp? Come and take it." }],
@@ -316,6 +349,15 @@ export const BARKS = {
     defeat: [{ id: 'fo_d1', text: "Fine... the yard's yours... for now." }, { id: 'fo_d2', text: "Somebody... call... the union..." }]
   }
 };
+
+// 2.0.1: guard variants = the shared C.O. pool + one or two lines of their own
+{
+  const base = BARKS.co_guard, shared = (t) => (base[t] || []).map((l) => ({ ...l, vo: 'co_guard' }));
+  const variant = (extra) => { const o = {}; for (const t of Object.keys(base)) o[t] = shared(t); for (const [t, ls] of Object.entries(extra)) o[t] = [...(o[t] || []), ...ls]; return o; };
+  BARKS.co_guard_riot = variant({ spot: [{ id: 'co_rt1', text: 'Shields up! Push him back to his cell!' }] });
+  BARKS.co_guard_baton = variant({ taunt: [{ id: 'co_bt1', text: 'Lights out was an hour ago, Boone.' }] });
+  BARKS.co_guard_sgt = variant({ spot: [{ id: 'co_sg1', text: 'All units, Block C! C-14 is loose! Nobody gets past the yard gate!' }], last_one: [{ id: 'co_sg2', text: "Seal the yard. He's not getting over that wall." }] });
+}
 
 // ---------------- settings ----------------
 export const SETTINGS_KEY = 'sor_barks_settings';
@@ -379,7 +421,7 @@ function playAudio(charId, line) {
   if (!VO_ENABLED) return;
   // VO-HOOK: manifest id = bark.<charId>.<line.id>; never talks over a dialogue/scene line; missing clip = silent, bubble/subtitle still shows
   if (voBusy()) return;
-  voPlay(`bark.${charId}.${line.id}`);
+  voPlay(`bark.${line.vo || charId}.${line.id}`); // 2.0.1: variant pools reuse co_guard clips (line.vo)
 }
 // VO-HOOK: js/vo.js loads assets/vo/manifest.json on first use (Bob's loadManifest/voBase above are unused now)
 
@@ -389,7 +431,7 @@ const PRI = { story: 3, intro: 3, phase: 3, defeat: 3, player_low_hp: 3, greet: 
 const COMBAT = new Set(['spot', 'taunt', 'hurt', 'knocked_down', 'kill_ko', 'last_one', 'intro', 'phase', 'defeat', 'player_low_hp']);
 const NAME = { dee: 'DEE', priya: 'PRIYA', hank: 'HANK', june: 'JUNE', tessa: 'TESSA', coach: 'COACH', cam: 'CAM', wren: 'WREN', marcus: 'MARCUS', dlc_marcus: 'MARCUS', silas: 'SILAS',
   dlc_dee: 'DEE', dlc_priya: 'PRIYA', dlc_cam: 'CAM', lou: 'LOU', ivy: 'IVY', gus: 'GUS', pip: 'PIP',
-  thug_slick: 'THUG', thug_hot: 'THUG', thug_grunt: 'THUG', crew: 'CREW', silas_boss: 'SILAS', vera: 'VERA', foreman: 'FOREMAN' };
+  thug_slick: 'THUG', thug_hot: 'THUG', thug_grunt: 'THUG', crew: 'CREW', co_guard: 'C.O.', co_guard_riot: 'RIOT C.O.', co_guard_baton: 'C.O.', co_guard_sgt: 'SGT.', lk_crew: 'CREW', voss: 'VOSS', lockkeeper: 'LOCKKEEPER', silas_boss: 'SILAS', vera: 'VERA', foreman: 'FOREMAN' };
 const GREET_R = 140, LEAVE_R = 190;
 
 let cur = null;            // { charId, key, trigger, text, kind, t, hold, ent }
@@ -466,13 +508,17 @@ function silent(gs) {
 }
 
 function thugPool(e, dlc) {
+  if (e.guard) return e.variant && BARKS['co_guard_' + e.variant] ? 'co_guard_' + e.variant : 'co_guard'; // 2.0.1 Blackriver C.O.s
+  if (e.lkCrew) return 'lk_crew'; // 2.0.1 the Lockkeeper's people
   if (dlc || e.crew) return 'crew';
   const c = (e.color || '').toLowerCase();
   if (c === '#8e44ad' || c === '#16a085') return 'thug_slick';
   if (c === '#c0392b' || c === '#d35400') return 'thug_hot';
   return 'thug_grunt';
 }
-function bossId(e) { return e.charKey === 'vera' ? 'vera' : e.charKey === 'foreman' ? 'foreman' : 'silas_boss'; }
+/** 2.0.1: Blackriver mini-bosses (Voss, the Lockkeeper) count as bosses for barks. */
+const isB = (e) => !!(e.isBoss || e.who === 'voss' || e.who === 'lockkeeper');
+function bossId(e) { if (e.who === 'voss' || e.who === 'lockkeeper') return e.who; return e.charKey === 'vera' ? 'vera' : e.charKey === 'foreman' ? 'foreman' : 'silas_boss'; }
 const kindOf = (bid) => (bid === 'silas' ? 'boss' : 'friend');
 function npcBarkId(n, dlc) { if (!dlc) return n.id; return BARKS['dlc_' + n.id] ? 'dlc_' + n.id : n.id; }
 
@@ -497,31 +543,31 @@ export function updateBarks(dt, o) {
   const combatNow = alive.length > 0;
   for (const e of foes) {
     let m = enemyMem.get(e);
-    const id = e.isBoss ? bossId(e) : thugPool(e, dlc);
-    if (!e.__barkKey) Object.defineProperty(e, '__barkKey', { value: e.isBoss ? id : `${id}#${Math.random().toString(36).slice(2, 7)}`, enumerable: false });
+    const id = isB(e) ? bossId(e) : thugPool(e, dlc); // 2.0.1: Blackriver mini-bosses speak their own lines
+    if (!e.__barkKey) Object.defineProperty(e, '__barkKey', { value: isB(e) ? id : `${id}#${Math.random().toString(36).slice(2, 7)}`, enumerable: false });
     if (!m) {
       m = { hp: e.hp, alive: e.alive, kd: false, seen: false, phase: false, tauntAt: clock + rand(4, 8), hurtAt: 0 };
       enemyMem.set(e, m);
     }
     if (!m.seen && e.alive && onScreen(e)) {
       m.seen = true;
-      if (e.isBoss) say(id, 'intro', e, 'boss', s, { noCool: true });
+      if (isB(e)) say(id, 'intro', e, 'boss', s, { noCool: true });
       else say(id, 'spot', e, 'thug', s, { cd: 30 });
     }
-    if (e.isBoss && e.alive && !m.phase && e.hp <= e.maxHp * 0.5) { if (say(id, 'phase', e, 'boss', s, { noCool: true, force: true })) m.phase = true; }
+    if (isB(e) && e.alive && !m.phase && e.hp <= e.maxHp * 0.5) { if (say(id, 'phase', e, 'boss', s, { noCool: true, force: true })) m.phase = true; }
     else if (e.alive && e.hp < m.hp) {
-      if (clock >= m.hurtAt && Math.random() < 0.25) { m.hurtAt = clock + 1.5; say(id, 'hurt', e, e.isBoss ? 'boss' : 'thug', s, { cd: 1.5 }); }
+      if (clock >= m.hurtAt && Math.random() < 0.25) { m.hurtAt = clock + 1.5; say(id, 'hurt', e, isB(e) ? 'boss' : 'thug', s, { cd: 1.5 }); }
     }
     const kdNow = !!(e.kd && e.kd.phase === 'ground');
-    if (kdNow && !m.kd && e.alive && !e.isBoss) say(id, 'knocked_down', e, 'thug', s, { cd: 8 });
+    if (kdNow && !m.kd && e.alive && !isB(e)) say(id, 'knocked_down', e, 'thug', s, { cd: 8 });
     m.kd = kdNow;
     if (m.alive && !e.alive) {
-      if (e.isBoss) say(id, 'defeat', e, 'boss', s, { noCool: true, force: true });
+      if (isB(e)) say(id, 'defeat', e, 'boss', s, { noCool: true, force: true });
       else {
-        const buddy = alive.find((b) => !b.isBoss);
+        const buddy = alive.find((b) => !isB(b));
         if (buddy) {
           const bid = thugPool(buddy, dlc);
-          if (alive.filter((b) => !b.isBoss).length === 1 && !alive.some((b) => b.isBoss)) say(bid, 'last_one', buddy, 'thug', s, { cd: 20 });
+          if (alive.filter((b) => !isB(b)).length === 1 && !alive.some((b) => isB(b))) say(bid, 'last_one', buddy, 'thug', s, { cd: 20 });
           else say(bid, 'kill_ko', buddy, 'thug', s, { cd: 10 });
         }
       }
