@@ -27,7 +27,7 @@ concurrency:
 
 jobs:
   ipa:
-    runs-on: macos-15
+    runs-on: macos-14 # macos-15 arm64 had no runner capacity for the 2.0.0 job
     timeout-minutes: 45
     defaults:
       run:
