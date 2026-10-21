@@ -41,13 +41,13 @@ const OUTFIT_SHEETS = {
   cinder: 'assets/sprites/matthew_cinder.png'          // 1.7.0: Cinder Hollow Orange (first visit to Silas's cell)       // 1.6.0: Dark Star Suit (beat the main campaign)
 };
 /** Cache-bust for outfit sheets / outfit portraits (bump when sheets are regenerated). */
-const SPRITE_REV = '1.9.0-cutscene';
+const SPRITE_REV = '1.9.1-m2028';
 const vb = (src) => src + (src.includes('?') ? '&' : '?') + 'v=' + SPRITE_REV;
 /** Optional per-outfit HUD/picker busts (112x112); outfits without one use portrait_matthew.png. */
 const OUTFIT_PORTRAITS = { ironclad: 'assets/sprites/portrait_matthew_ironclad.png', silas: 'assets/sprites/portrait_matthew_silas.png' };
 const outfitPortraits = {};
 /** 1.5.0 DLC: per-character HUD busts (112x112) for non-Matthew playable characters. */
-const CHARACTER_PORTRAITS = { silas_player: 'assets/sprites/portrait_silas.png' };
+const CHARACTER_PORTRAITS = { silas_player: 'assets/sprites/portrait_silas.png', silas_c14: 'assets/sprites/portrait_silas.png', silas_red: 'assets/sprites/portrait_silas.png' }; // 2.0.0 Blackriver
 const characterPortraits = {};
 const outfitSheets = {};      // outfitId -> Image (loaded)
 const outfitPending = {};     // outfitId -> true while lazily loading / after failure
@@ -87,6 +87,7 @@ const NPC_SRC = {
   marcus: 'assets/sprites/marcus.png',
   marcus_lockkeeper: 'assets/sprites/marcus_lockkeeper.png',
   matthew_young: 'assets/sprites/matthew_young.png',
+  matthew_2028: 'assets/sprites/matthew_2028.png',   // 1.9.1-m2028: Blackriver DLC NPC (age ~29)
   // 1.9.1: 2015 prequel cast (js/dlc_silas.js CAST): Rosa Calloway + the 2015 selves of the Cinder Hollow inmates
   rosa: 'assets/sprites/rosa.png',
   dora_young: 'assets/sprites/dora_young.png',
@@ -168,7 +169,8 @@ const CHAR_ALIASES = { coachray: 'coach', ray: 'coach', raydelgado: 'coach', dee
   matthewrose: 'matthew', player: 'matthew', hero: 'matthew', runner: 'snatcher', pursesnatcher: 'snatcher',
   // 1.9.0-cutscene (manifest keyAliases are merged in too)
   lockkeeper: 'marcus_lockkeeper', thelockkeeper: 'marcus_lockkeeper', marcushale: 'marcus', kessler: 'foreman', mortkessler: 'foreman',
-  rosacalloway: 'rosa', dorakeene: 'dora', minasolis: 'mina', bartholley: 'bart', ottopike: 'otto' };
+  rosacalloway: 'rosa', dorakeene: 'dora', minasolis: 'mina', bartholley: 'bart', ottopike: 'otto',
+  matthewolder: 'matthew_2028', matthewblackriver: 'matthew_2028' };
 export const ANIM_STATES = {
   matthew: ['idle_signature', 'run', 'sprint', 'combo1', 'combo2', 'combo3', 'jump_kick', 'special',
     'hurt', 'ko', 'victory', 'knockdown_fall', 'knockdown_ground', 'getup'],

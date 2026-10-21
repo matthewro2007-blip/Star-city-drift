@@ -1008,6 +1008,32 @@
     },
     "open": "assets/sprites/portraits/portrait_otto_surprised_open.png"
    }
+  },
+  "matthew_2028": {
+   "neutral": {
+    "files3x": {
+     "closed": "assets/sprites/portraits_3x/portrait_matthew_2028_neutral_closed.png",
+     "open": "assets/sprites/portraits_3x/portrait_matthew_2028_neutral_open.png"
+    },
+    "closed": "assets/sprites/portraits/portrait_matthew_2028_neutral_closed.png",
+    "open": "assets/sprites/portraits/portrait_matthew_2028_neutral_open.png"
+   },
+   "concerned": {
+    "files3x": {
+     "closed": "assets/sprites/portraits_3x/portrait_matthew_2028_concerned_closed.png",
+     "open": "assets/sprites/portraits_3x/portrait_matthew_2028_concerned_open.png"
+    },
+    "closed": "assets/sprites/portraits/portrait_matthew_2028_concerned_closed.png",
+    "open": "assets/sprites/portraits/portrait_matthew_2028_concerned_open.png"
+   },
+   "sad": {
+    "files3x": {
+     "closed": "assets/sprites/portraits_3x/portrait_matthew_2028_concerned_closed.png",
+     "open": "assets/sprites/portraits_3x/portrait_matthew_2028_concerned_open.png"
+    },
+    "closed": "assets/sprites/portraits/portrait_matthew_2028_concerned_closed.png",
+    "open": "assets/sprites/portraits/portrait_matthew_2028_concerned_open.png"
+   }
   }
  }
 }

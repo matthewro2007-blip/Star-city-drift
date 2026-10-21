@@ -1,0 +1,34 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><base href="../"><title>Sprite check (sprite lane harness)</title>
+<style>body{margin:0;background:#222;color:#eee;font:12px sans-serif}canvas{display:block;image-rendering:pixelated}</style></head>
+<body><canvas id="c" width="1280" height="720"></canvas><a href="tools/anim_check.html" style="position:fixed;right:8px;top:4px;color:#fc6">animations -></a>
+<script type="module">
+// Harness for the sprite lane: exercises js/sprites.js exactly as the game does
+// (getMatthewSprite / getEnemySprite / getNpcSprite + drawSprite) on a bg plate.
+// Open http://localhost:<port>/tools/sprite_check.html
+import { loadSprites, getMatthewSprite, getEnemySprite, getNpcSprite, drawSprite } from './js/sprites.js';
+const c = document.getElementById('c'), ctx = c.getContext('2d');
+ctx.imageSmoothingEnabled = false;
+const bg = new Image(); bg.src = 'assets/bg/downtown.png';
+const portrait = new Image(); portrait.src = 'assets/sprites/portrait_matthew.png';
+await Promise.all([loadSprites(), bg.decode(), portrait.decode()]);
+const OUTFITS = ['polo', 'photo', 'hoodie', 'jacket', 'street', 'varsity', 'mechanic', 'diner', 'gold', 'webslinger', 'beacon', 'ironclad'];
+const POSES = ['idle', 'walk', 'punch', 'kick', 'hurt'];
+const THUGS = ['#8e44ad', '#c0392b', '#16a085', '#d35400', '#7f8c8d'];
+const NPCS = ['dee', 'priya', 'hank', 'june', 'tessa', 'coach', 'cam', 'silas'];
+function frame(t) {
+  ctx.drawImage(bg, 0, 0, bg.width * (720 / 540), 720);
+  ctx.save(); ctx.scale(2, 2);
+  OUTFITS.forEach((o, i) => drawSprite(ctx, getMatthewSprite('idle', o, {}, t), 32 + i * 46, 120, 1));
+  POSES.forEach((p, i) => drawSprite(ctx, getMatthewSprite(p, 'gold', {}, p === 'punch' ? 0.2 : t), 494 + i * 34, 120, 1));
+  THUGS.forEach((col, i) => drawSprite(ctx, getEnemySprite(i % 2 ? 'punch' : 'walk', col, t + i, false), 40 + i * 60, 235, -1));
+  ['idle', 'walk', 'punch', 'hurt'].forEach((p, i) => drawSprite(ctx, getEnemySprite(p, '#2c3e50', p === 'punch' ? 0.2 : t, true), 360 + i * 60, 235, -1));
+  NPCS.forEach((n, i) => drawSprite(ctx, getNpcSprite(n, '#888', t), 40 + i * 70, 350, 1));
+  ctx.restore();
+  ctx.drawImage(portrait, 1160, 600);
+  ctx.fillStyle = '#fff'; ctx.fillText('outfits: ' + OUTFITS.join(' / ') + '   |   gold poses   |   thugs + Silas sheets   |   NPC stills', 10, 14);
+}
+let t0 = performance.now();
+(function loop() { frame((performance.now() - t0) / 1000); requestAnimationFrame(loop); })();
+window.__spriteCheckReady = true;
+</script></body></html>

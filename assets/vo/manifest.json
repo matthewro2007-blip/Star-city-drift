@@ -190,7 +190,7 @@
    "char": "tessa",
    "speaker": "tessa",
    "scene": "npc.tessa",
-   "text": "Stuff's stashed all over town — check the far ends of every street. Some fits, some just cool junk. Go get 'em.",
+   "text": "Stuff's stashed all over town \u2014 check the far ends of every street. Some fits, some just cool junk. Go get 'em.",
    "file": "tessa/npc.tessa.doneLines.01",
    "durationMs": 6151,
    "source": "js/npcs.js:80",
@@ -220,7 +220,7 @@
    "char": "coach",
    "speaker": "coach",
    "scene": "npc.coach",
-   "text": "Package goes to the River Bridge — right past the Rail Yards. Move those feet!",
+   "text": "Package goes to the River Bridge \u2014 right past the Rail Yards. Move those feet!",
    "file": "coach/npc.coach.activeLines.01",
    "durationMs": 4529,
    "source": "js/npcs.js:94",
@@ -610,7 +610,7 @@
    "char": "wren",
    "speaker": "wren",
    "scene": "mission.side_snatch",
-   "text": "He went that way — east! Go go go!",
+   "text": "He went that way \u2014 east! Go go go!",
    "file": "wren/mission.side_snatch.active.01",
    "durationMs": 2356,
    "source": "js/missions.js:79",
@@ -680,7 +680,7 @@
    "char": "dee",
    "speaker": "dee",
    "scene": "mission.side_potluck",
-   "text": "One peach pie for June. Hold it level, Matthew — LEVEL.",
+   "text": "One peach pie for June. Hold it level, Matthew \u2014 LEVEL.",
    "file": "dee/mission.side_potluck.item_pie",
    "durationMs": 3484,
    "source": "js/missions.js:101",
@@ -710,7 +710,7 @@
    "char": "coach",
    "speaker": "coach",
    "scene": "mission.side_spar",
-   "text": "Delivery was quick. But can you take a punch? Better question — can you NOT take one?",
+   "text": "Delivery was quick. But can you take a punch? Better question \u2014 can you NOT take one?",
    "file": "coach/mission.side_spar.offer.01",
    "durationMs": 5895,
    "source": "js/missions.js:120",
@@ -1030,7 +1030,7 @@
    "char": "ivy",
    "speaker": "ivy",
    "scene": "dlc.m2",
-   "text": "Wait… the page with all the names is missing.",
+   "text": "Wait\u2026 the page with all the names is missing.",
    "file": "ivy/dlc.m2.s2.03",
    "durationMs": 2567,
    "source": "js/dlc_silas.js:134",
@@ -1040,7 +1040,7 @@
    "char": "silas_boone",
    "speaker": "silas",
    "scene": "dlc.m2",
-   "text": "Pages go missing in this town. His freight comes through the Rail Yards… second shift, wasn't it?",
+   "text": "Pages go missing in this town. His freight comes through the Rail Yards\u2026 second shift, wasn't it?",
    "file": "silas_boone/dlc.m2.s2.04",
    "durationMs": 6961,
    "source": "js/dlc_silas.js:135",
@@ -1050,7 +1050,7 @@
    "char": "ivy",
    "speaker": "ivy",
    "scene": "dlc.m2",
-   "text": "How did you — never mind. I didn't say anything.",
+   "text": "How did you \u2014 never mind. I didn't say anything.",
    "file": "ivy/dlc.m2.s2.05",
    "durationMs": 2275,
    "source": "js/dlc_silas.js:136",
@@ -1080,7 +1080,7 @@
    "char": "gus",
    "speaker": "gus",
    "scene": "dlc.m3",
-   "text": "The Foreman's outfit. Two patrol cars park by the gate and look the other way. Listen —",
+   "text": "The Foreman's outfit. Two patrol cars park by the gate and look the other way. Listen \u2014",
    "file": "gus/dlc.m3.s0.03",
    "durationMs": 4935,
    "source": "js/dlc_silas.js:150",
@@ -1130,7 +1130,7 @@
    "char": "gus",
    "speaker": "gus",
    "scene": "dlc.m3",
-   "text": "'S.B. — 2nd shift.' There you go. Mind the bridge, somebody's been signaling from it.",
+   "text": "'S.B. \u2014 2nd shift.' There you go. Mind the bridge, somebody's been signaling from it.",
    "file": "gus/dlc.m3.s2.07",
    "durationMs": 4721,
    "source": "js/dlc_silas.js:160",
@@ -1290,7 +1290,7 @@
    "char": "silas_boone",
    "speaker": "silas",
    "scene": "dlc.m6",
-   "text": "The Foreman's ledger goes in the folder… and every name in it now owes me.",
+   "text": "The Foreman's ledger goes in the folder\u2026 and every name in it now owes me.",
    "file": "silas_boone/dlc.m6.s3.02",
    "durationMs": 5340,
    "source": "js/dlc_silas.js:213",
@@ -4310,7 +4310,7 @@
    "char": "matthew_young",
    "speaker": "matthew_young",
    "scene": "dlc1_m1_kid",
-   "text": "That was— you just— they ran.",
+   "text": "That was\u2014 you just\u2014 they ran.",
    "file": "matthew_young/vo_matthew_young_dlc1_m1_kid_l01",
    "durationMs": 1646,
    "source": "js/scenes_silas.js:45",
@@ -4430,7 +4430,7 @@
    "char": "silas_boone",
    "speaker": "silas",
    "scene": "dlc1_m4_vera_after",
-   "text": "…My lantern. It went under the rail. Leave it. Lanterns are for being found.",
+   "text": "\u2026My lantern. It went under the rail. Leave it. Lanterns are for being found.",
    "file": "silas_boone/vo_silas_dlc1_m4_vera_after_l03",
    "durationMs": 5367,
    "source": "js/scenes_silas.js:191",
@@ -4454,7 +4454,7 @@
    "char": "silas_boone",
    "speaker": "silas",
    "scene": "dlc1_m4_marcus",
-   "text": "Your secret is safe with me, Mr. …?",
+   "text": "Your secret is safe with me, Mr. \u2026?",
    "file": "silas_boone/vo_silas_dlc1_m4_marcus_l02",
    "durationMs": 2338,
    "source": "js/scenes_silas.js:244",
@@ -5301,6 +5301,537 @@
    "hash": "87a4cffecd1fd121",
    "delivery": "dry",
    "speedMul": 1
+  },
+  "br.lockkeeper.01": {
+   "char": "lockkeeper",
+   "speaker": "lockkeeper",
+   "scene": "br.talk",
+   "text": "Every lock in this city has a key, Silas. I just collect them.",
+   "file": "blackriver/br.lockkeeper.01",
+   "durationMs": 4032,
+   "source": "kokoro-v1.0 (Blackriver 2.0.0 WIP)"
+  },
+  "br.silas.01": {
+   "char": "silas",
+   "speaker": "silas",
+   "scene": "br.talk",
+   "text": "So you are the one who sent the library book. I would like to thank you in person.",
+   "file": "blackriver/br.silas.01",
+   "durationMs": 5248,
+   "source": "kokoro-v1.0 (Blackriver 2.0.0 WIP)"
+  },
+  "br.lockkeeper.02": {
+   "char": "lockkeeper",
+   "speaker": "lockkeeper",
+   "scene": "br.talk",
+   "text": "You owe me a door, old man. Walk through it.",
+   "file": "blackriver/br.lockkeeper.02",
+   "durationMs": 2666,
+   "source": "kokoro-v1.0 (Blackriver 2.0.0 WIP)"
+  },
+  "br.pruitt.01": {
+   "char": "pruitt",
+   "speaker": "pruitt",
+   "scene": "br.talk",
+   "text": "Control, this is Block C. Runner in the yard. Gray hair, headed for the wall!",
+   "file": "blackriver/br.pruitt.01",
+   "durationMs": 3904,
+   "source": "kokoro-v1.0 (Blackriver 2.0.0 WIP)"
+  },
+  "br.silas.02": {
+   "char": "silas",
+   "speaker": "silas",
+   "scene": "br.talk",
+   "text": "Two years, Officer Pruitt. Do give my regards to the blanket.",
+   "file": "blackriver/br.silas.02",
+   "durationMs": 4757,
+   "source": "kokoro-v1.0 (Blackriver 2.0.0 WIP)"
+  },
+  "br.hank.01": {
+   "char": "hank",
+   "speaker": "hank",
+   "scene": "br.talk",
+   "text": "Silas Boone. In an orange suit. I retired too early.",
+   "file": "blackriver/br.hank.01",
+   "durationMs": 4160,
+   "source": "kokoro-v1.0 (Blackriver 2.0.0 WIP)"
+  },
+  "br.silas.03": {
+   "char": "silas",
+   "speaker": "silas",
+   "scene": "br.talk",
+   "text": "Mr. Pettigrew. Who runs my old yard?",
+   "file": "blackriver/br.silas.03",
+   "durationMs": 3626,
+   "source": "kokoro-v1.0 (Blackriver 2.0.0 WIP)"
+  },
+  "br.hank.02": {
+   "char": "hank",
+   "speaker": "hank",
+   "scene": "br.talk",
+   "text": "Nobody you know. Masked fella. His crew collects keys, not money. Every vault and lockbox in Roanoke.",
+   "file": "blackriver/br.hank.02",
+   "durationMs": 7445,
+   "source": "kokoro-v1.0 (Blackriver 2.0.0 WIP)"
+  },
+  "br.silas.04": {
+   "char": "silas",
+   "speaker": "silas",
+   "scene": "br.talk",
+   "text": "Keys. How very patient of him.",
+   "file": "blackriver/br.silas.04",
+   "durationMs": 2453,
+   "source": "kokoro-v1.0 (Blackriver 2.0.0 WIP)"
+  },
+  "br.ida.01": {
+   "char": "ida",
+   "speaker": "ida",
+   "scene": "br.talk",
+   "text": "Silas Boone. Twelve years ago you told me my shop was a fire risk. I told you to get out.",
+   "file": "blackriver/br.ida.01",
+   "durationMs": 5674,
+   "source": "kokoro-v1.0 (Blackriver 2.0.0 WIP)"
+  },
+  "br.silas.05": {
+   "char": "silas",
+   "speaker": "silas",
+   "scene": "br.talk",
+   "text": "I remember, Mrs. Vance. You were the only one who did.",
+   "file": "blackriver/br.silas.05",
+   "durationMs": 4522,
+   "source": "kokoro-v1.0 (Blackriver 2.0.0 WIP)"
+  },
+  "br.ida.02": {
+   "char": "ida",
+   "speaker": "ida",
+   "scene": "br.talk",
+   "text": "So why should I sew you anything?",
+   "file": "blackriver/br.ida.02",
+   "durationMs": 1920,
+   "source": "kokoro-v1.0 (Blackriver 2.0.0 WIP)"
+  },
+  "br.silas.06": {
+   "char": "silas",
+   "speaker": "silas",
+   "scene": "br.talk",
+   "text": "Because I can pay, and because you would like to see what I do next.",
+   "file": "blackriver/br.silas.06",
+   "durationMs": 3989,
+   "source": "kokoro-v1.0 (Blackriver 2.0.0 WIP)"
+  },
+  "br.ida.03": {
+   "char": "ida",
+   "speaker": "ida",
+   "scene": "br.talk",
+   "text": "Red, then. If you are going to be a problem, be a visible one.",
+   "file": "blackriver/br.ida.03",
+   "durationMs": 3584,
+   "source": "kokoro-v1.0 (Blackriver 2.0.0 WIP)"
+  },
+  "br.silas.07": {
+   "char": "silas",
+   "speaker": "silas",
+   "scene": "br.talk",
+   "text": "Blackriver. That is what the crate stamps say. The same name Matthew asked me about.",
+   "file": "blackriver/br.silas.07",
+   "durationMs": 5184,
+   "source": "kokoro-v1.0 (Blackriver 2.0.0 WIP)"
+  },
+  "br.silas.08": {
+   "char": "silas",
+   "speaker": "silas",
+   "scene": "br.talk",
+   "text": "And there he is, across the street. Older. Tired. Still looking out for everyone.",
+   "file": "blackriver/br.silas.08",
+   "durationMs": 5269,
+   "source": "kokoro-v1.0 (Blackriver 2.0.0 WIP)"
+  },
+  "br.silas.09": {
+   "char": "silas",
+   "speaker": "silas",
+   "scene": "br.talk",
+   "text": "Not tonight, Matthew. Tonight I am busy.",
+   "file": "blackriver/br.silas.09",
+   "durationMs": 3072,
+   "source": "kokoro-v1.0 (Blackriver 2.0.0 WIP)"
+  },
+  "br.voss.01": {
+   "char": "voss",
+   "speaker": "voss",
+   "scene": "br.talk",
+   "text": "The boss said you would come up here. Old men like their memories.",
+   "file": "blackriver/br.voss.01",
+   "durationMs": 3221,
+   "source": "kokoro-v1.0 (Blackriver 2.0.0 WIP)"
+  },
+  "br.silas.10": {
+   "char": "silas",
+   "speaker": "silas",
+   "scene": "br.talk",
+   "text": "And young men like their bosses. Shall we?",
+   "file": "blackriver/br.silas.10",
+   "durationMs": 2986,
+   "source": "kokoro-v1.0 (Blackriver 2.0.0 WIP)"
+  },
+  "br.voss.02": {
+   "char": "voss",
+   "speaker": "voss",
+   "scene": "br.talk",
+   "text": "Fine. Take the ledger. He gets his tools from the river. Not from us.",
+   "file": "blackriver/br.voss.02",
+   "durationMs": 3882,
+   "source": "kokoro-v1.0 (Blackriver 2.0.0 WIP)"
+  },
+  "br.silas.11": {
+   "char": "silas",
+   "speaker": "silas",
+   "scene": "br.talk",
+   "text": "A supplier. Every lock has a maker, Mr. Voss.",
+   "file": "blackriver/br.silas.11",
+   "durationMs": 3669,
+   "source": "kokoro-v1.0 (Blackriver 2.0.0 WIP)"
+  },
+  "br.thorne.01": {
+   "char": "thorne",
+   "speaker": "thorne",
+   "scene": "br.talk",
+   "text": "Mr. Boone. Celia Thorne, Blackriver. You took our tools and used every one. We were impressed.",
+   "file": "blackriver/br.thorne.01",
+   "durationMs": 5568,
+   "source": "kokoro-v1.0 (Blackriver 2.0.0 WIP)"
+  },
+  "br.silas.12": {
+   "char": "silas",
+   "speaker": "silas",
+   "scene": "br.talk",
+   "text": "You broke me out to see what I would do.",
+   "file": "blackriver/br.silas.12",
+   "durationMs": 2517,
+   "source": "kokoro-v1.0 (Blackriver 2.0.0 WIP)"
+  },
+  "br.thorne.02": {
+   "char": "thorne",
+   "speaker": "thorne",
+   "scene": "br.talk",
+   "text": "We broke you out to see if you were still worth anything. Our contractors will finish the interview.",
+   "file": "blackriver/br.thorne.02",
+   "durationMs": 5482,
+   "source": "kokoro-v1.0 (Blackriver 2.0.0 WIP)"
+  },
+  "br.thorne.03": {
+   "char": "thorne",
+   "speaker": "thorne",
+   "scene": "br.talk",
+   "text": "Good. One last question. The Lockkeeper works for us too, and he has started keeping keys for himself.",
+   "file": "blackriver/br.thorne.03",
+   "durationMs": 6144,
+   "source": "kokoro-v1.0 (Blackriver 2.0.0 WIP)"
+  },
+  "br.silas.13": {
+   "char": "silas",
+   "speaker": "silas",
+   "scene": "br.talk",
+   "text": "Then he and I should talk. On the roof, I assume.",
+   "file": "blackriver/br.silas.13",
+   "durationMs": 3498,
+   "source": "kokoro-v1.0 (Blackriver 2.0.0 WIP)"
+  },
+  "br.lockkeeper.03": {
+   "char": "lockkeeper",
+   "speaker": "lockkeeper",
+   "scene": "br.talk",
+   "text": "You were supposed to be my key, Silas. Not their errand boy.",
+   "file": "blackriver/br.lockkeeper.03",
+   "durationMs": 3861,
+   "source": "kokoro-v1.0 (Blackriver 2.0.0 WIP)"
+  },
+  "br.silas.14": {
+   "char": "silas",
+   "speaker": "silas",
+   "scene": "br.talk",
+   "text": "Take off the mask. I would like to see who thinks he can hold my leash.",
+   "file": "blackriver/br.silas.14",
+   "durationMs": 4821,
+   "source": "kokoro-v1.0 (Blackriver 2.0.0 WIP)"
+  },
+  "br.hank.03": {
+   "char": "hank",
+   "speaker": "hank",
+   "scene": "br.talk",
+   "text": "I log trains now, not crooks. Mostly.",
+   "file": "blackriver/br.hank.03",
+   "durationMs": 3114,
+   "source": "kokoro-v1.0 (Blackriver 2.0.0 WIP)"
+  },
+  "br.ida.04": {
+   "char": "ida",
+   "speaker": "ida",
+   "scene": "br.talk",
+   "text": "The suit is paid for. Try not to bleed on it. Metaphorically.",
+   "file": "blackriver/br.ida.04",
+   "durationMs": 3946,
+   "source": "kokoro-v1.0 (Blackriver 2.0.0 WIP)"
+  },
+  "br.pruitt.02": {
+   "char": "pruitt",
+   "speaker": "pruitt",
+   "scene": "br.talk",
+   "text": "Visiting hours are over, sir.",
+   "file": "blackriver/br.pruitt.02",
+   "durationMs": 1109,
+   "source": "kokoro-v1.0 (Blackriver 2.0.0 WIP)"
+  },
+  "br.pruitt.03": {
+   "char": "pruitt",
+   "speaker": "pruitt",
+   "scene": "br_visiting_hours",
+   "text": "Fifteen minutes. Hands where I can see them, C-14.",
+   "file": "blackriver/br.pruitt.03",
+   "durationMs": 2858,
+   "source": "kokoro-v1.0 (Blackriver 2.0.0 WIP)"
+  },
+  "br.silas.15": {
+   "char": "silas",
+   "speaker": "silas",
+   "scene": "br_visiting_hours",
+   "text": "Matthew Rose. Two years, and you finally use the bus pass.",
+   "file": "blackriver/br.silas.15",
+   "durationMs": 4032,
+   "source": "kokoro-v1.0 (Blackriver 2.0.0 WIP)"
+  },
+  "br.matthew.01": {
+   "char": "matthew",
+   "speaker": "matthew",
+   "scene": "br_visiting_hours",
+   "text": "I didn't come for small talk, Silas.",
+   "file": "blackriver/br.matthew.01",
+   "durationMs": 2368,
+   "source": "kokoro-v1.0 (Blackriver 2.0.0 WIP)"
+  },
+  "br.silas.16": {
+   "char": "silas",
+   "speaker": "silas",
+   "scene": "br_visiting_hours",
+   "text": "No. You look like a man who hasn't slept since the Star came back on.",
+   "file": "blackriver/br.silas.16",
+   "durationMs": 4096,
+   "source": "kokoro-v1.0 (Blackriver 2.0.0 WIP)"
+  },
+  "br.matthew.02": {
+   "char": "matthew",
+   "speaker": "matthew",
+   "scene": "br_visiting_hours",
+   "text": "Two years I've been cleaning up after you. Burned-out shops. Families who lost everything to your loans. People still scared to open their own doors.",
+   "file": "blackriver/br.matthew.02",
+   "durationMs": 10005,
+   "source": "kokoro-v1.0 (Blackriver 2.0.0 WIP)"
+  },
+  "br.matthew.03": {
+   "char": "matthew",
+   "speaker": "matthew",
+   "scene": "br_visiting_hours",
+   "text": "Every time we close one hole, someone else is already digging the next one. Same way you did it. Better money.",
+   "file": "blackriver/br.matthew.03",
+   "durationMs": 6826,
+   "source": "kokoro-v1.0 (Blackriver 2.0.0 WIP)"
+  },
+  "br.silas.17": {
+   "char": "silas",
+   "speaker": "silas",
+   "scene": "br_visiting_hours",
+   "text": "Imitation. I'd be flattered if it weren't so sloppy.",
+   "file": "blackriver/br.silas.17",
+   "durationMs": 3520,
+   "source": "kokoro-v1.0 (Blackriver 2.0.0 WIP)"
+  },
+  "br.matthew.04": {
+   "char": "matthew",
+   "speaker": "matthew",
+   "scene": "br_visiting_hours",
+   "text": "Blackriver. That name's on every one of them. Do you know anything about Blackriver?",
+   "file": "blackriver/br.matthew.04",
+   "durationMs": 5333,
+   "source": "kokoro-v1.0 (Blackriver 2.0.0 WIP)"
+  },
+  "br.silas.18": {
+   "char": "silas",
+   "speaker": "silas",
+   "scene": "br_visiting_hours",
+   "text": "I know a great many names, Matthew. Most of them owed me money.",
+   "file": "blackriver/br.silas.18",
+   "durationMs": 3861,
+   "source": "kokoro-v1.0 (Blackriver 2.0.0 WIP)"
+  },
+  "br.matthew.05": {
+   "char": "matthew",
+   "speaker": "matthew",
+   "scene": "br_visiting_hours",
+   "text": "That's not an answer.",
+   "file": "blackriver/br.matthew.05",
+   "durationMs": 1514,
+   "source": "kokoro-v1.0 (Blackriver 2.0.0 WIP)"
+  },
+  "br.silas.19": {
+   "char": "silas",
+   "speaker": "silas",
+   "scene": "br_visiting_hours",
+   "text": "It's the only one the state of Virginia lets me give for free.",
+   "file": "blackriver/br.silas.19",
+   "durationMs": 3861,
+   "source": "kokoro-v1.0 (Blackriver 2.0.0 WIP)"
+  },
+  "br.pruitt.04": {
+   "char": "pruitt",
+   "speaker": "pruitt",
+   "scene": "br_visiting_hours",
+   "text": "Time.",
+   "file": "blackriver/br.pruitt.04",
+   "durationMs": 704,
+   "source": "kokoro-v1.0 (Blackriver 2.0.0 WIP)"
+  },
+  "br.matthew.06": {
+   "char": "matthew",
+   "speaker": "matthew",
+   "scene": "br_visiting_hours",
+   "text": "If you hear anything, you send word. For once in your life, help somebody.",
+   "file": "blackriver/br.matthew.06",
+   "durationMs": 4650,
+   "source": "kokoro-v1.0 (Blackriver 2.0.0 WIP)"
+  },
+  "br.silas.20": {
+   "char": "silas",
+   "speaker": "silas",
+   "scene": "br_visiting_hours",
+   "text": "Go home, Matthew. Get some sleep. Roanoke's going to need you awake.",
+   "file": "blackriver/br.silas.20",
+   "durationMs": 4629,
+   "source": "kokoro-v1.0 (Blackriver 2.0.0 WIP)"
+  },
+  "br.silas.21": {
+   "char": "silas",
+   "speaker": "silas",
+   "scene": "br_visiting_hours",
+   "text": "...Well. Someone's been listening.",
+   "file": "blackriver/br.silas.21",
+   "durationMs": 2261,
+   "source": "kokoro-v1.0 (Blackriver 2.0.0 WIP)"
+  },
+  "br.pruitt.05": {
+   "char": "pruitt",
+   "speaker": "pruitt",
+   "scene": "br_prison_escape",
+   "text": "Lights out, C-14. Two years in, and you still fold your blanket like it's a hotel.",
+   "file": "blackriver/br.pruitt.05",
+   "durationMs": 4309,
+   "source": "kokoro-v1.0 (Blackriver 2.0.0 WIP)"
+  },
+  "br.silas.22": {
+   "char": "silas",
+   "speaker": "silas",
+   "scene": "br_prison_escape",
+   "text": "Habit, Officer Pruitt. A man should leave every room the way he'd like to find it.",
+   "file": "blackriver/br.silas.22",
+   "durationMs": 5013,
+   "source": "kokoro-v1.0 (Blackriver 2.0.0 WIP)"
+  },
+  "br.silas.23": {
+   "char": "silas",
+   "speaker": "silas",
+   "scene": "br_prison_escape",
+   "text": "Twenty-five years, the judge said. I counted seven hundred and thirty days. That was plenty.",
+   "file": "blackriver/br.silas.23",
+   "durationMs": 6037,
+   "source": "kokoro-v1.0 (Blackriver 2.0.0 WIP)"
+  },
+  "br.silas.24": {
+   "char": "silas",
+   "speaker": "silas",
+   "scene": "br_prison_escape",
+   "text": "Somebody went to a great deal of trouble to get these tools in here. I'd like to thank them in person.",
+   "file": "blackriver/br.silas.24",
+   "durationMs": 6058,
+   "source": "kokoro-v1.0 (Blackriver 2.0.0 WIP)"
+  },
+  "br.pruitt.06": {
+   "char": "pruitt",
+   "speaker": "pruitt",
+   "scene": "br_prison_escape",
+   "text": "Hey! Who opened cell fourteen? Lock it down! Lock the whole block down!",
+   "file": "blackriver/br.pruitt.06",
+   "durationMs": 4053,
+   "source": "kokoro-v1.0 (Blackriver 2.0.0 WIP)"
+  },
+  "br.lockkeeper.04": {
+   "char": "lockkeeper",
+   "speaker": "lockkeeper",
+   "scene": "br_reveal",
+   "text": "Go on, then. You always wanted to know who was holding the leash.",
+   "file": "blackriver/br.lockkeeper.04",
+   "durationMs": 3989,
+   "source": "kokoro-v1.0 (Blackriver 2.0.0 WIP)"
+  },
+  "br.marcus.01": {
+   "char": "marcus",
+   "speaker": "marcus",
+   "scene": "br_reveal",
+   "text": "Two years tending the bridge, watching your people walk over it. Somebody had to keep the keys, Silas.",
+   "file": "blackriver/br.marcus.01",
+   "durationMs": 5994,
+   "source": "kokoro-v1.0 (Blackriver 2.0.0 WIP)"
+  },
+  "br.silas.25": {
+   "char": "silas",
+   "speaker": "silas",
+   "scene": "br_reveal",
+   "text": "Marcus Hale. The bridge tender. The scar on the mask should have told me.",
+   "file": "blackriver/br.silas.25",
+   "durationMs": 4693,
+   "source": "kokoro-v1.0 (Blackriver 2.0.0 WIP)"
+  },
+  "br.marcus.02": {
+   "char": "marcus",
+   "speaker": "marcus",
+   "scene": "br_reveal",
+   "text": "Blackriver promised me the city once the locks were mine. They lied.",
+   "file": "blackriver/br.marcus.02",
+   "durationMs": 3946,
+   "source": "kokoro-v1.0 (Blackriver 2.0.0 WIP)"
+  },
+  "br.thorne.04": {
+   "char": "thorne",
+   "speaker": "thorne",
+   "scene": "br_reveal",
+   "text": "We don't lie, Mr. Hale. We choose. Mr. Boone, the job is yours if you want it.",
+   "file": "blackriver/br.thorne.04",
+   "durationMs": 4565,
+   "source": "kokoro-v1.0 (Blackriver 2.0.0 WIP)"
+  },
+  "br.silas.26": {
+   "char": "silas",
+   "speaker": "silas",
+   "scene": "br_reveal",
+   "text": "I always walk out on my own two feet, Ms. Thorne. Tonight I think I will walk out with you.",
+   "file": "blackriver/br.silas.26",
+   "durationMs": 5994,
+   "source": "kokoro-v1.0 (Blackriver 2.0.0 WIP)"
+  },
+  "br.thorne.05": {
+   "char": "thorne",
+   "speaker": "thorne",
+   "scene": "br_ending",
+   "text": "Welcome to Blackriver, Mr. Boone. We have a car waiting, and a great many doors.",
+   "file": "blackriver/br.thorne.05",
+   "durationMs": 4906,
+   "source": "kokoro-v1.0 (Blackriver 2.0.0 WIP)"
+  },
+  "br.silas.27": {
+   "char": "silas",
+   "speaker": "silas",
+   "scene": "br_ending",
+   "text": "Then let us go and open them.",
+   "file": "blackriver/br.silas.27",
+   "durationMs": 2304,
+   "source": "kokoro-v1.0 (Blackriver 2.0.0 WIP)"
   }
  },
  "slots": {

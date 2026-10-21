@@ -1,0 +1,45 @@
+{
+  "matthew": [
+    384,
+    384
+  ],
+  "npcs": [
+    664,
+    768
+  ],
+  "npc_gutter": 88,
+  "fx": [
+    128,
+    64
+  ],
+  "bgs": {
+    "diner": [
+      1920,
+      540
+    ],
+    "downtown": [
+      1920,
+      540
+    ],
+    "railyard": [
+      1920,
+      540
+    ],
+    "millmountain": [
+      1920,
+      540
+    ]
+  },
+  "FW": 64,
+  "FH": 96,
+  "NPC_ORDER": [
+    "dee",
+    "priya",
+    "hank",
+    "silas",
+    "june",
+    "tessa",
+    "coach",
+    "cam"
+  ]
+}
