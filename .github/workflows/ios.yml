@@ -4,6 +4,7 @@
 #   - release asset      tag ios-v<version>, file Streets-of-Roanoke-<version>.ipa
 #   - committed file     downloads/iphone/Streets-of-Roanoke-<version>.ipa  (the site's download link)
 # The .ipa is NOT signed. Players sign it on their own device with AltStore / Sideloadly (see downloads/iphone/IPHONE.txt).
+# 2.0.1 follow-up: the squash commit changed too many files for the path filter, so this push starts the build.
 name: iOS unsigned ipa
 
 on:
