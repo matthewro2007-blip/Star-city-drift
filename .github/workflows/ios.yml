@@ -5,6 +5,8 @@
 # The .ipa is over GitHub's 100 MB file limit, so this workflow publishes it
 # only as a Release asset (tag ios-v<version>) and never commits it to git.
 # The .ipa is NOT signed. Players sign it on their own device with AltStore / Sideloadly (see downloads/iphone/IPHONE.txt).
+# This comment is the 2.0.0 follow-up that lets GitHub see a small diff. The squash
+# commit changed too many files for Actions to evaluate the path filter.
 name: iOS unsigned ipa
 
 on:
