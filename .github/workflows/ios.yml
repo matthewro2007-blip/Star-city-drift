@@ -5,6 +5,7 @@
 #   - committed file     downloads/iphone/Streets-of-Roanoke-<version>.ipa  (the site's download link)
 # The .ipa is NOT signed. Players sign it on their own device with AltStore / Sideloadly (see downloads/iphone/IPHONE.txt).
 # 2.0.1 follow-up: the squash commit changed too many files for the path filter, so this push starts the build.
+# Retry: the first macos-26 run was cancelled after 15 minutes with no runner.
 name: iOS unsigned ipa
 
 on:
@@ -114,6 +115,13 @@ jobs:
         run: |
           mkdir -p downloads/iphone
           cp "${{ steps.ipa.outputs.name }}" downloads/iphone/
+          # GitHub rejects git blobs over 100 MB. The 2.0.0 .ipa was 203 MB, and players
+          # download this one from the ios-v release (the iPhone page links there).
+          SIZE=$(stat -f%z "downloads/iphone/${{ steps.ipa.outputs.name }}")
+          if [ "$SIZE" -gt 95000000 ]; then
+            echo "ipa is ${SIZE} bytes, over GitHub's 100 MB git limit. It stays on the release only."
+            exit 0
+          fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add "downloads/iphone/${{ steps.ipa.outputs.name }}"
