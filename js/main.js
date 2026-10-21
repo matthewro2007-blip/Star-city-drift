@@ -33,6 +33,7 @@ import { setMusic, sting, setPaused, setDialogueDuck, sfx, voice, talk, stopTalk
 // >>> DLC: Silas prequel (1.5.0) — shared Silas moveset, Silas's Suit art glue, prequel content + own save slot
 import { silasWorld, coldStare, silasAnimMap, silasCooldowns } from './silas_moves.js';
 import { artOutfitFor, suitAnimMap, suitNeedsTint, tintedFrame, tintedCanvas, suitPortraitSrc } from './silas_outfit.js';
+import { createBlackriver, brHasRun, brCompleted } from './dlc_blackriver.js'; // 2.0.0 WIP: DLC 'Blackriver'
 import { createDlc, dlcHasRun, dlcCompleted, silasPortraitSrc, silasPlayerKey, drawNightGrade, MISSIONS as DLC_MISSIONS } from './dlc_silas.js';
 import { SILAS_MOVES, silasMoveRows } from './kits.js';
 import { GAME_VERSION } from './version.js';
@@ -570,7 +571,8 @@ function syncDialoguePortrait() {
     card.insertBefore(im, card.firstChild); dlgPortrait.el = im;
   }
   const l = gameState.mode === 'dialogue' ? dlgPortrait.line : null;
-  const key = l && (l.key || (gameState.dialogueNpc && gameState.dialogueNpc.id === l.id && gameState.dialogueNpc.key) || l.id);
+  let key = l && (l.key || (gameState.dialogueNpc && gameState.dialogueNpc.id === l.id && gameState.dialogueNpc.key) || l.id);
+  if (key === 'matthew' && isDlc() && dlc && dlc.which === 'blackriver') key = 'matthew_2028'; // 1.9.1-m2028: Joe's 2028 Matthew in Blackriver
   const p = key ? SpriteLib.getPortrait(key, l.expr || 'neutral', mouthOpen(), 224) : null;
   const src = p && p.img ? p.img.src : '';
   if (src !== dlgPortrait.src) { dlgPortrait.src = src; if (src) dlgPortrait.el.src = src; }
@@ -1325,13 +1327,15 @@ const dlcApi = {
     const D = getDifficulty();
     const bx = player.x + 180 < area.width - 60 ? player.x + 180 : player.x - 180;
     const b = createThug(bx, player.y, 2);
-    if (who === 'vera') Object.assign(b, { color: '#16a085', charKey: 'vera', nameTag: 'Vera Lisk', drawScale: 1.3, hp: Math.round(130 * D.bossHp), dmg: Math.round(13 * D.bossDmg), speed: 105 * Math.min(1.1, D.speed), scoreValue: 1500 });
+    if (who === 'voss') Object.assign(b, { color: '#4a4a52', charKey: 'foreman_crew', nameTag: 'Rudy "Tumbler" Voss', drawScale: 1.35, hp: Math.round(160 * D.bossHp), dmg: Math.round(14 * D.bossDmg), speed: 100 * Math.min(1.1, D.speed), scoreValue: 2000 });
+    else if (who === 'lockkeeper') Object.assign(b, { color: '#1e1f24', charKey: 'foreman', nameTag: 'The Lockkeeper', drawScale: 1.45, hp: Math.round(230 * D.bossHp), dmg: Math.round(17 * D.bossDmg), speed: 98 * Math.min(1.1, D.speed), scoreValue: 4000 }); // WIP: stand-in fight art (Lockkeeper has no fight anims yet)
+    else if (who === 'vera') Object.assign(b, { color: '#16a085', charKey: 'vera', nameTag: 'Vera Lisk', drawScale: 1.3, hp: Math.round(130 * D.bossHp), dmg: Math.round(13 * D.bossDmg), speed: 105 * Math.min(1.1, D.speed), scoreValue: 1500 });
     else Object.assign(b, { color: '#7f8c8d', charKey: 'foreman', nameTag: 'Mort "The Foreman" Kessler', drawScale: 1.45, hp: Math.round(200 * D.bossHp), dmg: Math.round(17 * D.bossDmg), speed: 90 * Math.min(1.1, D.speed), scoreValue: 3000 });
     b.maxHp = b.hp; b.miniBoss = true; b.boss = who; // 1.5.2: Jack's real boss art (no tint)
     gameState.enemies = [b, ...this.spawnCrew(adds, { color: who === 'vera' ? '#16a085' : '#c0392b', wave: 2 })];
     gameState.combatLock = true; gameState.bossActive = true;
     sfx('fight_start');
-    toast(who === 'vera' ? 'Vera Lisk wants her lamp back.' : 'The Foreman blows his whistle.', true);
+    toast(who === 'voss' ? 'Tumbler Voss cracks his knuckles.' : who === 'lockkeeper' ? 'The Lockkeeper draws his ring of keys.' : who === 'vera' ? 'Vera Lisk wants her lamp back.' : 'The Foreman blows his whistle.', true);
     return b;
   },
   /** Scene / extra lines (no NPC to stand next to). */
@@ -1341,10 +1345,15 @@ const dlcApi = {
     startDialogueRaw({ id: first.id || 'silas', name: first.name || 'Silas Boone', role: '', onDone }, lines);
   },
   missionCard(info, onDone) { showDlcCard(info, onDone); },
-  finale(onDone) { startFinale(onDone); },
+  travel: (areaId, x) => travelTo(areaId, x, 1), // 2.0.0 Blackriver: mission warps
+  playScene: (id, onDone) => { if (!playScene(id, { onDone: () => { if (onDone) onDone(); } }) && onDone) onDone(); },
+  finale(onDone, sceneId) { if (sceneId) { gameState.enemies = []; gameState.combatLock = false; if (!playScene(sceneId, { onDone: () => onDone && onDone() }) && onDone) onDone(); return; } startFinale(onDone); },
   ending() { showDlcEnding(); }
 };
-const dlc = createDlc(dlcApi);
+const dlcSilas = createDlc(dlcApi);
+const dlcBr = createBlackriver(dlcApi); // 2.0.0 WIP
+let dlc = dlcSilas; // active DLC controller (startDlc picks one)
+const isBr = () => isDlc() && dlc === dlcBr;
 
 /** startDialogue with explicit lines (DLC scenes). */
 function startDialogueRaw(npc, lines) {
@@ -1364,9 +1373,10 @@ function startDialogueRaw(npc, lines) {
 }
 
 /** Prequel start: New (difficulty picked on the shared selector) or Continue (own save slot). */
-function startDlc(cont) {
-  if (!booted) { pendingAction = () => startDlc(cont); return; }
+function startDlc(cont, which = 'silas') {
+  if (!booted) { pendingAction = () => startDlc(cont, which); return; }
   if (gameState.mode !== 'title') return;
+  dlc = which === 'blackriver' ? dlcBr : dlcSilas;
   clearSpriteCache();
   clearHeroCache();
   Object.keys(stateBag).forEach((k) => delete stateBag[k]);
@@ -1389,7 +1399,7 @@ function startDlc(cont) {
   gameState.bossActive = false;
   gameState.cutscene = null; gameState.finaleActors = [];
   player = createPlayer(run.x || 200, PLAYER_START_Y);
-  player.animKey = silasPlayerKey();  // Jack's 'silas_player' when installed, else 'silas_boss'
+  player.animKey = dlc.playerKey ? dlc.playerKey() : silasPlayerKey();  // Jack's 'silas_player' when installed, else 'silas_boss'
   player.voiceKey = 'silas';
   player.maxHp = 120; player.hp = Math.max(1, Math.min(120, run.hp || 120));
   gameState.enemies = [];
@@ -1402,6 +1412,7 @@ function startDlc(cont) {
   if (run.y != null) player.y = clampDepth(run.y);
   gameState.mode = 'play';
   document.body.classList.add('dlc-silas'); // Bob's prequel theme
+  document.body.classList.toggle('dlc-blackriver', dlc === dlcBr);
   $('title-screen').classList.add('hidden');
   $('confirm-screen')?.classList.add('hidden');
   clearMenuFocus();
@@ -1414,8 +1425,8 @@ function startDlc(cont) {
   syncDlcPause();
   refreshPrompts(true);
   updateHUD();
-  const m = DLC_MISSIONS[run.mi];
-  toast(cont ? 'Prequel: welcome back, Mr. Boone' : 'Prequel: Silas Boone — "Second Shift"', true);
+  const m = (dlc.missions || DLC_MISSIONS)[run.mi];
+  toast(dlc.titleToast ? dlc.titleToast(cont) : cont ? 'Prequel: welcome back, Mr. Boone' : 'Prequel: Silas Boone — "Second Shift"', true);
   if (m) toast(`${m.title} — ${m.obj || m.sub}`);
   persist();
   followCam.cut();
@@ -1425,7 +1436,7 @@ function leaveDlcUi() {
   if (gameState.dlc) { persist(); }
   gameState.dlc = false; gameState.cutscene = null; gameState.finaleActors = [];
   dlc.stop();
-  document.body.classList.remove('dlc-silas');
+  document.body.classList.remove('dlc-silas'); document.body.classList.remove('dlc-blackriver');
   $('dlc-mission-card')?.classList.add('hidden');
   $('dlc-ending-screen')?.classList.add('hidden');
   syncSilasControls();
@@ -1451,9 +1462,10 @@ function dlcKnockout() {
   player.kd = null; player.koT = 0; player.lift = 0; player.invuln = 1.2; player.koSting = false;
   gameState.enemies = []; gameState.combatLock = false; gameState.bossActive = false;
   if (arcade) {
+    const w = dlc.which === 'blackriver' ? 'blackriver' : 'silas';
     gameState.dlc = false; gameState.mode = 'title';
-    startDlc(true);
-    toast('GAME OVER — back to your last prequel save', true);
+    startDlc(true, w);
+    toast('GAME OVER — back to your last DLC save', true);
     return;
   }
   dlc.onKO();
@@ -1851,6 +1863,15 @@ function suitStillSrc() {
 function showDlcEnding() {
   gameState.mode = 'ending';
   gameState.ended = true;
+  if (dlc.endingInfo) { // 2.0.0 Blackriver: own ending card + sequel hook
+    const e = dlc.endingInfo();
+    $('dlc-ending-eyebrow').textContent = e.eyebrow; $('dlc-ending-title').textContent = e.title; $('dlc-ending-text').textContent = e.text;
+    $('dlc-unlock-label').textContent = e.unlock; $('dlc-unlock-sub').textContent = e.unlockSub;
+    const im = $('dlc-unlock-img'); if (im) im.src = 'assets/sprites/portrait_silas.png';
+    const mb = $('btn-dlc-ending-main'); if (mb) mb.textContent = hasSave() ? 'Continue the Main Story ▸' : 'Start the Main Story ▸';
+    $('interact-prompt').classList.add('hidden'); $('dlc-ending-screen').classList.remove('hidden'); persist(); input.flush();
+    menuFocus(0, $('dlc-ending-screen')); return;
+  }
   $('dlc-ending-eyebrow').textContent = 'Prequel Ending · Second Shift';
   $('dlc-ending-title').textContent = 'Before the Star';
   // JACK-STORY: the 2015 rework's ending + 'Eleven years later.' card come from js/dlc_silas.js
@@ -1937,6 +1958,23 @@ function openPrequel() {
   else { gameState.pendingDlc = true; title.openDifficulty(true); }
 }
 bindTap('btn-prequel', () => whenReady(openPrequel));
+// ---------- 2.0.0: title entry for DLC 'Blackriver' (continue if a run exists, else pick a difficulty) ----------
+(function addBlackriverButton() {
+  const pre = $('btn-prequel'); if (!pre || $('btn-blackriver')) return;
+  const b = document.createElement('button'); b.type = 'button'; b.id = 'btn-blackriver'; b.className = 'btn btn-prequel btn-blackriver';
+  b.setAttribute('aria-label', 'DLC: Blackriver (Silas Boone, 2028)');
+  b.innerHTML = '<span class="prequel-label">DLC: Blackriver</span><span class="dlc-badge" aria-hidden="true">2028 · NEW</span>';
+  pre.insertAdjacentElement('afterend', b);
+})();
+bindTap('btn-blackriver', () => whenReady(() => {
+  if (brHasRun()) { startDlc(true, 'blackriver'); return; }
+  gameState.pendingDlc = 'blackriver'; title.openDifficulty(true);
+}));
+function brToggleOutfit() {
+  if (!isBr()) return null;
+  if (!dlc.outfitUnlocked()) { toast('The C-14 jumpsuit unlocks once Silas has his red suit.'); return null; }
+  const o = dlc.toggleOutfit(); toast(o === 'c14' ? 'Outfit: C-14 jumpsuit' : 'Outfit: red suit', true); sfx('ui_select'); return o;
+}
 bindTap('btn-prequel-continue', () => whenReady(() => startDlc(true)));
 bindTap('btn-prequel-new', () => whenReady(() => {
   gameState.pendingDlc = true;
@@ -2015,9 +2053,10 @@ for (const id of DIFFICULTY_ORDER) {
   bindTap(`btn-diff-${id}`, () => whenReady(() => {
     if (gameState.mode !== 'title') return;
     if (gameState.pendingDlc) { // DLC: Silas prequel — its own slot; the main save is not touched
+      const which = gameState.pendingDlc === 'blackriver' ? 'blackriver' : 'silas';
       gameState.pendingDlc = false;
       gameState.pendingDifficulty = id;
-      startDlc(false);
+      startDlc(false, which);
       toast(`Difficulty: ${DIFFICULTIES[id].name}`);
       return;
     }
@@ -2181,6 +2220,7 @@ function step(dt) {
     return;
   }
 
+  if ((inp.outfitKey || inp.outfitCycle) && gameState.mode === 'play' && isBr()) brToggleOutfit(); // 2.0.0: red suit <-> C-14
   if (inp.outfitKey && !isDlc()) {
     const k = inp.outfitKey;
     const id = OUTFIT_ORDER[k in OUTFIT_HOTKEYS ? OUTFIT_HOTKEYS[k] : Number(k) - 1];
@@ -2306,7 +2346,7 @@ function step(dt) {
   if (inp.interactPressed && !gameState.cutscene && !gameState.arrest) tryInteract();
   if (gameState.mode !== 'play') { drawWorld(dt); return; }
   if (gameState.arrest) { updateArrest(dt); if (gameState.mode !== 'play') { drawWorld(dt); return; } }
-  if (isDlc()) { dlc.update(dt); updateCutscene(dt); if (gameState.mode !== 'play') { drawWorld(dt); return; } }
+  if (isDlc()) { dlc.update(dt); updateCutscene(dt); if (dlc.playerKey) { const k = dlc.playerKey(); if (player.animKey !== k) { player.animKey = k; weaponSig = ''; } } if (gameState.mode !== 'play') { drawWorld(dt); return; } }
 
   // Auto pickup nearby collectibles (autosaves; outfit pickups are worn right away)
   if (isDlc()) dlcCollect();
@@ -2916,7 +2956,7 @@ function drawWorld(dt) {
   drawBackground(ctx, area, cam, viewW, H, dt); // dt drives the ambient sedan (0 = frozen while paused)
 
   // Collectibles
-  for (const c of (isDlc() ? dlc.visibleCollectibles(gameState.areaId) : stateBag.collectibles)) {
+  for (const c of (isScenePlaying() && currentScene()?.def?.day ? [] : isDlc() ? dlc.visibleCollectibles(gameState.areaId) : stateBag.collectibles)) {
     if (c.taken || c.area !== gameState.areaId) continue;
     drawCollectibleItem(c, c.x - cam, collectY()); // v3: Joe's item art with bob + glow, dot fallback
   }
@@ -3024,7 +3064,7 @@ function drawWorld(dt) {
   // The story blackout applies in every weather. Indoor areas (Cinder Hollow) keep their own light.
   const wx = getWeather(), nowS = performance.now() / 1000;
   if (wx === 'sunny') drawSceneGrade(ctx, area, viewW, H);
-  if (isDlc() && dlc.isNight()) drawNightGrade(ctx, viewW, H, nowS); // DLC: night shift (story)
+  if (isDlc() && dlc.isNight() && !(isScenePlaying() && currentScene()?.def?.day)) drawNightGrade(ctx, viewW, H, nowS); // DLC: night shift (story)
   if (!area.indoor) {
     if (!isDlc() && wx === 'rainy' && !area.prison) drawRainNight(ctx, viewW, H, nowS, { blackout: storyBlackout(), groundY: getDepthBand().min, heavy: stateBag.mainComplete ? 0.45 : 1, after: !!stateBag.mainComplete, frozen: !dt });
     else drawWeather(ctx, viewW, H, nowS, { groundY: getDepthBand().min, blackout: !isDlc() && storyBlackout(), frozen: !dt, lights: getSceneLights(), cheap: cheapPresentation() });
@@ -3256,8 +3296,10 @@ if (DEBUG) {
     audio: audioDebug,
     persist,
     // >>> DLC: Silas prequel (tests)
-    dlc,
-    startDlc: (cont = false, diff = 'normal') => { if (gameState.mode !== 'title') showTitle(); gameState.pendingDifficulty = diff; startDlc(cont); },
+    get dlc() { return dlc; },
+    startDlc: (cont = false, diff = 'normal', which = 'silas') => { if (gameState.mode !== 'title') showTitle(); gameState.pendingDifficulty = diff; startDlc(cont, which); },
+    startBlackriver: (cont = false, diff = 'normal') => { if (gameState.mode !== 'title') showTitle(); gameState.pendingDifficulty = diff; startDlc(cont, 'blackriver'); },
+    brToggleOutfit: () => brToggleOutfit(),
     quitDlc: () => quitDlcToTitle(),
     showTitle: () => showTitle(),
     booted: () => booted, // 1.9.0: tests wait for boot (the title is reset when sprites finish loading)

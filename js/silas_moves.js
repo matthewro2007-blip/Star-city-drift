@@ -34,7 +34,7 @@ function emit(move, detail = {}) { for (const fn of listeners) { try { fn(move, 
  *  'matthew' = Matthew in Silas's Suit (realArt: Joe's outfit art is installed; else the fallback outfit's
  *  plain strips, never its weapon (kit) frames). */
 export function silasAnimMap(charKey, realArt = false) {
-  if (charKey === 'silas_player') return {}; // Jack's playable-Silas set has every logical state (identity map)
+  if (charKey === 'silas_player' || charKey === 'silas_c14' || charKey === 'silas_red') return {}; // 2.0.0: Blackriver 2028 outfits share the silas_player layout // Jack's playable-Silas set has every logical state (identity map)
   if (charKey === 'silas_boss') {
     return { idle_signature: 'idle', run: 'walk', sprint: 'run', victory: 'taunt', jump_kick: 'run', special: 'boss_attack3',
       combo1: 'boss_attack1', combo2: 'boss_attack2', combo3: 'boss_attack2',

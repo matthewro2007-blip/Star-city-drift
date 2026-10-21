@@ -1,0 +1,34 @@
+<!doctype html><html><head><meta charset="utf-8"><base href="../"><title>anim check</title>
+<style>body{margin:0;background:#3a3f4a;color:#eee;font:11px monospace}canvas{display:block}</style></head>
+<body><canvas id="c" width="1600" height="900"></canvas>
+<script type="module">
+// Plays EVERY state of EVERY character in anims.json (+ anims_enemies.json if present) via getAnimFrame.
+// ?char=matthew_gold (or matthew_beacon, matthew_ironclad = Hell's Nightmare, ...) to show one character larger; all manifest keys incl. beacon play by default. Non-looping states restart every 2.5 s.
+import { loadSprites, getAnimFrame, listAnims } from './js/sprites.js';
+await loadSprites();
+const man = await (await fetch('assets/sprites/anims.json')).json();
+let keys = Object.keys(man.characters);
+try { const e = await fetch('assets/sprites/anims_enemies.json'); if (e.ok) keys = keys.concat(Object.keys((await e.json()).characters)); } catch (_) {}
+const only = new URLSearchParams(location.search).get('char'); if (only) keys = keys.filter(k => k === only);
+const items = []; for (const k of keys) for (const s of listAnims(k)) items.push([k, s]);
+const cv = document.getElementById('c'), ctx = cv.getContext('2d');
+const sc = only ? 1 : 0.42, cw = 144 * sc + 6, ch = 192 * sc + 14, cols = Math.floor(cv.width / cw);
+cv.height = Math.ceil(items.length / cols) * ch + 4;
+window.__animErrors = [];
+const t0 = performance.now();
+(function loop() {
+  const t = performance.now() - t0;
+  ctx.fillStyle = '#3a3f4a'; ctx.fillRect(0, 0, cv.width, cv.height);
+  items.forEach(([k, s], n) => {
+    const x = (n % cols) * cw, y = Math.floor(n / cols) * ch;
+    const f = getAnimFrame(k, s, t % 2500);
+    if (!f) { window.__animErrors.push(k + '.' + s); return; }
+    const ox = x + (72 - f.anchorX) * sc, oy = y + (189 - f.feetRow) * sc;
+    ctx.drawImage(f.img, f.sx, f.sy, f.sw, f.sh, ox, oy, f.sw * sc, f.sh * sc);
+    if (f.hitbox) { ctx.strokeStyle = '#f33'; ctx.strokeRect(ox + f.hitbox.x * sc, oy + f.hitbox.y * sc, f.hitbox.w * sc, f.hitbox.h * sc); }
+    ctx.fillStyle = f.active ? '#f66' : '#ccc'; ctx.fillText((k.replace('matthew_', 'm.') + ' ' + s).slice(0, 18), x, y + ch - 3);
+  });
+  requestAnimationFrame(loop);
+})();
+window.__animCount = items.length; window.__animReady = true;
+</script></body></html>

@@ -49,7 +49,7 @@ jobs:
         run: |
           mkdir -p ios-app/www
           rsync -a --delete \
-            --exclude '.git' --exclude '.github' --exclude 'ios-app' --exclude 'downloads' \
+            --exclude '.git' --exclude '.github' --exclude 'ios-app' --exclude 'downloads' --exclude 'site' \
             --exclude 'tools' --exclude 'node_modules' --exclude '*.md' --exclude '*.py' \
             ./ ios-app/www/
           test -f ios-app/www/index.html
@@ -58,7 +58,7 @@ jobs:
 
       - name: Voice-over for iOS (m4a only)
         run: |
-          # 1.9.0: the site keeps assets/vo with .ogg + .m4a (web picks by canPlayType; never precached).
+          # 1.9.0+: the site keeps assets/vo with .ogg + .m4a (web picks by canPlayType; never precached).
           # The .ipa keeps only the AAC clips and marks the manifest bundled=m4a so WKWebView requests .m4a only.
           if [ -f ios-app/www/assets/vo/manifest.json ]; then
             find ios-app/www/assets/vo -name '*.ogg' -delete

@@ -23,7 +23,7 @@
   "darkstar",
   "cinder"
  ],
- "rev": "1.9.0-cutscene",
+ "rev": "1.9.1-m2028",
  "kitRev": "1.3.1-kits",
  "artScale": 2,
  "characters": {
@@ -28980,11 +28980,338 @@
      ]
     }
    }
+  },
+  "matthew_2028": {
+   "file": "assets/sprites/matthew_2028_anim.png",
+   "artScale": 2,
+   "states": {
+    "idle": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/matthew_2028_anim.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288,
+      288,
+      288,
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384,
+      384,
+      384,
+      384,
+      384
+     ],
+     "sx": [
+      0,
+      288,
+      576,
+      864,
+      1152,
+      1440
+     ],
+     "sy": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     "frames": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+     ],
+     "grounded": [
+      true,
+      true,
+      true,
+      true,
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    "walk": {
+     "fps": 9,
+     "loop": true,
+     "file": "assets/sprites/matthew_2028_anim.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288,
+      288,
+      288,
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384,
+      384,
+      384,
+      384,
+      384
+     ],
+     "sx": [
+      0,
+      288,
+      576,
+      864,
+      1152,
+      1440
+     ],
+     "sy": [
+      384,
+      384,
+      384,
+      384,
+      384,
+      384
+     ],
+     "frames": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+     ],
+     "grounded": [
+      true,
+      true,
+      true,
+      true,
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    "talk": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/matthew_2028_anim.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288,
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384,
+      384,
+      384
+     ],
+     "sx": [
+      0,
+      288,
+      576,
+      864
+     ],
+     "sy": [
+      768,
+      768,
+      768,
+      768
+     ],
+     "frames": [
+      0,
+      1,
+      2,
+      3
+     ],
+     "grounded": [
+      true,
+      true,
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false,
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false,
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null,
+      null,
+      null
+     ],
+     "mouth": [
+      "open",
+      "closed",
+      "open",
+      "closed"
+     ]
+    },
+    "idle_personality": {
+     "fps": 6,
+     "loop": true,
+     "file": "assets/sprites/matthew_2028_anim.png",
+     "artScale": 2,
+     "fw": 288,
+     "fh": 384,
+     "feetRow": 378,
+     "anchorX": 144,
+     "sw": [
+      288,
+      288,
+      288,
+      288,
+      288,
+      288
+     ],
+     "sh": [
+      384,
+      384,
+      384,
+      384,
+      384,
+      384
+     ],
+     "sx": [
+      0,
+      288,
+      576,
+      864,
+      1152,
+      1440
+     ],
+     "sy": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     "frames": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+     ],
+     "grounded": [
+      true,
+      true,
+      true,
+      true,
+      true,
+      true
+     ],
+     "lying": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+     ],
+     "active": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+     ],
+     "hitbox": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+     ],
+     "aliasOf": [
+      "idle"
+     ]
+    }
+   }
   }
  },
  "keyAliases": {
   "lockkeeper": "marcus_lockkeeper",
   "kessler": "foreman",
-  "rosa_calloway": "rosa"
+  "rosa_calloway": "rosa",
+  "matthew_older": "matthew_2028",
+  "matthew_blackriver": "matthew_2028"
  }
 }
