@@ -190,7 +190,14 @@ export const ANIM_STATES = {
     'idle', 'walk', 'run', 'hurt', 'attackA', 'attackB'],
   foreman: ['boss_attack1', 'boss_attack2', 'boss_attack3', 'taunt', 'defeat', 'ko', 'knockdown_fall', 'knockdown_ground', 'getup',
     'idle', 'walk', 'run', 'hurt', 'attackA', 'attackB'],
-  foreman_crew: ['attackA', 'attackB', 'ko', 'knockdown_fall', 'knockdown_ground', 'getup', 'idle', 'walk', 'run', 'hurt']
+  foreman_crew: ['attackA', 'attackB', 'ko', 'knockdown_fall', 'knockdown_ground', 'getup', 'idle', 'walk', 'run', 'hurt'],
+  /** 2.0.1 Blackriver: derived from foreman_crew / foreman (tools/gen_guards.py); same states as their source rig. */
+  guard_co: ['attackA', 'attackB', 'ko', 'knockdown_fall', 'knockdown_ground', 'getup', 'idle', 'walk', 'run', 'hurt'],
+  guard_baton: ['attackA', 'attackB', 'ko', 'knockdown_fall', 'knockdown_ground', 'getup', 'idle', 'walk', 'run', 'hurt'],
+  guard_riot: ['attackA', 'attackB', 'ko', 'knockdown_fall', 'knockdown_ground', 'getup', 'idle', 'walk', 'run', 'hurt'],
+  guard_sgt: ['attackA', 'attackB', 'ko', 'knockdown_fall', 'knockdown_ground', 'getup', 'idle', 'walk', 'run', 'hurt'],
+  br_voss: ['boss_attack1', 'boss_attack2', 'boss_attack3', 'taunt', 'defeat', 'ko', 'knockdown_fall', 'knockdown_ground', 'getup', 'idle', 'walk', 'run', 'hurt', 'attackA', 'attackB'],
+  br_lockkeeper: ['boss_attack1', 'boss_attack2', 'boss_attack3', 'taunt', 'defeat', 'ko', 'knockdown_fall', 'knockdown_ground', 'getup', 'idle', 'walk', 'run', 'hurt', 'attackA', 'attackB']
 };
 
 async function fetchManifest(src, quiet) {

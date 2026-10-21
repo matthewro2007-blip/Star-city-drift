@@ -2,11 +2,8 @@
 # Runs on GitHub's macOS runner. Output:
 #   - workflow artifact  "Streets-of-Roanoke-<version>-ipa"
 #   - release asset      tag ios-v<version>, file Streets-of-Roanoke-<version>.ipa
-# The .ipa is over GitHub's 100 MB file limit, so this workflow publishes it
-# only as a Release asset (tag ios-v<version>) and never commits it to git.
+#   - committed file     downloads/iphone/Streets-of-Roanoke-<version>.ipa  (the site's download link)
 # The .ipa is NOT signed. Players sign it on their own device with AltStore / Sideloadly (see downloads/iphone/IPHONE.txt).
-# This comment is the 2.0.0 follow-up that lets GitHub see a small diff. The squash
-# commit changed too many files for Actions to evaluate the path filter.
 name: iOS unsigned ipa
 
 on:
@@ -27,7 +24,7 @@ concurrency:
 
 jobs:
   ipa:
-    runs-on: macos-14 # macos-15 arm64 had no runner capacity for the 2.0.0 job
+    runs-on: macos-26   # Capacitor 8 needs Xcode 26+; macos-14 tops out at Xcode 16.2 and is retired 2026-11-02
     timeout-minutes: 45
     defaults:
       run:
@@ -111,3 +108,15 @@ jobs:
           TAG="ios-v${{ steps.v.outputs.version }}"
           gh release view "$TAG" >/dev/null 2>&1 || gh release create "$TAG" --title "Streets of Roanoke ${{ steps.v.outputs.version }} (iPhone, unsigned)" --notes "Unsigned iPhone build. Read downloads/iphone/IPHONE.txt before installing."
           gh release upload "$TAG" "${{ steps.ipa.outputs.name }}" --clobber
+
+      - name: Commit to downloads/iphone/
+        run: |
+          mkdir -p downloads/iphone
+          cp "${{ steps.ipa.outputs.name }}" downloads/iphone/
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "downloads/iphone/${{ steps.ipa.outputs.name }}"
+          if git diff --cached --quiet; then echo "No change"; exit 0; fi
+          git commit -m "iPhone: unsigned ${{ steps.ipa.outputs.name }} [skip ci]"
+          git pull --rebase origin "${GITHUB_REF_NAME}"
+          git push origin "HEAD:${GITHUB_REF_NAME}"

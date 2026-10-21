@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://matthewro2007-blip.github.io/Star-city-drift/site/sitemap.xml
+Sitemap: https://streetsofroanoke.netlify.app/sitemap.xml

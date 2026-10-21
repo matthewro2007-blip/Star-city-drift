@@ -215,7 +215,14 @@ const FIGHTERS = {
   // 1.5.2: prequel bosses + crew have their own art keys now (vera, foreman, foreman_crew)
   vera: { f0: 196, wave: 'square', fs: 1.22, grit: 0.04, breath: 0.22, nasal: true },
   foreman: { f0: 62, wave: 'sawtooth', fs: 0.8, grit: 0.5, breath: 0.3 },
-  foreman_crew: { f0: 92, wave: 'sawtooth', fs: 0.9, grit: 0.35, breath: 0.2 }
+  foreman_crew: { f0: 92, wave: 'sawtooth', fs: 0.9, grit: 0.35, breath: 0.2 },
+  // 2.0.1 Blackriver: C.O. variants + Voss / the Lockkeeper (own art keys)
+  guard_co: { f0: 112, wave: 'sawtooth', fs: 0.96, grit: 0.15, breath: 0.2 },
+  guard_baton: { f0: 124, wave: 'sawtooth', fs: 1.02, grit: 0.1, breath: 0.25 },
+  guard_riot: { f0: 84, wave: 'sawtooth', fs: 0.86, grit: 0.45, breath: 0.3 },
+  guard_sgt: { f0: 96, wave: 'sawtooth', fs: 0.9, grit: 0.3, breath: 0.15 },
+  br_voss: { f0: 88, wave: 'sawtooth', fs: 0.88, grit: 0.4, breath: 0.25 },
+  br_lockkeeper: { f0: 70, wave: 'sawtooth', fs: 0.82, grit: 0.3, breath: 0.4 }
 };
 const DEFAULT_TALK = { wave: 'triangle', f0: 220, rate: 0.08, len: 0.06, steps: [1, 1.12, 1.25, 1.5], vowels: ['a', 'e', 'o'], fs: 1 };
 // DLC: Silas prequel — the prequel cast lives in js/dlc_silas.js; it registers its talk voices here.

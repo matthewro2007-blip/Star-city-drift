@@ -37,7 +37,7 @@ import { createBlackriver, brHasRun, brCompleted } from './dlc_blackriver.js'; /
 import { createDlc, dlcHasRun, dlcCompleted, silasPortraitSrc, silasPlayerKey, drawNightGrade, MISSIONS as DLC_MISSIONS } from './dlc_silas.js';
 import { SILAS_MOVES, silasMoveRows } from './kits.js';
 import { GAME_VERSION } from './version.js';
-import { updateBarks, drawBarks, drawBarksScreen } from './barks.js'; // barks (Bob)
+import { updateBarks, drawBarks, drawBarksScreen, BARKS } from './barks.js'; // barks (Bob)
 import './zoom_ui.js'; // zoom UI (Bob): pause + touch zoom buttons; talks to the camera only via sor:zoom events
 // <<< DLC: Silas prequel
 
@@ -1301,6 +1301,23 @@ function silasHooks() {
 
 // ---------- prequel controller + the api it drives ----------
 function crewify(e) { e.charKey = 'foreman_crew'; e.crew = true; return e; } // 1.5.2: Jack's Foreman's-crew art
+/** 2.0.1 Blackriver: Cinder Hollow C.O. variants (tools/gen_guards.py). Mixed per wave, at most one sergeant on the floor. */
+const GUARD_VARIANTS = [
+  { variant: 'co', charKey: 'guard_co', w: 40 },
+  { variant: 'baton', charKey: 'guard_baton', w: 25 },
+  { variant: 'riot', charKey: 'guard_riot', w: 20, drawScale: 1.3 }, // riot kit reads ~8% bigger (THUG_SCALE 1.2)
+  { variant: 'sgt', charKey: 'guard_sgt', w: 15 }
+];
+function guardify(e, i, takeSgt) {
+  let pool = GUARD_VARIANTS;
+  if (i === 0) pool = pool.filter((g) => g.variant !== 'sgt'); // the first through the door is never the sergeant
+  let r = Math.random() * pool.reduce((a, g) => a + g.w, 0), g = pool[0];
+  for (const x of pool) { r -= x.w; if (r <= 0) { g = x; break; } }
+  if (g.variant === 'sgt' && !takeSgt()) g = GUARD_VARIANTS[0];
+  e.charKey = g.charKey; e.variant = g.variant; e.guard = true; e.crew = false;
+  if (g.drawScale) e.drawScale = g.drawScale;
+  return e;
+}
 const dlcApi = {
   toast, sfx, sting, voice,
   player: () => player,
@@ -1309,9 +1326,16 @@ const dlcApi = {
   foeCount: () => gameState.enemies.filter((e) => e.alive).length,
   setSpecial: (v) => { gameState.special = v; },
   heal: (n) => heal(n, false),
-  spawnCrew(n, { color = '#7f8c8d', wave = 0 } = {}) {
+  spawnCrew(n, { color = '#7f8c8d', wave = 0, guard = false } = {}) {
     const area = AREAS[gameState.areaId];
-    const add = spawnWave(area, Math.max(1, n), wave, player.x).map((e) => { e.color = color; return crewify(e); });
+    const br = isDlc() && dlc && dlc.which === 'blackriver';
+    let sgt = gameState.enemies.some((e) => e.alive && e.variant === 'sgt');
+    const add = spawnWave(area, Math.max(1, n), wave, player.x).map((e, i) => {
+      e.color = color; crewify(e);
+      if (br && (guard || isPrisonArea(gameState.areaId))) guardify(e, i, () => sgt ? false : (sgt = true)); // 2.0.1: mixed 2028 C.O. variants
+      else if (br) e.lkCrew = true; // the Lockkeeper's people outside the walls (Foreman's-crew art, own barks)
+      return e;
+    });
     gameState.enemies = gameState.enemies.filter((e) => e.alive).concat(add);
     gameState.combatLock = true;
     sfx('fight_start');
@@ -1327,8 +1351,8 @@ const dlcApi = {
     const D = getDifficulty();
     const bx = player.x + 180 < area.width - 60 ? player.x + 180 : player.x - 180;
     const b = createThug(bx, player.y, 2);
-    if (who === 'voss') Object.assign(b, { color: '#4a4a52', charKey: 'foreman_crew', nameTag: 'Rudy "Tumbler" Voss', drawScale: 1.35, hp: Math.round(160 * D.bossHp), dmg: Math.round(14 * D.bossDmg), speed: 100 * Math.min(1.1, D.speed), scoreValue: 2000 });
-    else if (who === 'lockkeeper') Object.assign(b, { color: '#1e1f24', charKey: 'foreman', nameTag: 'The Lockkeeper', drawScale: 1.45, hp: Math.round(230 * D.bossHp), dmg: Math.round(17 * D.bossDmg), speed: 98 * Math.min(1.1, D.speed), scoreValue: 4000 }); // WIP: stand-in fight art (Lockkeeper has no fight anims yet)
+    if (who === 'voss') Object.assign(b, { color: '#4a4a52', charKey: 'br_voss', who: 'voss', nameTag: 'Rudy "Tumbler" Voss', drawScale: 1.35, hp: Math.round(160 * D.bossHp), dmg: Math.round(14 * D.bossDmg), speed: 100 * Math.min(1.1, D.speed), scoreValue: 2000 });
+    else if (who === 'lockkeeper') Object.assign(b, { color: '#1e1f24', charKey: 'br_lockkeeper', who: 'lockkeeper', nameTag: 'The Lockkeeper', drawScale: 1.45, hp: Math.round(230 * D.bossHp), dmg: Math.round(17 * D.bossDmg), speed: 98 * Math.min(1.1, D.speed), scoreValue: 4000 }); // 2.0.1: own fight art (tools/gen_guards.py, from the Foreman's rig)
     else if (who === 'vera') Object.assign(b, { color: '#16a085', charKey: 'vera', nameTag: 'Vera Lisk', drawScale: 1.3, hp: Math.round(130 * D.bossHp), dmg: Math.round(13 * D.bossDmg), speed: 105 * Math.min(1.1, D.speed), scoreValue: 1500 });
     else Object.assign(b, { color: '#7f8c8d', charKey: 'foreman', nameTag: 'Mort "The Foreman" Kessler', drawScale: 1.45, hp: Math.round(200 * D.bossHp), dmg: Math.round(17 * D.bossDmg), speed: 90 * Math.min(1.1, D.speed), scoreValue: 3000 });
     b.maxHp = b.hp; b.miniBoss = true; b.boss = who; // 1.5.2: Jack's real boss art (no tint)
@@ -2824,6 +2848,7 @@ function placeSceneStandIn(def, actors) {
   let x = a.x + side * 90; if (x < 40 || x > W0 - 40) x = a.x - side * 90;
   player.x = Math.max(40, Math.min(W0 - 40, x)); player.facing = a.x > player.x ? 1 : -1;
 }
+let sceneCastRef = null;
 function closeSceneLine() {
   if (gameState.mode !== 'dialogue') return;
   stopTalk(); VO.stop(); $('dialogue').classList.add('hidden');
@@ -2849,11 +2874,14 @@ setSceneHooks({
   onStart(def, actors) {
     placeSceneStandIn(def, actors); // 1.9.0: the player stand-in never overlaps a cast actor
     gameState.finaleActors = actors; // drawn + read (tests) through the existing finale-actor lane
+    sceneCastRef = actors; // dupe fix: remembered so onEnd can take the cast off the street
     document.body.classList.add('sor-scene');
     hideStoryIntro();
   },
   onEnd(def, skipped) {
     document.body.classList.remove('sor-scene');
+    if (gameState.finaleActors === sceneCastRef) gameState.finaleActors = []; // dupe fix: cast actors (Silas, 2028 Matthew) no longer linger beside the playable stand-in
+    sceneCastRef = null;
     closeSceneLine();
     followCam.cut();
     if (skipped) toast('Scene skipped');
@@ -2975,6 +3003,7 @@ function drawWorld(dt) {
   if (!(isScenePlaying() && currentScene().def.hidePlayer)) drawList.push({ type: 'player', y: player.y }); // 1.9.0
   for (const a of gameState.finaleActors) if (a.area === gameState.areaId) drawList.push({ type: 'actor', y: a.y, a }); // DLC closing scene
   drawList.sort((a, b) => a.y - b.y);
+  if (DEBUG) window.__drawn = drawList.map((d) => d.type === 'npc' ? { t: 'npc', id: d.n.id, key: d.n.key || d.n.id, x: Math.round(d.n.x) } : d.type === 'enemy' ? { t: 'enemy', id: d.e.who || d.e.kind || 'thug', key: d.e.charKey || '', name: d.e.nameTag || '', x: Math.round(d.e.x) } : d.type === 'actor' ? { t: 'actor', id: d.a.id, key: d.a.key || d.a.kind, kind: d.a.kind, x: Math.round(d.a.x) } : { t: 'player', id: isDlc() ? dlc.which : 'matthew', x: Math.round(player.x) }); // dupe checker (tests)
 
   // Ground shadows first so no character's shadow overlaps another's body
   for (const item of drawList) {
@@ -3290,6 +3319,7 @@ if (DEBUG) {
     /** v3: knock an enemy (index) or Matthew ('player') down; anim API status. */
     knockDown(which = 0) { const t = which === 'player' ? player : gameState.enemies[which]; if (t) knockDown(t, t === player ? -player.facing : player.facing); return !!t; },
     animApiReady,
+    animFrame: (k, s, t) => !!animFrame(k, s, t), barks: { BARKS }, // 2.0.1 tests
     setSpecial(v) { gameState.special = v; },
     /** 1.4.0 outfit kits: table, art timing, live FX / projectiles (tests). */
     kits: { KITS, getKit, kitRow, specialTiming, fx: () => getKitFx(), projectiles: () => getProjectiles() },
