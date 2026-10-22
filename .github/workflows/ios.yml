@@ -4,14 +4,16 @@
 #   - release asset      tag ios-v<version>, file Streets-of-Roanoke-<version>.ipa
 #   - committed file     downloads/iphone/Streets-of-Roanoke-<version>.ipa  (the site's download link)
 # The .ipa is NOT signed. Players sign it on their own device with AltStore / Sideloadly (see downloads/iphone/IPHONE.txt).
-# 2.0.1 follow-up: the squash commit changed too many files for the path filter, so this push starts the build.
-# Retry: the first macos-26 run was cancelled after 15 minutes with no runner.
+# A release commit touches thousands of files, so the branch path filter can miss it.
+# Pushing the tag ios-v<version> starts this build. Path filters are not applied to tags.
 name: iOS unsigned ipa
 
 on:
   workflow_dispatch:
   push:
     branches: [main]
+    tags:
+      - 'ios-v*'
     paths:
       - 'ios-app/**'
       - '.github/workflows/ios.yml'
@@ -26,9 +28,8 @@ concurrency:
 
 jobs:
   ipa:
-    # macos-26 (arm64) queued for 15 minutes and was cancelled with no runner, same as the
-    # 2.0.0 macos-15 job. macos-26-intel is the macOS 26 image (Xcode 26+) on the Intel pool.
-    runs-on: macos-26-intel
+    # Capacitor 8 needs Xcode 26+. macos-14 tops out at Xcode 16.2 and is retired 2026-11-02.
+    runs-on: macos-26
     timeout-minutes: 45
     defaults:
       run:
@@ -122,6 +123,10 @@ jobs:
           SIZE=$(stat -f%z "downloads/iphone/${{ steps.ipa.outputs.name }}")
           if [ "$SIZE" -gt 95000000 ]; then
             echo "ipa is ${SIZE} bytes, over GitHub's 100 MB git limit. It stays on the release only."
+            exit 0
+          fi
+          if [ "${GITHUB_REF_TYPE}" != "branch" ]; then
+            echo "Tag build: the ipa stays on the GitHub release."
             exit 0
           fi
           git config user.name "github-actions[bot]"

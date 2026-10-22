@@ -1034,6 +1034,24 @@
     "closed": "assets/sprites/portraits/portrait_matthew_2028_concerned_closed.png",
     "open": "assets/sprites/portraits/portrait_matthew_2028_concerned_open.png"
    }
+  },
+  "william": {
+   "neutral": {
+    "closed": "assets/sprites/portraits/portrait_william_neutral_closed.png",
+    "open": "assets/sprites/portraits/portrait_william_neutral_open.png",
+    "files3x": {
+     "closed": "assets/sprites/portraits_3x/portrait_william_neutral_closed.png",
+     "open": "assets/sprites/portraits_3x/portrait_william_neutral_open.png"
+    }
+   },
+   "happy": {
+    "closed": "assets/sprites/portraits/portrait_william_happy_closed.png",
+    "open": "assets/sprites/portraits/portrait_william_happy_open.png",
+    "files3x": {
+     "closed": "assets/sprites/portraits_3x/portrait_william_happy_closed.png",
+     "open": "assets/sprites/portraits_3x/portrait_william_happy_open.png"
+    }
+   }
   }
  }
 }

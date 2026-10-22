@@ -1,5 +1,25 @@
 # Changelog
 
+## 2.0.3 - Fight animations (staging, unreleased)
+- Joe's new fight animations: Matthew in all 15 outfits (14 states: longer 7-8 frame combos, two-hit combo2, special, hurt, KO, knockdown, get-up, run/sprint, idle, victory) and William's 17 states plus dash, hop kick, magazine swat and Extra Life. New 480x394 cells.
+- Jack's new enemy animations: 22 enemies, bosses and Silas looks (thugs, snatcher, Foreman crew, the four prison guards, Vera, the Foreman, Tumbler Voss, the Lockkeeper, Silas boss, playable Silas, Silas red / C-14 / young / older). New hurt reactions (high / body / back), knockdown fall -> bounce -> ground -> get-up, and Silas's new short cane jab.
+- Joe's redesigned cast (30 characters: town NPCs, inmates, officers and the 2015 cast) replaces the old NPC models. For now each one is a single idle pose, used for idle, talk and walk.
+- William now fights next to Matthew when a fight breaks out where he's standing (his quests, or any street fight in his area). Once per fight, his Extra Life patches Matthew up when he's low.
+- Timing: enemy attacks wind up longer (first hit at about 0.27-0.33 s) and a grunt hit during its wind-up loses the swing. Matthew's combos chain from the follow-through frames, and a press during a string is held until then.
+- Fixed: Silas's C-14 jumpsuit look no longer paints his hair orange on rotated or lying frames.
+
+## 2.0.2 - William Burks
+- New character: **William Burks**, Matthew's oldest friend (plaid flannel, controller tee). He's in the main game as an NPC, and his spot changes with the story: outside Dee's Diner, then by Wren's empty cart, then at the Rail Yards fence, and at Valley Gym after the ending.
+- 4 new side quests from William, all voiced: "The Boys' Booth" (defend Dee's window), "High Score" (walk the Starlite Arcade cabinet to Valley Pages), "Water the Flowers" (keep Wren's cart alive), and post-game "Coach's Corner Rematch".
+- His quests don't count toward 100%, so existing saves and the Gold Star unlock are unchanged. Quest progress saves in the normal slot.
+- His full animation set is in the game files, ready for co-op later.
+
+## 2.0.1 - Blackriver guards + duplicate fix
+- Fixed: after a Blackriver cutscene ended, its cast (Silas, the 2028 Matthew) stayed on the street, so two Silases showed up (prison lobby, Cell Block C fights, rail yard, river). Scene actors are now cleared when a scene ends or is skipped.
+- New Cinder Hollow guard art for the prison levels, in mixed variants: C.O., riot guard (helmet + C.H.C.F. shield), baton guard, sergeant (at most one per wave). Guards no longer reuse the Foreman's crew.
+- Tumbler Voss and the Lockkeeper have their own fight art and their own barks (no more Foreman lines).
+- New 2028 barks for the guards, the Lockkeeper's crew, Voss and the Lockkeeper, voiced.
+
 ## 2.0.0 - DLC "Blackriver"
 - New DLC on the title screen: **Blackriver** (Silas Boone, 2028). 9 missions (M0 "Visiting Hours" through M8), own save slot; main save untouched.
 - Playable aged Silas: orange C-14 jumpsuit (M0-4), red suit from M5; C-14 jumpsuit unlockable outfit (outfit key toggles).

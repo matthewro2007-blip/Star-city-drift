@@ -20,13 +20,14 @@ import { fileURLToPath } from 'node:url';
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 
 // Paths/patterns that are NOT part of the shipped game (dev tools, docs, concept art).
-const EXCLUDE_DIRS = new Set(['tools', 'node_modules', '.git', '__pycache__', 'dist', 'android', 'ios', 'ios-app', 'downloads', 'site', 'vo']); // VO-HOOK: assets/vo is loaded on demand, never precached / listed in app-files.json. site/ and downloads/ sit beside the game and must stay out of the PWA precache.
+const EXCLUDE_DIRS = new Set(['tools', 'node_modules', '.git', '__pycache__', 'dist', 'android', 'ios', 'vo', 'test', 'netlify', 'demo']); // 2.1.0 co-op: tests, Netlify functions (server-side) and demo captures never ship // VO-HOOK: assets/vo is loaded on demand, never precached / listed in app-files.json
 const EXCLUDE_FILE_RE = [
   /^\./,                    // dotfiles
   /\.(md|py|pyc|log|psd|aseprite|kra|xcf|sh|bat)$/i,
   /^concept-/i,             // concept preview art at root
   /^sw\.js$/, /^app-files\.json$/,
   /^Thumbs\.db$/i,
+  /\.(patch|toml)$/i,       // 2.1.0 co-op: coop.patch, netlify.coop.toml
   /\.(pre_[\w-]+|bak|orig|md5)$/i, // 1.5.0: install backups (e.g. *.pre_silas_outfit) never ship
   /_v[12]\.png$/,             // 1.5.0: superseded art nobody references (keeps the web zip < 25 MB)
   /^icon(-maskable)?-1024\.png$/, // store-size icons: packagers read them from the source tree (sync-game.mjs)

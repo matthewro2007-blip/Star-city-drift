@@ -1,0 +1,5 @@
+# 2.1.0 co-op: merge into the site's netlify.toml when (and only when) Matthew decides to deploy the fallback.
+# Nothing here is deployed by this patch.
+[functions]
+  directory = "netlify/functions"
+  node_bundler = "esbuild"

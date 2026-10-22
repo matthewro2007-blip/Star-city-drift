@@ -1,6 +1,6 @@
 import { DEPTH, getDepth } from './world.js';
 import { getEnemySprite, drawSprite } from './sprites.js';
-import { setAnim, gateHitbox, enemyCharKey, animFrame, animMs } from './anim.js';
+import { setAnim, gateHitbox, enemyCharKey, animFrame, animMs, animTiming } from './anim.js';
 import { sfx, voice } from './audio.js'; // audio: hits, whooshes, knockdowns, fighter voices
 import { KITS, getKit, isArmored, artBoxToWorld, KIT_DIFF, BOSS_RESIST, SPECIAL_ACTIVE, COMBO3_ACTIVE, SPECIAL_FRAMES, KIT_FPS, PULL_FRAME } from './kits.js'; // 1.4.0 outfit kits
 
@@ -111,14 +111,23 @@ export const SPECIAL_COST = 25;      // default special-meter cost of the Star D
 export const SPECIAL_COOLDOWN = 3;   // default seconds (per-kit cooldown in kits.js)
 const COMBO3_KIT_DUR = 0.34;         // weapon finisher window (4 frames @ 12 fps = 0.333 s of art)
 const JUMPKICK_DUR = 0.5;
-const KD_FALL = 0.35, KD_GETUP = 0.4, KD_IFRAMES = 0.5;
+const KD_FALL = 0.35, KD_GETUP = 0.4, KD_IFRAMES = 0.5; // minimums; 2.0.3: the art's own lengths win when longer
+// 2.0.3 anim pass: art length (s) of a state for a fighter (player = has stamina), 0 when there is no art
+const isPlayerEnt = (ent) => ent && 'stamina' in ent;
+function artSec(ent, st) {
+  const pl = isPlayerEnt(ent);
+  const key = pl ? (ent.animKey || 'matthew') : enemyCharKey(ent);
+  const name = (pl && ent.animMap && ent.animMap[st]) || st;
+  return animTiming(key, name, pl ? ent.artOutfit || ent.outfit : undefined).dur / 1000;
+}
 const STAMINA_DRAIN = 32, STAMINA_REGEN = 28, STAMINA_UNLOCK = 25;
 const clampX = (x, w) => Math.max(30, Math.min(w - 30, x));
 
 /** Start a knockdown (fall → lie on the ground, invulnerable → get up with brief i-frames). */
 export function knockDown(ent, dir) {
   if (ent.kd) return;
-  ent.kd = { phase: 'fall', t: KD_FALL, dir: dir || -ent.facing || 1 };
+  const fall = Math.max(KD_FALL, artSec(ent, 'knockdown_fall')); // Jack: 7f@15 = 0.47 s, Joe: 6f@12 = 0.5 s
+  ent.kd = { phase: 'fall', t: fall, dur: fall, dir: dir || -ent.facing || 1 };
   ent.attackTimer = 0; ent.attackType = null; ent.hitbox = null; ent.stun = 0; ent.tauntT = 0; ent.lift = 0;
   ent.dazed = false; ent.pull = null;
   ent.pose = 'hurt';
@@ -130,18 +139,25 @@ function tickKnockdown(ent, dt, areaWidth, isPlayer) {
   k.t -= dt;
   ent.pose = 'hurt';
   if (k.phase === 'fall') {
-    ent.x = clampX(ent.x + k.dir * 150 * (k.push || 1) * dt * Math.max(0, k.t / KD_FALL), areaWidth);
-    if (k.t <= 0) { k.phase = 'ground'; k.t = groundTime(ent, isPlayer); sfx('thud', { heavy: !!ent.isBoss }); }
+    ent.x = clampX(ent.x + k.dir * 150 * (k.push || 1) * dt * Math.max(0, Math.min(1, k.t / (k.dur || KD_FALL))), areaWidth);
+    if (k.t <= 0) {
+      sfx('thud', { heavy: !!ent.isBoss });
+      const b = ent.alive ? artSec(ent, 'knockdown_bounce') : 0; // 2.0.3: Jack's bounce (6f@15, 0.40 s) between fall and ground
+      if (b > 0) { k.phase = 'bounce'; k.t = b; } else { k.phase = 'ground'; k.t = groundTime(ent, isPlayer); }
+    }
+  } else if (k.phase === 'bounce') {
+    if (k.t <= 0) { k.phase = 'ground'; k.t = groundTime(ent, isPlayer); }
   } else if (k.phase === 'ground') {
-    if (k.t <= 0 && ent.alive) { k.phase = 'getup'; k.t = KD_GETUP; sfx('getup'); }
+    if (k.t <= 0 && ent.alive) { k.phase = 'getup'; k.gu = Math.max(KD_GETUP, artSec(ent, 'getup')); k.t = k.gu; sfx('getup'); }
   } else if (k.t <= 0) {
     ent.kd = null;
-    ent.invuln = Math.max(ent.invuln || 0, KD_IFRAMES);
+    // 2.0.3: the long get-up (0.92 s) is already invulnerable; only the rest of the old 0.5 s grace remains (min 0.1 s)
+    ent.invuln = Math.max(ent.invuln || 0, Math.max(0.1, KD_IFRAMES - ((k.gu || KD_GETUP) - KD_GETUP)));
     ent.pose = 'idle';
     if (!isPlayer) ent.aiCooldown = Math.max(ent.aiCooldown || 0, 0.35);
   }
 }
-const KD_ANIM = { fall: 'knockdown_fall', ground: 'knockdown_ground', getup: 'getup' };
+const KD_ANIM = { fall: 'knockdown_fall', bounce: 'knockdown_bounce', ground: 'knockdown_ground', getup: 'getup' };
 
 // >>> DLC: Silas prequel — pluggable movesets (js/silas_moves.js registers 'silas'). A player whose hooks carry
 // `moveset` routes attack input through it; `animMap` renames logical states for a different character's art
@@ -236,6 +252,8 @@ export function updatePlayer(p, input, dt, areaWidth, hooks = {}) {
   p.buf = p.buf || {};
   for (const k of ['punchPressed', 'kickPressed', 'heavyPressed', 'specialPressed']) {
     if (input[k]) p.buf[k] = hooks && hooks.moveset === 'silas' && k === 'punchPressed' ? 0.32 : 0.2; // 1.5.1: a mashed 3rd Jab still lands
+    // 2.0.3: a punch / kick pressed during a (longer) combo string is held until its follow-through cancel point
+    if (input[k] && p.attackType === 'combo' && (k === 'punchPressed' || k === 'kickPressed')) p.buf[k] = Math.max(p.buf[k], Math.min(0.5, p.attackTimer + 0.08));
     else if (p.buf[k] > 0) p.buf[k] -= dt;
   }
   const locked = !!p.kd || p.attackTimer > 0;
@@ -248,6 +266,12 @@ export function updatePlayer(p, input, dt, areaWidth, hooks = {}) {
 
   if (p.attackTimer > 0) {
     p.attackTimer -= dt;
+    // 2.0.3 cancel window: a buffered punch / kick chains into the next combo hit once the last active frame is
+    // over (follow-through frames), instead of waiting out the longer 7-8 frame strings
+    if (p.attackType === 'combo' && p.comboStep < 3 && p.attackTimer > 0 && (p.buf.punchPressed > 0 || p.buf.kickPressed > 0)) {
+      const tm = animTiming(pkey(p), (p.animMap && p.animMap[p.animState]) || p.animState, p.artOutfit);
+      if (tm.lastEnd > 0 && animMs(p) >= tm.lastEnd) p.attackTimer = 0;
+    }
     if (p.attackType === 'silas' && ms) ms.tick(p, input, dt, areaWidth, hooks); // DLC: Silas prequel
     if (p.attackType === 'special') {
       const km = p.kitMove;
@@ -270,7 +294,7 @@ export function updatePlayer(p, input, dt, areaWidth, hooks = {}) {
     }
     p.idleT = 0;
     done();
-    if (p.attackType !== 'silas') { gateHitbox(p, 'matthew', p.artOutfit); kitGate(p, hooks.outfit); }
+    if (p.attackType !== 'silas') { gateHitbox(p, pkey(p), p.artOutfit); kitGate(p, hooks.outfit); }
     else gateSilas(p); // DLC: Silas's Jab also waits for the art's active frames (real art only)
     return; // lock movement during attack (SoR style)
   }
@@ -308,7 +332,7 @@ export function updatePlayer(p, input, dt, areaWidth, hooks = {}) {
       pushFx({ type: 'callout', text: kit.move.toUpperCase() + '!', follow: true, dur: 0.8, kit: p.kitMove.id });
       done();
       setAnim(p, 'special', null, true); p.animRate = tm.rate; // re-time the 8-frame strip to the kit's startup
-      gateHitbox(p, 'matthew', hooks.outfit); kitGate(p, hooks.outfit);
+      gateHitbox(p, pkey(p), p.artOutfit); kitGate(p, hooks.outfit);
       return;
     }
     hooks.onSpecialDenied && hooks.onSpecialDenied(p.specialCd > 0 ? 'cooldown' : 'meter', ks.cost);
@@ -319,7 +343,7 @@ export function updatePlayer(p, input, dt, areaWidth, hooks = {}) {
     p.combo = 0; p.comboStep = 0; p.comboTimer = 0;
     p.hitbox = makeHitbox(p, 22, 34, 50, 32, { dmg: 26, knock: 40, sfx: 'heavy' });
     sfx('whiff', { heavy: true }); voice(vkey(p), 'attack', { chance: 0.6 });
-    done(); gateHitbox(p, 'matthew', hooks.outfit);
+    done(); gateHitbox(p, pkey(p), p.artOutfit);
     return;
   }
   if (input.kickPressed && wantSprint) {
@@ -328,7 +352,7 @@ export function updatePlayer(p, input, dt, areaWidth, hooks = {}) {
     p.combo = 0; p.comboStep = 0; p.comboTimer = 0;
     p.hitbox = makeHitbox(p, -4, 46, 56, 34, { dmg: 20, knock: 30, knockdown: true, sfx: 'finisher' });
     sfx('jump'); voice(vkey(p), 'big');
-    done(); gateHitbox(p, 'matthew', hooks.outfit);
+    done(); gateHitbox(p, pkey(p), p.artOutfit);
     return;
   }
   if (input.punchPressed || input.kickPressed) {
@@ -341,24 +365,24 @@ export function updatePlayer(p, input, dt, areaWidth, hooks = {}) {
     if (fin) {
       // 1.4.0: the 3rd hit is the outfit's weapon finisher (combo3 art; hitbox from the art, kits.js numbers)
       const id = kitId(hooks.outfit), c3 = getKit(id).combo3;
-      startAttack('combo', kick ? 'kick' : 'punch', COMBO3_KIT_DUR);
+      startAttack('combo', kick ? 'kick' : 'punch', Math.max(COMBO3_KIT_DUR, artSec(p, 'combo3'))); // 2.0.3: 7f@16 = 0.44 s
       p.kitMove = { id, kind: 'combo3', el: 0, lunge: 0, lungeT: 0, fired: {} };
       p.hitbox = makeHitbox(p, 10, 60, 44, 50, { dmg: c3.dmg, knock: c3.knock, knockdown: !!c3.knockdown, armor: c3.armor, kit: id, kitKind: 'combo3', sfx: 'finisher', live: false });
       sfx('whiff', { heavy: true }); voice(vkey(p), 'big');
       p.comboTimer = 0.25;
-      done(); gateHitbox(p, 'matthew', hooks.outfit); kitGate(p, hooks.outfit);
+      done(); gateHitbox(p, pkey(p), p.artOutfit); kitGate(p, hooks.outfit);
       return;
     }
     if (kick) {
-      startAttack('combo', 'kick', fin ? 0.36 : 0.32);
+      startAttack('combo', 'kick', Math.max(fin ? 0.36 : 0.32, artSec(p, 'combo' + p.comboStep))); // 2.0.3: art length
       p.hitbox = makeHitbox(p, 10, 28, 44, 24, { dmg: fin ? 20 : 18, knock: 26, knockdown: fin, sfx: fin ? 'finisher' : 'kick' });
     } else {
-      startAttack('combo', 'punch', fin ? 0.3 : 0.22);
+      startAttack('combo', 'punch', Math.max(fin ? 0.3 : 0.22, artSec(p, 'combo' + p.comboStep))); // 2.0.3: 0.39 / 0.44 s
       p.hitbox = makeHitbox(p, 10, 34, 36, 28, { dmg: 12 + p.comboStep * 2, knock: fin ? 30 : undefined, knockdown: fin, sfx: fin ? 'finisher' : 'punch' });
     }
     sfx('whiff', { heavy: kick }); voice(vkey(p), fin ? 'big' : 'attack', { chance: fin ? 1 : 0.3 });
     if (fin) p.comboTimer = 0.25;
-    done(); gateHitbox(p, 'matthew', hooks.outfit);
+    done(); gateHitbox(p, pkey(p), p.artOutfit);
     return;
   }
 
@@ -401,6 +425,15 @@ export function specialTiming(outfit) {
   }
   const cached = timingCache.get(id);
   if (!act && cached) return cached;
+  // 2.0.3: Joe's specials are 11f@14 (active 5-6), not 8f@12 — time them from the art itself
+  const at = animTiming('matthew', 'special', id);
+  if (at.first > 0 && at.dur > 0) {
+    const rate = (at.first / 1000) / ks.startup;
+    const t = { id, first: at.firstIdx, last: at.lastIdx, active: [at.firstIdx, at.lastIdx], rate, startup: ks.startup,
+      dur: (at.dur / 1000) / rate, lastActiveEnd: (at.lastEnd / 1000) / rate, fromArt: true };
+    timingCache.set(id, t);
+    return t;
+  }
   const a = act || SPECIAL_ACTIVE[id] || [3, 4];
   const first = Math.min(...a), last = Math.max(...a);
   const rate = (first / KIT_FPS) / ks.startup;               // >1 = faster than the art's 12 fps
@@ -425,7 +458,14 @@ function kitGate(p, outfit) {
   let idx, active, box = null;
   if (f) {
     idx = f.index != null ? f.index : 0; active = !!f.active;
-    if (f.hitbox) box = artBoxToWorld(f, f.hitbox);
+    if (f.hitbox) {
+      box = artBoxToWorld(f, f.hitbox);
+      // 2.0.3: Joe's new boxes are a 60x60 square at the far contact point; the swing also covers the space in front of
+      // the body, and without an explicit kit reach (pad) it stays near the old reach (56 px) so close / far balance is unchanged
+      if (box.x0 > 10) box = { ...box, x0: 10 };
+      const kk = getKit(hb.kit), kss = hb.kitKind === 'special' ? kk.special : kk.combo3;
+      if (!(kss.pad && kss.pad.reach) && box.x1 > 56 && f.hitbox.w === 60 && f.hitbox.h === 60) box = { ...box, x1: 56 };
+    }
   } else { // no art: same timeline from the kits.js frame table
     idx = Math.min((spec ? SPECIAL_FRAMES : 4) - 1, Math.floor(animMs(p) * KIT_FPS / 1000));
     const a = spec ? (SPECIAL_ACTIVE[hb.kit] || [3, 4]) : COMBO3_ACTIVE;
@@ -446,7 +486,9 @@ function kitGate(p, outfit) {
   hb.y = p.y + y0;
   // separate active runs (gold frames 3 and 5) each hit once
   if (active) {
-    if (hb.lastActive == null || idx - hb.lastActive > 1) { hb.seg = (hb.seg || 0) + 1; if (hb.seg > 1) hb.hit.clear(); }
+    // 2.0.3: Joe's new specials are one run (f5-6) for every outfit; Encore ('double') counts each active frame as a hit
+    const split = spec && ks.effect === 'double';
+    if (hb.lastActive == null || (split ? idx !== hb.lastActive : idx - hb.lastActive > 1)) { hb.seg = (hb.seg || 0) + 1; if (hb.seg > 1) hb.hit.clear(); }
     hb.lastActive = idx;
   }
   hb.live = active && !(spec && ks.effect === 'projectile');   // Spiral hits with the ball, not the hand
@@ -499,7 +541,11 @@ export function applyHit(player, e, hb, areaWidth, onHitEnemy, dir = player.faci
     if (e.kd && hb.kdPush) e.kd.push = hb.kdPush; // DLC: Silas moves
   } else {
     const kitStun = ks && hb.kitKind === 'special' && ks.stun ? effStun(e, ks.stun) : 0;
-    e.stun = Math.max(hb.knock ? 0.4 : 0.25, kitStun, hb.stun ? effStun(e, hb.stun) : 0); // hb.stun: DLC Silas moves
+    // 2.0.3: Jack's hurt_* are 5f@15 = 0.33 s (old hurt 0.30 s) -> hitstun 0.34 s so the reaction plays out and combos still chain
+    e.stun = Math.max(hb.knock ? 0.4 : 0.34, kitStun, hb.stun ? effStun(e, hb.stun) : 0); // hb.stun: DLC Silas moves
+    e.hurtAnim = pickHurt(player, e, hb, dir); e.hurtRestart = true;
+    // 2.0.3: wind-ups are longer now (first active ~0.27-0.33 s), so a grunt hit during its wind-up loses the swing
+    if (!e.isBoss && !e.miniBoss && e.attackTimer > 0) { e.attackTimer = 0; e.hitbox = null; e.pose = 'hurt'; }
     if (kitStun >= 0.3) { e.dazed = true; e.attackTimer = 0; e.hitbox = null; e.tauntT = 0; }
     if (!hb.noPush) e.x = Math.max(30, Math.min(areaWidth - 30, e.x + dir * (hb.knock != null && hb.knock !== 0 ? hb.knock : (kit ? 6 : 18))));
   }
@@ -602,6 +648,19 @@ export function updateKits(player, enemies, dt, areaWidth = Infinity, onHitEnemy
   }
 }
 
+/** 2.0.3 (notes_enemies.md #5): hurt_high when the blow lands in the top ~30% of the body, hurt_back from behind,
+ * else hurt_body; falls back to 'hurt' for characters without the new reactions. */
+function pickHurt(att, e, hb, dir) {
+  const key = enemyCharKey(e);
+  const from = Math.sign((att && att.x != null ? att.x : e.x - dir) - e.x) || -dir;
+  let st = from !== e.facing ? 'hurt_back' : 'hurt_body';
+  if (st === 'hurt_body' && hb && hb.y != null && hb.h != null) {
+    const top = e.y - (e.isBoss ? 112 : 96);
+    if (hb.y + hb.h / 2 < top + (e.isBoss ? 112 : 96) * 0.3) st = 'hurt_high';
+  }
+  return animFrame(key, st, 0) ? st : 'hurt';
+}
+
 function deadAnim(e) { return e.isBoss ? 'defeat' : e.runner ? 'caught' : 'ko'; }
 
 export function updateEnemy(e, player, dt, areaWidth = Infinity) {
@@ -621,7 +680,7 @@ export function updateEnemy(e, player, dt, areaWidth = Infinity) {
   if (e.stun > 0) {
     e.stun -= dt;
     e.pose = 'hurt';
-    setAnim(e, 'hurt', { key, sec: e.stun });
+    setAnim(e, e.hurtAnim || 'hurt', { key, sec: e.stun }, !!e.hurtRestart); e.hurtRestart = false;
     if (e.stun <= 0) e.dazed = false;
     return;
   }
@@ -653,7 +712,7 @@ export function updateEnemy(e, player, dt, areaWidth = Infinity) {
     // don't pile on a downed Matthew: hold position
     e.pose = 'idle';
     setAnim(e, e.isBoss ? 'taunt' : 'idle');
-  } else if (dist < 42 && Math.abs(dy) < 18) {
+  } else if (dist < 46 && Math.abs(dy) < 18) { // 2.0.3: was 42 — the longer wind-ups start a step further out
     if (e.aiCooldown <= 0) {
       e.pose = 'punch';
       e.attackTimer = 0.28;
@@ -687,6 +746,10 @@ export function updateEnemy(e, player, dt, areaWidth = Infinity) {
           }
         }
       }
+      // 2.0.3 telegraph retune: play the whole new strip at its own speed (10-12f@15, first hit ~0.27-0.33 s) instead of
+      // squeezing it into the old 0.28-0.5 s windows; damage stays on the art's active frames (gateHitbox)
+      if (e.isBoss && e.nextAnim === 'boss_attack1' && dist < 32 && animFrame(key, 'boss_jab', 0)) e.nextAnim = 'boss_jab'; // short-range jab
+      { const at = animTiming(key, e.nextAnim); if (at.dur > 0) e.attackTimer = Math.max(e.attackTimer, at.dur / 1000); }
       if (e.facing < 0) e.hitbox.x -= e.hitbox.w;
       setAnim(e, e.nextAnim, { key, sec: e.attackTimer }, true); // restart even when the same attack repeats
       sfx('whiff', { quiet: !e.isBoss, heavy: e.isBoss && e.nextAnim === 'boss_attack3' });

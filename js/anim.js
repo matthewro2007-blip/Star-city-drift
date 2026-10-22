@@ -66,6 +66,32 @@ export function gateHitbox(ent, charKey, outfit) {
   if (!ent.hitbox) return;
   const f = animFrame(charKey, ent.animState, animMs(ent), outfit);
   ent.hitbox.live = !(f && typeof f.active === 'boolean') || f.active;
+  // 2.0.3 anim pass: separate active runs in one strip (Matthew combo2 f2-3 + f5-6, William combo1 f1 + f4) each hit once.
+  // Kit hitboxes do this in combat.js kitGate.
+  const hb = ent.hitbox;
+  if (f && f.active && !hb.kit && f.index != null && hb.hit) {
+    if (hb.lastActive != null && f.index - hb.lastActive > 1) { hb.hit.clear(); hb.seg = (hb.seg || 1) + 1; }
+    hb.lastActive = f.index;
+  }
+}
+
+/** 2.0.3: art timing of a one-shot state, probed from the manifest: { dur, first, last, lastEnd } in ms (0 / -1 when unknown).
+ * first / lastEnd = start of the first active frame / end of the last one. Cached once the art is loaded. */
+const tCache = new Map();
+export function animTiming(charKey, state, outfit) {
+  const k = charKey + '|' + state + '|' + (String(charKey).startsWith('matthew') ? outfit || 'polo' : '');
+  if (tCache.has(k)) return tCache.get(k);
+  const r = { dur: 0, first: -1, last: -1, lastEnd: -1, firstIdx: -1, lastIdx: -1 };
+  if (!animFrame(charKey, state, 0, outfit)) return r;
+  const step = 1000 / 240;
+  for (let t = 0; t <= 4000; t += step) {
+    const f = animFrame(charKey, state, t, outfit);
+    if (!f) break;
+    if (f.active) { if (r.first < 0) { r.first = t; r.firstIdx = f.index; } r.last = t; r.lastIdx = f.index; r.lastEnd = t + step; }
+    if (f.done) { r.dur = t + (f.index > 0 ? t / f.index : step); break; } // done fires as the last frame starts
+  }
+  tCache.set(k, r);
+  return r;
 }
 
 /** True once Joe's API is present (for reports/tests). */

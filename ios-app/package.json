@@ -1,9 +1,18 @@
 {
   "name": "streets-of-roanoke-ios",
-  "version": "1.7.0",
+  "version": "2.1.0",
   "private": true,
   "description": "Streets of Roanoke iPhone wrapper (Capacitor). The web build is copied into www/ by the GitHub workflow.",
-  "scripts": { "sync": "cap sync ios" },
-  "dependencies": { "@capacitor/core": "^8.5.2", "@capacitor/ios": "^8.5.2" },
-  "devDependencies": { "@capacitor/cli": "^8.5.2" }
+  "scripts": {
+    "sync": "cap sync ios"
+  },
+  "dependencies": {
+    "@capacitor/core": "^8.5.2",
+    "@capacitor/ios": "^8.5.2",
+    "@capacitor/app": "^8.0.0",
+    "@capacitor/share": "^8.0.0"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^8.5.2"
+  }
 }

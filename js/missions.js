@@ -1,4 +1,5 @@
-import { MARCUS_SIDE_MISSIONS } from './marcus.js'; // JACK-STORY: Marcus Hale's side missions
+import { MARCUS_SIDE_MISSIONS } from './marcus.js';
+import { WILLIAM_SIDE_MISSIONS } from './william.js'; // 2.0.2: William Burks's side quests // JACK-STORY: Marcus Hale's side missions
 import { sfx } from './audio.js'; // audio: mission start / complete, pickups, outfit unlocks
 /** Mission + collectible system — preserved from 3D Star City Drift. */
 export function createMissionSystem(state) {
@@ -136,7 +137,8 @@ export function createMissionSystem(state) {
       active: ["Easy, kid. Bridge is past the yards, to the right. I'm right behind you."],
       winLines: "Hank hands over his notes, then finds an old lantern stenciled 'S.B. — 2nd shift'. \"Boone's been at this a long time,\" he says."
     },
-    ...JSON.parse(JSON.stringify(MARCUS_SIDE_MISSIONS)) // JACK-STORY (fresh copy per mission system)
+    ...JSON.parse(JSON.stringify(MARCUS_SIDE_MISSIONS)), // JACK-STORY (fresh copy per mission system)
+    ...JSON.parse(JSON.stringify(WILLIAM_SIDE_MISSIONS)) // 2.0.2
   };
 
   const collectibles = [

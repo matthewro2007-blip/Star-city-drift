@@ -85,6 +85,7 @@ const NPC_SRC = {
   // 1.9.0-cutscene: Marcus Hale (2015 / 2026 / 2028) + teenage Matthew (2015 prequel NPC)
   marcus_young: 'assets/sprites/marcus_young.png',
   marcus: 'assets/sprites/marcus.png',
+  william: 'assets/sprites/william.png', // 2.0.2: William Burks
   marcus_lockkeeper: 'assets/sprites/marcus_lockkeeper.png',
   matthew_young: 'assets/sprites/matthew_young.png',
   matthew_2028: 'assets/sprites/matthew_2028.png',   // 1.9.1-m2028: Blackriver DLC NPC (age ~29)
@@ -175,6 +176,9 @@ export const ANIM_STATES = {
   matthew: ['idle_signature', 'run', 'sprint', 'combo1', 'combo2', 'combo3', 'jump_kick', 'special',
     'hurt', 'ko', 'victory', 'knockdown_fall', 'knockdown_ground', 'getup'],
   cast: ['idle_personality', 'talk'],
+  /** 2.0.2: William Burks (anims.json `william`): NPC set + the full player set for co-op (Phase B). */
+  william: ['idle_personality', 'talk', 'walk', 'idle_signature', 'run', 'sprint', 'combo1', 'combo2', 'combo3', 'jump_kick', 'special',
+    'hurt', 'ko', 'victory', 'knockdown_fall', 'knockdown_ground', 'getup'],
   boss: ['boss_attack1', 'boss_attack2', 'boss_attack3', 'taunt', 'defeat', 'knockdown_fall', 'knockdown_ground', 'getup'],
   thug: ['attackA', 'attackB', 'ko', 'knockdown_fall', 'knockdown_ground', 'getup'],
   snatcher: ['idle', 'run', 'caught', 'ko', 'knockdown_fall', 'knockdown_ground', 'getup'],
@@ -210,6 +214,9 @@ async function fetchManifest(src, quiet) {
   } catch (_) { if (!quiet) console.warn('Anim manifest failed:', src); return null; }
 }
 
+let ANIM_LATE = Promise.resolve(), LATE_FILES = new Set(), lateLoad = () => null;
+/** 2.0.3: resolves once every streamed anim strip has loaded (tests / captures). */
+export function animStripsReady() { return Promise.all([...LATE_FILES].map((f) => lateLoad(f))); }
 async function loadAnimManifests() {
   const [main, enemies, poses, portraits] = await Promise.all([
     fetchManifest('assets/sprites/anims.json', false),
@@ -235,8 +242,22 @@ async function loadAnimManifests() {
     if (ch.file) files.add(ch.file); if (ch.wideFile) files.add(ch.wideFile);
     for (const st of Object.values(ch.states)) for (const f of [].concat(st.file || ch.file)) files.add(f);   // file may be a per-frame list
   }
-  await Promise.all([...files].filter(Boolean).map(async (src) => {
+  const load = async (src) => {
     try { animImages[src] = await loadImage(src + '?v=' + ANIM_REV); } catch (_) { console.warn('Anim strip missing:', src); }
+  };
+  // 2.0.3: the per-state *_jk strips (~150 MB) stream in after boot; until one lands, getAnimFrame returns null for
+  // that state and the caller's fallback draws (same as before the art existed)
+  const all = [...files].filter(Boolean), late = all.filter((f) => /_jk\.png$/.test(f));
+  await Promise.all(all.filter((f) => !late.includes(f)).map(load));
+  // loaded on first use (getAnimFrame) and streamed in the background right after boot, four at a time
+  const pending = new Map();
+  lateLoad = (src) => { if (!pending.has(src)) pending.set(src, load(src)); return pending.get(src); };
+  LATE_FILES = new Set(late);
+  const afterLoad = (fn) => (document.readyState === 'complete' ? setTimeout(fn, 0) : addEventListener('load', () => setTimeout(fn, 0), { once: true })); // don't hold up window.onload
+  ANIM_LATE = new Promise((res) => afterLoad(async () => {
+    const q = late.slice().sort((x, y) => (/matthew_(?!polo)/.test(x) ? 1 : 0) - (/matthew_(?!polo)/.test(y) ? 1 : 0)); // other outfits last
+    await Promise.all([0, 1, 2, 3].map(async () => { while (q.length) await lateLoad(q.shift()); }));
+    res();
   }));
 }
 
@@ -306,7 +327,7 @@ export function getAnimFrame(charKey, state, tMs, outfitId) {
   const pick = (a, d) => (Array.isArray(a) ? (a[i] != null ? a[i] : d) : (a != null ? a : d));
   const file = st._files ? st._files[i] : (pick(st.file, null) || ch.file);
   const img = animImages[file];
-  if (!img) return null;
+  if (!img) { if (LATE_FILES.has(file)) lateLoad(file); return null; } // 2.0.3: streamed strip, first use
   const s = pick(st.artScaleA, st.artScale || 1);
   const fw = pick(st.fwA, st.fw || 144 * s), fh = pick(st.fhA, st.fh || 192 * s), idx = st.frames[i];
   const sw = pick(st.sw, fw), sh = pick(st.sh, fh), sx = pick(st.sx, idx * fw), sy = pick(st.sy, 0);

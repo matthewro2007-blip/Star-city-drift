@@ -1,5 +1,6 @@
 /** Original fictional cast — preserved from 3D build. */
-import { MARCUS_NPC } from './marcus.js'; // JACK-STORY: River Bridge tender (side missions only)
+import { MARCUS_NPC } from './marcus.js';
+import { WILLIAM_NPC } from './william.js'; // 2.0.2: Matthew's oldest friend (NPC + side quests) // JACK-STORY: River Bridge tender (side missions only)
 export const NPC_DEFS = [
   {
     id: 'dee', name: 'Dee Morales', role: 'Diner cook',
@@ -231,7 +232,8 @@ export const NPC_DEFS = [
     area: 'pr_block', x: 1260, color: '#30486e',
     lines: ["Matthew Rose. Visiting hours. How thoughtful."]   // the real conversation is the branching tree in js/prison.js
   },
-  MARCUS_NPC // JACK-STORY
+  MARCUS_NPC, // JACK-STORY
+  WILLIAM_NPC // 2.0.2
 ];
 
 export const OUTFITS = {

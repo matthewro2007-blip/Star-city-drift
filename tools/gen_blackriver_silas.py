@@ -8,9 +8,20 @@ PF=ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSansMono-Bold.ttf'
 def hsv(a):
     r,g,b=[a[...,i]/255. for i in range(3)];mx=np.max(a[...,:3],-1)/255.;mn=np.min(a[...,:3],-1)/255.;d=mx-mn+1e-6
     h=np.where(mx==r,((g-b)/d)%6,np.where(mx==g,(b-r)/d+2,(r-g)/d+4))/6;return h,d/(mx+1e-6),mx
+def head_mask(A,h,s,v):
+    """Head mask (notes_enemies.md fix for the orange-hair bug): no fixed yy<110 row. Candidate hair (light, unsaturated)
+    and skin are dilated into blobs; the head is the blob with the most hair next to skin (hands/collar have no hair),
+    so rotated / lying frames (ko, knockdown, throws) pick the real head wherever it sits in the cell."""
+    cand=A&(s<0.12)&(v>0.35);skin=A&(h<0.11)&(s>0.15)&(s<0.65)&(v>0.45)
+    lab,n=nd.label(nd.binary_dilation(skin|cand,np.ones((7,7))))
+    if n==0: return np.zeros_like(A)
+    hs=nd.sum(cand,lab,range(1,n+1));ss=nd.sum(skin,lab,range(1,n+1))
+    score=np.minimum(hs,ss*2.0)
+    if score.max()<=0: return np.zeros_like(A)
+    return lab==(int(np.argmax(score))+1)
 def suit(f):
     a=np.array(f).astype(float);A=a[...,3]>10;h,s,v=hsv(a);H,W=A.shape;yy=np.arange(H)[:,None]*np.ones((1,W))
-    hair=(s<0.12)&(v>0.35)&(yy<110)
+    hair=(s<0.12)&(v>0.35)&head_mask(A,h,s,v)   # was &(yy<110): wrong pixels on rotated/lying frames
     skin=A&(h<0.11)&(s>0.15)&(s<0.65)&(v>0.45)
     head=nd.binary_dilation(skin|hair,np.ones((7,7)))|(nd.binary_dilation(hair,np.ones((15,15)))&(yy<np.argmax((skin|hair).any(1)[::-1][::-1])+60))
     navy=A&(((h>0.5)&(h<0.75)&(s>0.12)&(v>0.2))|((s<0.18)&(v>0.3)&(v<0.9)))&~head
@@ -54,7 +65,7 @@ def suit(f):
 def red(f):
     a=np.array(f).astype(float);A=a[...,3]>10;h,s,v=hsv(a);H,W=A.shape;yy=np.arange(H)[:,None]*np.ones((1,W))
     out=a.copy()
-    hair=A&(yy<110)&(s<0.12)&(v>0.35)
+    hair=A&(s<0.12)&(v>0.35)&head_mask(A,h,s,v)   # was &(yy<110)
     for i,m in enumerate((1.18*255,1.18*252,1.18*246)): out[...,i]=np.where(hair,np.clip(v*m+20,0,255),out[...,i])
     blue=A&(h>0.55)&(h<0.7)
     hb=blue&(yy<140)

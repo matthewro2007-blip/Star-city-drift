@@ -287,7 +287,8 @@ export function createTitle({ focusMenu }) {
   function closePanel() {
     const from = phase;
     setPhase('menu');
-    const ids = ['btn-continue', 'btn-start', 'btn-new-game', 'btn-ngplus', 'btn-controls', 'btn-credits', 'btn-prequel', 'btn-blackriver'].filter((id) => $(id) && !$(id).classList.contains('hidden'));
+    const ids = ['btn-continue', 'btn-start', 'btn-new-game', 'btn-ngplus', 'btn-coop-continue', 'btn-coop', 'btn-controls', 'btn-credits', 'btn-prequel', 'btn-blackriver'].filter((id) => $(id) && !$(id).classList.contains('hidden'))
+      .sort((x, y) => ($(x).compareDocumentPosition($(y)) & 4 ? -1 : 1)); // 2.1.0: co-op buttons sit in the menu too
     const back = from === 'controls' ? 'btn-controls' : from === 'credits' ? 'btn-credits'
       : (from === 'prequel' || prequelFlow) ? 'btn-prequel' // DLC: back to the prequel entry
       : (!$('btn-new-game').classList.contains('hidden') ? 'btn-new-game' : 'btn-start');

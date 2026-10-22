@@ -5,6 +5,8 @@ import {
 import { drawWeather, cycleWeather, setWeather, weatherName, weatherShort, getWeather } from './weather.js'; // 1.7.0: Kody's Sunny / Night / Rainy (PR #20)
 import { ARREST_COPS, ARREST_LINES, SENTENCING_CARD, PRISON_CARD, prisonOpen, prisonSpot, KEEPSAKE, SILAS_TREE, silasChoices } from './prison.js'; // 1.7.0 "Locked Up"
 import { NPC_DEFS, OUTFITS, OUTFIT_ORDER, OUTFIT_HOTKEYS } from './npcs.js';
+import { williamStageSpot } from './william.js'; // 2.0.2
+import { updateWilliamAlly, williamAlly } from './william_ally.js'; // 2.0.3: William fights alongside (anim pass)
 import { createMissionSystem, SEQUEL_HOOKS, ENDING_TEXT, STORY_INTRO } from './missions.js';
 import { drawRainNight, drawLetterbox } from './rain.js'; // 1.6.0: rainy-night campaign
 import { hasSave, clearSave, serializeSave, saveGame, inspectSave, applySave, saveSummary, makeNgPlusSave } from './save.js';
@@ -37,6 +39,7 @@ import { createBlackriver, brHasRun, brCompleted } from './dlc_blackriver.js'; /
 import { createDlc, dlcHasRun, dlcCompleted, silasPortraitSrc, silasPlayerKey, drawNightGrade, MISSIONS as DLC_MISSIONS } from './dlc_silas.js';
 import { SILAS_MOVES, silasMoveRows } from './kits.js';
 import { GAME_VERSION } from './version.js';
+import { coop } from './coop/hooks.js'; // COOP-HOOK: 2.1.0 online co-op (js/coop/*, no-op when co-op is off)
 import { updateBarks, drawBarks, drawBarksScreen, BARKS } from './barks.js'; // barks (Bob)
 import './zoom_ui.js'; // zoom UI (Bob): pause + touch zoom buttons; talks to the camera only via sor:zoom events
 // <<< DLC: Silas prequel
@@ -353,7 +356,7 @@ function startGame(fromSave) {
   const ngStart = !!gameState.ngPlusStart; gameState.ngPlusStart = false;
   let restored = false;
   if (fromSave) {
-    const r = inspectSave();
+    const r = coop.saveSource() || inspectSave(); // COOP-HOOK: a co-op session loads its own slot
     const applied = r.data ? applySave(r.data, { player, stateBag, gameState, areas: AREAS }) : null;
     if (applied) {
       gameState.areaId = applied.areaId;
@@ -471,16 +474,18 @@ function hideStoryIntro() { const el = $('story-intro'); if (el) el.classList.ad
 function npcsInArea() {
   if (isDlc()) return dlc.npcs(gameState.areaId); // DLC: the prequel's own cast
   // Silas is the boss while the fight is on, and he's gone after the ending.
-  const esc = stateBag.side && stateBag.missions[stateBag.side.id]?.kind === 'escort' ? stateBag.side : null;
+  const escM = stateBag.side && stateBag.missions[stateBag.side.id]?.kind === 'escort' ? stateBag.missions[stateBag.side.id] : null;
+  const esc = escM ? stateBag.side : null;
+  syncWilliam(); // 2.0.2: William's spot follows the story / his pending quest
   const list = NPC_DEFS.filter((n) => n.area === gameState.areaId &&
     !(n.id === 'silas' && (gameState.bossActive || stateBag.mainComplete)) &&
     !(n.id === 'wren' && wrenMissing()) && // 1.6.0: her cart stands empty while she's missing
-    !(esc && n.id === 'hank'));
-  if (esc && esc.area === gameState.areaId) {
-    const hank = NPC_DEFS.find((n) => n.id === 'hank');
-    list.push({ ...hank, area: esc.area, x: esc.x });
+    !(esc && n.id === escM.npc));
+  if (esc && esc.area === gameState.areaId) { // the escorted NPC (Hank, or 2.0.2 William) walks with Matthew
+    const who = NPC_DEFS.find((n) => n.id === escM.npc);
+    list.push({ ...who, area: esc.area, x: esc.x });
   }
-  return list;
+  return coop.filterNpcs(list); // COOP-HOOK: no NPC William while Player 2 plays him
 }
 
 function nearestNPC() {
@@ -524,7 +529,7 @@ function linesFor(npc) {
 
 function startDialogue(npc) {
   if (npc.id === 'silas_prison') { startSilasTalk(npc); return; } // 1.7.0: branching talk in cell C-14
-  let lines = linesFor(npc);
+  let lines = coop.lines(npc, linesFor(npc)); // COOP-HOOK: two-player script variants
   if (isDlc() && !isScenePlaying()) { // 1.9.0: a prequel talk that is a registered scene (js/scenes_silas.js) plays as it
     const sid = sceneForLines(lines);
     if (sid && playScene(sid, { onDone: () => { dlc.onTalkDone(npc); updateHUD(); persist(); } })) return;
@@ -693,6 +698,14 @@ function fetchDone() {
   return m.items.every((it) => stateBag.fetchItems.includes(it.id));
 }
 const npcDef = (id) => NPC_DEFS.find((n) => n.id === id);
+/** 2.0.2: William stands where his next quest starts, else where the story has him (js/william.js). */
+function syncWilliam() {
+  const w = npcDef('william');
+  if (!w || !stateBag.missions) return;
+  const m = missions.missionFor('william');
+  const sp = (m && m.spot) || williamStageSpot(stateBag.missions, stateBag.mainComplete);
+  w.area = sp ? sp.area : 'offscreen'; if (sp) w.x = sp.x;
+}
 
 function sideObjective(m) {
   const s = stateBag.side;
@@ -704,7 +717,7 @@ function sideObjective(m) {
       const where = s.runnerArea && s.runnerArea !== gameState.areaId ? ` — he ran to ${AREAS[s.runnerArea].name}` : '';
       return `Catch the snatcher! ${Math.max(0, Math.ceil(s.t))}s${where}`;
     }
-    case 'escort': return `Hank ${Math.max(0, Math.ceil(s.hp))}/100 · ${s.ambush ? 'Fight off the ambush!' : 'Walk him to the River Bridge'}`;
+    case 'escort': return `${m.escortName || 'Hank'} ${Math.max(0, Math.ceil(s.hp))}/100 · ${s.ambush ? 'Fight off the ambush!' : (m.escortGoal || 'Walk him to the River Bridge')}`;
     case 'fetch': {
       const left = m.items.filter((it) => !stateBag.fetchItems.includes(it.id));
       return left.length ? `Fetch: ${left.map((it) => `${it.name} (${npcDef(it.npc).name.split(' ')[0]})`).join(', ')}` : `Bring everything back to ${m.returnTo || 'June'}`; // JACK-STORY
@@ -739,7 +752,7 @@ function startSide(m) {
   else if (m.kind === 'chase') {
     s.t = m.time; s.runnerArea = gameState.areaId;
     gameState.enemies.push(makeRunner(Math.min(AREAS[gameState.areaId].width - 120, npcDef(m.npc).x + 90)));
-  } else if (m.kind === 'escort') { s.hp = 100; s.area = gameState.areaId; s.x = npcDef(m.npc).x; s.ambush = false; }
+  } else if (m.kind === 'escort') { syncWilliam(); s.hp = 100; s.area = gameState.areaId; s.x = npcDef(m.npc).x; s.ambush = false; }
   else if (m.kind === 'fetch') { stateBag.fetchItems = []; }
   sfx('mission_start');
   toast(`Mission started: ${m.title}`);
@@ -893,7 +906,7 @@ function updateSide(dt) {
       if (s.next <= 0) {
         s.wave++;
         addSideWave(2 + s.wave + D.wave, (e, i) => { e.sideFoe = true; if (i % 2 === 0) e.target = 'dee'; });
-        toast(`Lunch rush wave ${s.wave}/${m.waves}!`);
+        toast(`${m.waveLabel || 'Lunch rush'} wave ${s.wave}/${m.waves}!`);
         s.next = 1.5;
       }
     }
@@ -933,17 +946,17 @@ function updateSide(dt) {
       const d = goal - s.x;
       if (Math.abs(d) > 4) s.x += Math.sign(d) * Math.min(Math.abs(d), 150 * dt);
       for (const e of gameState.enemies) {
-        if (e.alive && e.target === 'escort' && e.hitbox && !e.hitbox.hit.has('hank') && Math.abs(e.x - s.x) < 50) {
-          e.hitbox.hit.add('hank');
+        if (e.alive && e.target === 'escort' && e.hitbox && !e.hitbox.hit.has('escortee') && Math.abs(e.x - s.x) < 50) {
+          e.hitbox.hit.add('escortee');
           s.hp -= e.dmg;
         }
       }
     }
-    if (s.hp <= 0) { failSide("Hank's knees have had enough — he heads home."); return; }
+    if (s.hp <= 0) { failSide(m.escortFail || "Hank's knees have had enough — he heads home."); return; }
     if (gameState.areaId === m.dest && !s.ambush) {
       s.ambush = true;
       addSideWave(3 + D.wave, (e, i) => { e.sideFoe = true; if (i % 2 === 0) e.target = 'escort'; });
-      toast('Ambush on the bridge — protect Hank!', true);
+      toast(m.escortAmbush || 'Ambush on the bridge — protect Hank!', true);
     } else if (s.ambush && !hostilesAlive()) {
       completeSide();
     }
@@ -1028,6 +1041,7 @@ function persist() {
     outfitId: gameState.outfitId,
     areaId: gameState.areaId
   });
+  if (coop.persist(payload)) return true; // COOP-HOOK: co-op writes its own slot (solo save untouched)
   return saveGame(payload);
 }
 
@@ -2212,6 +2226,7 @@ function step(dt) {
   tickToast(dt);
   updateBarks(dt, { gameState, stateBag, player, npcs: npcsInArea, npcY: npcFeetY(), dlc: isDlc() }); // barks (Bob): polls state, silent outside play
   const inp = input.poll();
+  coop.preStep(dt, inp); // COOP-HOOK: network pump, lobby, guest input capture
   refreshPrompts();
   syncMusic(dt);
   if (inp.weatherPressed) cycleWeatherChoice(); // 1.7.0 weather: T / View / Create
@@ -2254,20 +2269,22 @@ function step(dt) {
 
   if (gameState.mode === 'dialogue') {
     if (inp.backPressed) { if (gameState.silasTalk) endSilasTalk(); else finishDialogue(); } // Circle/B/Esc: close
-    else if (inp.interactPressed || inp.confirmPressed) advanceDialogue(); // E/Enter/Cross/A/Square
+    else if ((inp.interactPressed || inp.confirmPressed) && coop.allowAdvance()) advanceDialogue(); // E/Enter/Cross/A/Square
     syncDialoguePortrait(); // 1.9.0: mouth frame follows the talk blips
     drawWorld(dt);
     return;
   }
 
   // PLAY
+  if (coop.guestStep(dt, inp)) { updateHUD(); drawWorld(dt); return; } // COOP-HOOK: the guest renders host snapshots
   gameState.playTime += dt;
   if (DEBUG && gameState.god) player.hp = player.maxHp;
   if (!player.alive && player.koT > 0) {
     // v3: hold the KO pose briefly before the respawn / game over
     if (!player.koSting) { player.koSting = true; sting('gameover'); }
     updatePlayer(player, inp, dt, AREAS[gameState.areaId].width);
-    for (const e of gameState.enemies) if (!e.runner) updateEnemy(e, player, dt, AREAS[gameState.areaId].width);
+    coop.downStep(dt, AREAS[gameState.areaId]); // COOP-HOOK: William keeps fighting and can revive Matthew (holds the KO)
+    for (const e of gameState.enemies) if (!e.runner) updateEnemy(e, coop.targetFor(e, player), dt, AREAS[gameState.areaId].width); // COOP-HOOK
     drawWorld(dt);
     return;
   }
@@ -2315,7 +2332,7 @@ function step(dt) {
     });
     for (const e of gameState.enemies) {
       if (e.runner) updateRunner(e, dt, area);
-      else updateEnemy(e, e.target ? sideTarget(e) : player, dt, area.width);
+      else updateEnemy(e, e.target ? sideTarget(e) : coop.targetFor(e, player), dt, area.width); // COOP-HOOK: foes pick P1 or P2
     }
     resolveHits(player, gameState.enemies,
       onHitEnemy,
@@ -2328,7 +2345,9 @@ function step(dt) {
     );
     updateKits(player, gameState.enemies, dt, area.width, onHitEnemy); // 1.4.0: Spiral flight, Star Yank, kit FX
     silasWorld(player, gameState.enemies, dt, area.width, onHitEnemy); // DLC: Silas cooldowns, held / thrown bodies
-    if (stateBag.side && stateBag.side.id === 'side_spar') {
+    coop.hostStep(dt, area); // COOP-HOOK: Player 2 (William) sim + snapshots
+    if (!isDlc()) updateWilliamAlly(player, gameState.enemies, dt, area.width, onHitEnemy, npcsInArea().find((n) => n.id === 'william'), hostilesAlive(), (hp) => { player.hp = Math.min(player.maxHp, player.hp + hp); updateHUD(); toast('William: "Extra life, Player One!"'); }); // 2.0.3
+    if (stateBag.side && sideMission()?.kind === 'spar') { // 2.0.2: any spar mission (Coach's rounds, William's rematch)
       for (const e of gameState.enemies) if (e.sparring && !e.alive && !e.counted) { e.counted = true; stateBag.side.kos++; }
     }
     { const b = gameState.enemies.find((e) => e.isBoss); if (b) gameState.lastBoss = { x: b.x, y: b.y }; }
@@ -2952,7 +2971,7 @@ function sceneForLines(lines) {
 function syncCamera(dt) {
   const area = AREAS[gameState.areaId];
   const frame = followCam.update({
-    playerX: player.x,
+    playerX: coop.camX(player.x), // COOP-HOOK: midpoint of both players
     playerY: player.y, // 1.9.0: 2x / 3x keep head room above the feet
     facing: player.facing,
     areaWidth: area.width,
@@ -2995,6 +3014,7 @@ function drawWorld(dt) {
   const drawList = [];
   for (const n of npcsInArea()) {
     if (sceneHidesNpc(n)) continue; // 1.9.0: bystanders step out of a scene
+    if (n.id === 'william' && williamAlly() && !isDlc()) { drawList.push({ type: 'ally', y: williamAlly().y, a: williamAlly() }); continue; } // 2.0.3: fighting
     drawList.push({ type: 'npc', y: npcFeetY(), n });
   }
   for (const e of gameState.enemies) {
@@ -3003,12 +3023,15 @@ function drawWorld(dt) {
   if (!(isScenePlaying() && currentScene().def.hidePlayer)) drawList.push({ type: 'player', y: player.y }); // 1.9.0
   for (const a of gameState.finaleActors) if (a.area === gameState.areaId) drawList.push({ type: 'actor', y: a.y, a }); // DLC closing scene
   drawList.sort((a, b) => a.y - b.y);
-  if (DEBUG) window.__drawn = drawList.map((d) => d.type === 'npc' ? { t: 'npc', id: d.n.id, key: d.n.key || d.n.id, x: Math.round(d.n.x) } : d.type === 'enemy' ? { t: 'enemy', id: d.e.who || d.e.kind || 'thug', key: d.e.charKey || '', name: d.e.nameTag || '', x: Math.round(d.e.x) } : d.type === 'actor' ? { t: 'actor', id: d.a.id, key: d.a.key || d.a.kind, kind: d.a.kind, x: Math.round(d.a.x) } : { t: 'player', id: isDlc() ? dlc.which : 'matthew', x: Math.round(player.x) }); // dupe checker (tests)
+  if (DEBUG) window.__drawn = drawList.map((d) => d.type === 'npc' ? { t: 'npc', id: d.n.id, key: d.n.key || d.n.id, x: Math.round(d.n.x) } : d.type === 'enemy' ? { t: 'enemy', id: d.e.who || d.e.kind || 'thug', key: d.e.charKey || '', name: d.e.nameTag || '', x: Math.round(d.e.x) } : d.type === 'actor' ? { t: 'actor', id: d.a.id, key: d.a.key || d.a.kind, kind: d.a.kind, x: Math.round(d.a.x) } : d.type === 'ally' ? { t: 'npc', id: 'william', key: 'william', x: Math.round(d.a.x) } : { t: 'player', id: isDlc() ? dlc.which : 'matthew', x: Math.round(player.x) }); // dupe checker (tests)
+  coop.drawItems(drawList); // COOP-HOOK: Player 2 joins the depth-sorted cast
 
   // Ground shadows first so no character's shadow overlaps another's body
   for (const item of drawList) {
+    if (item.type === 'coop') continue; // COOP-HOOK: drawn by js/coop
     if (item.type === 'npc') drawGroundShadow(ctx, item.n.x - cam, item.y, NPC_DRAW_W * castScaleNpc(item.n.id));
     else if (item.type === 'enemy') drawGroundShadow(ctx, item.e.x - cam, item.e.y, NPC_DRAW_W * castScaleEnemy(item.e), item.e.alive ? 0.42 : 0.25);
+    else if (item.type === 'ally') drawGroundShadow(ctx, item.a.x - cam, item.y, NPC_DRAW_W * castScaleNpc('william'));
     else if (item.type === 'actor') drawGroundShadow(ctx, item.a.x - cam, item.a.y, item.a.kind === 'matthew' ? CHAR_DRAW_W : NPC_DRAW_W * THUG_SCALE, 0.35);
     else drawGroundShadow(ctx, player.x - cam, player.y, isDlc() ? NPC_DRAW_W * BOSS_SCALE : CHAR_DRAW_W);
   }
@@ -3017,6 +3040,7 @@ function drawWorld(dt) {
   for (const item of drawList) {
     // 1.9.0 3x fix: at 2x / 3x a bystander standing over Matthew or a foe fades to 0.15 (never the one he talks to)
     const fadeNpc = fighters && item.type === 'npc' && !(gameState.dialogueNpc === item.n) && !isScenePlaying() && fighters.some((fx) => Math.abs(fx - item.n.x) < 80);
+    if (item.type === 'coop') { item.draw(cam); continue; } // COOP-HOOK
     if (fadeNpc) { ctx.save(); ctx.globalAlpha = 0.15; }
     if (item.type === 'npc') {
       const n = item.n;
@@ -3047,6 +3071,9 @@ function drawWorld(dt) {
       ctx.textAlign = 'left';
     } else if (item.type === 'enemy') {
       drawEnemyCast(item.e, cam);
+    } else if (item.type === 'ally') { // 2.0.3: William mid-fight (Joe's 480x394 strips)
+      const f = animFrame('william', item.a.animState, animMs(item.a));
+      if (f) drawAnimFrame(f, item.a.x - cam, item.y, item.a.facing, castScaleNpc('william'));
     } else if (item.type === 'actor') {
       drawFinaleActor(item.a, cam);
     } else if (item.type === 'player' && isDlc()) {
@@ -3275,6 +3302,7 @@ if (DEBUG) {
     },
     warpToNpc(id) {
       const n = NPC_DEFS.find((k) => k.id === id);
+      if (id === 'william') syncWilliam(); // 2.0.2: his spot moves with the story
       if (!n) throw new Error('unknown npc ' + id);
       this.warp(n.area, n.x + 10);
     },
@@ -3362,4 +3390,12 @@ if (DEBUG) {
     // <<< DLC
   };
 }
+// COOP-HOOK: hand js/coop the few internals it needs (read-only getters + existing functions)
+coop.attach({
+  gameState, stateBag, missions, input, followCam, AREAS, NPC_DEFS, GAME_VERSION,
+  get player() { return player; }, get ctx() { return ctx; }, get booted() { return booted; },
+  PLAYER_SCALE, CHAR_DRAW_W, PLAYER_START_Y,
+  startGame, showTitle, persist, toast, updateHUD, syncDepthBand, pauseGame, resumeGame, advanceDialogue,
+  onHitEnemy, drawAnimFrame, startDialogueRaw, startSide, completeSide, fetchDone, npcsInArea, sideMission, drawGroundShadow: (x, y, w, a) => drawGroundShadow(ctx, x, y, w, a), isDlc, refreshTitleButtons
+});
 boot();
