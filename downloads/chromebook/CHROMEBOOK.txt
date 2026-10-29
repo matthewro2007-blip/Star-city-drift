@@ -103,4 +103,4 @@ a611cab487d732ed000934c51a91ff31b4e591dbce1d0850d4b2ab9f5424f99c  Streets-of-Roa
 6c5ec04677467b2361319b646ae61f0b491dc9b95df24775376701f3bba97a28  Streets-of-Roanoke-2.1.1-chromebook-linux-x64.7z.024
 65486ff706844a8976839a1002ee07a3b901243a58431e016faff3ee8051347f  Streets-of-Roanoke-2.1.1-chromebook-linux-x64.7z.025
 94fc39d2a5ab3fdd38a6d690a91d18dd6e939515b1dfca1266ad35f424a6e2ed  Streets-of-Roanoke-2.1.1-chromebook-linux-x64.7z.026
-2b590099b38567e5a2f73fca09522f78bdae23f94e8f572a4f1b9eb8c412482b  Streets-of-Roanoke-2.1.1-chromebook-amd64.deb
+4128a0dc17aed06ab2b2aecb283913e6e4b5804174a17c73041c0f8f1ba44196  Streets-of-Roanoke-2.1.1-chromebook-amd64.deb

@@ -27,7 +27,7 @@ You need all 25 files in the SAME folder:
   Streets-of-Roanoke-2.1.1-Setup-win-x64.7z.023   (22.0 MB)
   Streets-of-Roanoke-2.1.1-Setup-win-x64.7z.024   (22.0 MB)
   Streets-of-Roanoke-2.1.1-Setup-win-x64.7z.025   (4.7 MB)
-Together they're one 7-Zip archive holding Streets-of-Roanoke-Setup-2.1.1.exe (460 MB).
+Together they're one 7-Zip archive holding Streets-of-Roanoke-Setup-2.1.1.exe (533 MB).
 
 EASIEST: 7-Zip (free, https://www.7-zip.org)
   1. Install 7-Zip.
