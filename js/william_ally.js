@@ -6,7 +6,7 @@
  * patches Matthew up once per fight when he's low). Foes keep targeting Matthew; William can't be hurt (support NPC).
  * Kept out of main.js on purpose (Kody's co-op patch rebases there): main.js only calls updateWilliamAlly / williamAlly.
  */
-import { setAnim, animMs, animTiming, animFrame, gateHitbox } from './anim.js';
+import { setAnim, animMs, animTiming, animFrame, gateHitbox, strideRate } from './anim.js';
 import { applyHit } from './combat.js';
 import { sfx } from './audio.js';
 
@@ -92,7 +92,7 @@ export function updateWilliamAlly(player, enemies, dt, areaWidth, onHitEnemy, np
   if (d > 6) {
     a.x += (mx / d) * Math.min(sp, d); a.y += (my / d) * Math.min(sp * 0.7, d);
     a.x = Math.max(30, Math.min(areaWidth - 30, a.x));
-    setAnim(a, 'walk');
+    setAnim(a, 'walk'); strideRate(a, 'william', 120, 1.2); // 2.1.1
   } else setAnim(a, 'idle_personality');
   return a;
 }

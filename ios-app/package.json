@@ -1,6 +1,6 @@
 {
   "name": "streets-of-roanoke-ios",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "private": true,
   "description": "Streets of Roanoke iPhone wrapper (Capacitor). The web build is copied into www/ by the GitHub workflow.",
   "scripts": {

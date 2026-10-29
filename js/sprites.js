@@ -172,12 +172,20 @@ const CHAR_ALIASES = { coachray: 'coach', ray: 'coach', raydelgado: 'coach', dee
   lockkeeper: 'marcus_lockkeeper', thelockkeeper: 'marcus_lockkeeper', marcushale: 'marcus', kessler: 'foreman', mortkessler: 'foreman',
   rosacalloway: 'rosa', dorakeene: 'dora', minasolis: 'mina', bartholley: 'bart', ottopike: 'otto',
   matthewolder: 'matthew_2028', matthewblackriver: 'matthew_2028' };
+const IDLE_FALLBACK = { idle: ['idle_signature', 'idle_personality'], idle_personality: ['idle', 'idle_signature'], talk: ['idle_personality', 'idle'], idle_signature: ['idle', 'idle_personality'] };
+/** 2.1.1: logical px one loop of a locomotion state covers (manifest `travel`), frames and fps; null when unknown. */
+export function animStride(charKey, state, outfitId) {
+  let ch = ANIM_MANIFEST[animKey(charKey, outfitId)], st = resolveState(ch, state);
+  if (!st && ch && ch !== ANIM_MANIFEST.matthew_polo && String(animKey(charKey, outfitId)).startsWith('matthew_')) st = resolveState(ANIM_MANIFEST.matthew_polo, state);
+  if (!st || !st.travel || !st.frames) return null;
+  return { travel: st.travel, n: st.frames.length, fps: st.fps || 10, gait: st.gait || null };
+}
 export const ANIM_STATES = {
-  matthew: ['idle_signature', 'run', 'sprint', 'combo1', 'combo2', 'combo3', 'jump_kick', 'special',
+  matthew: ['idle', 'idle_signature', 'walk', 'run', 'sprint', 'combo1', 'combo2', 'combo3', 'jump_kick', 'special',
     'hurt', 'ko', 'victory', 'knockdown_fall', 'knockdown_ground', 'getup'],
-  cast: ['idle_personality', 'talk'],
+  cast: ['idle_personality', 'idle', 'talk', 'walk'],
   /** 2.0.2: William Burks (anims.json `william`): NPC set + the full player set for co-op (Phase B). */
-  william: ['idle_personality', 'talk', 'walk', 'idle_signature', 'run', 'sprint', 'combo1', 'combo2', 'combo3', 'jump_kick', 'special',
+  william: ['idle_personality', 'idle', 'talk', 'walk', 'idle_signature', 'run', 'sprint', 'combo1', 'combo2', 'combo3', 'jump_kick', 'special',
     'hurt', 'ko', 'victory', 'knockdown_fall', 'knockdown_ground', 'getup'],
   boss: ['boss_attack1', 'boss_attack2', 'boss_attack3', 'taunt', 'defeat', 'knockdown_fall', 'knockdown_ground', 'getup'],
   thug: ['attackA', 'attackB', 'ko', 'knockdown_fall', 'knockdown_ground', 'getup'],
@@ -247,7 +255,7 @@ async function loadAnimManifests() {
   };
   // 2.0.3: the per-state *_jk strips (~150 MB) stream in after boot; until one lands, getAnimFrame returns null for
   // that state and the caller's fallback draws (same as before the art existed)
-  const all = [...files].filter(Boolean), late = all.filter((f) => /_jk\.png$/.test(f));
+  const all = [...files].filter(Boolean), late = all.filter((f) => /_jk\.png$/.test(f) && !/(matthew_polo_(idle|run)|silas_boss_idle)_jk\.png$/.test(f)); // 2.1.1: the first standing frame is the new model
   await Promise.all(all.filter((f) => !late.includes(f)).map(load));
   // loaded on first use (getAnimFrame) and streamed in the background right after boot, four at a time
   const pending = new Map();
@@ -255,7 +263,10 @@ async function loadAnimManifests() {
   LATE_FILES = new Set(late);
   const afterLoad = (fn) => (document.readyState === 'complete' ? setTimeout(fn, 0) : addEventListener('load', () => setTimeout(fn, 0), { once: true })); // don't hold up window.onload
   ANIM_LATE = new Promise((res) => afterLoad(async () => {
-    const q = late.slice().sort((x, y) => (/matthew_(?!polo)/.test(x) ? 1 : 0) - (/matthew_(?!polo)/.test(y) ? 1 : 0)); // other outfits last
+    // 2.1.1: idle / walk / run strips first (polo first): until a strip lands its state falls back, and Matthew's idle
+    // used to show the old model there; then the other outfits' fight strips last
+    const rank = (f) => (/_(idle|run|sprint|walk)_jk\.png$/.test(f) ? 0 : 2) + (/matthew_(?!polo)/.test(f) ? 1 : 0);
+    const q = late.slice().sort((x, y) => rank(x) - rank(y));
     await Promise.all([0, 1, 2, 3].map(async () => { while (q.length) await lateLoad(q.shift()); }));
     res();
   }));
@@ -319,6 +330,9 @@ export function getAnimFrame(charKey, state, tMs, outfitId) {
   let ch = ANIM_MANIFEST[key];
   let st = resolveState(ch, state);
   if (!st && key.startsWith('matthew_') && key !== 'matthew_polo') { ch = ANIM_MANIFEST.matthew_polo; st = resolveState(ch, state); }
+  // 2.1.1: 'idle' had no entry for any matthew_* outfit (only idle_signature), so standing still drew the old sheet.
+  // The manifest has a real idle now; if an outfit ever lacks one, use that outfit's own idle_signature, then idle_personality.
+  if (!st && ch && IDLE_FALLBACK[state]) for (const alt of IDLE_FALLBACK[state]) { st = resolveState(ch, alt); if (st) break; }
   if (!st || !st.frames || !st.frames.length) return null;
   const n = st.frames.length;
   let i = Math.floor(Math.max(0, tMs || 0) * (st.fps || 10) / 1000);

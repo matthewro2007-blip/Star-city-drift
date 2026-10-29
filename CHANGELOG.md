@@ -1,6 +1,18 @@
 # Changelog
 
-## 2.0.3 - Fight animations (staging, unreleased)
+## 2.1.1 - Idle + walk fix
+- Fixed: standing still showed the old Matthew sprite. No outfit had an 'idle' state, so the game drew the old sheet, and this also happened while the new art was still streaming in. Every outfit now has a real idle, there's a fallback chain (idle -> idle_signature -> idle_personality), and the idle and run strips load first.
+- Every character breathes: Matthew (all 15 outfits), William, the 2028 Matthew and all 30 cast members have looping idles. They're supersampled, so there's no shimmer, and the feet stay planted.
+- Joe's new walks: 53 strips for 47 characters (an arcade brawler strut for Matthew's 15 outfits, William and the 2028 Matthew, plus 6-pose walks for the 30 cast). Matthew struts when he moves slowly and runs at full speed.
+- Legs keep pace with movement: walk, run and sprint playback speed follows the actual move speed (player, William, enemies), and cutscene walkers advance their legs by distance walked, so feet don't slide.
+- Walking is smoother: steady anchors and a constant feet line between frames, the run's hip jump is gone, and the sprint's duplicate poses are trimmed.
+- Silas and enemies never switch back to old art: every Silas look and every enemy state now uses the new art (run, rush, taunt, hurt, KO and so on reuse his new poses). The C-14 and red-suit Silas combos are repainted from playable Silas.
+- The title screen shows the new Matthew and the new Silas.
+- William's talk frames match his idle height (no more size pop).
+
+## 2.1.0 - Online co-op + fight animations
+
+- Online co-op: host plays Matthew, a friend joins as William Burks (invite link streetsofroanoke://join or room code). Host-authoritative; solo play unchanged.
 - Joe's new fight animations: Matthew in all 15 outfits (14 states: longer 7-8 frame combos, two-hit combo2, special, hurt, KO, knockdown, get-up, run/sprint, idle, victory) and William's 17 states plus dash, hop kick, magazine swat and Extra Life. New 480x394 cells.
 - Jack's new enemy animations: 22 enemies, bosses and Silas looks (thugs, snatcher, Foreman crew, the four prison guards, Vera, the Foreman, Tumbler Voss, the Lockkeeper, Silas boss, playable Silas, Silas red / C-14 / young / older). New hurt reactions (high / body / back), knockdown fall -> bounce -> ground -> get-up, and Silas's new short cane jab.
 - Joe's redesigned cast (30 characters: town NPCs, inmates, officers and the 2015 cast) replaces the old NPC models. For now each one is a single idle pose, used for idle, talk and walk.

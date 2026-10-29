@@ -55,6 +55,33 @@ export function setAnim(ent, state, fit, restart = false) {
     if (d > fit.sec * 1000) ent.animRate = d / (fit.sec * 1000);
   }
 }
+/**
+ * 2.1.1: match leg speed to move speed. speed = world px/s the entity is moving, scale = its draw scale (PLAYER_SCALE,
+ * NPC_SCALE, ...). Uses the manifest `travel` (logical px per loop). The clock is rebased so a rate change never
+ * jumps frames. No travel data -> rate 1 (old behaviour).
+ */
+export function strideRate(ent, charKey, speed, scale, outfit) {
+  const fn = Sprites.animStride;
+  const s = typeof fn === 'function' ? fn(charKey, ent.animState, outfit) : null;
+  let rate = 1;
+  if (s && s.travel > 0 && speed > 0) {
+    const ref = (s.travel * (84 * (scale || 1)) / 192) * s.fps / s.n;   // world px/s the art's feet cover at rate 1
+    rate = Math.max(0.45, Math.min(s.gait ? 3.2 : 1.6, speed / ref));   // 2.1.1: Joe's 8-pose struts (hold=0) stay clean up to ~3x
+  }
+  const cur = ent.animRate || 1;
+  if (Math.abs(rate - cur) < 0.02) return;
+  const ms = animMs(ent);
+  ent.animRate = rate;
+  ent.animStart = (ent.animT || 0) - ms / 1000 / rate;
+}
+/** 2.1.1: distance-driven walk clock for scripted actors (feet never slide): ms of anim per px walked. */
+export function strideClockMs(ent, charKey, state, scale, outfit) {
+  const fn = Sprites.animStride, s = typeof fn === 'function' ? fn(charKey, state, outfit) : null;
+  const x = ent.x || 0, d = Math.abs(x - (ent._strideX ?? x)); ent._strideX = x;
+  if (!s || !(s.travel > 0)) return null;
+  ent._strideMs = (ent._strideMs || 0) + d / ((s.travel * (84 * (scale || 1)) / 192) * s.fps / s.n) * 1000;
+  return ent._strideMs;
+}
 /** ms into the current anim state (scaled by the fit rate). */
 export function animMs(ent) { return ((ent.animT || 0) - (ent.animStart || 0)) * 1000 * (ent.animRate || 1); }
 

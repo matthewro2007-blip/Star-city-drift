@@ -1,8 +1,8 @@
 import { DEPTH, getDepth } from './world.js';
 import { getEnemySprite, drawSprite } from './sprites.js';
-import { setAnim, gateHitbox, enemyCharKey, animFrame, animMs, animTiming } from './anim.js';
+import { setAnim, gateHitbox, enemyCharKey, animFrame, animMs, animTiming, strideRate } from './anim.js';
 import { sfx, voice } from './audio.js'; // audio: hits, whooshes, knockdowns, fighter voices
-import { KITS, getKit, isArmored, artBoxToWorld, KIT_DIFF, BOSS_RESIST, SPECIAL_ACTIVE, COMBO3_ACTIVE, SPECIAL_FRAMES, KIT_FPS, PULL_FRAME } from './kits.js'; // 1.4.0 outfit kits
+import { KITS, getKit, isArmored, artBoxToWorld, KIT_DIFF, BOSS_RESIST, SPECIAL_ACTIVE, COMBO3_ACTIVE, SPECIAL_FRAMES, KIT_FPS, PULL_FRAME, PLAYER_DRAW_SCALE } from './kits.js'; // 1.4.0 outfit kits
 
 /**
  * Difficulty tuning. hp/dmg scale thugs, cool scales the gap between enemy attacks (lower = more
@@ -181,7 +181,7 @@ function pickPlayerAnimRaw(p) {
   if (p.attackType === 'jumpkick') return 'jump_kick';
   if (p.attackType === 'combo') return 'combo' + Math.max(1, p.comboStep);
   if (p.attackType === 'heavy') return 'combo3';
-  if (p.pose === 'walk') return p.sprinting ? 'sprint' : 'run';
+  if (p.pose === 'walk') return p.sprinting ? 'sprint' : (p.strutWalk ? 'walk' : 'run');   // 2.1.1: slow moves use Joe's strut
   if (p.victoryT > 0) return 'victory';
   if (p.idleT >= 4) return 'idle_signature';
   return 'idle'; // not a Matthew anim state → existing sheet
@@ -401,6 +401,8 @@ export function updatePlayer(p, input, dt, areaWidth, hooks = {}) {
   if (moving) { p.idleT = 0; p.victoryT = 0; }
   else if (p.pose === 'idle' && p.victoryT <= 0) p.idleT += dt;
   done();
+  p.strutWalk = moving && Math.hypot(p.vx, p.vy) < 75;   // 2.1.1: strut ref ~47 px/s, x1.6 = 75
+  if (moving) strideRate(p, pkey(p), Math.hypot(p.vx, p.vy), PLAYER_DRAW_SCALE, p.artOutfit); // 2.1.1: no foot sliding
 }
 
 
@@ -762,6 +764,7 @@ export function updateEnemy(e, player, dt, areaWidth = Infinity) {
   } else {
     e.pose = 'chase';
     setAnim(e, 'walk'); // thugs/Silas walk in; the snatcher's 'run' is set in main.js updateRunner
+    strideRate(e, key, e.speed * slow, e.drawScale || (e.isBoss ? 1.4 : 1.2)); // 2.1.1: leg speed follows walk speed
     const sp = e.speed * dt * slow;
     if (dist > 1) {
       e.x += (dx / dist) * sp;

@@ -19,7 +19,7 @@ import {
   updateKits, getKitFx, getProjectiles, clearKitFx, slowMul, tickPull, specialTiming
 } from './combat.js';
 import { KITS, getKit, kitRow, PLAYER_DRAW_SCALE } from './kits.js'; // 1.4.0 outfit kits
-import { animFrame, animMs, setAnim, enemyCharKey, animApiReady } from './anim.js';
+import { animFrame, animMs, setAnim, enemyCharKey, animApiReady, strideClockMs } from './anim.js';
 import * as SpriteLib from './sprites.js'; // optional newer helpers (getCollectibleSprite) without a hard import
 import { getMatthewSprite, getNpcSprite, getEnemySprite, drawSprite, drawCollectible, clearSpriteCache, loadSprites, getHeartImages } from './sprites.js';
 import { createTitle } from './title.js';
@@ -1560,15 +1560,17 @@ function drawFinaleActor(a, cam) {
     const sc = a.scale || castScaleNpc(a.key);
     const speaking = gameState.mode === 'dialogue' && gameState.dialogue && gameState.dialogue[gameState.dialogueIdx]?.id === a.id;
     const pf = a.pose && !a.walking && SpriteLib.getCutscenePose ? SpriteLib.getCutscenePose(a.key, a.pose, speaking && mouthOpen()) : null; // 1.9.0 scene pose
-    const f = pf || animFrame(a.key, st, performance.now() + (a.phase || 0)) || animFrame(a.key, 'idle_personality', performance.now()) || animFrame(a.key, 'idle', performance.now()); // Foreman: anim frame when no still
+    const wt = a.walking ? strideClockMs(a, a.key, 'walk', sc) : null; // 2.1.1: feet locked to distance walked
+    const f = pf || animFrame(a.key, st, wt ?? (performance.now() + (a.phase || 0))) || animFrame(a.key, 'idle_personality', performance.now()) || animFrame(a.key, 'idle', performance.now()); // Foreman: anim frame when no still
     if (f) drawAnimFrame(f, x, a.y, a.facing, sc);
     else drawCastSprite(getNpcSprite(a.key, '#2c3e50', performance.now() / 1000), x, a.y, a.facing, sc);
     return;
   }
   if (a.kind === 'matthew') {
-    const st = a.walking ? 'run' : 'idle_signature';
-    const f = animFrame('matthew', st, a.t * 1000, 'polo');
-    if (f && a.walking) drawAnimFrame(f, x, a.y, a.facing, PLAYER_SCALE);
+    const st = a.walking ? 'walk' : 'idle';   // 2.1.1: strut + breathing idle (new art)
+    const wt = a.walking ? strideClockMs(a, 'matthew', 'walk', PLAYER_SCALE, 'polo') : null;
+    const f = animFrame('matthew', st, wt ?? a.t * 1000, 'polo');
+    if (f) drawAnimFrame(f, x, a.y, a.facing, PLAYER_SCALE);
     else drawMatthew(a.walking ? 'walk' : 'idle', 'polo', OUTFITS.polo, a.t, x, a.y, a.facing);
   } else {
     const f = animFrame('foreman_crew', 'idle', a.t * 1000); // 1.5.2: the Foreman's crew art
@@ -3087,6 +3089,8 @@ function drawWorld(dt) {
       // old sheet with fallbacks: jump-kick lift, Star Drive afterimages, faster sprint cycle, lie-down tilt
       const px = player.x - cam;
       let maf = USE_HERO_RENDER ? null : animFrame('matthew', player.animState, animMs(player), artOutfitFor(gameState.outfitId));
+      // 2.1.1: a strip still streaming in shows the new model's idle, never the old sheet (no model pop on state changes)
+      if (!maf && !USE_HERO_RENDER && player.alive && !player.kd) maf = animFrame('matthew', 'idle', player.animT * 1000, artOutfitFor(gameState.outfitId));
       if (maf && suitNeedsTint(gameState.outfitId)) maf = tintedFrame(maf); // DLC: Silas's Suit fallback look
       if (player.attackType === 'special' && player.kitMove && player.kitMove.lunge >= 60 && player.kitMove.el < player.kitMove.lungeT) {
         // 1.4.0: afterimages only for the moves that travel (Kickflip); planted moves stay crisp
@@ -3168,6 +3172,14 @@ function drawWorld(dt) {
 }
 
 /** Title backdrop: animated Roanoke skyline (title.js) + Matthew heroic idle vs a Silas silhouette. */
+/** 2.1.1: one strip cell as its own canvas (cached), for effects that take a whole sprite (title silhouette). */
+const cellCanvases = new Map();
+function cellCanvas(f) {
+  const k = (f.img.src || '') + '|' + f.sx + '|' + f.sy + '|' + f.sw;
+  let c = cellCanvases.get(k);
+  if (!c) { c = document.createElement('canvas'); c.width = f.sw; c.height = f.sh; c.getContext('2d').drawImage(f.img, f.sx, f.sy, f.sw, f.sh, 0, 0, f.sw, f.sh); cellCanvases.set(k, c); }
+  return c;
+}
 function drawTitleBg(dt) {
   ctx.setTransform(SS, 0, 0, SS, 0, 0);
   ctx.globalAlpha = 1;
@@ -3176,21 +3188,25 @@ function drawTitleBg(dt) {
   title.drawBackdrop(ctx, W, H, dt);
   const t = performance.now() / 1000;
   const feetY = 512;
-  // Silas: big rim-lit silhouette on the right, facing Matthew
-  const sil = title.silhouette(getNpcSprite('silas', '#2c3e50', t));
-  if (sil) {
+  // Silas: big rim-lit silhouette on the right, facing Matthew (2.1.1: Jack's new Silas, breathing idle)
+  const saf = animFrame('silas_boss', 'idle', t * 1000);
+  const sil = saf ? null : title.silhouette(getNpcSprite('silas', '#2c3e50', t));
+  if (saf || sil) {
     ctx.save();
     ctx.globalAlpha = 0.92;
     drawGroundShadow(ctx, W * 0.78, feetY, 120);
-    drawCastSprite(sil, W * 0.78, feetY, -1, BOSS_SCALE * 1.55);
+    if (saf) drawAnimFrame({ ...saf, img: title.silhouette(cellCanvas(saf)), sx: 0, sy: 0 }, W * 0.78, feetY, -1, BOSS_SCALE * 1.55);
+    else drawCastSprite(sil, W * 0.78, feetY, -1, BOSS_SCALE * 1.55);
     ctx.restore();
   }
-  // Matthew (locked look) at heroic scale, left
+  // Matthew (locked look) at heroic scale, left (2.1.1: Joe's new Matthew, breathing idle)
   const mx = W * 0.22;
   drawGroundShadow(ctx, mx, feetY, CHAR_DRAW_W * 1.5);
   ctx.save();
   ctx.translate(mx, feetY); ctx.scale(1.5, 1.5); ctx.translate(-mx, -feetY);
-  drawMatthew('idle', 'polo', OUTFITS.polo, t, mx, feetY, 1);
+  const tmaf = USE_HERO_RENDER ? null : animFrame('matthew', 'idle', t * 1000, 'polo');
+  if (tmaf) drawAnimFrame(tmaf, mx, feetY, 1, PLAYER_SCALE);
+  else drawMatthew('idle', 'polo', OUTFITS.polo, t, mx, feetY, 1);
   ctx.restore();
   title.drawGrade(ctx, W, H);
   drawWeather(ctx, W, H, t, { groundY: feetY, title: true, cheap: cheapPresentation() }); // 1.7.0 weather over the title
